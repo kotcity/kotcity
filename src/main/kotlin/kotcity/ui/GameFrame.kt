@@ -3,18 +3,20 @@ package kotcity.ui
 import javafx.animation.AnimationTimer
 import javafx.application.Application
 import javafx.scene.canvas.Canvas
+import javafx.scene.control.ScrollPane
 import javafx.scene.control.SplitPane
 import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.stage.Stage
+import kotcity.data.CityMap
 import tornadofx.App
 import tornadofx.View
 
 
-class GameFrame : View(), CanvasFitter {
+class GameFrame(map: CityMap) : View(), CanvasFitter {
     override val root: SplitPane by fxml("/GameFrame.fxml")
     private val canvas = ResizableCanvas()
-    private val canvasPane: Pane by fxid("canvasPane")
+    private val canvasPane: ScrollPane by fxid("canvasPane")
 
     var ticks = 0
 

@@ -1,4 +1,4 @@
-package kotcity.datae
+package kotcity.data
 
 data class MapCoordinate(val x: Int, val y: Int)
 

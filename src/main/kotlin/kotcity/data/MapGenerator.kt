@@ -1,8 +1,5 @@
 package kotcity.data
 
-import kotcity.datae.CityMap
-import kotcity.datae.GroundTile
-import kotcity.datae.MapCoordinate
 import kotcity.noise.OpenSimplexNoise
 import java.lang.Math.pow
 import java.util.*
@@ -12,8 +9,8 @@ class MapGenerator {
     val rng = Random()
     var seaLevel = 0.0
 
-    fun generateMap(f1: Double = 1.0, f2: Double = 2.0, f3: Double = 4.0, exp: Double = 0.5): CityMap {
-        val map = CityMap()
+    fun generateMap(width: Int, height: Int, f1: Double = 1.0, f2: Double = 2.0, f3: Double = 4.0, exp: Double = 0.5): CityMap {
+        val map = CityMap(width, height)
         // ok now we want to get some noise and populate that shit...
         val seed = rng.nextLong()
         val noiseGen = OpenSimplexNoise(seed)
