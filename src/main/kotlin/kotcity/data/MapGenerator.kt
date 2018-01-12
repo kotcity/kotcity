@@ -4,12 +4,16 @@ import kotcity.datae.CityMap
 import kotcity.datae.GroundTile
 import kotcity.datae.MapCoordinate
 import kotcity.noise.OpenSimplexNoise
+import java.util.*
 
 class MapGenerator {
+
+    val rng = Random()
+
     fun generateMap(): CityMap {
         val map = CityMap()
         // ok now we want to get some noise and populate that shit...
-        val seed = 123L
+        val seed = rng.nextLong()
         val noiseGen = OpenSimplexNoise(seed)
         repeat(map.width) { x ->
             repeat(map.height) { y ->

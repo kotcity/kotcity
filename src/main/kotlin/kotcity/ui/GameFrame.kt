@@ -2,6 +2,7 @@ package kotcity.ui
 
 import javafx.animation.AnimationTimer
 import javafx.application.Application
+import javafx.scene.canvas.Canvas
 import javafx.scene.control.SplitPane
 import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
@@ -10,7 +11,7 @@ import tornadofx.App
 import tornadofx.View
 
 
-class GameFrame : View() {
+class GameFrame : View(), CanvasFitter {
     override val root: SplitPane by fxml("/GameFrame.fxml")
     private val canvas = ResizableCanvas()
     private val canvasPane: Pane by fxid("canvasPane")
@@ -23,22 +24,7 @@ class GameFrame : View() {
 
         title = "Kotcity 0.1"
 
-        canvas.height = canvasPane.height
-        canvas.width = canvasPane.width
-        canvas.minHeight(100.0)
-        canvasPane.minHeight(100.0)
-
-        canvas.isCache = true
-
-        canvasPane.add(canvas)
-
-        canvasPane.widthProperty().addListener { _, _, newValue ->
-            canvas.width = newValue as Double
-        }
-
-        canvasPane.heightProperty().addListener { _, _, newValue ->
-            canvas.height = newValue as Double
-        }
+        fitCanvasToPane(canvas, canvasPane)
 
         val timer = object : AnimationTimer() {
             override fun handle(now: Long) {

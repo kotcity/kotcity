@@ -17,8 +17,7 @@ class LaunchScreen : View() {
     fun newCityPressed() {
         println("We want a new city!")
         this.primaryStage.close()
-        val gf = GameFrame()
-        gf.openWindow()
+        MapGeneratorScreen().openWindow()
     }
 
     fun loadCityPressed() {
