@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -13,6 +14,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.Region?>
 
 
 <BorderPane xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
@@ -21,9 +23,9 @@
         <items>
           <AnchorPane maxWidth="200.0">
                <children>
-                  <Accordion layoutY="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Accordion fx:id="accordion" layoutY="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <panes>
-                      <TitledPane animated="false" text="Zoning">
+                      <TitledPane fx:id="basicPane" animated="false" text="Basic">
                            <content>
                               <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
                                  <children>
@@ -34,6 +36,9 @@
                                     </ToggleButton>
                                     <ToggleButton mnemonicParsing="false" text="Commercial" toggleGroup="$buildTools" />
                                     <ToggleButton mnemonicParsing="false" text="Industrial" toggleGroup="$buildTools" />
+                                    <Region prefHeight="5.0" prefWidth="200.0" />
+                                    <Button mnemonicParsing="false" onAction="#zoomIn" text="Zoom In" />
+                                    <Button mnemonicParsing="false" onAction="#zoomOut" text="Zoom Out" />
                                  </children>
                               </FlowPane>
                            </content>

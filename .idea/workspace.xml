@@ -40,10 +40,10 @@
       <file leaf-file-name="GameFrame.kt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/GameFrame.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="325">
-              <caret line="20" column="33" lean-forward="false" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
+            <state relative-caret-position="313">
+              <caret line="61" column="9" lean-forward="true" selection-start-line="61" selection-start-column="9" selection-end-line="61" selection-end-column="9" />
               <folding>
-                <element signature="e#20#503#0" expanded="true" />
+                <element signature="e#20#580#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -74,8 +74,8 @@
       <file leaf-file-name="MapGeneratorScreen.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="79">
-              <caret line="97" column="0" lean-forward="false" selection-start-line="97" selection-start-column="0" selection-end-line="97" selection-end-column="0" />
+            <state relative-caret-position="508">
+              <caret line="108" column="17" lean-forward="true" selection-start-line="108" selection-start-column="17" selection-end-line="108" selection-end-column="17" />
               <folding>
                 <element signature="e#20#388#0" expanded="true" />
               </folding>
@@ -592,8 +592,8 @@
         <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/CanvasFitter.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/data/Map.kt" />
         <option value="$PROJECT_DIR$/src/test/kotlin/MapGeneratorTest.kt" />
-        <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/data/MapGenerator.kt" />
+        <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/GameFrame.kt" />
       </list>
     </option>
@@ -1266,16 +1266,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="79">
-          <caret line="97" column="0" lean-forward="false" selection-start-line="97" selection-start-column="0" selection-end-line="97" selection-end-column="0" />
-          <folding>
-            <element signature="e#20#388#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/kotlin/MapGeneratorTest.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="273">
@@ -1296,12 +1286,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="508">
+          <caret line="108" column="17" lean-forward="true" selection-start-line="108" selection-start-column="17" selection-end-line="108" selection-end-column="17" />
+          <folding>
+            <element signature="e#20#388#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/GameFrame.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
-          <caret line="20" column="33" lean-forward="false" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
+        <state relative-caret-position="313">
+          <caret line="61" column="9" lean-forward="true" selection-start-line="61" selection-start-column="9" selection-end-line="61" selection-end-column="9" />
           <folding>
-            <element signature="e#20#503#0" expanded="true" />
+            <element signature="e#20#580#0" expanded="true" />
           </folding>
         </state>
       </provider>
