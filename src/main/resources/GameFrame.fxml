@@ -2,49 +2,80 @@
 
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 
-<SplitPane dividerPositions="0.21128318584070796" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="906.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
-  <items>
-    <AnchorPane maxWidth="200.0">
-         <children>
-            <Accordion layoutY="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-              <panes>
-                <TitledPane animated="false" text="Zoning">
-                     <content>
-                        <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
-                           <children>
-                              <ToggleButton mnemonicParsing="false" text="Residential">
-                                 <toggleGroup>
-                                    <ToggleGroup fx:id="buildTools" />
-                                 </toggleGroup>
-                              </ToggleButton>
-                              <ToggleButton mnemonicParsing="false" text="Commercial" toggleGroup="$buildTools" />
-                              <ToggleButton mnemonicParsing="false" text="Industrial" toggleGroup="$buildTools" />
-                           </children>
-                        </FlowPane>
-                     </content>
-                </TitledPane>
-                <TitledPane animated="false" text="Power">
-                     <content>
-                        <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0" />
-                     </content>
-                </TitledPane>
-                <TitledPane animated="false" text="Other" />
-              </panes>
-            </Accordion>
-         </children></AnchorPane>
-      <AnchorPane>
-         <children>
-            <ScrollPane fx:id="canvasPane" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <Label text="Currently Selected Tool" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-         </children>
-      </AnchorPane>
-  </items>
-</SplitPane>
+
+<BorderPane xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <SplitPane dividerPositions="0.21128318584070796" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="906.0">
+        <items>
+          <AnchorPane maxWidth="200.0">
+               <children>
+                  <Accordion layoutY="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <panes>
+                      <TitledPane animated="false" text="Zoning">
+                           <content>
+                              <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
+                                 <children>
+                                    <ToggleButton mnemonicParsing="false" text="Residential">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="buildTools" />
+                                       </toggleGroup>
+                                    </ToggleButton>
+                                    <ToggleButton mnemonicParsing="false" text="Commercial" toggleGroup="$buildTools" />
+                                    <ToggleButton mnemonicParsing="false" text="Industrial" toggleGroup="$buildTools" />
+                                 </children>
+                              </FlowPane>
+                           </content>
+                      </TitledPane>
+                      <TitledPane animated="false" text="Power">
+                           <content>
+                              <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0" />
+                           </content>
+                      </TitledPane>
+                      <TitledPane animated="false" text="Other" />
+                    </panes>
+                  </Accordion>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <ScrollPane fx:id="canvasPane" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label text="Currently Selected Tool" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </center>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>

@@ -5,6 +5,7 @@ import javafx.application.Application
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.SplitPane
+import javafx.scene.layout.BorderPane
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import kotcity.data.CityMap
@@ -17,7 +18,7 @@ import tornadofx.find
 
 
 class GameFrame : View(), CanvasFitter {
-    override val root: SplitPane by fxml("/GameFrame.fxml")
+    override val root: BorderPane by fxml("/GameFrame.fxml")
     private val canvas = ResizableCanvas()
     private val canvasPane: ScrollPane by fxid("canvasPane")
 
