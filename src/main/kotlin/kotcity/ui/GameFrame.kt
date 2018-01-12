@@ -2,66 +2,78 @@ package kotcity.ui
 
 import javafx.animation.AnimationTimer
 import javafx.application.Application
-import javafx.scene.canvas.Canvas
+import javafx.scene.canvas.GraphicsContext
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.SplitPane
-import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import kotcity.data.CityMap
+import kotcity.data.GroundTile
+import kotcity.data.MapCoordinate
+import kotcity.data.MapGenerator
 import tornadofx.App
 import tornadofx.View
+import tornadofx.find
 
 
-class GameFrame(map: CityMap) : View(), CanvasFitter {
+class GameFrame : View(), CanvasFitter {
     override val root: SplitPane by fxml("/GameFrame.fxml")
     private val canvas = ResizableCanvas()
     private val canvasPane: ScrollPane by fxid("canvasPane")
 
     var ticks = 0
 
-    var offset = 0.0
+    lateinit var _map: CityMap
+
+    fun setMap(map: CityMap) {
+        this._map = map
+        // gotta resize the component now...
+        canvas.width = map.width.toDouble()
+        canvas.height = map.height.toDouble()
+        println("Map has been set to: $_map. Size is ${canvas.width}x${canvas.height}")
+    }
+
+    fun getMap(): CityMap {
+        return this._map
+    }
+
+    fun drawMap(gc: GraphicsContext) {
+        if (this._map == null) {
+            return
+        }
+
+        // we got that map...
+        val (xRange, yRange) = canvasPane.visibleArea()
+
+        for (x in xRange) {
+            for (y in yRange) {
+                val tile = getMap().groundLayer[MapCoordinate(x, y)]
+                if (tile == GroundTile.GROUND) {
+                    gc.fill = Color.LIGHTGOLDENRODYELLOW
+                } else {
+                    gc.fill = Color.LIGHTBLUE
+                }
+                gc.fillRect(x.toDouble(), y.toDouble(), 1.0, 1.0)
+            }
+        }
+    }
 
     init {
 
         title = "Kotcity 0.1"
 
-        fitCanvasToPane(canvas, canvasPane)
+        // fitCanvasToPane(canvas, canvasPane)
+        canvasPane.content = canvas
 
         val timer = object : AnimationTimer() {
             override fun handle(now: Long) {
                 if (ticks == 5) {
-                    drawIt()
+                    drawMap(canvas.graphicsContext2D)
                     ticks = 0
                 }
                 ticks++
             }
 
-            private fun drawIt() {
-                val gc = canvas.graphicsContext2D
-
-                gc.fill = Color.AQUA
-                gc.fillRect(0.0, 0.0, canvas.width, canvas.height)
-
-                gc.fill = Color.BLACK
-
-                gc.fillText("Time: ${System.currentTimeMillis()}", 10.0, 10.0)
-
-                gc.fill = Color.CORNSILK
-                gc.fillRect(offset*2, 0.0, 10.toDouble(), 10.toDouble())
-                gc.fill = Color.FORESTGREEN
-                gc.fillOval(
-                        10.0 + offset,
-                        10.0,
-                        10.0, 10.0
-                )
-
-                offset += 1
-
-                if (offset > 100) {
-                    offset = 0.0
-                }
-            }
         }
 
         timer.start()
@@ -72,6 +84,10 @@ class GameFrame(map: CityMap) : View(), CanvasFitter {
 class GameFrameApp : App(GameFrame::class, KotcityStyles::class) {
     override fun start(stage: Stage) {
         stage.isResizable = true
+        val gameFrame = find(GameFrame::class)
+        val mapGenerator = MapGenerator()
+        val map = mapGenerator.generateMap(512, 512)
+        gameFrame.setMap(map)
         super.start(stage)
     }
 }

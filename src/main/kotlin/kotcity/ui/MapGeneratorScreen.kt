@@ -7,9 +7,9 @@ import javafx.scene.control.TextField
 import javafx.scene.layout.BorderPane
 import javafx.scene.paint.Color
 import kotcity.data.MapGenerator
-import kotcity.datae.CityMap
-import kotcity.datae.GroundTile
-import kotcity.datae.MapCoordinate
+import kotcity.data.CityMap
+import kotcity.data.GroundTile
+import kotcity.data.MapCoordinate
 import tornadofx.View
 
 
@@ -44,18 +44,7 @@ class MapGeneratorScreen : View(), CanvasFitter {
                     // get the graphics context...
                     val gc = canvas.graphicsContext2D
 
-                    val hValue = canvasPane.hvalue
-                    val vValue = canvasPane.vvalue
-                    val width = canvasPane.viewportBoundsProperty().get().width
-                    val height = canvasPane.viewportBoundsProperty().get().height
-
-                    val startX = (canvasPane.content.boundsInParent.width - width) * hValue
-                    val startY = (canvasPane.content.boundsInParent.height - height) * vValue
-                    val endX = startX + width
-                    val endY = startY + height
-
-                    val xRange = startX.toInt() .. endX.toInt()
-                    val yRange = startY.toInt() .. endY.toInt()
+                    val (xRange, yRange) = canvasPane.visibleArea()
 
                     for (x in xRange) {
                         for (y in yRange) {
@@ -100,6 +89,24 @@ class MapGeneratorScreen : View(), CanvasFitter {
 
     fun acceptPressed() {
         this.close()
-        GameFrame(newMap).openWindow()
+        val gameFrame = tornadofx.find(GameFrame::class)
+        gameFrame.setMap(CityMap(512, 512))
+        gameFrame.openWindow()
     }
+}
+
+fun ScrollPane.visibleArea(): Pair<IntRange, IntRange> {
+    val hValue = this.hvalue
+    val vValue = this.vvalue
+    val width = this.viewportBoundsProperty().get().width
+    val height = this.viewportBoundsProperty().get().height
+
+    val startX = (this.content.boundsInParent.width - width) * hValue
+    val startY = (this.content.boundsInParent.height - height) * vValue
+    val endX = startX + width
+    val endY = startY + height
+
+    val xRange = startX.toInt()..endX.toInt()
+    val yRange = startY.toInt()..endY.toInt()
+    return Pair(xRange, yRange)
 }

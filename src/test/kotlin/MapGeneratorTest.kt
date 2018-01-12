@@ -5,6 +5,6 @@ class MapGeneratorTest {
     @Test
     fun testMapGen() {
         val mapGenerator = MapGenerator()
-        assert(mapGenerator.generateMap() != null)
+        assert(mapGenerator.generateMap(512, 512) != null)
     }
 }

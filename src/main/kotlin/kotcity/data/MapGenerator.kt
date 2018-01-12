@@ -9,7 +9,7 @@ class MapGenerator {
     val rng = Random()
     var seaLevel = 0.0
 
-    fun generateMap(width: Int, height: Int, f1: Double = 1.0, f2: Double = 2.0, f3: Double = 4.0, exp: Double = 0.5): CityMap {
+    fun generateMap(width: Int, height: Int, f1: Double = 2.0, f2: Double = 10.0, f3: Double = 20.0, exp: Double = 1.0): CityMap {
         val map = CityMap(width, height)
         // ok now we want to get some noise and populate that shit...
         val seed = rng.nextLong()

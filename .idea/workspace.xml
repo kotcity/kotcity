@@ -5,12 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85fb7a0b-be25-4435-97f1-b759e57f2f31" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/kotcity/data/Map.kt" afterPath="$PROJECT_DIR$/src/main/kotlin/kotcity/data/Map.kt" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/kotcity/data/MapGenerator.kt" afterPath="$PROJECT_DIR$/src/main/kotlin/kotcity/data/MapGenerator.kt" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/CanvasFitter.kt" afterPath="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/CanvasFitter.kt" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/GameFrame.kt" afterPath="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/GameFrame.kt" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt" afterPath="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/MapGeneratorScreen.fxml" afterPath="$PROJECT_DIR$/src/main/resources/MapGeneratorScreen.fxml" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/GameFrame.fxml" afterPath="$PROJECT_DIR$/src/main/resources/GameFrame.fxml" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/MapGeneratorTest.kt" afterPath="$PROJECT_DIR$/src/test/kotlin/MapGeneratorTest.kt" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
@@ -29,11 +28,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="825">
-      <file leaf-file-name="MapGenerator.kt" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MapGenerator.kt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/data/MapGenerator.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="78">
-              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+            <state relative-caret-position="286">
+              <caret line="11" column="118" lean-forward="false" selection-start-line="11" selection-start-column="118" selection-end-line="11" selection-end-column="118" />
               <folding>
                 <element signature="e#22#104#0" expanded="true" />
               </folding>
@@ -41,13 +40,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GameFrame.kt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GameFrame.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/GameFrame.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="781">
-              <caret line="66" column="21" lean-forward="true" selection-start-line="66" selection-start-column="21" selection-end-line="66" selection-end-column="21" />
+            <state relative-caret-position="475">
+              <caret line="88" column="34" lean-forward="false" selection-start-line="88" selection-start-column="34" selection-end-line="88" selection-end-column="34" />
               <folding>
-                <element signature="e#20#368#0" expanded="true" />
+                <element signature="e#20#465#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -78,10 +77,10 @@
       <file leaf-file-name="MapGeneratorScreen.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="586">
-              <caret line="102" column="24" lean-forward="false" selection-start-line="102" selection-start-column="24" selection-end-line="102" selection-end-column="24" />
+            <state relative-caret-position="79">
+              <caret line="97" column="0" lean-forward="false" selection-start-line="97" selection-start-column="0" selection-end-line="97" selection-end-column="0" />
               <folding>
-                <element signature="e#20#391#0" expanded="true" />
+                <element signature="e#20#388#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -101,7 +100,7 @@
         <entry file="file://$PROJECT_DIR$/src/test/kotlin/MapGeneratorTest.kt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="273">
-              <caret line="7" column="15" lean-forward="true" selection-start-line="7" selection-start-column="15" selection-end-line="7" selection-end-column="15" />
+              <caret line="7" column="48" lean-forward="false" selection-start-line="7" selection-start-column="48" selection-end-line="7" selection-end-column="48" />
               <folding>
                 <element signature="e#0#66#0" expanded="true" />
               </folding>
@@ -112,7 +111,7 @@
       <file leaf-file-name="ResizableCanvas.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/ResizableCanvas.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="351">
+            <state relative-caret-position="-545">
               <caret line="21" column="46" lean-forward="false" selection-start-line="21" selection-start-column="46" selection-end-line="21" selection-end-column="46" />
               <folding />
             </state>
@@ -122,8 +121,8 @@
       <file leaf-file-name="LaunchScreen.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/LaunchScreen.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-272">
-              <caret line="19" column="41" lean-forward="false" selection-start-line="19" selection-start-column="41" selection-end-line="19" selection-end-column="41" />
+            <state relative-caret-position="1131">
+              <caret line="29" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
               <folding>
                 <element signature="e#20#158#0" expanded="true" />
               </folding>
@@ -591,14 +590,14 @@
         <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/kotlin/MapGenerator.kt" />
         <option value="$PROJECT_DIR$/test/main/kotlin/MapGeneratorTest.kt" />
-        <option value="$PROJECT_DIR$/src/test/kotlin/MapGeneratorTest.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGenerationScreen.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/LaunchScreen.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/CanvasFitter.kt" />
-        <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/data/Map.kt" />
-        <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/data/MapGenerator.kt" />
+        <option value="$PROJECT_DIR$/src/test/kotlin/MapGeneratorTest.kt" />
+        <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/GameFrame.kt" />
+        <option value="$PROJECT_DIR$/src/main/kotlin/kotcity/data/MapGenerator.kt" />
       </list>
     </option>
   </component>
@@ -754,7 +753,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Kotlin.kotcity.ui.LaunchScreenKt">
+  <component name="RunManager" selected="Kotlin.kotcity.ui.GameFrameKt">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="WIDTH" value="400" />
       <option name="HEIGHT" value="300" />
@@ -907,8 +906,8 @@
     </list>
     <recent_temporary>
       <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Kotlin.kotcity.ui.LaunchScreenKt" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.MapGeneratorTest.testMapGen" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.MapGeneratorTest.testMapGen" />
+        <item index="1" class="java.lang.String" itemvalue="Kotlin.kotcity.ui.LaunchScreenKt" />
         <item index="2" class="java.lang.String" itemvalue="JUnit.MapGeneratorTest" />
       </list>
     </recent_temporary>
@@ -946,6 +945,9 @@
       <configuration name="MapGeneratorTest.testMapGen" configurationId="JUnit" />
     </history-entry>
     <history-entry file="MapGeneratorTest_testMapGen - 2018.01.12 at 11h 13m 03s.xml">
+      <configuration name="MapGeneratorTest.testMapGen" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="MapGeneratorTest_testMapGen - 2018.01.12 at 16h 47m 44s.xml">
       <configuration name="MapGeneratorTest.testMapGen" configurationId="JUnit" />
     </history-entry>
   </component>
@@ -989,7 +991,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="2" />
+      <option name="time" value="5" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -998,9 +1000,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="858">
           <caret line="22" column="28" lean-forward="false" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
-          <folding>
-            <element signature="e#20#368#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1070,9 +1070,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2613">
           <caret line="67" column="27" lean-forward="false" selection-start-line="67" selection-start-column="27" selection-end-line="67" selection-end-column="27" />
-          <folding>
-            <element signature="e#20#368#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1116,9 +1114,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2613">
           <caret line="67" column="27" lean-forward="false" selection-start-line="67" selection-start-column="27" selection-end-line="67" selection-end-column="27" />
-          <folding>
-            <element signature="e#20#368#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1158,9 +1154,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2028">
           <caret line="52" column="37" lean-forward="false" selection-start-line="52" selection-start-column="37" selection-end-line="52" selection-end-column="37" />
-          <folding>
-            <element signature="e#20#368#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1223,26 +1217,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/LaunchScreen.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-272">
-          <caret line="19" column="41" lean-forward="false" selection-start-line="19" selection-start-column="41" selection-end-line="19" selection-end-column="41" />
-          <folding>
-            <element signature="e#20#158#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/kotlin/MapGeneratorTest.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="7" column="15" lean-forward="true" selection-start-line="7" selection-start-column="15" selection-end-line="7" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#66#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/noise/OpenSimplexNoise.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
@@ -1269,24 +1243,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/ResizableCanvas.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="351">
-          <caret line="21" column="46" lean-forward="false" selection-start-line="21" selection-start-column="46" selection-end-line="21" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="586">
-          <caret line="102" column="24" lean-forward="false" selection-start-line="102" selection-start-column="24" selection-end-line="102" selection-end-column="24" />
-          <folding>
-            <element signature="e#20#391#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/data/Map.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1295,22 +1251,60 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/data/MapGenerator.kt">
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/LaunchScreen.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="78">
-          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+        <state relative-caret-position="1131">
+          <caret line="29" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
           <folding>
-            <element signature="e#22#104#0" expanded="true" />
+            <element signature="e#20#158#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/ResizableCanvas.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-545">
+          <caret line="21" column="46" lean-forward="false" selection-start-line="21" selection-start-column="46" selection-end-line="21" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="79">
+          <caret line="97" column="0" lean-forward="false" selection-start-line="97" selection-start-column="0" selection-end-line="97" selection-end-column="0" />
+          <folding>
+            <element signature="e#20#388#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/kotlin/MapGeneratorTest.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="7" column="48" lean-forward="false" selection-start-line="7" selection-start-column="48" selection-end-line="7" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#66#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/GameFrame.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="781">
-          <caret line="66" column="21" lean-forward="true" selection-start-line="66" selection-start-column="21" selection-end-line="66" selection-end-column="21" />
+        <state relative-caret-position="475">
+          <caret line="88" column="34" lean-forward="false" selection-start-line="88" selection-start-column="34" selection-end-line="88" selection-end-column="34" />
           <folding>
-            <element signature="e#20#368#0" expanded="true" />
+            <element signature="e#20#465#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/data/MapGenerator.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="11" column="118" lean-forward="false" selection-start-line="11" selection-start-column="118" selection-end-line="11" selection-end-column="118" />
+          <folding>
+            <element signature="e#22#104#0" expanded="true" />
           </folding>
         </state>
       </provider>
