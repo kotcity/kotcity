@@ -1,3 +1,5 @@
+package kotcity.ui
+
 import javafx.animation.AnimationTimer
 import javafx.application.Application
 import javafx.scene.control.SplitPane

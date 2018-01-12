@@ -1,3 +1,5 @@
+package kotcity.ui
+
 import javafx.scene.canvas.Canvas
 
 internal class ResizableCanvas : Canvas() {

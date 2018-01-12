@@ -1,5 +1,5 @@
 /*
- * A speed-improved simplex noise algorithm for 2D, 3D and 4D in Java.
+ * A speed-improved simplex kotcity.noise algorithm for 2D, 3D and 4D in Java.
  *
  * Based on example code by Stefan Gustavson (stegu@itn.liu.se).
  * Optimisations by Peter Eastman (peastman@drizzle.stanford.edu).
@@ -15,9 +15,9 @@
  *
  */
 
-package noise
+package kotcity.noise
 
-object SimplexNoise {  // Simplex noise in 2D, 3D and 4D
+object SimplexNoise {  // Simplex kotcity.noise in 2D, 3D and 4D
     private val grad3 = arrayOf(Grad(1.0, 1.0, 0.0), Grad(-1.0, 1.0, 0.0), Grad(1.0, -1.0, 0.0), Grad(-1.0, -1.0, 0.0), Grad(1.0, 0.0, 1.0), Grad(-1.0, 0.0, 1.0), Grad(1.0, 0.0, -1.0), Grad(-1.0, 0.0, -1.0), Grad(0.0, 1.0, 1.0), Grad(0.0, -1.0, 1.0), Grad(0.0, 1.0, -1.0), Grad(0.0, -1.0, -1.0))
 
     private val grad4 = arrayOf(Grad(0.0, 1.0, 1.0, 1.0), Grad(0.0, 1.0, 1.0, -1.0), Grad(0.0, 1.0, -1.0, 1.0), Grad(0.0, 1.0, -1.0, -1.0), Grad(0.0, -1.0, 1.0, 1.0), Grad(0.0, -1.0, 1.0, -1.0), Grad(0.0, -1.0, -1.0, 1.0), Grad(0.0, -1.0, -1.0, -1.0), Grad(1.0, 0.0, 1.0, 1.0), Grad(1.0, 0.0, 1.0, -1.0), Grad(1.0, 0.0, -1.0, 1.0), Grad(1.0, 0.0, -1.0, -1.0), Grad(-1.0, 0.0, 1.0, 1.0), Grad(-1.0, 0.0, 1.0, -1.0), Grad(-1.0, 0.0, -1.0, 1.0), Grad(-1.0, 0.0, -1.0, -1.0), Grad(1.0, 1.0, 0.0, 1.0), Grad(1.0, 1.0, 0.0, -1.0), Grad(1.0, -1.0, 0.0, 1.0), Grad(1.0, -1.0, 0.0, -1.0), Grad(-1.0, 1.0, 0.0, 1.0), Grad(-1.0, 1.0, 0.0, -1.0), Grad(-1.0, -1.0, 0.0, 1.0), Grad(-1.0, -1.0, 0.0, -1.0), Grad(1.0, 1.0, 1.0, 0.0), Grad(1.0, 1.0, -1.0, 0.0), Grad(1.0, -1.0, 1.0, 0.0), Grad(1.0, -1.0, -1.0, 0.0), Grad(-1.0, 1.0, 1.0, 0.0), Grad(-1.0, 1.0, -1.0, 0.0), Grad(-1.0, -1.0, 1.0, 0.0), Grad(-1.0, -1.0, -1.0, 0.0))
@@ -61,7 +61,7 @@ object SimplexNoise {  // Simplex noise in 2D, 3D and 4D
     }
 
 
-    // 2D simplex noise
+    // 2D simplex kotcity.noise
     fun noise(xin: Double, yin: Double): Double {
         val n0: Double
         val n1: Double
@@ -122,13 +122,13 @@ object SimplexNoise {  // Simplex noise in 2D, 3D and 4D
             t2 *= t2
             n2 = t2 * t2 * dot(grad3[gi2], x2, y2)
         }
-        // Add contributions from each corner to get the final noise value.
+        // Add contributions from each corner to get the final kotcity.noise value.
         // The result is scaled to return values in the interval [-1,1].
         return 70.0 * (n0 + n1 + n2)
     }
 
 
-    // 3D simplex noise
+    // 3D simplex kotcity.noise
     fun noise(xin: Double, yin: Double, zin: Double): Double {
         val n0: Double
         val n1: Double
@@ -259,13 +259,13 @@ object SimplexNoise {  // Simplex noise in 2D, 3D and 4D
             t3 *= t3
             n3 = t3 * t3 * dot(grad3[gi3], x3, y3, z3)
         }
-        // Add contributions from each corner to get the final noise value.
+        // Add contributions from each corner to get the final kotcity.noise value.
         // The result is scaled to stay just inside [-1,1]
         return 32.0 * (n0 + n1 + n2 + n3)
     }
 
 
-    // 4D simplex noise, better simplex rank ordering method 2012-03-09
+    // 4D simplex kotcity.noise, better simplex rank ordering method 2012-03-09
     fun noise(x: Double, y: Double, z: Double, w: Double): Double {
 
         val n0: Double

@@ -1,3 +1,5 @@
+package kotcity.ui
+
 import javafx.application.Application
 import javafx.scene.layout.VBox
 import javafx.stage.Stage

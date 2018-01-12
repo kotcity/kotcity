@@ -1,8 +1,10 @@
+import kotcity.data.MapGenerator
 import org.junit.jupiter.api.Test
 
 class MapGeneratorTest {
     @Test
     fun testMapGen() {
-        assert(MapGenerator().generateMap() == 1)
+        val mapGenerator = MapGenerator()
+        assert(mapGenerator.generateMap() != null)
     }
 }
