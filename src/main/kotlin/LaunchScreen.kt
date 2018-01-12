@@ -24,7 +24,7 @@ class LaunchScreen : View() {
     }
 
     fun quitPressed() {
-        throw NotImplementedError()
+        System.exit(0)
     }
 
 }

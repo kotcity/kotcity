@@ -5,7 +5,6 @@ import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import tornadofx.App
-import tornadofx.Stylesheet
 import tornadofx.View
 
 
