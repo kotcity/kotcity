@@ -48,13 +48,13 @@
         </rowConstraints>
          <children>
             <Label text="F1" />
-            <TextField fx:id="f1Field" text="1.0" GridPane.columnIndex="1">
+            <TextField fx:id="f1Field" text="2.0" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>
             </TextField>
             <Label text="F2" GridPane.rowIndex="1" />
-            <TextField fx:id="f2Field" text="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <TextField fx:id="f2Field" text="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>
@@ -71,7 +71,7 @@
                   <Insets right="10.0" />
                </GridPane.margin>
             </TextField>
-            <Slider fx:id="seaLevelSlider" majorTickUnit="0.25" max="1.0" min="-1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Slider fx:id="seaLevelSlider" majorTickUnit="0.5" max="1.0" min="-1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Label text="Sealevel" GridPane.rowIndex="4" />
          </children>
       </GridPane>

@@ -5,8 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85fb7a0b-be25-4435-97f1-b759e57f2f31" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/kotcity/data/MapGenerator.kt" afterPath="$PROJECT_DIR$/src/main/kotlin/kotcity/data/MapGenerator.kt" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt" afterPath="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/MapGeneratorScreen.fxml" afterPath="$PROJECT_DIR$/src/main/resources/MapGeneratorScreen.fxml" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
