@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="605.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label alignment="TOP_CENTER" text="KotCity 0.1">
+         <font>
+            <Font size="41.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+      </Label>
+      <Button fx:id="newCityButton" mnemonicParsing="false" onAction="#newCityPressed" text="New City">
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </Button>
+      <Button fx:id="loadCityButton" mnemonicParsing="false" onAction="#loadCityPressed" text="Load City">
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </Button>
+      <Button fx:id="quitButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#quitPressed" text="Quit">
+         <VBox.margin>
+            <Insets top="40.0" />
+         </VBox.margin>
+      </Button>
+   </children>
+</VBox>
