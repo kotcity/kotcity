@@ -1,10 +1,13 @@
 package kotcity.ui
 
 import javafx.animation.AnimationTimer
+import javafx.scene.control.Slider
+import javafx.scene.control.TextField
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import kotcity.data.MapGenerator
+import kotcity.datae.CityMap
 import kotcity.datae.GroundTile
 import kotcity.datae.MapCoordinate
 import tornadofx.View
@@ -16,8 +19,18 @@ class MapGeneratorScreen : View(), CanvasFitter {
     private val mapGenerator = MapGenerator()
     private var newMap = mapGenerator.generateMap()
 
+    private val f1Field: TextField by fxid()
+    private val f2Field: TextField by fxid()
+    private val f3Field: TextField by fxid()
+    private val expField: TextField by fxid()
+    private val seaLevelSlider: Slider by fxid()
+
     init {
         fitCanvasToPane(canvas, canvasPane)
+
+        title = "Generate a Map"
+
+        newMap = generate()
 
         val timer = object : AnimationTimer() {
             override fun handle(now: Long) {
@@ -43,8 +56,18 @@ class MapGeneratorScreen : View(), CanvasFitter {
         timer.start()
     }
 
+    private fun generate(): CityMap {
+        val f1 = f1Field.text.toDouble()
+        val f2 = f2Field.text.toDouble()
+        val f3 = f3Field.text.toDouble()
+        val exp = expField.text.toDouble()
+        println("Generating with $f1, $f2, $f3, $exp")
+        mapGenerator.seaLevel = seaLevelSlider.value.toDouble()
+        return mapGenerator.generateMap(f1, f2, f3, exp)
+    }
+
     fun generatePressed() {
-        this.newMap = mapGenerator.generateMap()
+        newMap = generate()
     }
 
     fun acceptPressed() {
