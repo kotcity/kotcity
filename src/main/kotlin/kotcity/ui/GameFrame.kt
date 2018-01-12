@@ -61,8 +61,8 @@ class GameFrame : View(), CanvasFitter {
                 (yRange.last.toDouble() / zoom).toInt()
         )
 
-        for (x in xRange) {
-            for (y in yRange) {
+        for (x in zoomedX) {
+            for (y in zoomedY) {
                 val tile = getMap().groundLayer[MapCoordinate(x, y)]
                 if (tile == GroundTile.GROUND) {
                     gc.fill = Color.LIGHTGOLDENRODYELLOW
