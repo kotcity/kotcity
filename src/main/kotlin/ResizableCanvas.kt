@@ -1,11 +1,9 @@
 import javafx.scene.canvas.Canvas
-import javafx.scene.paint.Color
 
 internal class ResizableCanvas : Canvas() {
 
-    var gc = graphicsContext2D
-    var canvasWidth = 0
-    var canvasHeight = 0
+    private var canvasWidth = 0
+    private var canvasHeight = 0
 
     /**
      * Constructor
@@ -16,10 +14,10 @@ internal class ResizableCanvas : Canvas() {
         // height) then it must be into the below listeners
 
         // Redraw canvas when size changes.
-        widthProperty().addListener { observable, oldValue, newValue ->
+        widthProperty().addListener { _, _, _ ->
             canvasWidth = widthProperty().get().toInt()
         }
-        heightProperty().addListener { observable, oldValue, newValue ->
+        heightProperty().addListener { _, _, _ ->
             canvasHeight = heightProperty().get().toInt()
         }
 
