@@ -4,8 +4,10 @@ import javafx.animation.AnimationTimer
 import javafx.application.Application
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.control.Accordion
+import javafx.scene.control.ScrollBar
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.TitledPane
+import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.stage.Stage
@@ -21,9 +23,14 @@ import tornadofx.find
 class GameFrame : View(), CanvasFitter {
     override val root: VBox by fxml("/GameFrame.fxml")
     private val canvas = ResizableCanvas()
-    private val canvasPane: ScrollPane by fxid("canvasPane")
+    private val canvasPane: AnchorPane by fxid("canvasPane")
     private val accordion: Accordion by fxid()
     private val basicPane: TitledPane by fxid()
+    private val verticalScroll: ScrollBar by fxid()
+    private val horizontalScroll: ScrollBar by fxid()
+
+    var offsetX = 0.0
+    var offsetY = 0.0
 
     var ticks = 0
     var zoom = 1.0
@@ -49,7 +56,7 @@ class GameFrame : View(), CanvasFitter {
 
     fun drawMap(gc: GraphicsContext) {
         // we got that map...
-        val (xRange, yRange) = canvasPane.visibleArea()
+        val (xRange, yRange) = visibleArea()
 
         val zoomedX = IntRange(
                 (xRange.first.toDouble() / zoom).toInt(),
@@ -74,6 +81,28 @@ class GameFrame : View(), CanvasFitter {
         }
     }
 
+    private fun visibleArea(): Pair<IntRange, IntRange> {
+        // OK... what the FUUUUCK
+
+        // scrollpane does this...
+        // i am too drunk to code this now...
+        // val hValue = this.hvalue
+        // val vValue = this.vvalue
+        // val width = this.viewportBoundsProperty().get().width
+        // val height = this.viewportBoundsProperty().get().height
+        //
+        // val startX = (this.content.boundsInParent.width - width) * hValue
+        // val startY = (this.content.boundsInParent.height - height) * vValue
+        // val endX = startX + width
+        // val endY = startY + height
+        //
+        // val xRange = startX.toInt()..endX.toInt()
+        // val yRange = startY.toInt()..endY.toInt()
+        // return Pair(xRange, yRange)
+
+        return Pair(0..100, 0..100)
+    }
+
     fun zoomOut() {
         if (zoom > 1) {
             zoom -= 1
@@ -90,8 +119,11 @@ class GameFrame : View(), CanvasFitter {
 
         title = "Kotcity 0.1"
 
-        // fitCanvasToPane(canvas, canvasPane)
-        canvasPane.content = canvas
+        // TODO: we are handling scrolling ourself... so we have to figure out what's
+        //       visible and what's not...
+        canvas.prefHeight(canvasPane.height - 20)
+        canvas.prefWidth(canvasPane.width - 20)
+        canvasPane.add(canvas)
 
         with(canvas) {
             this.setOnScroll {  scrollEvent ->
