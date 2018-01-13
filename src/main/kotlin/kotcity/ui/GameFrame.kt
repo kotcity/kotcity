@@ -5,9 +5,8 @@ import javafx.application.Application
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.control.Accordion
 import javafx.scene.control.ScrollPane
-import javafx.scene.control.SplitPane
 import javafx.scene.control.TitledPane
-import javafx.scene.layout.BorderPane
+import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import kotcity.data.CityMap
@@ -20,7 +19,7 @@ import tornadofx.find
 
 
 class GameFrame : View(), CanvasFitter {
-    override val root: BorderPane by fxml("/GameFrame.fxml")
+    override val root: VBox by fxml("/GameFrame.fxml")
     private val canvas = ResizableCanvas()
     private val canvasPane: ScrollPane by fxid("canvasPane")
     private val accordion: Accordion by fxid()
@@ -39,6 +38,7 @@ class GameFrame : View(), CanvasFitter {
     }
 
     fun resizeCanvas() {
+        // BUG: we cannot have a large canvas!!!
         canvas.width = _map.width.toDouble() * zoom
         canvas.height = _map.height.toDouble() * zoom
     }

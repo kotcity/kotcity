@@ -12,20 +12,39 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
 
-<BorderPane xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
-   <center>
-      <SplitPane dividerPositions="0.21128318584070796" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="906.0">
-        <items>
-          <AnchorPane maxWidth="200.0">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <MenuBar>
+         <menus>
+            <Menu mnemonicParsing="false" text="File">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Close" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Delete" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="About" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+      <SplitPane dividerPositions="0.21128318584070796" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="600.0" minWidth="800.0" VBox.vgrow="ALWAYS">
+         <items>
+            <AnchorPane maxWidth="200.0">
                <children>
                   <Accordion fx:id="accordion" layoutY="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <panes>
-                      <TitledPane fx:id="basicPane" animated="false" text="Basic">
+                     <panes>
+                        <TitledPane fx:id="basicPane" animated="false" text="Basic">
                            <content>
                               <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
                                  <children>
@@ -42,14 +61,14 @@
                                  </children>
                               </FlowPane>
                            </content>
-                      </TitledPane>
-                      <TitledPane animated="false" text="Power">
+                        </TitledPane>
+                        <TitledPane animated="false" text="Power">
                            <content>
                               <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0" />
                            </content>
-                      </TitledPane>
-                      <TitledPane animated="false" text="Other" />
-                    </panes>
+                        </TitledPane>
+                        <TitledPane animated="false" text="Other" />
+                     </panes>
                   </Accordion>
                </children>
             </AnchorPane>
@@ -59,28 +78,7 @@
                   <Label text="Currently Selected Tool" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                </children>
             </AnchorPane>
-        </items>
+         </items>
       </SplitPane>
-   </center>
-   <top>
-      <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </top>
-</BorderPane>
+   </children>
+</VBox>
