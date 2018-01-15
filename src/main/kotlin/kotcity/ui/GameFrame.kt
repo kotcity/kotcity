@@ -10,13 +10,16 @@ import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.stage.Stage
-import kotcity.data.CityMap
-import kotcity.data.GroundTile
-import kotcity.data.MapCoordinate
-import kotcity.data.MapGenerator
+import kotcity.data.*
 import tornadofx.App
 import tornadofx.View
 import tornadofx.find
+
+object Algorithms {
+    fun scale(valueIn: Double, baseMin: Double, baseMax: Double, limitMin: Double, limitMax: Double): Double {
+        return (limitMax - limitMin) * (valueIn - baseMin) / (baseMax - baseMin) + limitMin
+    }
+}
 
 
 class GameFrame : View(), CanvasFitter {
@@ -30,6 +33,8 @@ class GameFrame : View(), CanvasFitter {
 
     var blockOffsetX = 0.0
     var blockOffsetY = 0.0
+    var mapMin = 0.0
+    var mapMax = 1.0
 
     var ticks = 0
     var zoom = 1.0
@@ -55,6 +60,11 @@ class GameFrame : View(), CanvasFitter {
         // gotta resize the component now...
         setScrollbarSizes()
         setCanvasSize()
+        mapMin = getMap().groundLayer.values.mapNotNull {it.elevation}.min() ?: 0.0
+        mapMax = getMap().groundLayer.values.mapNotNull {it.elevation}.max() ?: 0.0
+
+        println("Map min: ${mapMin} Map max: ${mapMax}")
+
         println("Map has been set to: $_map. Size is ${canvas.width}x${canvas.height}")
     }
 
@@ -81,7 +91,7 @@ class GameFrame : View(), CanvasFitter {
 
         println("Horizontal set to: ${horizontalScroll.max}")
         println("Vertical set to: ${verticalScroll.max}")
-       
+
     }
 
     fun getMap(): CityMap {
@@ -109,27 +119,39 @@ class GameFrame : View(), CanvasFitter {
 
     private fun canvasBlockWidth() = (canvas.width / blockSize()).toInt()
 
+    fun bleach(color: Color, amount: Float): Color {
+        var red = (color.red + amount).coerceIn(0.0, 1.0)
+        var green = (color.green + amount).coerceIn(0.0, 1.0)
+        var blue = (color.blue + amount).coerceIn(0.0, 1.0)
+        return Color.color(red, green, blue)
+    }
+
 
     fun drawMap(gc: GraphicsContext) {
         // we got that map...
         val (xRange, yRange) = getVisibleBlocks()
-        println("Visible blocks: ${getVisibleBlocks()}")
 
         for (x in xRange) {
             for (y in yRange) {
                 val tile = getMap().groundLayer[MapCoordinate(x, y)]
-                if (tile == GroundTile.GROUND) {
-                    gc.fill = Color.LIGHTGOLDENRODYELLOW
-                } else {
-                    gc.fill = Color.LIGHTBLUE
+                if (tile != null) {
+                    var newColor =
+                    if (tile.type == TileType.GROUND) {
+                        Color.rgb(153,102, 0)
+                    } else {
+                        Color.DARKBLUE
+                    }
+                    val bleachAmount = Algorithms.scale(tile.elevation, mapMin, mapMax, -0.5, 0.5)
+                    gc.fill = bleach(newColor, bleachAmount.toFloat())
                 }
+
 
                 val xi = xRange.indexOf(x)
                 val yi = yRange.indexOf(y)
 
-                if (x == xRange.first && y == yRange.first) {
-//                    println("i want to paint block: ${x}, ${y}")
-//                    println("starting at ${xi}, ${yi}")
+
+                if (xi == 0 && yi == 0) {
+                    println("Fill color is: ${gc.fill}")
                 }
 
                 gc.fillRect(

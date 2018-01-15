@@ -42,9 +42,11 @@ class MapGenerator {
                 randomTile -= seaLevel
 
                 if (randomTile > 0) {
-                    map.groundLayer[MapCoordinate(y, x)] = GroundTile.GROUND
+                    val newTile = MapTile(TileType.GROUND, randomTile)
+                    map.groundLayer[MapCoordinate(y, x)] = newTile
                 } else {
-                    map.groundLayer[MapCoordinate(y, x)] = GroundTile.WATER
+                    val newTile = MapTile(TileType.WATER, randomTile)
+                    map.groundLayer[MapCoordinate(y, x)] = newTile
                 }
             }
         }

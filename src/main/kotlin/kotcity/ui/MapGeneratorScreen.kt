@@ -6,10 +6,7 @@ import javafx.scene.control.Slider
 import javafx.scene.control.TextField
 import javafx.scene.layout.BorderPane
 import javafx.scene.paint.Color
-import kotcity.data.MapGenerator
-import kotcity.data.CityMap
-import kotcity.data.GroundTile
-import kotcity.data.MapCoordinate
+import kotcity.data.*
 import tornadofx.View
 
 
@@ -49,7 +46,7 @@ class MapGeneratorScreen : View(), CanvasFitter {
                     for (x in xRange) {
                         for (y in yRange) {
                             val tile = newMap.groundLayer[MapCoordinate(x, y)]
-                            if (tile == GroundTile.GROUND) {
+                            if (tile?.type == TileType.GROUND) {
                                 gc.fill = Color.LIGHTGOLDENRODYELLOW
                                 gc.fillRect(x.toDouble(), y.toDouble(), 1.0, 1.0)
                             } else {
