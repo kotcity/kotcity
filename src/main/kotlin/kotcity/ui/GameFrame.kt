@@ -131,8 +131,8 @@ class GameFrame : View(), CanvasFitter {
         // we got that map...
         val (xRange, yRange) = getVisibleBlocks()
 
-        for (x in xRange) {
-            for (y in yRange) {
+        xRange.toList().forEachIndexed { xi, x ->
+            yRange.toList().forEachIndexed { yi, y ->
                 val tile = getMap().groundLayer[MapCoordinate(x, y)]
                 if (tile != null) {
                     var newColor =
@@ -143,15 +143,6 @@ class GameFrame : View(), CanvasFitter {
                     }
                     val bleachAmount = Algorithms.scale(tile.elevation, mapMin, mapMax, -0.5, 0.5)
                     gc.fill = bleach(newColor, bleachAmount.toFloat())
-                }
-
-
-                val xi = xRange.indexOf(x)
-                val yi = yRange.indexOf(y)
-
-
-                if (xi == 0 && yi == 0) {
-                    println("Fill color is: ${gc.fill}")
                 }
 
                 gc.fillRect(
