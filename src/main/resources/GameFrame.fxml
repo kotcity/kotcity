@@ -16,7 +16,6 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar>
@@ -72,9 +71,9 @@
                   </Accordion>
                </children>
             </AnchorPane>
-            <AnchorPane>
+            <AnchorPane minHeight="600.0" minWidth="600.0">
                <children>
-                  <AnchorPane fx:id="canvasPane" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="canvasPane" minHeight="580.0" minWidth="580.0" style="-fx-background-color: #cccccc;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <ScrollBar fx:id="horizontalScroll" layoutY="561.0" prefHeight="17.0" prefWidth="567.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="20.0" />
                         <ScrollBar fx:id="verticalScroll" layoutX="570.0" orientation="VERTICAL" prefHeight="559.0" prefWidth="17.0" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
