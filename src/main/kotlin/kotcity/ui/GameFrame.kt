@@ -99,8 +99,8 @@ class GameFrame : View(), CanvasFitter {
     }
 
     private fun getVisibleBlocks(): Pair<IntRange, IntRange> {
-        val startBlockX = blockOffsetX.toInt()
-        val startBlockY = blockOffsetY.toInt()
+        var startBlockX = blockOffsetX.toInt()
+        var startBlockY = blockOffsetY.toInt()
         var endBlockX = startBlockX+canvasBlockWidth()
         var endBlockY = startBlockY+canvasBlockHeight()
 
@@ -130,6 +130,8 @@ class GameFrame : View(), CanvasFitter {
         // we got that map...
         val (xRange, yRange) = getVisibleBlocks()
 
+        println("We need to paint from $xRange,$yRange")
+
         xRange.toList().forEachIndexed { xi, x ->
             yRange.toList().forEachIndexed { yi, y ->
                 val tile = getMap().groundLayer[BlockCoordinate(x, y)]
@@ -144,20 +146,22 @@ class GameFrame : View(), CanvasFitter {
                     // weird looking colors....
                     val bleachAmount = Algorithms.scale(tile.elevation, mapMin, mapMax, -0.5, 0.5)
                     gc.fill = bleach(newColor, bleachAmount.toFloat())
+
+                    val blockSize = blockSize()
+
+                    gc.fillRect(
+                            xi * blockSize,
+                            yi * blockSize,
+                            blockSize, blockSize
+                    )
+
+                    if (DRAW_GRID && zoom >= 3.0) {
+                        gc.fill = Color.BLACK
+                        gc.strokeRect(xi * blockSize, yi * blockSize, blockSize, blockSize)
+                    }
                 }
 
-                val blockSize = blockSize()
 
-                gc.fillRect(
-                        xi * blockSize,
-                        yi * blockSize,
-                        blockSize, blockSize
-                )
-
-                if (DRAW_GRID && zoom >= 3.0) {
-                    gc.fill = Color.BLACK
-                    gc.strokeRect(xi * blockSize, yi * blockSize, blockSize, blockSize)
-                }
             }
         }
     }
