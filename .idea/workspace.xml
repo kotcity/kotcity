@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85fb7a0b-be25-4435-97f1-b759e57f2f31" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules/kotcity4_main.iml" afterPath="$PROJECT_DIR$/.idea/modules/kotcity4_main.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules/kotcity4_test.iml" afterPath="$PROJECT_DIR$/.idea/modules/kotcity4_test.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/kotlin/kotcity/data/Map.kt" afterPath="$PROJECT_DIR$/src/main/kotlin/kotcity/data/Map.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/kotlin/kotcity/data/MapGenerator.kt" afterPath="$PROJECT_DIR$/src/main/kotlin/kotcity/data/MapGenerator.kt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/GameFrame.kt" afterPath="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/GameFrame.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt" afterPath="$PROJECT_DIR$/src/main/kotlin/kotcity/ui/MapGeneratorScreen.kt" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
@@ -52,10 +46,10 @@
       <file leaf-file-name="GameFrame.kt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/GameFrame.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1756">
-              <caret line="154" column="40" lean-forward="false" selection-start-line="154" selection-start-column="40" selection-end-line="154" selection-end-column="40" />
+            <state relative-caret-position="255">
+              <caret line="195" column="15" lean-forward="false" selection-start-line="195" selection-start-column="15" selection-end-line="195" selection-end-column="15" />
               <folding>
-                <element signature="e#20#469#0" expanded="true" />
+                <element signature="e#20#507#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1044,7 +1038,7 @@
         <state relative-caret-position="2730">
           <caret line="87" column="45" lean-forward="false" selection-start-line="87" selection-start-column="45" selection-end-line="87" selection-end-column="45" />
           <folding>
-            <element signature="e#20#469#0" expanded="true" />
+            <element signature="e#20#507#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1054,7 +1048,7 @@
         <state relative-caret-position="858">
           <caret line="22" column="28" lean-forward="false" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
           <folding>
-            <element signature="e#20#469#0" expanded="true" />
+            <element signature="e#20#507#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1115,7 +1109,7 @@
         <state relative-caret-position="2613">
           <caret line="67" column="27" lean-forward="false" selection-start-line="67" selection-start-column="27" selection-end-line="67" selection-end-column="27" />
           <folding>
-            <element signature="e#20#469#0" expanded="true" />
+            <element signature="e#20#507#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1150,7 +1144,7 @@
         <state relative-caret-position="2613">
           <caret line="67" column="27" lean-forward="false" selection-start-line="67" selection-start-column="27" selection-end-line="67" selection-end-column="27" />
           <folding>
-            <element signature="e#20#469#0" expanded="true" />
+            <element signature="e#20#507#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1185,7 +1179,7 @@
         <state relative-caret-position="2028">
           <caret line="52" column="37" lean-forward="false" selection-start-line="52" selection-start-column="37" selection-end-line="52" selection-end-column="37" />
           <folding>
-            <element signature="e#20#469#0" expanded="true" />
+            <element signature="e#20#507#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1322,10 +1316,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/kotlin/kotcity/ui/GameFrame.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1756">
-          <caret line="154" column="40" lean-forward="false" selection-start-line="154" selection-start-column="40" selection-end-line="154" selection-end-column="40" />
+        <state relative-caret-position="255">
+          <caret line="195" column="15" lean-forward="false" selection-start-line="195" selection-start-column="15" selection-end-line="195" selection-end-column="15" />
           <folding>
-            <element signature="e#20#469#0" expanded="true" />
+            <element signature="e#20#507#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext
 import javafx.scene.control.Accordion
 import javafx.scene.control.ScrollBar
 import javafx.scene.control.TitledPane
+import javafx.scene.input.MouseButton
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
@@ -21,6 +22,7 @@ object Algorithms {
     }
 }
 
+const val DRAW_GRID = true
 
 class GameFrame : View(), CanvasFitter {
     override val root: VBox by fxml("/GameFrame.fxml")
@@ -35,8 +37,6 @@ class GameFrame : View(), CanvasFitter {
     var blockOffsetY = 0.0
     var mapMin = 0.0
     var mapMax = 1.0
-
-    val DRAW_GRID = true
 
     var ticks = 0
     var zoom = 1.0
@@ -65,8 +65,7 @@ class GameFrame : View(), CanvasFitter {
         mapMin = getMap().groundLayer.values.mapNotNull {it.elevation}.min() ?: 0.0
         mapMax = getMap().groundLayer.values.mapNotNull {it.elevation}.max() ?: 0.0
 
-        println("Map min: ${mapMin} Map max: ${mapMax}")
-
+        println("Map min: $mapMin Map max: $mapMax")
         println("Map has been set to: $_map. Size is ${canvas.width}x${canvas.height}")
     }
 
@@ -127,7 +126,6 @@ class GameFrame : View(), CanvasFitter {
         return Color.color(red, green, blue)
     }
 
-
     fun drawMap(gc: GraphicsContext) {
         // we got that map...
         val (xRange, yRange) = getVisibleBlocks()
@@ -142,19 +140,23 @@ class GameFrame : View(), CanvasFitter {
                     } else {
                         Color.DARKBLUE
                     }
+                    // this next line maps the elevations from -0.5 to 0.5 so we don't get
+                    // weird looking colors....
                     val bleachAmount = Algorithms.scale(tile.elevation, mapMin, mapMax, -0.5, 0.5)
                     gc.fill = bleach(newColor, bleachAmount.toFloat())
                 }
 
+                val blockSize = blockSize()
+
                 gc.fillRect(
-                        xi * blockSize(),
-                        yi * blockSize(),
-                        blockSize(), blockSize()
+                        xi * blockSize,
+                        yi * blockSize,
+                        blockSize, blockSize
                 )
 
                 if (DRAW_GRID && zoom >= 3.0) {
                     gc.fill = Color.BLACK
-                    gc.strokeRect(xi * blockSize(), yi * blockSize(), blockSize(), blockSize())
+                    gc.strokeRect(xi * blockSize, yi * blockSize, blockSize, blockSize)
                 }
             }
         }
@@ -191,7 +193,14 @@ class GameFrame : View(), CanvasFitter {
             val mouseX = evt.x
             val mouseY = evt.y
             val blockCoordinate = mouseToBlock(mouseX, mouseY)
-            println("The mouse is at $blockCoordinate")
+            // println("The mouse is at $blockCoordinate")
+        }
+
+        canvas.setOnMouseClicked { evt ->
+            if (evt.button == MouseButton.SECONDARY) {
+                val clickedBlock = mouseToBlock(evt.x, evt.y)
+                panMap(clickedBlock)
+            }
         }
 
         canvasPane.heightProperty().addListener { _, _, newValue ->
@@ -238,11 +247,26 @@ class GameFrame : View(), CanvasFitter {
         timer.start()
     }
 
+    private fun panMap(clickedBlock: BlockCoordinate) {
+        // OK, we want to figure out the CENTER block now...
+        val centerX = blockOffsetX + (canvasBlockWidth() / 2)
+        val centerY = blockOffsetY + (canvasBlockHeight() / 2)
+        println("The center block is: $centerX,$centerY")
+        println("We clicked at: ${clickedBlock.x},${clickedBlock.y}")
+        val dx = clickedBlock.x - centerX
+        val dy = clickedBlock.y - centerY
+        println("Delta is: $dx,$dy")
+        blockOffsetX += (dx)
+        blockOffsetY += (dy)
+    }
+
     private fun mouseToBlock(mouseX: Double, mouseY: Double): BlockCoordinate {
         // OK... this should be pretty easy...
-        val blockX = (mouseX / blockSize()).toInt() - blockOffsetX.toInt()
-        val blockY = (mouseY / blockSize()).toInt() - blockOffsetY.toInt()
-        return BlockCoordinate(blockX, blockY)
+        // println("Block offsets: ${blockOffsetX.toInt()},${blockOffsetY.toInt()}")
+        val blockX =  (mouseX / blockSize()).toInt()
+        val blockY =  (mouseY / blockSize()).toInt()
+        // println("Mouse block coords: $blockX,$blockY")
+        return BlockCoordinate(blockX + blockOffsetX.toInt(), blockY + blockOffsetY.toInt())
     }
 
 }
