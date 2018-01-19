@@ -43,10 +43,10 @@ class MapGenerator {
 
                 if (randomTile > 0) {
                     val newTile = MapTile(TileType.GROUND, randomTile)
-                    map.groundLayer[MapCoordinate(y, x)] = newTile
+                    map.groundLayer[BlockCoordinate(y, x)] = newTile
                 } else {
                     val newTile = MapTile(TileType.WATER, randomTile)
-                    map.groundLayer[MapCoordinate(y, x)] = newTile
+                    map.groundLayer[BlockCoordinate(y, x)] = newTile
                 }
             }
         }

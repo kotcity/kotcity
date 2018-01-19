@@ -36,12 +36,14 @@ class GameFrame : View(), CanvasFitter {
     var mapMin = 0.0
     var mapMax = 1.0
 
+    val DRAW_GRID = true
+
     var ticks = 0
     var zoom = 1.0
 
     // each block should = 10 meters, square...
     // 64 pixels = 10 meters
-    fun blockSize(): Double {
+    private fun blockSize(): Double {
         // return (this.zoom * 64)
         return when (zoom) {
             1.0 -> 4.0
@@ -82,7 +84,6 @@ class GameFrame : View(), CanvasFitter {
     private fun setScrollbarSizes() {
 
         // TODO: don't let us scroll off the edge...
-
         horizontalScroll.min = 0.0
         horizontalScroll.max = getMap().width.toDouble()
 
@@ -94,7 +95,7 @@ class GameFrame : View(), CanvasFitter {
 
     }
 
-    fun getMap(): CityMap {
+    private fun getMap(): CityMap {
         return this._map
     }
 
@@ -119,7 +120,7 @@ class GameFrame : View(), CanvasFitter {
 
     private fun canvasBlockWidth() = (canvas.width / blockSize()).toInt()
 
-    fun bleach(color: Color, amount: Float): Color {
+    private fun bleach(color: Color, amount: Float): Color {
         var red = (color.red + amount).coerceIn(0.0, 1.0)
         var green = (color.green + amount).coerceIn(0.0, 1.0)
         var blue = (color.blue + amount).coerceIn(0.0, 1.0)
@@ -133,7 +134,7 @@ class GameFrame : View(), CanvasFitter {
 
         xRange.toList().forEachIndexed { xi, x ->
             yRange.toList().forEachIndexed { yi, y ->
-                val tile = getMap().groundLayer[MapCoordinate(x, y)]
+                val tile = getMap().groundLayer[BlockCoordinate(x, y)]
                 if (tile != null) {
                     var newColor =
                     if (tile.type == TileType.GROUND) {
@@ -150,6 +151,11 @@ class GameFrame : View(), CanvasFitter {
                         yi * blockSize(),
                         blockSize(), blockSize()
                 )
+
+                if (DRAW_GRID && zoom >= 3.0) {
+                    gc.fill = Color.BLACK
+                    gc.strokeRect(xi * blockSize(), yi * blockSize(), blockSize(), blockSize())
+                }
             }
         }
     }
@@ -179,6 +185,13 @@ class GameFrame : View(), CanvasFitter {
             canvas.width = newValue.toDouble()
             setCanvasSize()
             setScrollbarSizes()
+        }
+
+        canvas.setOnMouseMoved { evt ->
+            val mouseX = evt.x
+            val mouseY = evt.y
+            val blockCoordinate = mouseToBlock(mouseX, mouseY)
+            println("The mouse is at $blockCoordinate")
         }
 
         canvasPane.heightProperty().addListener { _, _, newValue ->
@@ -223,6 +236,13 @@ class GameFrame : View(), CanvasFitter {
             }
         }
         timer.start()
+    }
+
+    private fun mouseToBlock(mouseX: Double, mouseY: Double): BlockCoordinate {
+        // OK... this should be pretty easy...
+        val blockX = (mouseX / blockSize()).toInt() - blockOffsetX.toInt()
+        val blockY = (mouseY / blockSize()).toInt() - blockOffsetY.toInt()
+        return BlockCoordinate(blockX, blockY)
     }
 
 }

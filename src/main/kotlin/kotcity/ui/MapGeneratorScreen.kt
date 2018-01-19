@@ -45,7 +45,7 @@ class MapGeneratorScreen : View(), CanvasFitter {
 
                     for (x in xRange) {
                         for (y in yRange) {
-                            val tile = newMap.groundLayer[MapCoordinate(x, y)]
+                            val tile = newMap.groundLayer[BlockCoordinate(x, y)]
                             if (tile?.type == TileType.GROUND) {
                                 gc.fill = Color.LIGHTGOLDENRODYELLOW
                                 gc.fillRect(x.toDouble(), y.toDouble(), 1.0, 1.0)
