@@ -72,7 +72,6 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     private fun mouseToBlock(mouseX: Double, mouseY: Double): BlockCoordinate {
         // OK... this should be pretty easy...
-        // println("Block offsets: ${blockOffsetX.toInt()},${blockOffsetY.toInt()}")
         val blockX =  (mouseX / blockSize()).toInt()
         val blockY =  (mouseY / blockSize()).toInt()
         // println("Mouse block coords: $blockX,$blockY")
