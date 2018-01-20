@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer
 import javafx.application.Application
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.control.Accordion
+import javafx.scene.control.Button
 import javafx.scene.control.ScrollBar
 import javafx.scene.control.TitledPane
 import javafx.scene.input.MouseButton
@@ -15,6 +16,9 @@ import kotcity.data.*
 import tornadofx.App
 import tornadofx.View
 import tornadofx.find
+import java.awt.Graphics2D
+
+
 
 object Algorithms {
     fun scale(valueIn: Double, baseMin: Double, baseMax: Double, limitMin: Double, limitMax: Double): Double {
@@ -23,6 +27,8 @@ object Algorithms {
 }
 
 const val DRAW_GRID = true
+
+enum class Tool { BULLDOZE, QUERY, ROAD }
 
 class GameFrame : View(), CanvasFitter {
     override val root: VBox by fxml("/GameFrame.fxml")
@@ -33,13 +39,23 @@ class GameFrame : View(), CanvasFitter {
     private val verticalScroll: ScrollBar by fxid()
     private val horizontalScroll: ScrollBar by fxid()
 
+    // BUTTONS
+    private val roadButton: Button by fxid()
+    private val queryButton: Button by fxid()
+
     var blockOffsetX = 0.0
     var blockOffsetY = 0.0
     var mapMin = 0.0
     var mapMax = 1.0
 
+    private var mouseDown = false
+    private var mouseBlock: BlockCoordinate? = null
+    private var firstBlockPressed: BlockCoordinate? = null
+
     var ticks = 0
     var zoom = 1.0
+
+    private var activeTool: Tool = Tool.QUERY
 
     // each block should = 10 meters, square...
     // 64 pixels = 10 meters
@@ -55,10 +71,10 @@ class GameFrame : View(), CanvasFitter {
         }
     }
 
-    lateinit var _map: CityMap
+    private lateinit var activeMap: CityMap
 
     fun setMap(map: CityMap) {
-        this._map = map
+        this.activeMap = map
         // gotta resize the component now...
         setScrollbarSizes()
         setCanvasSize()
@@ -66,11 +82,11 @@ class GameFrame : View(), CanvasFitter {
         mapMax = getMap().groundLayer.values.mapNotNull {it.elevation}.max() ?: 0.0
 
         println("Map min: $mapMin Map max: $mapMax")
-        println("Map has been set to: $_map. Size is ${canvas.width}x${canvas.height}")
+        println("Map has been set to: $activeMap. Size is ${canvas.width}x${canvas.height}")
     }
 
     private fun setCanvasSize() {
-        println("map size is: ${this._map.width},${this._map.height}")
+        println("map size is: ${this.activeMap.width},${this.activeMap.height}")
         println("Canvas pane size is: ${canvasPane.width},${canvasPane.height}")
         canvas.prefHeight(canvasPane.height - 20)
         canvas.prefWidth(canvasPane.width - 20)
@@ -95,7 +111,7 @@ class GameFrame : View(), CanvasFitter {
     }
 
     private fun getMap(): CityMap {
-        return this._map
+        return this.activeMap
     }
 
     private fun getVisibleBlocks(): Pair<IntRange, IntRange> {
@@ -129,8 +145,6 @@ class GameFrame : View(), CanvasFitter {
     fun drawMap(gc: GraphicsContext) {
         // we got that map...
         val (xRange, yRange) = getVisibleBlocks()
-
-        println("We need to paint from $xRange,$yRange")
 
         xRange.toList().forEachIndexed { xi, x ->
             yRange.toList().forEachIndexed { yi, y ->
@@ -176,27 +190,73 @@ class GameFrame : View(), CanvasFitter {
         zoom += 1
     }
 
+    fun bindButtons() {
+        roadButton.setOnAction { this.activeTool = Tool.ROAD }
+        queryButton.setOnAction { this.activeTool = Tool.QUERY }
+    }
+
     init {
 
         title = "Kotcity 0.1"
 
+        bindCanvas()
+        bindButtons()
+
+        accordion.expandedPane = basicPane
+
+        val timer = object : AnimationTimer() {
+            override fun handle(now: Long) {
+                if (ticks == 20) {
+                    canvas.graphicsContext2D.fill = Color.BLACK
+                    canvas.graphicsContext2D.fillRect(0.0,0.0, canvas.width, canvas.height)
+                    drawMap(canvas.graphicsContext2D)
+                    if (mouseDown) {
+                        if (activeTool == Tool.ROAD) {
+                            drawRoadBlueprint(canvas.graphicsContext2D)
+                        }
+                    }
+                    ticks = 0
+                }
+                ticks++
+            }
+        }
+        timer.start()
+    }
+
+    private fun bindCanvas() {
         // TODO: we are handling scrolling ourself... so we have to figure out what's
         //       visible and what's not...
         canvas.prefHeight(canvasPane.height - 20)
         canvas.prefWidth(canvasPane.width - 20)
         canvasPane.add(canvas)
 
-        canvasPane.widthProperty().addListener {_, _, newValue ->
-            println("resizing canvas width to: ${newValue}")
+        canvasPane.widthProperty().addListener { _, _, newValue ->
+            println("resizing canvas width to: $newValue")
             canvas.width = newValue.toDouble()
             setCanvasSize()
             setScrollbarSizes()
         }
 
         canvas.setOnMouseMoved { evt ->
+
+        }
+
+        canvas.setOnMousePressed { evt ->
+            this.mouseDown = true
+            this.firstBlockPressed = mouseToBlock(evt.x, evt.y)
+            this.mouseBlock = this.firstBlockPressed
+            println("Pressed on block: $firstBlockPressed")
+        }
+
+        canvas.setOnMouseReleased { evt ->
+            this.mouseDown = false
+        }
+
+        canvas.setOnMouseDragged { evt ->
             val mouseX = evt.x
             val mouseY = evt.y
             val blockCoordinate = mouseToBlock(mouseX, mouseY)
+            this.mouseBlock = blockCoordinate
             // println("The mouse is at $blockCoordinate")
         }
 
@@ -223,7 +283,7 @@ class GameFrame : View(), CanvasFitter {
         }
 
         with(canvas) {
-            this.setOnScroll {  scrollEvent ->
+            this.setOnScroll { scrollEvent ->
                 // println("We are scrolling: $scrollEvent")
                 if (scrollEvent.deltaY < 0) {
                     println("Zoom out!")
@@ -234,22 +294,80 @@ class GameFrame : View(), CanvasFitter {
                 }
             }
         }
+    }
 
-        accordion.expandedPane = basicPane
+    private fun drawRoadBlueprint(gc: GraphicsContext) {
+        // figure out if we are more horizontal or vertical away from origin point
+        gc.fill = (Color.YELLOW)
+        val startBlock = firstBlockPressed ?: return
+        val endBlock = mouseBlock ?: return
+        val x = startBlock.x
+        val y = startBlock.y
+        var x2 = endBlock.x
+        var y2 = endBlock.y
 
-        val timer = object : AnimationTimer() {
-            override fun handle(now: Long) {
-                if (ticks == 20) {
-                    canvas.graphicsContext2D.fill = Color.BLACK
-                    canvas.graphicsContext2D.fillRect(0.0,0.0, canvas.width, canvas.height)
-                    drawMap(canvas.graphicsContext2D)
-                    ticks = 0
-                }
-                ticks++
+        if (Math.abs(x - x2) > Math.abs(y - y2)) {
+            // building horizontally
+            // now fuck around with y2 so it's at the same level as y1
+            y2 = y
+
+            if (x < x2) {
+                fillBlocks(gc, x, y, Math.abs(x - x2) + 1, 1)
+                queueRoads(x, y, x2, y2)
+            } else {
+                fillBlocks(gc, x2, y, Math.abs(x - x2) + 1, 1)
+                queueRoads(x2, y2, x, y)
+            }
+        } else {
+            // building vertically
+            // now fuck around with x2 so it's at the same level as x1
+            x2 = x
+
+            if (y < y2) {
+                fillBlocks(gc, x, y, 1, Math.abs(y - y2) + 1)
+                queueRoads(x, y, x2, y2)
+            } else {
+                fillBlocks(gc, x, y2, 1, Math.abs(y - y2) + 1)
+                queueRoads(x2, y2, x, y)
+            }
+
+        }
+
+    }
+
+    private fun queueRoads(x: Int, y: Int, x2: Int, y2: Int) {
+
+    }
+
+    private fun fillBlocks(g2d: GraphicsContext, blockX: Int, blockY: Int, width: Int, height: Int) {
+        for (y in blockY until blockY + height) {
+            for (x in blockX until blockX + width) {
+                highlightBlock(g2d, x, y)
             }
         }
-        timer.start()
     }
+
+    private fun highlightBlock(g2d: GraphicsContext, x: Int, y: Int) {
+        g2d.fill = Color.MAGENTA
+        // gotta translate here...
+        val tx = x - blockOffsetX
+        val ty = y - blockOffsetY
+        g2d.fillRect(tx * blockSize(), ty  * blockSize(), blockSize(), blockSize())
+    }
+
+    private fun highlightBlock(g2d: GraphicsContext, hoveredBlockX: Int, hoveredBlockY: Int, radius: Int) {
+        val startBlockX = (hoveredBlockX - Math.floor((radius / 2).toDouble())).toInt()
+        val startBlockY = (hoveredBlockY - Math.floor((radius / 2).toDouble())).toInt()
+        val endBlockX = startBlockX + radius - 1
+        val endBlockY = startBlockY + radius - 1
+
+        for (y in startBlockY..endBlockY) {
+            for (x in startBlockX..endBlockX) {
+                highlightBlock(g2d, x, y)
+            }
+        }
+    }
+
 
     private fun panMap(clickedBlock: BlockCoordinate) {
         // OK, we want to figure out the CENTER block now...

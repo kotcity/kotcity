@@ -47,6 +47,9 @@
                            <content>
                               <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
                                  <children>
+                                    <Button fx:id="bulldozeButton" mnemonicParsing="false" text="Bulldoze" />
+                                    <Button fx:id="queryButton" mnemonicParsing="false" text="Query" />
+                                    <Region layoutX="21.0" layoutY="93.0" prefHeight="5.0" prefWidth="200.0" />
                                     <ToggleButton mnemonicParsing="false" text="Residential">
                                        <toggleGroup>
                                           <ToggleGroup fx:id="buildTools" />
@@ -55,6 +58,8 @@
                                     <ToggleButton mnemonicParsing="false" text="Commercial" toggleGroup="$buildTools" />
                                     <ToggleButton mnemonicParsing="false" text="Industrial" toggleGroup="$buildTools" />
                                     <Region prefHeight="5.0" prefWidth="200.0" />
+                                    <Button fx:id="roadButton" mnemonicParsing="false" text="Road" />
+                                    <Region layoutX="21.0" layoutY="93.0" prefHeight="5.0" prefWidth="200.0" />
                                     <Button mnemonicParsing="false" onAction="#zoomIn" text="Zoom In" />
                                     <Button mnemonicParsing="false" onAction="#zoomOut" text="Zoom Out" />
                                  </children>

@@ -7,4 +7,11 @@ data class MapTile(val type: TileType, val elevation: Double)
 
 class CityMap(val width: Int = 512, val height: Int = 512) {
     val groundLayer = mutableMapOf<BlockCoordinate, MapTile>()
+    val buildingLayer = mutableMapOf<BlockCoordinate, Building>()
+}
+
+interface Building {
+    val coordinate: BlockCoordinate
+    val width: Int
+    val height: Int
 }
