@@ -1,6 +1,5 @@
 package kotcity.ui
 
-import aballano.kotlinmemoization.memoize
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
@@ -25,9 +24,6 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     private var mouseDown = false
     var mouseBlock: BlockCoordinate? = null
     private var firstBlockPressed: BlockCoordinate? = null
-
-    // memoized functions...
-    val memoizedAdjustColor = ::adjustColor.memoize(256)
 
     init {
         mapMin = map.groundLayer.values.mapNotNull { it.elevation }.min() ?: 0.0
