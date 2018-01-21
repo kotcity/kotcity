@@ -258,7 +258,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                 context.fillRect(tx * blockSize, ty  * blockSize, blockSize, blockSize)
             } else if (building is CoalPowerPlant) {
                 context.fill = Color.GRAY
-                context.fillRect(tx * blockSize, ty  * blockSize, blockSize * building.getWidth(), blockSize * building.getHeight())
+                context.fillRect(tx * blockSize, ty  * blockSize, blockSize * building.width, blockSize * building.height)
             }
         }
     }

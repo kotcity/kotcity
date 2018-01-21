@@ -24,11 +24,11 @@
             <Menu mnemonicParsing="false" text="File">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#newCityPressed" text="New City..." />
-                  <MenuItem mnemonicParsing="false" text="Load City..." />
+                  <MenuItem mnemonicParsing="false" onAction="#loadCityPressed" text="Load City..." />
                   <MenuItem fx:id="saveCityButton" mnemonicParsing="false" onAction="#saveCity" text="Save City" />
                   <MenuItem fx:id="saveCityAsButton" mnemonicParsing="false" onAction="#saveCityAs" text="Save City As..." />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="quitButton" mnemonicParsing="false" text="Quit" />
+                  <MenuItem fx:id="quitButton" mnemonicParsing="false" onAction="#quitPressed" text="Quit" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Info">

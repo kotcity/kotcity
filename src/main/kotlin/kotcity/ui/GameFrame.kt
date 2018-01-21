@@ -15,6 +15,11 @@ import java.io.File
 import javafx.stage.FileChooser
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.Alert
+import javafx.scene.control.ButtonType
+import java.util.Optional
+import javafx.scene.control.ButtonBar.ButtonData
+
+
 
 
 
@@ -159,7 +164,7 @@ class GameFrame : View(), CanvasFitter {
         coalPowerButton.setOnAction { activeTool = Tool.COAL_POWER_PLANT }
     }
 
-    fun loadCity() {
+    fun loadCityPressed() {
         this.currentStage?.close()
         CityLoader.loadCity(this.primaryStage)
     }
@@ -186,6 +191,30 @@ class GameFrame : View(), CanvasFitter {
             }
         }
         timer?.start()
+    }
+
+    fun quitPressed() {
+        val alert = Alert(AlertType.CONFIRMATION)
+        alert.title = "Quitting KotCity"
+        alert.headerText = "Are you ready to leave?"
+        alert.contentText = "Please confirm..."
+
+        val buttonTypeOne = ButtonType("Yes, please quit.")
+        val buttonTypeTwo = ButtonType("No, I want to keep playing.")
+        val buttonTypeCancel = ButtonType("Cancel", ButtonData.CANCEL_CLOSE)
+
+        alert.buttonTypes.setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel)
+
+        val result = alert.showAndWait()
+        when {
+            result.get() == buttonTypeOne -> System.exit(1)
+            result.get() == buttonTypeTwo -> {
+                // don't do anything...
+            }
+            else -> {
+                // don't do anything..
+            }
+        }
     }
 
     private fun bindCanvas() {

@@ -54,7 +54,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     fun buildRoad(from: BlockCoordinate, to: BlockCoordinate) {
         roadBlocks(from, to).forEach { block ->
-            println("Dropping a road at: $block")
+            // println("Dropping a road at: $block")
             buildingLayer[block] = Road()
         }
     }
@@ -72,29 +72,22 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
 }
 
-interface Building {
-    fun getWidth(): Int
-    fun getHeight(): Int
+enum class BuildingType {
+    ROAD, COAL_POWER_PLANT
 }
 
-class Road : Building {
-    override fun getWidth(): Int {
-        return 1
-    }
-
-    override fun getHeight(): Int {
-        return 1
-    }
-
+abstract class Building {
+    open var width = 1
+    open var height = 1
+    abstract var type: BuildingType
 }
 
-class CoalPowerPlant : Building {
-    override fun getWidth(): Int {
-        return 4
-    }
+class Road : Building() {
+    override var type = BuildingType.ROAD
+}
 
-    override fun getHeight(): Int {
-        return 4
-    }
-
+class CoalPowerPlant : Building() {
+    override var type: BuildingType = BuildingType.COAL_POWER_PLANT
+    override var width = 4
+    override var height = 4
 }

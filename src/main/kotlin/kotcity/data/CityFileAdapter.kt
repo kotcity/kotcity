@@ -30,6 +30,16 @@ val gson = GsonBuilder()
                         "type" to entry.value.type.toString()
                     )
                 }.toJsonArray()
+                data["buildingLayer"] = it.src.buildingLayer.map { entry ->
+                    val x = entry.key.x
+                    val y = entry.key.y
+                    val type = entry.value.type.toString()
+                    jsonObject(
+                            "x" to x,
+                            "y" to y,
+                            "type" to type
+                    )
+                }.toJsonArray()
                 data
             }
 
@@ -52,6 +62,19 @@ val gson = GsonBuilder()
                     val tile = MapTile(tileType, tileObj["elevation"].asDouble)
                     cityMap.groundLayer[coordinate] = tile
                     println("Loaded $tile at $coordinate")
+                }
+
+                data["buildingLayer"].asJsonArray.forEach {
+                    val buildingObj = it.asJsonObject
+                    var x = it["x"].asInt
+                    var y = it["y"].asInt
+                    val type = BuildingType.valueOf(buildingObj["type"].asString)
+                    val building = when(type) {
+                        BuildingType.ROAD -> Road()
+                        BuildingType.COAL_POWER_PLANT -> CoalPowerPlant()
+                    }
+                    println("Loaded building: $building")
+                    cityMap.buildingLayer[BlockCoordinate(x, y)] = building
                 }
                 cityMap
             }
