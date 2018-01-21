@@ -4,9 +4,7 @@ import javafx.scene.canvas.GraphicsContext
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
-import kotcity.data.BlockCoordinate
-import kotcity.data.CityMap
-import kotcity.data.TileType
+import kotcity.data.*
 
 class CityRenderer(private val gameFrame: GameFrame, private val canvas: ResizableCanvas, private val map: CityMap) {
 
@@ -24,7 +22,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     var mapMax = 1.0
 
     private var mouseDown = false
-    private var mouseBlock: BlockCoordinate? = null
+    var mouseBlock: BlockCoordinate? = null
     private var firstBlockPressed: BlockCoordinate? = null
 
     init {
@@ -40,7 +38,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     private fun canvasBlockWidth() = (canvas.width / blockSize()).toInt()
 
-    private fun getVisibleBlocks(): Pair<IntRange, IntRange> {
+    private fun visibleBlockRange(): Pair<IntRange, IntRange> {
         var startBlockX = blockOffsetX.toInt()
         var startBlockY = blockOffsetY.toInt()
         var endBlockX = startBlockX+canvasBlockWidth()
@@ -68,6 +66,11 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         println("Delta is: $dx,$dy")
         blockOffsetX += (dx)
         blockOffsetY += (dy)
+    }
+
+    // returns the first and last block that we dragged from / to
+    fun blockRange(): Pair<BlockCoordinate?, BlockCoordinate?> {
+        return Pair(this.firstBlockPressed, this.mouseBlock)
     }
 
     private fun mouseToBlock(mouseX: Double, mouseY: Double): BlockCoordinate {
@@ -106,7 +109,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     private fun drawMap(gc: GraphicsContext) {
         // we got that map...
-        val (xRange, yRange) = getVisibleBlocks()
+        val (xRange, yRange) = visibleBlockRange()
 
         xRange.toList().forEachIndexed { xi, x ->
             yRange.toList().forEachIndexed { yi, y ->
@@ -151,12 +154,63 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     fun render() {
+        if (canvas.graphicsContext2D == null) {
+            return
+        }
         canvas.graphicsContext2D.fill = Color.BLACK
         canvas.graphicsContext2D.fillRect(0.0,0.0, canvas.width, canvas.height)
         drawMap(canvas.graphicsContext2D)
+        drawBuildings(canvas.graphicsContext2D)
         if (mouseDown) {
             if (gameFrame.activeTool == Tool.ROAD) {
                 drawRoadBlueprint(canvas.graphicsContext2D)
+            } else if (gameFrame.activeTool == Tool.BULLDOZE) {
+                firstBlockPressed?.let {first ->
+                    mouseBlock?.let {second ->
+                        highlightBlocks(first, second)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun highlightBlocks(from: BlockCoordinate, to: BlockCoordinate) {
+        for (x in (from.x .. to.x).reorder()) {
+            for (y in (from.y .. to.y).reorder()) {
+                highlightBlock(canvas.graphicsContext2D, x, y)
+            }
+        }
+    }
+
+    private fun visibleBlocks(): MutableList<BlockCoordinate> {
+        val blockList = mutableListOf<BlockCoordinate>()
+        val (from, to) = visibleBlockRange()
+        for (x in from) {
+            to.mapTo(blockList) { BlockCoordinate(x, it) }
+        }
+        return blockList
+    }
+
+    private fun visibleBuildings(): List<Pair<BlockCoordinate, Building>> {
+        return visibleBlocks().map {
+            val building = map.buildingLayer[it]
+            if (building != null) {
+                Pair(it, building)
+            } else {
+                null
+            }
+        }.filterNotNull()
+    }
+
+    private fun drawBuildings(context: GraphicsContext) {
+        visibleBuildings().forEach { it ->
+            val coordinate = it.first
+            val building = it.second
+            if (building is Road) {
+                val tx = coordinate.x - blockOffsetX
+                val ty = coordinate.y - blockOffsetY
+                context.fill = Color.BLACK
+                context.fillRect(tx * blockSize(), ty  * blockSize(), blockSize(), blockSize())
             }
         }
     }
@@ -169,18 +223,18 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         g2d.fillRect(tx * blockSize(), ty  * blockSize(), blockSize(), blockSize())
     }
 
-    private fun highlightBlock(g2d: GraphicsContext, hoveredBlockX: Int, hoveredBlockY: Int, radius: Int) {
-        val startBlockX = (hoveredBlockX - Math.floor((radius / 2).toDouble())).toInt()
-        val startBlockY = (hoveredBlockY - Math.floor((radius / 2).toDouble())).toInt()
-        val endBlockX = startBlockX + radius - 1
-        val endBlockY = startBlockY + radius - 1
-
-        for (y in startBlockY..endBlockY) {
-            for (x in startBlockX..endBlockX) {
-                highlightBlock(g2d, x, y)
-            }
-        }
-    }
+//    private fun highlightBlock(g2d: GraphicsContext, hoveredBlockX: Int, hoveredBlockY: Int, radius: Int) {
+//        val startBlockX = (hoveredBlockX - Math.floor((radius / 2).toDouble())).toInt()
+//        val startBlockY = (hoveredBlockY - Math.floor((radius / 2).toDouble())).toInt()
+//        val endBlockX = startBlockX + radius - 1
+//        val endBlockY = startBlockY + radius - 1
+//
+//        for (y in startBlockY..endBlockY) {
+//            for (x in startBlockX..endBlockX) {
+//                highlightBlock(g2d, x, y)
+//            }
+//        }
+//    }
 
     // each block should = 10 meters, square...
     // 64 pixels = 10 meters
@@ -209,7 +263,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         if (Math.abs(x - x2) > Math.abs(y - y2)) {
             // building horizontally
             // now fuck around with y2 so it's at the same level as y1
-            y2 = y
+            // y2 = y
 
             if (x < x2) {
                 fillBlocks(gc, x, y, Math.abs(x - x2) + 1, 1)
@@ -219,7 +273,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         } else {
             // building vertically
             // now fuck around with x2 so it's at the same level as x1
-            x2 = x
+            // x2 = x
 
             if (y < y2) {
                 fillBlocks(gc, x, y, 1, Math.abs(y - y2) + 1)

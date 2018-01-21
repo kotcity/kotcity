@@ -6,6 +6,7 @@ import javafx.scene.control.Accordion
 import javafx.scene.control.Button
 import javafx.scene.control.ScrollBar
 import javafx.scene.control.TitledPane
+import javafx.scene.input.MouseButton
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
@@ -38,17 +39,18 @@ class GameFrame : View(), CanvasFitter {
     // BUTTONS
     private val roadButton: Button by fxid()
     private val queryButton: Button by fxid()
+    private val bulldozeButton: Button by fxid()
 
     var ticks = 0
     val tickDelay: Int = 5 // only render every X ticks... (framerate limiter)
 
     var activeTool: Tool = Tool.QUERY
 
-    private lateinit var activeMap: CityMap
+    private lateinit var map: CityMap
     private var cityRenderer: CityRenderer? = null
 
     fun setMap(map: CityMap) {
-        this.activeMap = map
+        this.map = map
         // gotta resize the component now...
         setScrollbarSizes()
         setCanvasSize()
@@ -57,7 +59,7 @@ class GameFrame : View(), CanvasFitter {
     }
 
     private fun setCanvasSize() {
-        println("map size is: ${this.activeMap.width},${this.activeMap.height}")
+        println("map size is: ${this.map.width},${this.map.height}")
         println("Canvas pane size is: ${canvasPane.width},${canvasPane.height}")
         canvas.prefHeight(canvasPane.height - 20)
         canvas.prefWidth(canvasPane.width - 20)
@@ -82,7 +84,7 @@ class GameFrame : View(), CanvasFitter {
     }
 
     private fun getMap(): CityMap {
-        return this.activeMap
+        return this.map
     }
 
 
@@ -101,6 +103,7 @@ class GameFrame : View(), CanvasFitter {
     fun bindButtons() {
         roadButton.setOnAction { this.activeTool = Tool.ROAD }
         queryButton.setOnAction { this.activeTool = Tool.QUERY }
+        bulldozeButton.setOnAction { this.activeTool = Tool.BULLDOZE }
     }
 
     init {
@@ -147,7 +150,21 @@ class GameFrame : View(), CanvasFitter {
         }
 
         canvas.setOnMouseReleased { evt ->
-            cityRenderer?.onMouseReleased(evt)
+            cityRenderer?.let {
+                it.onMouseReleased(evt)
+                val (firstBlock, lastBlock) = it.blockRange()
+                if (firstBlock != null && lastBlock != null) {
+                    if (evt.button == MouseButton.PRIMARY) {
+                        if (activeTool == Tool.ROAD) {
+                            println("Want to build road from: $firstBlock, $lastBlock")
+                            map.buildRoad(firstBlock, lastBlock)
+                        }  else if (activeTool == Tool.BULLDOZE) {
+                            map.bulldoze(firstBlock, lastBlock)
+                        }
+                    }
+                }
+            }
+
         }
 
         canvas.setOnMouseDragged { evt ->
@@ -196,6 +213,7 @@ class GameFrameApp : App(GameFrame::class, KotcityStyles::class) {
         val mapGenerator = MapGenerator()
         val map = mapGenerator.generateMap(512, 512)
         gameFrame.setMap(map)
+        stage.isMaximized = true
         super.start(stage)
     }
 }
