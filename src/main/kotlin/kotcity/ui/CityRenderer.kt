@@ -30,8 +30,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     val memoizedAdjustColor = ::adjustColor.memoize(256)
 
     init {
-        mapMin = map.groundLayer.values.mapNotNull {it.elevation}.min() ?: 0.0
-        mapMax = map.groundLayer.values.mapNotNull {it.elevation}.max() ?: 0.0
+        mapMin = map.groundLayer.values.mapNotNull { it.elevation }.min() ?: 0.0
+        mapMax = map.groundLayer.values.mapNotNull { it.elevation }.max() ?: 0.0
 
         println("Map min: $mapMin Map max: $mapMax")
         println("Map has been set to: $map. Size is ${canvas.width}x${canvas.height}")
@@ -44,8 +44,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     private fun visibleBlockRange(): Pair<IntRange, IntRange> {
         var startBlockX = blockOffsetX.toInt()
         var startBlockY = blockOffsetY.toInt()
-        var endBlockX = startBlockX+canvasBlockWidth()
-        var endBlockY = startBlockY+canvasBlockHeight()
+        var endBlockX = startBlockX + canvasBlockWidth()
+        var endBlockY = startBlockY + canvasBlockHeight()
 
         if (endBlockX > map.width) {
             endBlockX = map.width
@@ -79,8 +79,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     private fun mouseToBlock(mouseX: Double, mouseY: Double): BlockCoordinate {
         // OK... this should be pretty easy...
         val blockSize = blockSize()
-        val blockX =  (mouseX / blockSize).toInt()
-        val blockY =  (mouseY / blockSize).toInt()
+        val blockX = (mouseX / blockSize).toInt()
+        val blockY = (mouseY / blockSize).toInt()
         // println("Mouse block coords: $blockX,$blockY")
         return BlockCoordinate(blockX + blockOffsetX.toInt(), blockY + blockOffsetY.toInt())
     }
@@ -135,11 +135,11 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                 val tile = map.groundLayer[BlockCoordinate(x, y)]
                 if (tile != null) {
                     val newColor =
-                        if (tile.type == TileType.GROUND) {
-                            Color.rgb(153,102, 0)
-                        } else {
-                            Color.DARKBLUE
-                        }
+                            if (tile.type == TileType.GROUND) {
+                                Color.rgb(153, 102, 0)
+                            } else {
+                                Color.DARKBLUE
+                            }
                     // this next line maps the elevations from -0.5 to 0.5 so we don't get
                     // weird looking colors....
                     val elevation = tile.elevation
@@ -181,20 +181,38 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
             return
         }
         canvas.graphicsContext2D.fill = Color.BLACK
-        canvas.graphicsContext2D.fillRect(0.0,0.0, canvas.width, canvas.height)
+        canvas.graphicsContext2D.fillRect(0.0, 0.0, canvas.width, canvas.height)
         drawMap(canvas.graphicsContext2D)
+        drawZones()
         drawBuildings(canvas.graphicsContext2D)
         mouseBlock?.let {
             if (mouseDown) {
                 if (gameFrame.activeTool == Tool.ROAD) {
                     drawRoadBlueprint(canvas.graphicsContext2D)
-                }
-                else if (gameFrame.activeTool == Tool.BULLDOZE) firstBlockPressed?.let { first ->
-                    highlightBlocks(first, it)
+                } else if (gameFrame.activeTool == Tool.BULLDOZE) {
+                    firstBlockPressed?.let { first ->
+                        highlightBlocks(first, it)
+                    }
+                } else if (gameFrame.activeTool == Tool.RESIDENTIAL_ZONE) {
+                    firstBlockPressed?.let { first ->
+                        highlightBlocks(first, it)
+                    }
+                } else if (gameFrame.activeTool == Tool.COMMERCIAL_ZONE) {
+                    firstBlockPressed?.let { first ->
+                        highlightBlocks(first, it)
+                    }
+                } else if (gameFrame.activeTool == Tool.INDUSTRIAL_ZONE) {
+                    firstBlockPressed?.let { first ->
+                        highlightBlocks(first, it)
+                    }
+                } else {
+                    Unit
                 }
             } else {
                 if (gameFrame.activeTool == Tool.COAL_POWER_PLANT) {
                     highlightCenteredBlocks(it, 4, 4)
+                } else {
+                    Unit
                 }
             }
         }
@@ -202,8 +220,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     private fun highlightCenteredBlocks(start: BlockCoordinate, width: Int, height: Int) {
         // TODO: we want to make this shit kind of centered...
-        val offsetX = (width/2)-1
-        val offsetY = (height/2)-1
+        val offsetX = (width / 2) - 1
+        val offsetY = (height / 2) - 1
         val newBlock = BlockCoordinate(start.x - offsetX, start.y - offsetY)
         highlightBlocks(newBlock, width, height)
     }
@@ -219,8 +237,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     private fun highlightBlocks(from: BlockCoordinate, to: BlockCoordinate) {
-        for (x in (from.x .. to.x).reorder()) {
-            for (y in (from.y .. to.y).reorder()) {
+        for (x in (from.x..to.x).reorder()) {
+            for (y in (from.y..to.y).reorder()) {
                 highlightBlock(canvas.graphicsContext2D, x, y)
             }
         }
@@ -255,10 +273,26 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
             val blockSize = blockSize()
             if (building is Road) {
                 context.fill = Color.BLACK
-                context.fillRect(tx * blockSize, ty  * blockSize, blockSize, blockSize)
+                context.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
             } else if (building is CoalPowerPlant) {
                 context.fill = Color.GRAY
-                context.fillRect(tx * blockSize, ty  * blockSize, blockSize * building.width, blockSize * building.height)
+                context.fillRect(tx * blockSize, ty * blockSize, blockSize * building.width, blockSize * building.height)
+            }
+        }
+    }
+
+    private fun drawZones() {
+        val blockSize = blockSize()
+        val graphics = canvas.graphicsContext2D
+        visibleBlocks().forEach { coordinate ->
+            map.zoneLayer[coordinate]?.let { zone ->
+                // figure out fill color...
+                graphics.fill = when (zone.type) {
+                    ZoneType.RESIDENTIAL -> Color.GREEN
+                    ZoneType.COMMERCIAL -> Color.BLUE
+                    ZoneType.INDUSTRIAL -> Color.YELLOW
+                }
+                graphics.fillRect(coordinate.x * blockSize, coordinate.y * blockSize, blockSize, blockSize)
             }
         }
     }
@@ -269,7 +303,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         val tx = x - blockOffsetX
         val ty = y - blockOffsetY
         val blockSize = blockSize()
-        g2d.fillRect(tx * blockSize, ty  * blockSize, blockSize, blockSize)
+        g2d.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
     }
 
     // each block should = 10 meters, square...

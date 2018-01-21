@@ -250,8 +250,14 @@ class GameFrame : View(), CanvasFitter {
                         if (activeTool == Tool.ROAD) {
                             println("Want to build road from: $firstBlock, $lastBlock")
                             map.buildRoad(firstBlock, lastBlock)
-                        }  else if (activeTool == Tool.BULLDOZE) {
+                        } else if (activeTool == Tool.BULLDOZE) {
                             map.bulldoze(firstBlock, lastBlock)
+                        } else if (activeTool == Tool.RESIDENTIAL_ZONE) {
+                            map.zone(ZoneType.RESIDENTIAL, firstBlock, lastBlock)
+                        } else if (activeTool == Tool.COMMERCIAL_ZONE) {
+                            map.zone(ZoneType.COMMERCIAL, firstBlock, lastBlock)
+                        } else if (activeTool == Tool.INDUSTRIAL_ZONE) {
+                            map.zone(ZoneType.INDUSTRIAL, firstBlock, lastBlock)
                         }
                     }
                 }

@@ -3,7 +3,6 @@ package kotcity.data
 import com.github.davidmoten.rtree.RTree
 import com.github.davidmoten.rtree.geometry.Geometries
 import com.github.davidmoten.rtree.geometry.Rectangle
-import tornadofx.c
 
 data class BlockCoordinate(val x: Int, val y: Int) {
     companion object {
@@ -32,8 +31,12 @@ enum class TileType { GROUND, WATER}
 data class MapTile(val type: TileType, val elevation: Double)
 
 data class CityMap(var width: Int = 512, var height: Int = 512) {
+
+    // various layers
     val groundLayer = mutableMapOf<BlockCoordinate, MapTile>()
     val buildingLayer = mutableMapOf<BlockCoordinate, Building>()
+    val zoneLayer = mutableMapOf<BlockCoordinate, Zone>()
+
     // where we loaded OR saved this city to...
     // used to determine save vs. save as...
     var fileName: String? = null
@@ -74,6 +77,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
+    // TODO: get smarter about index... we don't want to be rebuilding this all the time...
     fun updateBuildingIndex() {
         var newIndex = RTree.create<Building, Rectangle>()
         buildingLayer.forEach { coordinate, building ->
@@ -83,7 +87,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                     coordinate.x.toFloat() + building.width.toFloat(),
                     coordinate.y.toFloat() + building.height.toFloat())
             )
-            println("Size of index is now: ${newIndex.entries().count().toBlocking().first()}")
         }
         buildingIndex = newIndex
     }
@@ -92,12 +95,27 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return Slug.makeSlug(cityName) + ".kcity"
     }
 
-    fun canBuildBuildingAt(newBuilding: Building, coordinate: BlockCoordinate): Boolean {
+    private fun waterFound(from: BlockCoordinate, to: BlockCoordinate): Boolean {
+        var waterFound = false
+        BlockCoordinate.iterate(from, to) {
+            if (groundLayer[it]?.type == TileType.WATER) {
+                waterFound = true
+            }
+        }
+        return waterFound
+    }
+
+    private fun canBuildBuildingAt(newBuilding: Building, coordinate: BlockCoordinate, waterCheck: Boolean = true): Boolean {
+
         // OK... let's get nearby buildings to really cut this down...
         val newBuildingEnd = BlockCoordinate(coordinate.x + newBuilding.width - 1, coordinate.y + newBuilding.height - 1)
 
         val newBuildingTopRight = BlockCoordinate(coordinate.x + newBuilding.width - 1, coordinate.y)
         val newBuildingBottomLeft = BlockCoordinate(coordinate.x, coordinate.y + newBuilding.height - 1)
+
+        if (waterCheck && waterFound(coordinate, newBuildingEnd)) {
+            return false
+        }
 
         val nearby = nearestBuildings(coordinate)
         nearby.forEach { pair: Pair<BlockCoordinate, Building> ->
@@ -105,22 +123,25 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             val otherBuildingStart = pair.first
             val otherBuildingEnd = BlockCoordinate(otherBuildingStart.x + building.width - 1, otherBuildingStart.y + building.height - 1)
             // now let's test...
+            // top left corner...
             if (coordinate.x <= otherBuildingEnd.x && coordinate.x >= otherBuildingStart.x && coordinate.y <= otherBuildingEnd.y && coordinate.y >= otherBuildingStart.y) {
                 println("Collision with $building!")
                 return false
             }
 
+            // bottom right corner...
             if (newBuildingEnd.x <= otherBuildingEnd.x && newBuildingEnd.x >= otherBuildingStart.x && newBuildingEnd.y <= otherBuildingEnd.y && newBuildingEnd.y >= otherBuildingStart.y) {
                 println("Collision with $building!")
                 return false
             }
 
-            // TODO: we need to get the TOP RIGHT and BOTTOM LEFT of building to check as well...
+            // top right corner...
             if (newBuildingTopRight.x <= otherBuildingEnd.x && newBuildingTopRight.x >= otherBuildingStart.x && newBuildingTopRight.y <= otherBuildingEnd.y && newBuildingTopRight.y >= otherBuildingStart.y) {
                 println("Collision with $building!")
                 return false
             }
 
+            // bottom left corner...
             if (newBuildingBottomLeft.x <= otherBuildingEnd.x && newBuildingBottomLeft.x >= otherBuildingStart.x && newBuildingBottomLeft.y <= otherBuildingEnd.y && newBuildingBottomLeft.y >= otherBuildingStart.y) {
                 println("Collision with $building!")
                 return false
@@ -133,13 +154,21 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         roadBlocks(from, to).forEach { block ->
             // println("Dropping a road at: $block")
             val newRoad = Road()
-            if (canBuildBuildingAt(newRoad, block)) {
+            if (canBuildBuildingAt(newRoad, block, waterCheck = false)) {
                 buildingLayer[block] = newRoad
             } else {
                 println("We have an overlap... not building!")
             }
         }
         updateBuildingIndex()
+    }
+
+    fun zone(type: ZoneType, from: BlockCoordinate, to: BlockCoordinate) {
+        BlockCoordinate.iterate(from, to) {
+            if (!waterFound(it, it)) {
+                zoneLayer[it] = Zone(type)
+            }
+        }
     }
 
     fun build(building: Building, block: BlockCoordinate) {
@@ -164,6 +193,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 enum class BuildingType {
     ROAD, COAL_POWER_PLANT
 }
+
+enum class ZoneType {
+    RESIDENTIAL, COMMERCIAL, INDUSTRIAL
+}
+
+data class Zone(val type: ZoneType)
 
 abstract class Building {
     open var width = 1
