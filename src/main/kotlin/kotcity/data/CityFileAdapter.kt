@@ -98,7 +98,7 @@ object CityFileAdapter {
         println("Want to save $map to $newFile")
         val cityJson = gson.toJson(map)
         if (cityJson != null) {
-            newFile.writeText(cityJson)
+            newFile.writeBytes(GzipUtil.compress(cityJson))
         } else {
             return false
         }
@@ -108,7 +108,8 @@ object CityFileAdapter {
 
     fun load(file: File): CityMap {
         println("Want to load map from $file")
-        val city = gson.fromJson<CityMap>(FileReader(file))
+        val bytes = GzipUtil.uncompress(file.readBytes())
+        val city = gson.fromJson<CityMap>(bytes)
         city.fileName = file.absoluteFile.toString()
         return city
     }
