@@ -3,8 +3,11 @@ package kotcity.data
 data class BlockCoordinate(val x: Int, val y: Int) {
     companion object {
         fun iterate(from: BlockCoordinate, to: BlockCoordinate, callback: (BlockCoordinate) -> Unit) {
-            for (x in (from.x .. to.x).sorted()) {
-                for (y in (from.y .. to.y).sorted()) {
+            val xRange = (from.x .. to.x).reorder()
+            val yRange = (from.y ..to.y).reorder()
+            println("Wanting to iterate: $xRange to $yRange")
+            for (x in xRange) {
+                for (y in yRange) {
                     callback(BlockCoordinate(x, y))
                 }
             }
@@ -13,10 +16,10 @@ data class BlockCoordinate(val x: Int, val y: Int) {
 }
 
 fun IntRange.reorder(): IntRange {
-    if (first < last) {
-        return this
+    return if (first < last) {
+        this
     } else {
-        return last..first
+        last..first
     }
 }
 
@@ -48,23 +51,16 @@ class CityMap(val width: Int = 512, val height: Int = 512) {
 
     fun buildRoad(from: BlockCoordinate, to: BlockCoordinate) {
         roadBlocks(from, to).forEach { block ->
-            println("Droppin a road at: $block")
+            println("Dropping a road at: $block")
             buildingLayer[block] = Road()
         }
     }
 
-    private fun blockRange(from: BlockCoordinate, to: BlockCoordinate): List<BlockCoordinate> {
-        val blocks = mutableListOf<BlockCoordinate>()
-        for (x in (from.x .. to.x).reorder()) {
-            for (y in (from.y .. to.y).reorder()) {
-                blocks.add(BlockCoordinate(x, y))
-            }
-        }
-        return blocks.toList()
-    }
-
     fun bulldoze(from: BlockCoordinate, to: BlockCoordinate) {
-        blockRange(from, to).forEach { buildingLayer.remove(it) }
+        println("Want to bulldoze from $from to $to")
+        BlockCoordinate.iterate(from, to) {
+            buildingLayer.remove(it)
+        }
     }
 
 }

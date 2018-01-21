@@ -115,12 +115,12 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
             yRange.toList().forEachIndexed { yi, y ->
                 val tile = map.groundLayer[BlockCoordinate(x, y)]
                 if (tile != null) {
-                    var newColor =
-                            if (tile.type == TileType.GROUND) {
-                                Color.rgb(153,102, 0)
-                            } else {
-                                Color.DARKBLUE
-                            }
+                    val newColor =
+                        if (tile.type == TileType.GROUND) {
+                            Color.rgb(153,102, 0)
+                        } else {
+                            Color.DARKBLUE
+                        }
                     // this next line maps the elevations from -0.5 to 0.5 so we don't get
                     // weird looking colors....
                     val bleachAmount = Algorithms.scale(tile.elevation, mapMin, mapMax, -0.5, 0.5)
@@ -192,14 +192,14 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     private fun visibleBuildings(): List<Pair<BlockCoordinate, Building>> {
-        return visibleBlocks().map {
+        return visibleBlocks().mapNotNull {
             val building = map.buildingLayer[it]
             if (building != null) {
                 Pair(it, building)
             } else {
                 null
             }
-        }.filterNotNull()
+        }
     }
 
     private fun drawBuildings(context: GraphicsContext) {
