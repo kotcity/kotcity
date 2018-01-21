@@ -184,15 +184,18 @@ class GameFrame : View(), CanvasFitter {
         canvas.setOnMouseClicked { evt ->
             cityRenderer?.onMouseClicked(evt)
             // now let's handle some tools...
-            if (activeTool == Tool.COAL_POWER_PLANT) {
-                // TODO: we have to figure out some kind of offset for this shit...
-                // can't take place at hovered block...
-                cityRenderer?.getHoveredBlock()?.let {
-                    val newX = it.x - 1
-                    val newY = it.y - 1
-                    map.build(CoalPowerPlant(), BlockCoordinate(newX, newY))
+            if (evt.button == MouseButton.PRIMARY) {
+                if (activeTool == Tool.COAL_POWER_PLANT) {
+                    // TODO: we have to figure out some kind of offset for this shit...
+                    // can't take place at hovered block...
+                    cityRenderer?.getHoveredBlock()?.let {
+                        val newX = it.x - 1
+                        val newY = it.y - 1
+                        map.build(CoalPowerPlant(), BlockCoordinate(newX, newY))
+                    }
                 }
             }
+
         }
 
         canvasPane.heightProperty().addListener { _, _, newValue ->
