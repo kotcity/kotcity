@@ -5,7 +5,21 @@ import com.github.salomonbrys.kotson.*
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import java.io.FileReader
+import java.text.SimpleDateFormat
+import java.util.*
 
+val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+
+
+fun parseDate(str: String): Date {
+    simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+    return simpleDateFormat.parse(str)
+}
+
+fun serializeDate(date: Date): String {
+    simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+    return simpleDateFormat.format(date)
+}
 
 val gson = GsonBuilder()
         .registerTypeAdapter<CityMap> {
@@ -21,6 +35,7 @@ val gson = GsonBuilder()
                 data["height"] = map.height
                 data["width"] = map.width
                 data["cityName"] = map.cityName
+                data["time"] = serializeDate(map.time)
                 data["zoneLayer"] = it.src.zoneLayer.map { entry ->
                     val x = entry.key.x
                     val y = entry.key.y
@@ -65,6 +80,7 @@ val gson = GsonBuilder()
                 cityMap.height = data["height"].asInt
                 cityMap.width = data["width"].asInt
                 cityMap.cityName = data["cityName"].asString
+                cityMap.time = parseDate(data["time"].asString)
                 val groundTiles = data["groundLayer"].asJsonArray
                 println("The file has this many tiles: ${groundTiles.count()}")
                 groundTiles.forEach {

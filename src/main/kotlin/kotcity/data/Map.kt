@@ -3,6 +3,11 @@ package kotcity.data
 import com.github.davidmoten.rtree.RTree
 import com.github.davidmoten.rtree.geometry.Geometries
 import com.github.davidmoten.rtree.geometry.Rectangle
+import com.github.debop.javatimes.plus
+import com.github.debop.javatimes.toDateTime
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 data class BlockCoordinate(val x: Int, val y: Int) {
     companion object {
@@ -30,12 +35,20 @@ fun IntRange.reorder(): IntRange {
 enum class TileType { GROUND, WATER}
 data class MapTile(val type: TileType, val elevation: Double)
 
+fun defaultTime(): Date {
+    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+    return simpleDateFormat.parse("2000-01-01 12:00:00")
+}
+
 data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     // various layers
     val groundLayer = mutableMapOf<BlockCoordinate, MapTile>()
     val buildingLayer = mutableMapOf<BlockCoordinate, Building>()
     val zoneLayer = mutableMapOf<BlockCoordinate, Zone>()
+
+    var time = defaultTime()
 
     // where we loaded OR saved this city to...
     // used to determine save vs. save as...
@@ -93,6 +106,18 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     fun suggestedFilename(): String {
         return Slug.makeSlug(cityName) + ".kcity"
+    }
+
+    fun tick() {
+        time += 1000 * 60
+        println("Ticked to: ${kotcity.ui.serializeDate(time)}")
+        if (time.toDateTime().minuteOfHour == 0) {
+            println("Top of the hour stuff...")
+            if (time.toDateTime().hourOfDay == 0) {
+                println("Top of the day stuff...")
+            }
+        }
+
     }
 
     private fun waterFound(from: BlockCoordinate, to: BlockCoordinate): Boolean {

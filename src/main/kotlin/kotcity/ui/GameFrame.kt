@@ -16,12 +16,10 @@ import javafx.stage.FileChooser
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
-import java.util.Optional
 import javafx.scene.control.ButtonBar.ButtonData
-
-
-
-
+import tornadofx.runLater
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 object Algorithms {
@@ -30,10 +28,17 @@ object Algorithms {
     }
 }
 
+fun serializeDate(date: Date): String {
+    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm a")
+    simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+    return simpleDateFormat.format(date)
+}
+
 const val DRAW_GRID = true
 const val TICK_DELAY: Int = 10 // only render every X ticks... (framerate limiter)
 
 enum class Tool { BULLDOZE, QUERY, ROAD, RESIDENTIAL_ZONE, INDUSTRIAL_ZONE, COMMERCIAL_ZONE, COAL_POWER_PLANT }
+enum class GameSpeed { SLOW, MEDIUM, FAST }
 
 class GameFrame : View(), CanvasFitter {
     override val root: VBox by fxml("/GameFrame.fxml")
@@ -53,9 +58,31 @@ class GameFrame : View(), CanvasFitter {
     private val industrialButton: ToggleButton by fxid()
     private val coalPowerButton: Button by fxid()
 
+    private val selectedToolLabel: Label by fxid()
+    private val cityNameLabel: Label by fxid()
+    private val clockLabel: Label by fxid()
+
+    private val pauseMenuItem: CheckMenuItem by fxid()
+    private val slowMenuItem: RadioMenuItem by fxid()
+    private val mediumMenuItem: RadioMenuItem by fxid()
+    private val fastMenuItem: RadioMenuItem by fxid()
+
+    var gameSpeed = GameSpeed.MEDIUM
+        set(value) {
+            field = value
+            scheduleGameTickTimer()
+        }
+
     var ticks = 0
-    private var timer: AnimationTimer? = null
+    private var renderTimer: AnimationTimer? = null
+    private var gameTickTimer: Timer = Timer()
+    private var gameTickTask: TimerTask? = null
+
     var activeTool: Tool = Tool.QUERY
+        set(value) {
+            field = value
+            selectedToolLabel.text = "Selected: $value"
+        }
 
     private lateinit var map: CityMap
     private var cityRenderer: CityRenderer? = null
@@ -67,6 +94,7 @@ class GameFrame : View(), CanvasFitter {
         setCanvasSize()
         initComponents()
         title = "KotCity 0.1 - ${map.cityName}"
+        cityNameLabel.text = map.cityName
         this.cityRenderer = CityRenderer(this, canvas, map)
     }
 
@@ -82,18 +110,28 @@ class GameFrame : View(), CanvasFitter {
     }
 
     private fun setScrollbarSizes() {
-
         // TODO: don't let us scroll off the edge...
         horizontalScroll.min = 0.0
         verticalScroll.min = 0.0
 
         horizontalScroll.max = getMap().width.toDouble()
         verticalScroll.max = getMap().height.toDouble()
-
     }
 
     private fun getMap(): CityMap {
         return this.map
+    }
+
+    fun slowClicked() {
+        gameSpeed = GameSpeed.SLOW
+    }
+
+    fun mediumClicked() {
+        gameSpeed = GameSpeed.MEDIUM
+    }
+
+    fun fastClicked() {
+        gameSpeed = GameSpeed.FAST
     }
 
 
@@ -129,7 +167,8 @@ class GameFrame : View(), CanvasFitter {
         println("New city was pressed!")
         this.currentStage?.close()
         val launchScreen = tornadofx.find(LaunchScreen::class)
-        timer?.stop()
+        renderTimer?.stop()
+        gameTickTask?.cancel()
         launchScreen.openWindow()
     }
 
@@ -172,7 +211,7 @@ class GameFrame : View(), CanvasFitter {
     }
 
     init {
-        initComponents()
+
     }
 
     private fun initComponents() {
@@ -183,7 +222,7 @@ class GameFrame : View(), CanvasFitter {
 
         accordion.expandedPane = basicPane
 
-        timer = object : AnimationTimer() {
+        renderTimer = object : AnimationTimer() {
             override fun handle(now: Long) {
                 if (ticks == TICK_DELAY) {
                     cityRenderer?.render()
@@ -192,7 +231,32 @@ class GameFrame : View(), CanvasFitter {
                 ticks++
             }
         }
-        timer?.start()
+        renderTimer?.start()
+
+        scheduleGameTickTimer()
+    }
+
+    private fun scheduleGameTickTimer() {
+        val delay = 0L // delay for 0 sec.
+
+        val period = when (gameSpeed) {
+            GameSpeed.SLOW -> 500L
+            GameSpeed.MEDIUM -> 200L
+            GameSpeed.FAST -> 100L
+        }
+        gameTickTask?.cancel()
+        gameTickTask = object : TimerTask() {
+            override fun run() {
+                runLater {
+                    if (!pauseMenuItem.isSelected) {
+                        map.tick()
+                        clockLabel.text = "Clock: ${serializeDate(map.time)}"
+                    }
+                }
+            }
+        }
+
+        gameTickTimer.scheduleAtFixedRate(gameTickTask, delay, period)
     }
 
     fun quitPressed() {

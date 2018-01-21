@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.control.ScrollBar?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
@@ -31,6 +34,18 @@
                   <MenuItem fx:id="quitButton" mnemonicParsing="false" onAction="#quitPressed" text="Quit" />
                </items>
             </Menu>
+            <Menu mnemonicParsing="false" text="Speed">
+              <items>
+                  <CheckMenuItem fx:id="pauseMenuItem" mnemonicParsing="false" text="Paused" />
+                  <RadioMenuItem fx:id="slowMenuItem" mnemonicParsing="false" onAction="#slowClicked" text="Slow">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="gameSpeed" />
+                     </toggleGroup>
+                  </RadioMenuItem>
+                  <RadioMenuItem fx:id="mediumMenuItem" mnemonicParsing="false" onAction="#mediumClicked" selected="true" text="Medium" toggleGroup="$gameSpeed" />
+                  <RadioMenuItem fx:id="fastMenuItem" mnemonicParsing="false" onAction="#fastClicked" text="Fast" toggleGroup="$gameSpeed" />
+              </items>
+            </Menu>
             <Menu mnemonicParsing="false" text="Info">
                <items>
                   <MenuItem mnemonicParsing="false" text="City Information..." />
@@ -45,13 +60,13 @@
       </MenuBar>
       <SplitPane dividerPositions="0.21128318584070796" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="600.0" minWidth="800.0" VBox.vgrow="ALWAYS">
          <items>
-            <AnchorPane maxWidth="200.0">
+            <VBox maxWidth="200.0">
                <children>
-                  <Accordion fx:id="accordion" layoutY="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Accordion fx:id="accordion" maxWidth="200.0" minHeight="400.0">
                      <panes>
                         <TitledPane fx:id="basicPane" animated="false" text="Basic">
                            <content>
-                              <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
+                              <FlowPane hgap="10.0" maxWidth="200.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
                                  <children>
                                     <Button fx:id="bulldozeButton" mnemonicParsing="false" text="Bulldoze" />
                                     <Button fx:id="queryButton" mnemonicParsing="false" text="Query" />
@@ -63,7 +78,7 @@
                                     </ToggleButton>
                                     <ToggleButton fx:id="commercialButton" mnemonicParsing="false" text="Commercial" toggleGroup="$buildTools" />
                                     <ToggleButton fx:id="industrialButton" mnemonicParsing="false" text="Industrial" toggleGroup="$buildTools" />
-                                    <Region prefHeight="5.0" prefWidth="200.0" />
+                                    <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="5.0" prefWidth="200.0" />
                                     <Button fx:id="roadButton" mnemonicParsing="false" text="Road" />
                                     <Region layoutX="21.0" layoutY="93.0" prefHeight="5.0" prefWidth="200.0" />
                                     <Button mnemonicParsing="false" onAction="#zoomIn" text="Zoom In" />
@@ -77,14 +92,39 @@
                               <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
                                  <children>
                                     <Button fx:id="coalPowerButton" mnemonicParsing="false" text="Coal Power Plant" />
-                                 </children></FlowPane>
+                                 </children>
+                              </FlowPane>
                            </content>
                         </TitledPane>
                         <TitledPane animated="false" text="Other" />
                      </panes>
                   </Accordion>
+                  <VBox>
+                     <children>
+                        <Label fx:id="cityNameLabel" text="City: &lt;CITY NAME&gt;">
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="moneyLabel" text="Money: $1,000,000">
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="demandLabel" text="R: 50% C: 50% I: 50%">
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="clockLabel" text="Clock: Jan 1, 2000 at 8:00AM">
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
                </children>
-            </AnchorPane>
+            </VBox>
             <AnchorPane minHeight="600.0" minWidth="600.0">
                <children>
                   <AnchorPane fx:id="canvasPane" minHeight="580.0" minWidth="580.0" style="-fx-background-color: #cccccc;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -93,7 +133,7 @@
                         <ScrollBar fx:id="verticalScroll" layoutX="570.0" orientation="VERTICAL" prefHeight="559.0" prefWidth="17.0" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
-                  <Label text="Currently Selected Tool" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <Label fx:id="selectedToolLabel" text="Currently Selected Tool" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                </children>
             </AnchorPane>
          </items>

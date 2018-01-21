@@ -3,8 +3,6 @@ buildscript {
 
     repositories {
         mavenCentral()
-        maven { url 'https://jitpack.io' }
-        maven { url 'https://mvnrepository.com' }
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -20,6 +18,8 @@ apply plugin: 'org.junit.platform.gradle.plugin'
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://mvnrepository.com' }
 }
 
 dependencies {
@@ -27,9 +27,11 @@ dependencies {
     compile 'no.tornado:tornadofx:1.7.14'
     compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
     compile group: 'com.github.davidmoten', name: 'rtree', version: '0.8.0.4'
+    compile 'com.github.kizitonwose.time:time:1.0.1'
     compile group: 'javax.vecmath', name: 'vecmath', version: '1.5.2'
     testCompile("org.junit.jupiter:junit-jupiter-api:5.0.0-M4")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.0-M4")
+    compile "com.github.debop:koda-time:1.2.1"
 
     // Enable use of the JUnitPlatform Runner within the IDE
     testCompile("org.junit.platform:junit-platform-runner:1.0.0-M4")
