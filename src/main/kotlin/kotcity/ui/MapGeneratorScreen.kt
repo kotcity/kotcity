@@ -24,6 +24,8 @@ class MapGeneratorScreen : View(), CanvasFitter {
     private val widthField: TextField by fxid()
     private val seaLevelSlider: Slider by fxid()
 
+    var timer : AnimationTimer? = null
+
     private var newMap = mapGenerator.generateMap(widthField.text.toInt(), heightField.text.toInt())
 
     init {
@@ -35,9 +37,12 @@ class MapGeneratorScreen : View(), CanvasFitter {
         newMap = generate(widthField.text.toInt(), heightField.text.toInt())
         fitMap()
 
-        val timer = object : AnimationTimer() {
+        var ticks = 0
+
+        timer = object : AnimationTimer() {
             override fun handle(now: Long) {
-                if (now % 10L == 0L) {
+                ticks += 1
+                if (ticks > 20) {
                     // get the graphics context...
                     val gc = canvas.graphicsContext2D
 
@@ -55,11 +60,12 @@ class MapGeneratorScreen : View(), CanvasFitter {
                             }
                         }
                     }
+                    ticks = 0
                 }
             }
         }
 
-        timer.start()
+        timer?.start()
     }
 
     private fun generate(width: Int, height: Int): CityMap {
@@ -87,7 +93,8 @@ class MapGeneratorScreen : View(), CanvasFitter {
     fun acceptPressed() {
         this.close()
         val gameFrame = tornadofx.find(GameFrame::class)
-        gameFrame.setMap(CityMap(512, 512))
+        timer?.stop()
+        gameFrame.setMap(newMap)
         gameFrame.openWindow()
     }
 }

@@ -1,5 +1,6 @@
 package kotcity.ui
 
+import aballano.kotlinmemoization.memoize
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
@@ -24,6 +25,9 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     private var mouseDown = false
     var mouseBlock: BlockCoordinate? = null
     private var firstBlockPressed: BlockCoordinate? = null
+
+    // memoized functions...
+    val memoizedAdjustColor = ::adjustColor.memoize(256)
 
     init {
         mapMin = map.groundLayer.values.mapNotNull {it.elevation}.min() ?: 0.0
@@ -74,8 +78,9 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     private fun mouseToBlock(mouseX: Double, mouseY: Double): BlockCoordinate {
         // OK... this should be pretty easy...
-        val blockX =  (mouseX / blockSize()).toInt()
-        val blockY =  (mouseY / blockSize()).toInt()
+        val blockSize = blockSize()
+        val blockX =  (mouseX / blockSize).toInt()
+        val blockY =  (mouseY / blockSize).toInt()
         // println("Mouse block coords: $blockX,$blockY")
         return BlockCoordinate(blockX + blockOffsetX.toInt(), blockY + blockOffsetY.toInt())
     }
@@ -123,6 +128,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     private fun drawMap(gc: GraphicsContext) {
         // we got that map...
         val (xRange, yRange) = visibleBlockRange()
+        val blockSize = blockSize()
 
         xRange.toList().forEachIndexed { xi, x ->
             yRange.toList().forEachIndexed { yi, y ->
@@ -136,10 +142,9 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                         }
                     // this next line maps the elevations from -0.5 to 0.5 so we don't get
                     // weird looking colors....
-                    val bleachAmount = Algorithms.scale(tile.elevation, mapMin, mapMax, -0.5, 0.5)
-                    gc.fill = bleach(newColor, bleachAmount.toFloat())
-
-                    val blockSize = blockSize()
+                    val elevation = tile.elevation
+                    val adjustedColor = adjustColor(elevation, newColor)
+                    gc.fill = adjustedColor
 
                     gc.fillRect(
                             xi * blockSize,
@@ -156,6 +161,11 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
             }
         }
+    }
+
+    private fun adjustColor(elevation: Double, color: Color): Color {
+        val bleachAmount = Algorithms.scale(elevation, mapMin, mapMax, -0.5, 0.5)
+        return bleach(color, bleachAmount.toFloat())
     }
 
     private fun fillBlocks(g2d: GraphicsContext, blockX: Int, blockY: Int, width: Int, height: Int) {
@@ -242,12 +252,13 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
             val building = it.second
             val tx = coordinate.x - blockOffsetX
             val ty = coordinate.y - blockOffsetY
+            val blockSize = blockSize()
             if (building is Road) {
                 context.fill = Color.BLACK
-                context.fillRect(tx * blockSize(), ty  * blockSize(), blockSize(), blockSize())
+                context.fillRect(tx * blockSize, ty  * blockSize, blockSize, blockSize)
             } else if (building is CoalPowerPlant) {
                 context.fill = Color.GRAY
-                context.fillRect(tx * blockSize(), ty  * blockSize(), blockSize() * building.getWidth(), blockSize() * building.getHeight())
+                context.fillRect(tx * blockSize, ty  * blockSize, blockSize * building.getWidth(), blockSize * building.getHeight())
             }
         }
     }
@@ -257,7 +268,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         // gotta translate here...
         val tx = x - blockOffsetX
         val ty = y - blockOffsetY
-        g2d.fillRect(tx * blockSize(), ty  * blockSize(), blockSize(), blockSize())
+        val blockSize = blockSize()
+        g2d.fillRect(tx * blockSize, ty  * blockSize, blockSize, blockSize)
     }
 
     // each block should = 10 meters, square...

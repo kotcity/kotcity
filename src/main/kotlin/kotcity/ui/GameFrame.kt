@@ -7,13 +7,16 @@ import javafx.scene.input.MouseButton
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
-import kotcity.data.BlockCoordinate
-import kotcity.data.CityMap
-import kotcity.data.CoalPowerPlant
-import kotcity.data.MapGenerator
+import kotcity.data.*
 import tornadofx.App
 import tornadofx.View
 import tornadofx.find
+import java.io.File
+import javafx.stage.FileChooser
+import javafx.scene.control.Alert.AlertType
+import javafx.scene.control.Alert
+
+
 
 
 object Algorithms {
@@ -23,6 +26,7 @@ object Algorithms {
 }
 
 const val DRAW_GRID = true
+const val TICK_DELAY: Int = 10 // only render every X ticks... (framerate limiter)
 
 enum class Tool { BULLDOZE, QUERY, ROAD, RESIDENTIAL_ZONE, INDUSTRIAL_ZONE, COMMERCIAL_ZONE, COAL_POWER_PLANT }
 
@@ -45,8 +49,7 @@ class GameFrame : View(), CanvasFitter {
     private val coalPowerButton: Button by fxid()
 
     var ticks = 0
-    val tickDelay: Int = 5 // only render every X ticks... (framerate limiter)
-
+    private var timer: AnimationTimer? = null
     var activeTool: Tool = Tool.QUERY
 
     private lateinit var map: CityMap
@@ -57,7 +60,7 @@ class GameFrame : View(), CanvasFitter {
         // gotta resize the component now...
         setScrollbarSizes()
         setCanvasSize()
-
+        initComponents()
         this.cityRenderer = CityRenderer(this, canvas, map)
     }
 
@@ -106,6 +109,46 @@ class GameFrame : View(), CanvasFitter {
         }
     }
 
+    fun saveCity() {
+        // make sure we have a filename to save to... otherwise just bounce to saveCityAs()...
+        if (map.fileName != null) {
+            CityFileAdapter.save(map, File(map.fileName))
+            saveMessageBox()
+        } else {
+            saveCityAs()
+        }
+    }
+
+    fun newCityPressed() {
+        println("New city was pressed!")
+        this.currentStage?.close()
+        val launchScreen = tornadofx.find(LaunchScreen::class)
+        timer?.stop()
+        launchScreen.openWindow()
+    }
+
+    fun saveCityAs() {
+        val fileChooser = FileChooser()
+        fileChooser.title = "Save your city"
+        fileChooser.extensionFilters.addAll(
+            FileChooser.ExtensionFilter("KotCity City", "*.kcity")
+        )
+        fileChooser.initialFileName = "*.kcity"
+        val file = fileChooser.showSaveDialog(this.primaryStage)
+        CityFileAdapter.save(map, file)
+        map.fileName = file.absoluteFile.toString()
+        println("The new map filename is: ${map.fileName}")
+        saveMessageBox()
+    }
+
+    private fun saveMessageBox() {
+        val alert = Alert(AlertType.INFORMATION)
+        alert.title = "City Saved"
+        alert.headerText = "City Saved OK!"
+        alert.dialogPane.content = Label("Everything went great. Your city is saved to ${map.fileName}.")
+        alert.showAndWait()
+    }
+
     fun bindButtons() {
         roadButton.setOnAction { activeTool = Tool.ROAD }
         queryButton.setOnAction { activeTool = Tool.QUERY }
@@ -116,8 +159,16 @@ class GameFrame : View(), CanvasFitter {
         coalPowerButton.setOnAction { activeTool = Tool.COAL_POWER_PLANT }
     }
 
-    init {
+    fun loadCity() {
+        this.currentStage?.close()
+        CityLoader.loadCity(this.primaryStage)
+    }
 
+    init {
+        initComponents()
+    }
+
+    private fun initComponents() {
         title = "Kotcity 0.1"
 
         bindCanvas()
@@ -125,16 +176,16 @@ class GameFrame : View(), CanvasFitter {
 
         accordion.expandedPane = basicPane
 
-        val timer = object : AnimationTimer() {
+        timer = object : AnimationTimer() {
             override fun handle(now: Long) {
-                if (ticks == tickDelay) {
+                if (ticks == TICK_DELAY) {
                     cityRenderer?.render()
                     ticks = 0
                 }
                 ticks++
             }
         }
-        timer.start()
+        timer?.start()
     }
 
     private fun bindCanvas() {

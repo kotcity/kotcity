@@ -7,6 +7,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleButton?>
@@ -22,17 +23,22 @@
          <menus>
             <Menu mnemonicParsing="false" text="File">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Close" />
+                  <MenuItem mnemonicParsing="false" onAction="#newCityPressed" text="New City..." />
+                  <MenuItem mnemonicParsing="false" text="Load City..." />
+                  <MenuItem fx:id="saveCityButton" mnemonicParsing="false" onAction="#saveCity" text="Save City" />
+                  <MenuItem fx:id="saveCityAsButton" mnemonicParsing="false" onAction="#saveCityAs" text="Save City As..." />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="quitButton" mnemonicParsing="false" text="Quit" />
                </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
+            <Menu mnemonicParsing="false" text="Info">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Delete" />
+                  <MenuItem mnemonicParsing="false" text="City Information..." />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
                <items>
-                  <MenuItem mnemonicParsing="false" text="About" />
+                  <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" text="About" />
                </items>
             </Menu>
          </menus>

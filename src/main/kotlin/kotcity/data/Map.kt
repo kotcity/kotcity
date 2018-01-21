@@ -26,9 +26,12 @@ fun IntRange.reorder(): IntRange {
 enum class TileType { GROUND, WATER}
 data class MapTile(val type: TileType, val elevation: Double)
 
-class CityMap(val width: Int = 512, val height: Int = 512) {
+data class CityMap(var width: Int = 512, var height: Int = 512) {
     val groundLayer = mutableMapOf<BlockCoordinate, MapTile>()
     val buildingLayer = mutableMapOf<BlockCoordinate, Building>()
+    // where we loaded OR saved this city to...
+    // used to determine save vs. save as...
+    var fileName: String? = null
 
     private fun roadBlocks(startBlock: BlockCoordinate, endBlock: BlockCoordinate): MutableList<BlockCoordinate> {
         println("Getting roadblocks for $startBlock to $endBlock")

@@ -5,6 +5,14 @@ import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import tornadofx.App
 import tornadofx.View
+import javafx.stage.FileChooser
+import kotcity.data.CityFileAdapter
+import kotcity.data.MapGenerator
+import tornadofx.runLater
+import java.util.Collections.addAll
+import java.io.File
+
+
 
 
 class LaunchScreen : View() {
@@ -16,12 +24,16 @@ class LaunchScreen : View() {
 
     fun newCityPressed() {
         println("We want a new city!")
-        this.primaryStage.close()
+        this.currentStage?.close()
         MapGeneratorScreen().openWindow()
     }
 
     fun loadCityPressed() {
-        throw NotImplementedError()
+        val launchScreen = this
+        runLater {
+            launchScreen.currentStage?.close()
+            CityLoader.loadCity(launchScreen.primaryStage)
+        }
     }
 
     fun quitPressed() {
