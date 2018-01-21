@@ -9,9 +9,9 @@ import kotcity.data.*
 class CityRenderer(private val gameFrame: GameFrame, private val canvas: ResizableCanvas, private val map: CityMap) {
 
     private fun bleach(color: Color, amount: Float): Color {
-        var red = (color.red + amount).coerceIn(0.0, 1.0)
-        var green = (color.green + amount).coerceIn(0.0, 1.0)
-        var blue = (color.blue + amount).coerceIn(0.0, 1.0)
+        val red = (color.red + amount).coerceIn(0.0, 1.0)
+        val green = (color.green + amount).coerceIn(0.0, 1.0)
+        val blue = (color.blue + amount).coerceIn(0.0, 1.0)
         return Color.color(red, green, blue)
     }
 
