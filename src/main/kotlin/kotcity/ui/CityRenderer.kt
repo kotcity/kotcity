@@ -287,12 +287,14 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         visibleBlocks().forEach { coordinate ->
             map.zoneLayer[coordinate]?.let { zone ->
                 // figure out fill color...
+                val tx = coordinate.x - blockOffsetX
+                val ty = coordinate.y - blockOffsetY
                 graphics.fill = when (zone.type) {
                     ZoneType.RESIDENTIAL -> Color.GREEN
                     ZoneType.COMMERCIAL -> Color.BLUE
                     ZoneType.INDUSTRIAL -> Color.YELLOW
                 }
-                graphics.fillRect(coordinate.x * blockSize, coordinate.y * blockSize, blockSize, blockSize)
+                graphics.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
             }
         }
     }

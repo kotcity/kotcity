@@ -21,6 +21,16 @@ val gson = GsonBuilder()
                 data["height"] = map.height
                 data["width"] = map.width
                 data["cityName"] = map.cityName
+                data["zoneLayer"] = it.src.zoneLayer.map { entry ->
+                    val x = entry.key.x
+                    val y = entry.key.y
+                    val zone = entry.value
+                    jsonObject(
+                        "type" to zone.type.toString(),
+                        "x" to x,
+                        "y" to y
+                    )
+                }.toJsonArray()
                 data["groundLayer"] = it.src.groundLayer.map { entry ->
                     val x = entry.key.x
                     val y = entry.key.y
@@ -63,7 +73,6 @@ val gson = GsonBuilder()
                     val tileType = TileType.valueOf(tileObj["type"].asString)
                     val tile = MapTile(tileType, tileObj["elevation"].asDouble)
                     cityMap.groundLayer[coordinate] = tile
-
                 }
 
                 data["buildingLayer"].asJsonArray.forEach {
@@ -77,6 +86,14 @@ val gson = GsonBuilder()
                     }
 
                     cityMap.buildingLayer[BlockCoordinate(x, y)] = building
+                }
+
+                data["zoneLayer"]?.asJsonArray?.forEach {
+                    var zoneObj = it.asJsonObject
+                    val x = zoneObj["x"].asInt
+                    val y = zoneObj["y"].asInt
+                    val type = ZoneType.valueOf(zoneObj["type"].asString)
+                    cityMap.zoneLayer[BlockCoordinate(x, y)] = Zone(type)
                 }
 
                 cityMap.updateBuildingIndex()
