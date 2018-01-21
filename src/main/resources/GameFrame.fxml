@@ -50,13 +50,13 @@
                                     <Button fx:id="bulldozeButton" mnemonicParsing="false" text="Bulldoze" />
                                     <Button fx:id="queryButton" mnemonicParsing="false" text="Query" />
                                     <Region layoutX="21.0" layoutY="93.0" prefHeight="5.0" prefWidth="200.0" />
-                                    <ToggleButton mnemonicParsing="false" text="Residential">
+                                    <ToggleButton fx:id="residentialButton" mnemonicParsing="false" text="Residential">
                                        <toggleGroup>
                                           <ToggleGroup fx:id="buildTools" />
                                        </toggleGroup>
                                     </ToggleButton>
-                                    <ToggleButton mnemonicParsing="false" text="Commercial" toggleGroup="$buildTools" />
-                                    <ToggleButton mnemonicParsing="false" text="Industrial" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="commercialButton" mnemonicParsing="false" text="Commercial" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="industrialButton" mnemonicParsing="false" text="Industrial" toggleGroup="$buildTools" />
                                     <Region prefHeight="5.0" prefWidth="200.0" />
                                     <Button fx:id="roadButton" mnemonicParsing="false" text="Road" />
                                     <Region layoutX="21.0" layoutY="93.0" prefHeight="5.0" prefWidth="200.0" />
@@ -68,7 +68,10 @@
                         </TitledPane>
                         <TitledPane animated="false" text="Power">
                            <content>
-                              <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0" />
+                              <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
+                                 <children>
+                                    <Button fx:id="coalPowerButton" mnemonicParsing="false" text="Coal Power Plant" />
+                                 </children></FlowPane>
                            </content>
                         </TitledPane>
                         <TitledPane animated="false" text="Other" />

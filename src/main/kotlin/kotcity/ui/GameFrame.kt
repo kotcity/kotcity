@@ -2,15 +2,14 @@ package kotcity.ui
 
 import javafx.animation.AnimationTimer
 import javafx.application.Application
-import javafx.scene.control.Accordion
-import javafx.scene.control.Button
-import javafx.scene.control.ScrollBar
-import javafx.scene.control.TitledPane
+import javafx.scene.control.*
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
+import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
+import kotcity.data.CoalPowerPlant
 import kotcity.data.MapGenerator
 import tornadofx.App
 import tornadofx.View
@@ -25,7 +24,7 @@ object Algorithms {
 
 const val DRAW_GRID = true
 
-enum class Tool { BULLDOZE, QUERY, ROAD }
+enum class Tool { BULLDOZE, QUERY, ROAD, RESIDENTIAL_ZONE, INDUSTRIAL_ZONE, COMMERCIAL_ZONE, COAL_POWER_PLANT }
 
 class GameFrame : View(), CanvasFitter {
     override val root: VBox by fxml("/GameFrame.fxml")
@@ -40,6 +39,10 @@ class GameFrame : View(), CanvasFitter {
     private val roadButton: Button by fxid()
     private val queryButton: Button by fxid()
     private val bulldozeButton: Button by fxid()
+    private val residentialButton: ToggleButton by fxid()
+    private val commercialButton: ToggleButton by fxid()
+    private val industrialButton: ToggleButton by fxid()
+    private val coalPowerButton: Button by fxid()
 
     var ticks = 0
     val tickDelay: Int = 5 // only render every X ticks... (framerate limiter)
@@ -73,13 +76,10 @@ class GameFrame : View(), CanvasFitter {
 
         // TODO: don't let us scroll off the edge...
         horizontalScroll.min = 0.0
-        horizontalScroll.max = getMap().width.toDouble()
-
         verticalScroll.min = 0.0
-        verticalScroll.max = getMap().height.toDouble()
 
-        println("Horizontal set to: ${horizontalScroll.max}")
-        println("Vertical set to: ${verticalScroll.max}")
+        horizontalScroll.max = getMap().width.toDouble()
+        verticalScroll.max = getMap().height.toDouble()
 
     }
 
@@ -91,19 +91,29 @@ class GameFrame : View(), CanvasFitter {
     fun zoomOut() {
         cityRenderer?.let {
             it.zoom -= 1
+            if (it.zoom < 1) {
+                it.zoom = 1.0
+            }
         }
     }
 
     fun zoomIn() {
         cityRenderer?.let {
             it.zoom += 1
+            if (it.zoom > 5.0) {
+                it.zoom = 5.0
+            }
         }
     }
 
     fun bindButtons() {
-        roadButton.setOnAction { this.activeTool = Tool.ROAD }
-        queryButton.setOnAction { this.activeTool = Tool.QUERY }
-        bulldozeButton.setOnAction { this.activeTool = Tool.BULLDOZE }
+        roadButton.setOnAction { activeTool = Tool.ROAD }
+        queryButton.setOnAction { activeTool = Tool.QUERY }
+        bulldozeButton.setOnAction { activeTool = Tool.BULLDOZE }
+        residentialButton.setOnAction { activeTool = Tool.RESIDENTIAL_ZONE }
+        commercialButton.setOnAction { activeTool = Tool.COMMERCIAL_ZONE }
+        industrialButton.setOnAction { activeTool = Tool.INDUSTRIAL_ZONE }
+        coalPowerButton.setOnAction { activeTool = Tool.COAL_POWER_PLANT }
     }
 
     init {
@@ -142,7 +152,7 @@ class GameFrame : View(), CanvasFitter {
         }
 
         canvas.setOnMouseMoved { evt ->
-
+            cityRenderer?.onMouseMoved(evt)
         }
 
         canvas.setOnMousePressed { evt ->
@@ -173,10 +183,20 @@ class GameFrame : View(), CanvasFitter {
 
         canvas.setOnMouseClicked { evt ->
             cityRenderer?.onMouseClicked(evt)
+            // now let's handle some tools...
+            if (activeTool == Tool.COAL_POWER_PLANT) {
+                // TODO: we have to figure out some kind of offset for this shit...
+                // can't take place at hovered block...
+                cityRenderer?.getHoveredBlock()?.let {
+                    val newX = it.x - 1
+                    val newY = it.y - 1
+                    map.build(CoalPowerPlant(), BlockCoordinate(newX, newY))
+                }
+            }
         }
 
         canvasPane.heightProperty().addListener { _, _, newValue ->
-            println("resizing canvas height to: ${newValue}")
+            println("resizing canvas height to: $newValue")
             canvas.height = newValue.toDouble()
             setCanvasSize()
             setScrollbarSizes()

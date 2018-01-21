@@ -93,11 +93,25 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     fun onMouseDragged(evt: MouseEvent) {
+        updateMouseBlock(evt)
+        // println("The mouse is at $blockCoordinate")
+    }
+
+    private fun updateMouseBlock(evt: MouseEvent) {
         val mouseX = evt.x
         val mouseY = evt.y
         val blockCoordinate = mouseToBlock(mouseX, mouseY)
         this.mouseBlock = blockCoordinate
-        // println("The mouse is at $blockCoordinate")
+    }
+
+    fun getHoveredBlock(): BlockCoordinate? {
+        return this.mouseBlock
+    }
+
+    fun onMouseMoved(evt: MouseEvent) {
+        // OK... if we have an active tool we might
+        // have to draw a building highlight
+        updateMouseBlock(evt)
     }
 
     fun onMouseClicked(evt: MouseEvent) {
@@ -161,15 +175,36 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         canvas.graphicsContext2D.fillRect(0.0,0.0, canvas.width, canvas.height)
         drawMap(canvas.graphicsContext2D)
         drawBuildings(canvas.graphicsContext2D)
-        if (mouseDown) {
-            if (gameFrame.activeTool == Tool.ROAD) {
-                drawRoadBlueprint(canvas.graphicsContext2D)
-            } else if (gameFrame.activeTool == Tool.BULLDOZE) {
-                firstBlockPressed?.let {first ->
-                    mouseBlock?.let {second ->
-                        highlightBlocks(first, second)
-                    }
+        mouseBlock?.let {
+            if (mouseDown) {
+                if (gameFrame.activeTool == Tool.ROAD) {
+                    drawRoadBlueprint(canvas.graphicsContext2D)
                 }
+                else if (gameFrame.activeTool == Tool.BULLDOZE) firstBlockPressed?.let { first ->
+                    highlightBlocks(first, it)
+                }
+            } else {
+                if (gameFrame.activeTool == Tool.COAL_POWER_PLANT) {
+                    highlightCenteredBlocks(it, 4, 4)
+                }
+            }
+        }
+    }
+
+    private fun highlightCenteredBlocks(start: BlockCoordinate, width: Int, height: Int) {
+        // TODO: we want to make this shit kind of centered...
+        val offsetX = (width/2)-1
+        val offsetY = (height/2)-1
+        val newBlock = BlockCoordinate(start.x - offsetX, start.y - offsetY)
+        highlightBlocks(newBlock, width, height)
+    }
+
+    private fun highlightBlocks(start: BlockCoordinate, width: Int, height: Int) {
+        val startX = start.x
+        val startY = start.y
+        for (x in startX until startX + width) {
+            for (y in startY until startY + height) {
+                highlightBlock(canvas.graphicsContext2D, x, y)
             }
         }
     }
@@ -206,11 +241,14 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         visibleBuildings().forEach { it ->
             val coordinate = it.first
             val building = it.second
+            val tx = coordinate.x - blockOffsetX
+            val ty = coordinate.y - blockOffsetY
             if (building is Road) {
-                val tx = coordinate.x - blockOffsetX
-                val ty = coordinate.y - blockOffsetY
                 context.fill = Color.BLACK
                 context.fillRect(tx * blockSize(), ty  * blockSize(), blockSize(), blockSize())
+            } else if (building is CoalPowerPlant) {
+                context.fill = Color.GRAY
+                context.fillRect(tx * blockSize(), ty  * blockSize(), blockSize() * building.getWidth(), blockSize() * building.getHeight())
             }
         }
     }
@@ -222,19 +260,6 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         val ty = y - blockOffsetY
         g2d.fillRect(tx * blockSize(), ty  * blockSize(), blockSize(), blockSize())
     }
-
-//    private fun highlightBlock(g2d: GraphicsContext, hoveredBlockX: Int, hoveredBlockY: Int, radius: Int) {
-//        val startBlockX = (hoveredBlockX - Math.floor((radius / 2).toDouble())).toInt()
-//        val startBlockY = (hoveredBlockY - Math.floor((radius / 2).toDouble())).toInt()
-//        val endBlockX = startBlockX + radius - 1
-//        val endBlockY = startBlockY + radius - 1
-//
-//        for (y in startBlockY..endBlockY) {
-//            for (x in startBlockX..endBlockX) {
-//                highlightBlock(g2d, x, y)
-//            }
-//        }
-//    }
 
     // each block should = 10 meters, square...
     // 64 pixels = 10 meters

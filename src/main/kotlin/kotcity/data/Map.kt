@@ -56,6 +56,10 @@ class CityMap(val width: Int = 512, val height: Int = 512) {
         }
     }
 
+    fun build(building: Building, block: BlockCoordinate) {
+        this.buildingLayer[block] = building
+    }
+
     fun bulldoze(from: BlockCoordinate, to: BlockCoordinate) {
         println("Want to bulldoze from $from to $to")
         BlockCoordinate.iterate(from, to) {
@@ -66,11 +70,28 @@ class CityMap(val width: Int = 512, val height: Int = 512) {
 }
 
 interface Building {
-    val height: Int
-    val width: Int
+    fun getWidth(): Int
+    fun getHeight(): Int
 }
 
 class Road : Building {
-    override val height = 1
-    override val width = 1
+    override fun getWidth(): Int {
+        return 1
+    }
+
+    override fun getHeight(): Int {
+        return 1
+    }
+
+}
+
+class CoalPowerPlant : Building {
+    override fun getWidth(): Int {
+        return 4
+    }
+
+    override fun getHeight(): Int {
+        return 4
+    }
+
 }
