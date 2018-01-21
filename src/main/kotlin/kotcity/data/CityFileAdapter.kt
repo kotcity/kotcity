@@ -12,12 +12,12 @@ val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
 
 fun parseDate(str: String): Date {
-    simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+    simpleDateFormat.timeZone = TimeZone.getDefault()
     return simpleDateFormat.parse(str)
 }
 
 fun serializeDate(date: Date): String {
-    simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+    simpleDateFormat.timeZone = TimeZone.getDefault()
     return simpleDateFormat.format(date)
 }
 

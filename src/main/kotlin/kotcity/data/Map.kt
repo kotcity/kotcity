@@ -37,7 +37,7 @@ data class MapTile(val type: TileType, val elevation: Double)
 
 fun defaultTime(): Date {
     val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-    simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+    simpleDateFormat.timeZone = TimeZone.getDefault()
     return simpleDateFormat.parse("2000-01-01 12:00:00")
 }
 
@@ -110,10 +110,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     fun tick() {
         time += 1000 * 60
-        println("Ticked to: ${kotcity.ui.serializeDate(time)}")
+        // println("Ticked to: ${kotcity.ui.serializeDate(time)}")
         if (time.toDateTime().minuteOfHour == 0) {
             println("Top of the hour stuff...")
-            if (time.toDateTime().hourOfDay == 0) {
+            val hour = time.toDateTime().hourOfDay
+            println("Hour is: $hour")
+            if (hour == 0) {
                 println("Top of the day stuff...")
             }
         }

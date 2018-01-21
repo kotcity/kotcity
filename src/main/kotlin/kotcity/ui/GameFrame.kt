@@ -29,8 +29,8 @@ object Algorithms {
 }
 
 fun serializeDate(date: Date): String {
-    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm a")
-    simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+    val simpleDateFormat = SimpleDateFormat("EEE MM/dd/yyyy hh:mm a")
+    simpleDateFormat.timeZone = TimeZone.getDefault()
     return simpleDateFormat.format(date)
 }
 
