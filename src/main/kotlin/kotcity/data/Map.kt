@@ -1,5 +1,10 @@
 package kotcity.data
 
+import com.github.davidmoten.rtree.RTree
+import com.github.davidmoten.rtree.geometry.Geometries
+import com.github.davidmoten.rtree.geometry.Geometry
+import com.github.davidmoten.rtree.geometry.Rectangle
+
 data class BlockCoordinate(val x: Int, val y: Int) {
     companion object {
         fun iterate(from: BlockCoordinate, to: BlockCoordinate, callback: (BlockCoordinate) -> Unit) {
@@ -32,6 +37,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     // where we loaded OR saved this city to...
     // used to determine save vs. save as...
     var fileName: String? = null
+    private var buildingIndex = RTree.create<Building, Rectangle>()!!
 
     private fun roadBlocks(startBlock: BlockCoordinate, endBlock: BlockCoordinate): MutableList<BlockCoordinate> {
         println("Getting roadblocks for $startBlock to $endBlock")
@@ -52,15 +58,46 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return blockList
     }
 
+    fun nearestBuildings(coordinate: BlockCoordinate, distance: Float = 10f): List<Pair<BlockCoordinate, Building>> {
+        val point = Geometries.point(coordinate.x.toFloat(), coordinate.y.toFloat())
+        return buildingIndex.search(point, distance.toDouble())
+                .toBlocking().toIterable().mapNotNull { entry ->
+            // println("Found entry: $entry")
+            val geometry = entry.geometry() as Rectangle
+            val building = entry.value() as Building
+            if (geometry != null && building != null) {
+                Pair(BlockCoordinate(geometry.x1().toInt(), geometry.y1().toInt()), building)
+            } else {
+                null
+            }
+        }
+    }
+
+    fun updateBuildingIndex() {
+        var newIndex = RTree.create<Building, Rectangle>()
+        buildingLayer.forEach { coordinate, building ->
+            newIndex = newIndex.add(building, Geometries.rectangle(
+                    coordinate.x.toFloat(),
+                    coordinate.y.toFloat(),
+                    coordinate.x.toFloat() + building.width.toFloat(),
+                    coordinate.y.toFloat() + building.height.toFloat())
+            )
+            println("Size of index is now: ${newIndex.entries().count().toBlocking().first()}")
+        }
+        buildingIndex = newIndex
+    }
+
     fun buildRoad(from: BlockCoordinate, to: BlockCoordinate) {
         roadBlocks(from, to).forEach { block ->
             // println("Dropping a road at: $block")
             buildingLayer[block] = Road()
         }
+        updateBuildingIndex()
     }
 
     fun build(building: Building, block: BlockCoordinate) {
         this.buildingLayer[block] = building
+        updateBuildingIndex()
     }
 
     fun bulldoze(from: BlockCoordinate, to: BlockCoordinate) {
@@ -68,6 +105,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         BlockCoordinate.iterate(from, to) {
             buildingLayer.remove(it)
         }
+        updateBuildingIndex()
     }
 
 }

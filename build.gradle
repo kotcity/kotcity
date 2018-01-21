@@ -4,6 +4,7 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://jitpack.io' }
+        maven { url 'https://mvnrepository.com' }
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -25,6 +26,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile 'no.tornado:tornadofx:1.7.14'
     compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
+    compile group: 'com.github.davidmoten', name: 'rtree', version: '0.8.0.4'
     compile group: 'javax.vecmath', name: 'vecmath', version: '1.5.2'
     testCompile("org.junit.jupiter:junit-jupiter-api:5.0.0-M4")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.0-M4")
