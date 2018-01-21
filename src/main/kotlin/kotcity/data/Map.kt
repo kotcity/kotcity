@@ -2,8 +2,8 @@ package kotcity.data
 
 import com.github.davidmoten.rtree.RTree
 import com.github.davidmoten.rtree.geometry.Geometries
-import com.github.davidmoten.rtree.geometry.Geometry
 import com.github.davidmoten.rtree.geometry.Rectangle
+import tornadofx.c
 
 data class BlockCoordinate(val x: Int, val y: Int) {
     companion object {
@@ -88,17 +88,63 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         buildingIndex = newIndex
     }
 
+    fun canBuildBuildingAt(newBuilding: Building, coordinate: BlockCoordinate): Boolean {
+        // OK... let's get nearby buildings to really cut this down...
+        val newBuildingEnd = BlockCoordinate(coordinate.x + newBuilding.width - 1, coordinate.y + newBuilding.height - 1)
+
+        val newBuildingTopRight = BlockCoordinate(coordinate.x + newBuilding.width - 1, coordinate.y)
+        val newBuildingBottomLeft = BlockCoordinate(coordinate.x, coordinate.y + newBuilding.height - 1)
+
+        val nearby = nearestBuildings(coordinate)
+        nearby.forEach { pair: Pair<BlockCoordinate, Building> ->
+            val building = pair.second
+            val otherBuildingStart = pair.first
+            val otherBuildingEnd = BlockCoordinate(otherBuildingStart.x + building.width - 1, otherBuildingStart.y + building.height - 1)
+            // now let's test...
+            if (coordinate.x <= otherBuildingEnd.x && coordinate.x >= otherBuildingStart.x && coordinate.y <= otherBuildingEnd.y && coordinate.y >= otherBuildingStart.y) {
+                println("Collision with $building!")
+                return false
+            }
+
+            if (newBuildingEnd.x <= otherBuildingEnd.x && newBuildingEnd.x >= otherBuildingStart.x && newBuildingEnd.y <= otherBuildingEnd.y && newBuildingEnd.y >= otherBuildingStart.y) {
+                println("Collision with $building!")
+                return false
+            }
+
+            // TODO: we need to get the TOP RIGHT and BOTTOM LEFT of building to check as well...
+            if (newBuildingTopRight.x <= otherBuildingEnd.x && newBuildingTopRight.x >= otherBuildingStart.x && newBuildingTopRight.y <= otherBuildingEnd.y && newBuildingTopRight.y >= otherBuildingStart.y) {
+                println("Collision with $building!")
+                return false
+            }
+
+            if (newBuildingBottomLeft.x <= otherBuildingEnd.x && newBuildingBottomLeft.x >= otherBuildingStart.x && newBuildingBottomLeft.y <= otherBuildingEnd.y && newBuildingBottomLeft.y >= otherBuildingStart.y) {
+                println("Collision with $building!")
+                return false
+            }
+        }
+        return true
+    }
+
     fun buildRoad(from: BlockCoordinate, to: BlockCoordinate) {
         roadBlocks(from, to).forEach { block ->
             // println("Dropping a road at: $block")
-            buildingLayer[block] = Road()
+            val newRoad = Road()
+            if (canBuildBuildingAt(newRoad, block)) {
+                buildingLayer[block] = newRoad
+            } else {
+                println("We have an overlap... not building!")
+            }
         }
         updateBuildingIndex()
     }
 
     fun build(building: Building, block: BlockCoordinate) {
-        this.buildingLayer[block] = building
-        updateBuildingIndex()
+        if (canBuildBuildingAt(building, block)) {
+            this.buildingLayer[block] = building
+            updateBuildingIndex()
+        } else {
+            println("We have an overlap! not building!")
+        }
     }
 
     fun bulldoze(from: BlockCoordinate, to: BlockCoordinate) {
