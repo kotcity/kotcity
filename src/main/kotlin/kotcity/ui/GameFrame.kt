@@ -139,7 +139,7 @@ class GameFrame : View(), CanvasFitter {
         fileChooser.extensionFilters.addAll(
             FileChooser.ExtensionFilter("KotCity City", "*.kcity")
         )
-        fileChooser.initialFileName = "*.kcity"
+        fileChooser.initialFileName = map.suggestedFilename()
         val file = fileChooser.showSaveDialog(this.primaryStage)
         CityFileAdapter.save(map, file)
         map.fileName = file.absoluteFile.toString()

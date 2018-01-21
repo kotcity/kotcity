@@ -88,6 +88,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         buildingIndex = newIndex
     }
 
+    fun suggestedFilename(): String {
+        return Slug.makeSlug(cityName) + ".kcity"
+    }
+
     fun canBuildBuildingAt(newBuilding: Building, coordinate: BlockCoordinate): Boolean {
         // OK... let's get nearby buildings to really cut this down...
         val newBuildingEnd = BlockCoordinate(coordinate.x + newBuilding.width - 1, coordinate.y + newBuilding.height - 1)
