@@ -18,6 +18,7 @@ class CityFileAdapterTest {
             val coordinate = tileEntry.key
             map.buildRoad(coordinate, coordinate)
         }
+        map.cityName = "Unit Testville"
         val tmpFile = File.createTempFile("testcity", ".kcity")
         CityFileAdapter.save(map, tmpFile)
 

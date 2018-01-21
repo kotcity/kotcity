@@ -89,7 +89,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         this.mouseDown = true
         this.firstBlockPressed = mouseToBlock(evt.x, evt.y)
         this.mouseBlock = this.firstBlockPressed
-        println("Pressed on block: $firstBlockPressed")
+        // println("Pressed on block: $firstBlockPressed")
     }
 
     fun onMouseReleased(evt: MouseEvent) {
