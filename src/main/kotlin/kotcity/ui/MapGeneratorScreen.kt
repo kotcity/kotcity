@@ -35,7 +35,7 @@ class MapGeneratorScreen : View(), CanvasFitter {
 
         canvasPane.content = canvas
 
-        title = "Generate a Map"
+        title = "$GAME_STRING - Generate a Map"
 
         newMap = generate(widthField.text.toInt(), heightField.text.toInt())
         fitMap()

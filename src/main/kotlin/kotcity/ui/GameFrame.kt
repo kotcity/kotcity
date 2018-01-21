@@ -63,9 +63,6 @@ class GameFrame : View(), CanvasFitter {
     private val clockLabel: Label by fxid()
 
     private val pauseMenuItem: CheckMenuItem by fxid()
-    private val slowMenuItem: RadioMenuItem by fxid()
-    private val mediumMenuItem: RadioMenuItem by fxid()
-    private val fastMenuItem: RadioMenuItem by fxid()
 
     var gameSpeed = GameSpeed.MEDIUM
         set(value) {
@@ -93,7 +90,7 @@ class GameFrame : View(), CanvasFitter {
         setScrollbarSizes()
         setCanvasSize()
         initComponents()
-        title = "KotCity 0.1 - ${map.cityName}"
+        title = "$GAME_STRING - ${map.cityName}"
         cityNameLabel.text = map.cityName
         this.cityRenderer = CityRenderer(this, canvas, map)
     }
@@ -207,7 +204,7 @@ class GameFrame : View(), CanvasFitter {
     fun loadCityPressed() {
         this.currentStage?.close()
         CityLoader.loadCity(this.primaryStage)
-        title = "KotCity 0.1 - ${map.cityName}"
+        title = "$GAME_STRING - ${map.cityName}"
     }
 
     init {
@@ -215,7 +212,7 @@ class GameFrame : View(), CanvasFitter {
     }
 
     private fun initComponents() {
-        title = "Kotcity 0.1"
+        title = "KotCity 0.1"
 
         bindCanvas()
         bindButtons()
