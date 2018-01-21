@@ -20,6 +20,7 @@ val gson = GsonBuilder()
                 val map = it.src
                 data["height"] = map.height
                 data["width"] = map.width
+                data["cityName"] = map.cityName
                 data["groundLayer"] = it.src.groundLayer.map { entry ->
                     val x = entry.key.x
                     val y = entry.key.y
@@ -53,6 +54,7 @@ val gson = GsonBuilder()
                 val data = it.json.asJsonObject
                 cityMap.height = data["height"].asInt
                 cityMap.width = data["width"].asInt
+                cityMap.cityName = data["cityName"].asString
                 val groundTiles = data["groundLayer"].asJsonArray
                 println("The file has this many tiles: ${groundTiles.count()}")
                 groundTiles.forEach {

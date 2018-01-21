@@ -62,11 +62,11 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         // OK, we want to figure out the CENTER block now...
         val centerX = blockOffsetX + (canvasBlockWidth() / 2)
         val centerY = blockOffsetY + (canvasBlockHeight() / 2)
-        println("The center block is: $centerX,$centerY")
-        println("We clicked at: ${clickedBlock.x},${clickedBlock.y}")
+        // println("The center block is: $centerX,$centerY")
+        // println("We clicked at: ${clickedBlock.x},${clickedBlock.y}")
         val dx = clickedBlock.x - centerX
         val dy = clickedBlock.y - centerY
-        println("Delta is: $dx,$dy")
+        // println("Delta is: $dx,$dy")
         blockOffsetX += (dx)
         blockOffsetY += (dy)
     }

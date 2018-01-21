@@ -8,6 +8,9 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.paint.Color
 import kotcity.data.*
 import tornadofx.View
+import javafx.scene.control.TextInputDialog
+
+
 
 
 class MapGeneratorScreen : View(), CanvasFitter {
@@ -91,6 +94,18 @@ class MapGeneratorScreen : View(), CanvasFitter {
     }
 
     fun acceptPressed() {
+
+        val dialog = TextInputDialog("My City")
+        dialog.title = "Name your city"
+        dialog.headerText = "Choose a name for your city"
+        dialog.contentText = "Please enter your city's name:"
+
+        // Traditional way to get the response value.
+        val result = dialog.showAndWait()
+        if (result.isPresent) {
+            newMap.cityName = result.get()
+        }
+
         this.close()
         val gameFrame = tornadofx.find(GameFrame::class)
         timer?.stop()

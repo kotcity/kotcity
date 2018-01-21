@@ -66,6 +66,7 @@ class GameFrame : View(), CanvasFitter {
         setScrollbarSizes()
         setCanvasSize()
         initComponents()
+        title = "KotCity 0.1 - ${map.cityName}"
         this.cityRenderer = CityRenderer(this, canvas, map)
     }
 
@@ -167,6 +168,7 @@ class GameFrame : View(), CanvasFitter {
     fun loadCityPressed() {
         this.currentStage?.close()
         CityLoader.loadCity(this.primaryStage)
+        title = "KotCity 0.1 - ${map.cityName}"
     }
 
     init {

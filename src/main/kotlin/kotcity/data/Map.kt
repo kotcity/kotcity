@@ -37,6 +37,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     // where we loaded OR saved this city to...
     // used to determine save vs. save as...
     var fileName: String? = null
+    var cityName: String? = null
     private var buildingIndex = RTree.create<Building, Rectangle>()!!
 
     private fun roadBlocks(startBlock: BlockCoordinate, endBlock: BlockCoordinate): MutableList<BlockCoordinate> {
