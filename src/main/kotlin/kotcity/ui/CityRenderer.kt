@@ -31,7 +31,6 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
         println("Map min: $mapMin Map max: $mapMax")
         println("Map has been set to: $map. Size is ${canvas.width}x${canvas.height}")
-
     }
 
     private fun canvasBlockHeight() = (canvas.height / blockSize()).toInt()
