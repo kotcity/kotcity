@@ -34,7 +34,7 @@ fun serializeDate(date: Date): String {
     return simpleDateFormat.format(date)
 }
 
-const val DRAW_GRID = true
+const val DRAW_GRID = false
 const val TICK_DELAY: Int = 10 // only render every X ticks... (framerate limiter)
 
 enum class Tool { BULLDOZE, QUERY, ROAD, RESIDENTIAL_ZONE, INDUSTRIAL_ZONE, COMMERCIAL_ZONE, COAL_POWER_PLANT }
@@ -212,7 +212,7 @@ class GameFrame : View(), CanvasFitter {
     }
 
     private fun initComponents() {
-        title = "KotCity 0.1"
+        title = GAME_STRING
 
         bindCanvas()
         bindButtons()

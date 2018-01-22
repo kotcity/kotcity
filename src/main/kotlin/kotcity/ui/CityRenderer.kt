@@ -16,6 +16,11 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     var zoom = 1.0
+        set(value) {
+            var oldCenter = centerBlock()
+            field = value
+            panMap(oldCenter)
+        }
     var blockOffsetX = 0.0
     var blockOffsetY = 0.0
     var mapMin = 0.0
@@ -54,17 +59,23 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         return Pair(startBlockX..endBlockX, startBlockY..endBlockY)
     }
 
-    private fun panMap(clickedBlock: BlockCoordinate) {
+    private fun panMap(coordinate: BlockCoordinate) {
         // OK, we want to figure out the CENTER block now...
-        val centerX = blockOffsetX + (canvasBlockWidth() / 2)
-        val centerY = blockOffsetY + (canvasBlockHeight() / 2)
+        val centerBlock = centerBlock()
         // println("The center block is: $centerX,$centerY")
         // println("We clicked at: ${clickedBlock.x},${clickedBlock.y}")
-        val dx = clickedBlock.x - centerX
-        val dy = clickedBlock.y - centerY
+        val dx = coordinate.x - centerBlock.x
+        val dy = coordinate.y - centerBlock.y
         // println("Delta is: $dx,$dy")
         blockOffsetX += (dx)
         blockOffsetY += (dy)
+    }
+
+    fun centerBlock(): BlockCoordinate {
+        val centerX = blockOffsetX + (canvasBlockWidth() / 2)
+        val centerY = blockOffsetY + (canvasBlockHeight() / 2)
+        val centerBlock = BlockCoordinate(centerX.toInt(), centerY.toInt())
+        return centerBlock
     }
 
     // returns the first and last block that we dragged from / to

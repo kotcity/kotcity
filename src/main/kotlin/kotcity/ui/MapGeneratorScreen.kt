@@ -11,8 +11,6 @@ import tornadofx.View
 import javafx.scene.control.TextInputDialog
 
 
-
-
 class MapGeneratorScreen : View(), CanvasFitter {
     override val root: BorderPane by fxml("/MapGeneratorScreen.fxml")
     val canvasPane: ScrollPane by fxid("canvasPane")
@@ -111,6 +109,8 @@ class MapGeneratorScreen : View(), CanvasFitter {
         timer?.stop()
         gameFrame.setMap(newMap)
         gameFrame.openWindow()
+        println("Now maximizing...")
+        gameFrame.currentStage?.isMaximized = true
     }
 }
 

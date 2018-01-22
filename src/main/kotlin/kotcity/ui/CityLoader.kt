@@ -3,6 +3,7 @@ package kotcity.ui
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import kotcity.data.CityFileAdapter
+import tornadofx.find
 import tornadofx.runLater
 import java.io.File
 
@@ -21,6 +22,9 @@ object CityLoader {
                 val gameFrame = tornadofx.find(GameFrame::class)
                 gameFrame.setMap(map)
                 gameFrame.openWindow()
+                gameFrame.currentStage?.isMaximized = true
+                val launchScreen = find(LaunchScreen::class)
+                launchScreen.currentStage?.close()
             }
         }
     }
