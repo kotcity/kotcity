@@ -193,6 +193,10 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         drawMap(canvas.graphicsContext2D)
         drawZones()
         drawBuildings(canvas.graphicsContext2D)
+        drawHighlights()
+    }
+
+    private fun drawHighlights() {
         mouseBlock?.let {
             if (mouseDown) {
                 if (gameFrame.activeTool == Tool.ROAD) {
@@ -219,6 +223,10 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
             } else {
                 if (gameFrame.activeTool == Tool.COAL_POWER_PLANT) {
                     highlightCenteredBlocks(it, 4, 4)
+                } else if (gameFrame.activeTool == Tool.ROAD) {
+                    mouseBlock?.let {
+                        highlightBlocks(it, it)
+                    }
                 } else {
                     Unit
                 }

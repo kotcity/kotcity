@@ -6,6 +6,10 @@ import kotcity.data.CityFileAdapter
 import tornadofx.find
 import tornadofx.runLater
 import java.io.File
+import javafx.scene.control.Alert.AlertType
+import javafx.scene.control.Alert
+
+
 
 object CityLoader {
     fun loadCity(stage: Stage) {
@@ -21,10 +25,17 @@ object CityLoader {
                 val map = CityFileAdapter.load(file)
                 val gameFrame = tornadofx.find(GameFrame::class)
                 gameFrame.setMap(map)
-                gameFrame.openWindow()
                 gameFrame.currentStage?.isMaximized = true
-                val launchScreen = find(LaunchScreen::class)
-                launchScreen.currentStage?.close()
+                gameFrame.openWindow()
+                println("Gameframe should be open at this point...")
+                gameFrame.currentStage?.isMaximized = true
+            } else {
+                val alert = Alert(AlertType.ERROR)
+                alert.title = "Error during load"
+                alert.headerText = "Could not load your city!"
+                alert.contentText = "Why not? Totally unknown?"
+
+                alert.showAndWait()
             }
         }
     }
