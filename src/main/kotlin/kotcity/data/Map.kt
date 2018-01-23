@@ -293,5 +293,4 @@ abstract class IndustrialBuilding: Building()
 
 class Workshop : IndustrialBuilding() {
     override var type: BuildingType = BuildingType.WORKSHOP
-
 }
