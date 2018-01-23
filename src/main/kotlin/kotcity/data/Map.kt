@@ -114,7 +114,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         if (time.toDateTime().minuteOfHour == 0) {
             println("Top of the hour stuff...")
 
-            populateResidentialZones()
+            populateZones()
 
             val hour = time.toDateTime().hourOfDay
             println("Hour is: $hour")
@@ -125,20 +125,30 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     }
 
-    private fun populateResidentialZones() {
+    private fun populateZones() {
         // what we want to do here is find an empty residential zone and toss a house in...
         // we will add smarts later to make sure it makes sense...
         val houseToBuild = SmallHouse()
-        findEmptyResidentialZone(houseToBuild)?.let {
+        findEmptyZone(houseToBuild, ZoneType.RESIDENTIAL)?.let {
             build(houseToBuild, it)
+        }
+        
+        val cornerStoreToBuild = CornerStore()
+        findEmptyZone(cornerStoreToBuild, ZoneType.COMMERCIAL)?.let {
+            build(cornerStoreToBuild, it)
+        }
+        
+        val workshopToBuild = Workshop()
+        findEmptyZone(workshopToBuild, ZoneType.INDUSTRIAL)?.let {
+            build(workshopToBuild, it)
         }
     }
 
-    private fun findEmptyResidentialZone(house: Building): BlockCoordinate? {
+    private fun findEmptyZone(building: Building, zoneType: ZoneType): BlockCoordinate? {
         return zoneLayer.toList().shuffled().find { entry ->
             val coordinate = entry.first
             val zone = entry.second
-            zone.type == ZoneType.RESIDENTIAL && canBuildBuildingAt(house, coordinate)
+            zone.type == zoneType && canBuildBuildingAt(building, coordinate)
         }?.first
     }
 
@@ -238,7 +248,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 }
 
 enum class BuildingType {
-    ROAD, COAL_POWER_PLANT, SMALL_HOUSE
+    ROAD, COAL_POWER_PLANT, SMALL_HOUSE,
+    CORNER_STORE,
+    WORKSHOP
 }
 
 enum class ZoneType {
@@ -269,4 +281,17 @@ class SmallHouse: House() {
     override var type: BuildingType = BuildingType.SMALL_HOUSE
     override var width = 1
     override var height = 1
+}
+
+abstract class CommercialBuilding : Building()
+
+class CornerStore : CommercialBuilding() {
+    override var type: BuildingType = BuildingType.CORNER_STORE
+}
+
+abstract class IndustrialBuilding: Building()
+
+class Workshop : IndustrialBuilding() {
+    override var type: BuildingType = BuildingType.WORKSHOP
+
 }

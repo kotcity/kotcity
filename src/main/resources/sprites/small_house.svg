@@ -14,8 +14,11 @@
    viewBox="0 0 64 64"
    version="1.1"
    id="svg3793"
-   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
-   sodipodi:docname="small_house.svg">
+   inkscape:version="0.92+devel (unknown)"
+   sodipodi:docname="small_house.svg"
+   inkscape:export-filename="/home/josh/kotcity4/src/main/resources/sprites/small_house.png"
+   inkscape:export-xdpi="25.4"
+   inkscape:export-ydpi="25.4">
   <defs
      id="defs3787" />
   <sodipodi:namedview
@@ -26,17 +29,18 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="-44.806843"
+     inkscape:cx="-244.56451"
      inkscape:cy="132.52363"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:pagecheckerboard="true"
-     inkscape:window-width="1680"
-     inkscape:window-height="1013"
-     inkscape:window-x="1920"
+     inkscape:window-width="3200"
+     inkscape:window-height="1637"
+     inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     inkscape:document-rotation="0" />
   <metadata
      id="metadata3790">
     <rdf:RDF>
@@ -45,7 +49,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

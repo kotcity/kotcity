@@ -1,4 +1,5 @@
 .gradle
+.directory
 build
 out
 .idea

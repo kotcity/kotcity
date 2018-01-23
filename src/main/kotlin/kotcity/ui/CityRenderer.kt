@@ -292,18 +292,27 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                 context.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
             } else if (building is CoalPowerPlant) {
                 // need that sprite...
-                val width = building.width * blockSize()
-                val height = building.height * blockSize()
-                SpriteLoader.spriteForBuildingType(BuildingType.COAL_POWER_PLANT, width, height)?.let { img ->
-                    context.drawImage(img, tx * blockSize, ty * blockSize)
-                }
+                val type = BuildingType.COAL_POWER_PLANT
+                drawBuildingType(building, type, tx, ty)
             } else if (building is SmallHouse) {
-                val width = building.width * blockSize()
-                val height = building.height * blockSize()
-                SpriteLoader.spriteForBuildingType(BuildingType.SMALL_HOUSE, width, height)?.let { img ->
-                    context.drawImage(img, tx * blockSize, ty * blockSize)
-                }
+                val type = BuildingType.SMALL_HOUSE
+                drawBuildingType(building, type, tx, ty)
+            } else if (building is Workshop) {
+                val type = BuildingType.WORKSHOP
+                drawBuildingType(building, type, tx, ty)
+            } else if (building is CornerStore) {
+                val type = BuildingType.CORNER_STORE
+                drawBuildingType(building, type, tx, ty)
             }
+        }
+    }
+
+    private fun drawBuildingType(building: Building, type: BuildingType, tx: Double, ty: Double) {
+        val blockSize = blockSize()
+        val width = building.width * blockSize
+        val height = building.height * blockSize
+        SpriteLoader.spriteForBuildingType(type, width, height)?.let { img ->
+            canvas.graphicsContext2D.drawImage(img, tx * blockSize, ty * blockSize)
         }
     }
 
@@ -320,7 +329,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                     ZoneType.COMMERCIAL -> Color.DARKBLUE
                     ZoneType.INDUSTRIAL -> Color.LIGHTGOLDENRODYELLOW
                 }
-                val shadyColor = Color(zoneColor.red, zoneColor.green, zoneColor.blue, 0.5)
+                val shadyColor = Color(zoneColor.red, zoneColor.green, zoneColor.blue, 0.3)
                 graphics.fill = shadyColor
                 graphics.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
             }
