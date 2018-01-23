@@ -7,10 +7,17 @@ import kotcity.data.BuildingType
 object SpriteLoader {
 
     private fun uncachedSpriteForBuildingType(type: BuildingType, width: Double, height: Double): Image? {
-        if (type == BuildingType.COAL_POWER_PLANT) {
-            return Image("/sprites/coal_power_plant.png", width, height, false, false)
+        var filename = if (type == BuildingType.COAL_POWER_PLANT) {
+            "/sprites/coal_power_plant.png"
+        } else if (type == BuildingType.SMALL_HOUSE) {
+            "/sprites/small_house.png"
+        } else {
+            null
         }
-        return null
+        if (filename != null) {
+            return Image(filename, width, height, false, false)
+        }
+        throw RuntimeException("Could not find a sprite for: $type")
     }
 
     val spriteForBuildingType = ::uncachedSpriteForBuildingType.memoize()

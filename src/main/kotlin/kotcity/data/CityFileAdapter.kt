@@ -99,6 +99,7 @@ val gson = GsonBuilder()
                     val building = when(type) {
                         BuildingType.ROAD -> Road()
                         BuildingType.COAL_POWER_PLANT -> CoalPowerPlant()
+                        BuildingType.SMALL_HOUSE -> SmallHouse()
                     }
 
                     cityMap.buildingLayer[BlockCoordinate(x, y)] = building

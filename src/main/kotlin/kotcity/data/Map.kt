@@ -113,6 +113,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         // println("Ticked to: ${kotcity.ui.serializeDate(time)}")
         if (time.toDateTime().minuteOfHour == 0) {
             println("Top of the hour stuff...")
+
+            populateResidentialZones()
+
             val hour = time.toDateTime().hourOfDay
             println("Hour is: $hour")
             if (hour == 0) {
@@ -120,6 +123,23 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
         }
 
+    }
+
+    private fun populateResidentialZones() {
+        // what we want to do here is find an empty residential zone and toss a house in...
+        // we will add smarts later to make sure it makes sense...
+        val houseToBuild = SmallHouse()
+        findEmptyResidentialZone(houseToBuild)?.let {
+            build(houseToBuild, it)
+        }
+    }
+
+    private fun findEmptyResidentialZone(house: Building): BlockCoordinate? {
+        return zoneLayer.toList().shuffled().find { entry ->
+            val coordinate = entry.first
+            val zone = entry.second
+            zone.type == ZoneType.RESIDENTIAL && canBuildBuildingAt(house, coordinate)
+        }?.first
     }
 
     private fun waterFound(from: BlockCoordinate, to: BlockCoordinate): Boolean {
@@ -218,7 +238,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 }
 
 enum class BuildingType {
-    ROAD, COAL_POWER_PLANT
+    ROAD, COAL_POWER_PLANT, SMALL_HOUSE
 }
 
 enum class ZoneType {
@@ -241,4 +261,12 @@ class CoalPowerPlant : Building() {
     override var type: BuildingType = BuildingType.COAL_POWER_PLANT
     override var width = 4
     override var height = 4
+}
+
+abstract class House: Building()
+
+class SmallHouse: House() {
+    override var type: BuildingType = BuildingType.SMALL_HOUSE
+    override var width = 1
+    override var height = 1
 }

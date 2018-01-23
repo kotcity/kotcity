@@ -289,8 +289,12 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                 SpriteLoader.spriteForBuildingType(BuildingType.COAL_POWER_PLANT, width, height)?.let { img ->
                     context.drawImage(img, tx * blockSize, ty * blockSize)
                 }
-                // context.fill = Color.GRAY
-                // context.fillRect(tx * blockSize, ty * blockSize, blockSize * building.width, blockSize * building.height)
+            } else if (building is SmallHouse) {
+                val width = building.width * blockSize()
+                val height = building.height * blockSize()
+                SpriteLoader.spriteForBuildingType(BuildingType.SMALL_HOUSE, width, height)?.let { img ->
+                    context.drawImage(img, tx * blockSize, ty * blockSize)
+                }
             }
         }
     }
