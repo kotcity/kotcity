@@ -1,6 +1,7 @@
 package kotcity.ui
 
 import javafx.scene.canvas.GraphicsContext
+import javafx.scene.image.Image
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
@@ -282,8 +283,14 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                 context.fill = Color.BLACK
                 context.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
             } else if (building is CoalPowerPlant) {
-                context.fill = Color.GRAY
-                context.fillRect(tx * blockSize, ty * blockSize, blockSize * building.width, blockSize * building.height)
+                // need that sprite...
+                val width = building.width * blockSize()
+                val height = building.height * blockSize()
+                SpriteLoader.spriteForBuildingType(BuildingType.COAL_POWER_PLANT, width, height)?.let { img ->
+                    context.drawImage(img, tx * blockSize, ty * blockSize)
+                }
+                // context.fill = Color.GRAY
+                // context.fillRect(tx * blockSize, ty * blockSize, blockSize * building.width, blockSize * building.height)
             }
         }
     }
