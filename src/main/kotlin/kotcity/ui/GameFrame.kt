@@ -17,7 +17,9 @@ import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.ButtonBar.ButtonData
+import javafx.scene.layout.BorderPane
 import tornadofx.runLater
+import java.awt.Panel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -48,6 +50,9 @@ class GameFrame : View(), CanvasFitter {
     private val basicPane: TitledPane by fxid()
     private val verticalScroll: ScrollBar by fxid()
     private val horizontalScroll: ScrollBar by fxid()
+
+    private val mapPane: BorderPane by fxid()
+    private val cityMapCanvas: CityMapCanvas = CityMapCanvas()
 
     // BUTTONS
     private val roadButton: Button by fxid()
@@ -86,6 +91,7 @@ class GameFrame : View(), CanvasFitter {
 
     fun setMap(map: CityMap) {
         this.map = map
+        cityMapCanvas.map = map
         // gotta resize the component now...
         setScrollbarSizes()
         setCanvasSize()
@@ -217,12 +223,15 @@ class GameFrame : View(), CanvasFitter {
         bindCanvas()
         bindButtons()
 
+        mapPane.center = cityMapCanvas
+
         accordion.expandedPane = basicPane
 
         renderTimer = object : AnimationTimer() {
             override fun handle(now: Long) {
                 if (ticks == TICK_DELAY) {
                     cityRenderer?.render()
+                    cityMapCanvas?.render()
                     ticks = 0
                 }
                 ticks++

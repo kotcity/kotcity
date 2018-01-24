@@ -6,10 +6,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="605.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label alignment="TOP_CENTER" text="KotCity 0.1">
+      <Label alignment="TOP_CENTER" text="KotCity 0.2">
          <font>
             <Font size="41.0" />
          </font>

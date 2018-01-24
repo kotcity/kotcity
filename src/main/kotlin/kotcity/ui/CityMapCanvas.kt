@@ -35,10 +35,7 @@ class CityMapCanvas: ResizableCanvas() {
             val xRange = 0..smallerDimension.toInt()
             val yRange = 0..smallerDimension.toInt()
 
-            // see if the map is larger than the canvas...
-            if (it.width > this.width || it.height > this.height) {
-                println("We should zoom!!")
-            }
+            // println("Map is rendering from 0 to $yRange")
 
             for (x in xRange) {
                 for (y in yRange) {

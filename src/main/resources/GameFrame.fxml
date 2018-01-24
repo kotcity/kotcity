@@ -16,6 +16,7 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
@@ -62,7 +63,7 @@
          <items>
             <VBox maxWidth="200.0">
                <children>
-                  <Accordion fx:id="accordion" maxWidth="200.0" minHeight="400.0">
+                  <Accordion fx:id="accordion" maxWidth="223.0" minHeight="298.0" prefHeight="298.0" prefWidth="223.0" VBox.vgrow="ALWAYS">
                      <panes>
                         <TitledPane fx:id="basicPane" animated="false" text="Basic">
                            <content>
@@ -98,8 +99,11 @@
                         </TitledPane>
                         <TitledPane animated="false" text="Other" />
                      </panes>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
                   </Accordion>
-                  <VBox>
+                  <VBox prefHeight="115.0" prefWidth="223.0">
                      <children>
                         <Label fx:id="cityNameLabel" text="City: &lt;CITY NAME&gt;">
                            <VBox.margin>
@@ -123,6 +127,7 @@
                         </Label>
                      </children>
                   </VBox>
+                  <BorderPane fx:id="mapPane" prefHeight="182.0" prefWidth="223.0" style="-fx-border-color: cccccc;" />
                </children>
             </VBox>
             <AnchorPane minHeight="600.0" minWidth="600.0">
