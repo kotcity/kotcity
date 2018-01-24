@@ -2,7 +2,7 @@ package kotcity.ui
 
 import javafx.scene.canvas.Canvas
 
-class ResizableCanvas : Canvas() {
+open class ResizableCanvas : Canvas() {
 
     private var canvasWidth = 0
     private var canvasHeight = 0

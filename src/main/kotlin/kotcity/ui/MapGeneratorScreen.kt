@@ -4,38 +4,38 @@ import javafx.animation.AnimationTimer
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.Slider
 import javafx.scene.control.TextField
-import javafx.scene.layout.BorderPane
-import javafx.scene.paint.Color
-import kotcity.data.*
-import tornadofx.View
 import javafx.scene.control.TextInputDialog
+import javafx.scene.layout.BorderPane
+import kotcity.data.CityMap
+import kotcity.data.MapGenerator
+import tornadofx.View
 
 
 class MapGeneratorScreen : View(), CanvasFitter {
     override val root: BorderPane by fxml("/MapGeneratorScreen.fxml")
-    val canvasPane: ScrollPane by fxid("canvasPane")
-    private val canvas = ResizableCanvas()
+    // val canvasPane: ScrollPane by fxid("canvasPane")
+    private val cityMapCanvas = CityMapCanvas()
     private val mapGenerator = MapGenerator()
 
     private val f1Field: TextField by fxid()
     private val f2Field: TextField by fxid()
     private val f3Field: TextField by fxid()
     private val expField: TextField by fxid()
-    private val heightField: TextField by fxid()
-    private val widthField: TextField by fxid()
+    private val sizeField: TextField by fxid()
     private val seaLevelSlider: Slider by fxid()
 
     var timer : AnimationTimer? = null
 
-    private var newMap = mapGenerator.generateMap(widthField.text.toInt(), heightField.text.toInt())
+    private var newMap = mapGenerator.generateMap(sizeField.text.toInt(), sizeField.text.toInt())
 
     init {
 
-        canvasPane.content = canvas
+        cityMapCanvas.map = newMap
+        root.center = cityMapCanvas
 
         title = "$GAME_STRING - Generate a Map"
 
-        newMap = generate(widthField.text.toInt(), heightField.text.toInt())
+        newMap = generate(sizeField.text.toInt(), sizeField.text.toInt())
         fitMap()
 
         var ticks = 0
@@ -43,24 +43,8 @@ class MapGeneratorScreen : View(), CanvasFitter {
         timer = object : AnimationTimer() {
             override fun handle(now: Long) {
                 ticks += 1
-                if (ticks > 20) {
-                    // get the graphics context...
-                    val gc = canvas.graphicsContext2D
-
-                    val (xRange, yRange) = canvasPane.visibleArea()
-
-                    for (x in xRange) {
-                        for (y in yRange) {
-                            val tile = newMap.groundLayer[BlockCoordinate(x, y)]
-                            if (tile?.type == TileType.GROUND) {
-                                gc.fill = Color.LIGHTGOLDENRODYELLOW
-                                gc.fillRect(x.toDouble(), y.toDouble(), 1.0, 1.0)
-                            } else {
-                                gc.fill = Color.DARKBLUE
-                                gc.fillRect(x.toDouble(), y.toDouble(), 1.0, 1.0)
-                            }
-                        }
-                    }
+                if (ticks > 50) {
+                    cityMapCanvas.render()
                     ticks = 0
                 }
             }
@@ -80,15 +64,16 @@ class MapGeneratorScreen : View(), CanvasFitter {
     }
 
     fun generatePressed() {
-        newMap = generate(widthField.text.toInt(), heightField.text.toInt())
+        newMap = generate(sizeField.text.toInt(), sizeField.text.toInt())
+        cityMapCanvas.map = newMap
         fitMap()
     }
 
     private fun fitMap() {
-        canvas.prefWidth(newMap.width.toDouble())
-        canvas.prefHeight(newMap.height.toDouble())
-        canvas.width = newMap.width.toDouble()
-        canvas.height = newMap.height.toDouble()
+        cityMapCanvas.prefWidth(newMap.width.toDouble())
+        cityMapCanvas.prefHeight(newMap.height.toDouble())
+        cityMapCanvas.width = newMap.width.toDouble()
+        cityMapCanvas.height = newMap.height.toDouble()
     }
 
     fun acceptPressed() {
