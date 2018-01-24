@@ -26,8 +26,14 @@ class CityMapCanvas: ResizableCanvas() {
             // get the graphics context...
             val gc = this.graphicsContext2D
 
-            val xRange = 0..this.width.toInt()
-            val yRange = 0..this.height.toInt()
+            val smallerDimension = if (this.width < this.height) {
+                this.width
+            } else {
+                this.height
+            }
+
+            val xRange = 0..smallerDimension.toInt()
+            val yRange = 0..smallerDimension.toInt()
 
             // see if the map is larger than the canvas...
             if (it.width > this.width || it.height > this.height) {
@@ -37,10 +43,9 @@ class CityMapCanvas: ResizableCanvas() {
             for (x in xRange) {
                 for (y in yRange) {
 
-                    // TODO: probably should preserve scale...
                     // OK we gotta scale the map coordinates to this crap...
-                    val nx = Algorithms.scale(x.toDouble(), 0.0, this.width, 0.0, it.width.toDouble())
-                    val ny = Algorithms.scale(y.toDouble(), 0.0, this.height, 0.0, it.height.toDouble())
+                    val nx = Algorithms.scale(x.toDouble(), 0.0, smallerDimension, 0.0, it.width.toDouble())
+                    val ny = Algorithms.scale(y.toDouble(), 0.0, smallerDimension, 0.0, it.height.toDouble())
 
                     val tile = it.groundLayer[BlockCoordinate(nx.toInt(), ny.toInt())]
                     if (tile?.type == TileType.GROUND) {
