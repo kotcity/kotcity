@@ -5,7 +5,9 @@ import javafx.scene.image.Image
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
+import javafx.scene.shape.Rectangle
 import kotcity.data.*
+import java.awt.Stroke
 
 class CityRenderer(private val gameFrame: GameFrame, private val canvas: ResizableCanvas, private val map: CityMap) {
 
@@ -311,9 +313,42 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         val blockSize = blockSize()
         val width = building.width * blockSize
         val height = building.height * blockSize
-        SpriteLoader.spriteForBuildingType(type, width, height)?.let { img ->
-            canvas.graphicsContext2D.drawImage(img, tx * blockSize, ty * blockSize)
+        drawBuildingBorder(tx, ty, width, height, blockSize)
+
+        val shrink = blockSize * 0.10
+
+        // OK... fucking THINK here...
+        // blocksize will be like 64...
+
+        val imgWidth = (building.width * blockSize) - (shrink * 2)
+        val imgHeight =  (building.height * blockSize) - (shrink * 2)
+
+        SpriteLoader.spriteForBuildingType(type, imgWidth, imgHeight)?.let { img ->
+            val ix = (tx * blockSize) + shrink
+            val iy = (ty * blockSize) + shrink
+            // println("ix: $ix iy: $iy width: $imgWidth height: $imgHeight")
+            canvas.graphicsContext2D.drawImage(img, ix, iy)
         }
+
+    }
+
+    private fun drawBuildingBorder(tx: Double, ty: Double, width: Double, height: Double, blockSize: Double) {
+        // TODO: ok the dang lineWidth and arcSize need to be dynamic!
+        // this looks like shit when we are zoomed way out...
+        val arcSize = arcWidth()
+        canvas.graphicsContext2D.lineWidth = borderWidth()
+        // we want to inset the stroke...
+        val splitFactor = 40.0
+        val sx = (tx * blockSize) + (width / splitFactor)
+        val sy = (ty * blockSize) + (height / splitFactor)
+        val ex = width - ((width / splitFactor) * 2)
+        val ey = height - ((height / splitFactor) * 2)
+
+        canvas.graphicsContext2D.fill = Color.WHITE
+        canvas.graphicsContext2D.fillRoundRect(sx, sy, ex, ey, arcSize, arcSize)
+
+        canvas.graphicsContext2D.fill = Color.BLACK
+        canvas.graphicsContext2D.strokeRoundRect(sx, sy, ex, ey, arcSize, arcSize)
     }
 
     private fun drawZones() {
@@ -343,6 +378,28 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         val ty = y - blockOffsetY
         val blockSize = blockSize()
         g2d.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
+    }
+
+    private fun arcWidth(): Double {
+        return when (zoom) {
+            1.0 -> 1.0
+            2.0 -> 5.0
+            3.0 -> 10.0
+            4.0 -> 15.0
+            5.0 -> 25.0
+            else -> 1.0
+        }
+    }
+
+    private fun borderWidth(): Double {
+        return when (zoom) {
+            1.0 -> 1.0
+            2.0 -> 2.0
+            3.0 -> 3.0
+            4.0 -> 4.0
+            5.0 -> 5.0
+            else -> 1.0
+        }
     }
 
     // each block should = 10 meters, square...
