@@ -1,13 +1,13 @@
 package kotcity.ui
 
 import javafx.scene.canvas.GraphicsContext
-import javafx.scene.image.Image
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
-import javafx.scene.shape.Rectangle
 import kotcity.data.*
-import java.awt.Stroke
+
+const val MAX_BUILDING_SIZE = 4
+// the coal power plant is the biggest...
 
 class CityRenderer(private val gameFrame: GameFrame, private val canvas: ResizableCanvas, private val map: CityMap) {
 
@@ -45,9 +45,10 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     private fun canvasBlockWidth() = (canvas.width / blockSize()).toInt()
 
-    private fun visibleBlockRange(): Pair<IntRange, IntRange> {
-        var startBlockX = blockOffsetX.toInt()
-        var startBlockY = blockOffsetY.toInt()
+    // awkward... we need padding to get building off the screen...
+    private fun visibleBlockRange(padding : Int = 0): Pair<IntRange, IntRange> {
+        var startBlockX = blockOffsetX.toInt() - padding
+        var startBlockY = blockOffsetY.toInt() - padding
         var endBlockX = startBlockX + canvasBlockWidth()
         var endBlockY = startBlockY + canvasBlockHeight()
 
@@ -262,9 +263,11 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         }
     }
 
-    private fun visibleBlocks(): MutableList<BlockCoordinate> {
+    // padding brings us out to the top and left so that way we can catch the big buildings...
+    // not very elegant...
+    private fun visibleBlocks(padding: Int = 0): MutableList<BlockCoordinate> {
         val blockList = mutableListOf<BlockCoordinate>()
-        val (from, to) = visibleBlockRange()
+        val (from, to) = visibleBlockRange(padding = padding)
         for (x in from) {
             to.mapTo(blockList) { BlockCoordinate(x, it) }
         }
@@ -272,7 +275,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     private fun visibleBuildings(): List<Pair<BlockCoordinate, Building>> {
-        return visibleBlocks().mapNotNull {
+        return visibleBlocks(padding = MAX_BUILDING_SIZE).mapNotNull {
             val building = map.buildingLayer[it]
             if (building != null) {
                 Pair(it, building)
@@ -289,22 +292,28 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
             val tx = coordinate.x - blockOffsetX
             val ty = coordinate.y - blockOffsetY
             val blockSize = blockSize()
-            if (building is Road) {
-                context.fill = Color.BLACK
-                context.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
-            } else if (building is CoalPowerPlant) {
-                // need that sprite...
-                val type = BuildingType.COAL_POWER_PLANT
-                drawBuildingType(building, type, tx, ty)
-            } else if (building is SmallHouse) {
-                val type = BuildingType.SMALL_HOUSE
-                drawBuildingType(building, type, tx, ty)
-            } else if (building is Workshop) {
-                val type = BuildingType.WORKSHOP
-                drawBuildingType(building, type, tx, ty)
-            } else if (building is CornerStore) {
-                val type = BuildingType.CORNER_STORE
-                drawBuildingType(building, type, tx, ty)
+            when (building) {
+                is Road -> {
+                    context.fill = Color.BLACK
+                    context.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
+                }
+                is CoalPowerPlant -> {
+                    // need that sprite...
+                    val type = BuildingType.COAL_POWER_PLANT
+                    drawBuildingType(building, type, tx, ty)
+                }
+                is SmallHouse -> {
+                    val type = BuildingType.SMALL_HOUSE
+                    drawBuildingType(building, type, tx, ty)
+                }
+                is Workshop -> {
+                    val type = BuildingType.WORKSHOP
+                    drawBuildingType(building, type, tx, ty)
+                }
+                is CornerStore -> {
+                    val type = BuildingType.CORNER_STORE
+                    drawBuildingType(building, type, tx, ty)
+                }
             }
         }
     }
@@ -333,7 +342,6 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     private fun drawBuildingBorder(tx: Double, ty: Double, width: Double, height: Double, blockSize: Double) {
-        // TODO: ok the dang lineWidth and arcSize need to be dynamic!
         // this looks like shit when we are zoomed way out...
         val arcSize = arcWidth()
         canvas.graphicsContext2D.lineWidth = borderWidth()
@@ -393,11 +401,11 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     private fun borderWidth(): Double {
         return when (zoom) {
-            1.0 -> 1.0
-            2.0 -> 2.0
-            3.0 -> 3.0
-            4.0 -> 4.0
-            5.0 -> 5.0
+            1.0 -> 0.5
+            2.0 -> 1.0
+            3.0 -> 2.0
+            4.0 -> 3.0
+            5.0 -> 4.0
             else -> 1.0
         }
     }
