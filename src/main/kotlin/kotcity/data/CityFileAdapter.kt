@@ -4,7 +4,7 @@ import java.io.File
 import com.github.salomonbrys.kotson.*
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
-import java.io.FileReader
+import kotcity.data.assets.AssetManager
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -20,6 +20,8 @@ fun serializeDate(date: Date): String {
     simpleDateFormat.timeZone = TimeZone.getDefault()
     return simpleDateFormat.format(date)
 }
+
+val assetManager = AssetManager()
 
 val gson = GsonBuilder()
         .registerTypeAdapter<CityMap> {
@@ -63,7 +65,9 @@ val gson = GsonBuilder()
                     jsonObject(
                             "x" to x,
                             "y" to y,
-                            "type" to type
+                            "type" to type,
+                            "name" to entry.value.name,
+                            "description" to entry.value.description
                     )
                 }.toJsonArray()
                 data
@@ -96,12 +100,13 @@ val gson = GsonBuilder()
                     var x = it["x"].asInt
                     var y = it["y"].asInt
                     val type = BuildingType.valueOf(buildingObj["type"].asString)
+                    val variety = buildingObj["variety"].asString
                     val building = when(type) {
                         BuildingType.ROAD -> Road()
                         BuildingType.COAL_POWER_PLANT -> CoalPowerPlant()
-                        BuildingType.SMALL_HOUSE -> SmallHouse()
-                        BuildingType.CORNER_STORE -> CornerStore()
-                        BuildingType.WORKSHOP -> Workshop()
+                        BuildingType.RESIDENTIAL -> assetManager.buildingFor(type, variety)
+                        BuildingType.COMMERCIAL -> assetManager.buildingFor(type, variety)
+                        BuildingType.INDUSTRIAL -> assetManager.buildingFor(type, variety)
                     }
 
                     cityMap.buildingLayer[BlockCoordinate(x, y)] = building

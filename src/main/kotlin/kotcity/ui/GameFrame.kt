@@ -19,7 +19,6 @@ import javafx.scene.control.ButtonType
 import javafx.scene.control.ButtonBar.ButtonData
 import javafx.scene.layout.BorderPane
 import tornadofx.runLater
-import java.awt.Panel
 import java.text.SimpleDateFormat
 import java.util.*
 

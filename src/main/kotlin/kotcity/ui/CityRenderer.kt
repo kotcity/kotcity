@@ -302,17 +302,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                     val type = BuildingType.COAL_POWER_PLANT
                     drawBuildingType(building, type, tx, ty)
                 }
-                is SmallHouse -> {
-                    val type = BuildingType.SMALL_HOUSE
-                    drawBuildingType(building, type, tx, ty)
-                }
-                is Workshop -> {
-                    val type = BuildingType.WORKSHOP
-                    drawBuildingType(building, type, tx, ty)
-                }
-                is CornerStore -> {
-                    val type = BuildingType.CORNER_STORE
-                    drawBuildingType(building, type, tx, ty)
+                is Building -> {
+                    drawBuildingType(building, building.type, tx, ty)
                 }
             }
         }
@@ -332,7 +323,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         val imgWidth = (building.width * blockSize) - (shrink * 2)
         val imgHeight =  (building.height * blockSize) - (shrink * 2)
 
-        SpriteLoader.spriteForBuildingType(type, imgWidth, imgHeight)?.let { img ->
+        SpriteLoader.spriteForBuildingType(building, imgWidth, imgHeight)?.let { img ->
             val ix = (tx * blockSize) + shrink
             val iy = (ty * blockSize) + shrink
             // println("ix: $ix iy: $iy width: $imgWidth height: $imgHeight")

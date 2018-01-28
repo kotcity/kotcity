@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   viewBox="0 0 16.933333 16.933334"
+   version="1.1"
+   id="svg144"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   sodipodi:docname="slum1.svg"
+   inkscape:export-filename="/data/home/josh/kotcity4/src/main/resources/assets/residential/slum1.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+  <defs
+     id="defs138" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8"
+     inkscape:cx="-136.44465"
+     inkscape:cy="2.3296207"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1808"
+     inkscape:window-height="991"
+     inkscape:window-x="112"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata141">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-280.06665)">
+    <g
+       transform="matrix(0.14055303,0,0,0.14055303,1.6323245,280.08426)"
+       id="g114">
+      <path
+         style="fill:#000000"
+         inkscape:connector-curvature="0"
+         d="m 48.208,44.849 -0.637,11.48 -0.042,0.053 -0.502,0.003 v 2.268 l 0.369,0.011 0.042,0.055 -0.102,1.846 -0.077,11.203 -0.115,23.712 -8.216,0.112 v -1.467 l -2.317,-0.134 v -2 l -2.314,-0.668 v -34.05 l 1.275,-0.089 0.077,-2.401 H 34.297 V 44.516 c -10e-4,0 3.825,0.554 13.911,0.333 z m -13.912,-0.6 v -19.07 h 3.049 L 37.19,23.578 0,21 l 0.618,2.845 3.395,0.356 0.772,28.983 0.076,1.244 H 3.704 l -0.019,2.49 1.388,-0.067 1.099,33.54 0.116,8.803 0.463,0.933 h 50.23 36.573 V 58.253 h 6.25 V 56.118 H 86.147 l 0.309,-4.534 0.249,-0.051 0.302,-3.684 H 77.1 l 0.423,3.534 0.351,0.066 0.52,4.734 -28.789,0.185 -0.059,-0.025 0.357,-5.737 0.367,-6.49 -2.006,-0.267 -0.038,0.698 c -10e-4,0 -5.906,0.569 -13.93,-0.298 z m 15.17,14.479 1.846,0.059 0.653,36.629 -2.738,0.038 -0.191,-24.397 0.23,-10.492 0.114,-1.777 -0.023,-0.067 z M 9.529,29.669 l 5.863,0.133 v 8.801 L 9.529,38.381 Z M 16.087,76.3 H 9.144 V 65.631 h 6.943 z M 28.046,38.95 22.181,38.728 v -8.713 l 5.865,0.134 z m 52.083,37.473 -0.462,-11.459 7.831,0.399 0.193,11.249 z"
+         id="path112" />
+    </g>
+  </g>
+</svg>

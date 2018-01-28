@@ -1,0 +1,9 @@
+{
+  "type": "residential",
+  "width": 1,
+  "height": 1,
+  "name": "slum2",
+  "sprite": "assets/residential/slum2.png",
+  "description": "Slummy Apartment",
+  "level": 1
+}
