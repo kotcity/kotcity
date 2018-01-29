@@ -105,6 +105,7 @@ class MapGenerator {
                     // println("Sea level is: $seaLevel")
 
                     resourceValue = round(resourceValue - baseLine, 2)
+                    // println("OK, setting $x,$y to $resourceValue in $resourceName")
                     map.setResourceValue(resourceName, BlockCoordinate(x, y), resourceValue)
                 }
             }

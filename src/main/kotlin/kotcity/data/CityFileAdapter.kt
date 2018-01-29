@@ -3,6 +3,7 @@ package kotcity.data
 import java.io.File
 import com.github.salomonbrys.kotson.*
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kotcity.data.assets.AssetManager
 import java.text.SimpleDateFormat
@@ -58,6 +59,30 @@ val gson = GsonBuilder()
                         "type" to entry.value.type.toString()
                     )
                 }.toJsonArray()
+
+                val resourceLayers = JsonObject()
+
+                it.src.resourceLayers.forEach { name, layer ->
+
+                    println("How many values in the resource map? -> " + layer.count())
+                    val values = layer.map {
+                        val resource = JsonObject()
+                        // println("OK... dumping ${it.key.x},${it.key.y} with ${it.value}")
+                        resource.putAll(
+                                mapOf(
+                                        "x" to it.key.x,
+                                        "y" to it.key.y,
+                                        "value" to it.value
+                                )
+                        )
+                        resource
+                    }
+
+                    resourceLayers.put(Pair(name, values.toJsonArray()))
+                }
+
+                data["resourceLayers"] = resourceLayers
+
                 data["buildingLayer"] = it.src.buildingLayer.map { entry ->
                     val x = entry.key.x
                     val y = entry.key.y
@@ -127,7 +152,7 @@ val gson = GsonBuilder()
                         }
                         cityMap.buildingLayer[BlockCoordinate(x, y)] = building
                     }
-                    
+
                 }
 
                 data["zoneLayer"]?.asJsonArray?.forEach {

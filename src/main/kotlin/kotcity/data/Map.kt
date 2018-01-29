@@ -8,7 +8,6 @@ import com.github.debop.javatimes.toDateTime
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 data class BlockCoordinate(val x: Int, val y: Int) {
     companion object {
         fun iterate(from: BlockCoordinate, to: BlockCoordinate, callback: (BlockCoordinate) -> Unit) {
@@ -47,6 +46,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val groundLayer = mutableMapOf<BlockCoordinate, MapTile>()
     val buildingLayer = mutableMapOf<BlockCoordinate, Building>()
     val zoneLayer = mutableMapOf<BlockCoordinate, Zone>()
+
+    val resourceLayers = mutableMapOf<String, MutableMap<BlockCoordinate, Double>>()
 
     var time = defaultTime()
 
@@ -247,6 +248,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     fun setResourceValue(resourceName: String, blockCoordinate: BlockCoordinate, resourceValue: Double) {
         // println("On the resourceZone: $resourceName we want to set $resourceValue at $blockCoordinate")
+
+        // make sure that fucker is set!
+        if (resourceLayers[resourceName] == null) {
+            resourceLayers[resourceName] = mutableMapOf()
+        }
+        resourceLayers[resourceName]?.put(blockCoordinate, resourceValue)
     }
 
 }
