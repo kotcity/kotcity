@@ -163,6 +163,17 @@ val gson = GsonBuilder()
                     cityMap.zoneLayer[BlockCoordinate(x, y)] = Zone(type)
                 }
 
+                data["resourceLayers"]?.asJsonObject?.forEach { layerName, jsonElement ->
+                    // ok now that element is an array...
+                    (jsonElement as JsonArray).forEach {
+                        val x = it["x"].asInt
+                        val y = it["y"].asInt
+                        val value = it["value"].asDouble
+                        cityMap.setResourceValue(layerName, BlockCoordinate(x, y), value)
+                    }
+
+                }
+
                 cityMap.updateBuildingIndex()
 
                 cityMap
