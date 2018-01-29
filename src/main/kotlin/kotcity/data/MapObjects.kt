@@ -14,9 +14,9 @@ abstract class Building {
     abstract var width: Int
     abstract var height: Int
     abstract var type: BuildingType
-    open lateinit var name: String
-    open lateinit var sprite: String
-    open lateinit var description: String
+    open var name: String? = null
+    open var sprite: String? = null
+    open var description: String? = null
 }
 
 class Road : Building() {

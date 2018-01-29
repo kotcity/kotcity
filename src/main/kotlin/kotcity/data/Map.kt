@@ -245,5 +245,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         updateBuildingIndex()
     }
 
+    fun setResourceValue(resourceName: String, blockCoordinate: BlockCoordinate, resourceValue: Double) {
+        // println("On the resourceZone: $resourceName we want to set $resourceValue at $blockCoordinate")
+    }
+
 }
 

@@ -62,13 +62,22 @@ val gson = GsonBuilder()
                     val x = entry.key.x
                     val y = entry.key.y
                     val type = entry.value.type.toString()
-                    jsonObject(
+
+                    val buildingObj = mutableMapOf(
                             "x" to x,
                             "y" to y,
-                            "type" to type,
-                            "name" to entry.value.name,
-                            "description" to entry.value.description
+                            "type" to type
                     )
+
+                    entry.value.name?.let {
+                        buildingObj["name"] = it
+                    }
+
+                    entry.value.description?.let {
+                        buildingObj["description"] = it
+                    }
+
+                    jsonObject(buildingObj.map {Pair(it.key, it.value)})
                 }.toJsonArray()
                 data
             }
@@ -100,16 +109,25 @@ val gson = GsonBuilder()
                     var x = it["x"].asInt
                     var y = it["y"].asInt
                     val type = BuildingType.valueOf(buildingObj["type"].asString)
-                    val variety = buildingObj["variety"].asString
-                    val building = when(type) {
-                        BuildingType.ROAD -> Road()
-                        BuildingType.COAL_POWER_PLANT -> CoalPowerPlant()
-                        BuildingType.RESIDENTIAL -> assetManager.buildingFor(type, variety)
-                        BuildingType.COMMERCIAL -> assetManager.buildingFor(type, variety)
-                        BuildingType.INDUSTRIAL -> assetManager.buildingFor(type, variety)
-                    }
+                    val name = buildingObj["name"]?.asString
 
-                    cityMap.buildingLayer[BlockCoordinate(x, y)] = building
+                    if (name != null) {
+                        val building = when(type) {
+                            BuildingType.RESIDENTIAL -> assetManager.buildingFor(type, name)
+                            BuildingType.COMMERCIAL -> assetManager.buildingFor(type, name)
+                            BuildingType.INDUSTRIAL -> assetManager.buildingFor(type, name)
+                            else -> throw RuntimeException("Unknown named building: $name")
+                        }
+                        cityMap.buildingLayer[BlockCoordinate(x, y)] = building
+                    } else {
+                        val building = when(type) {
+                            BuildingType.ROAD -> Road()
+                            BuildingType.COAL_POWER_PLANT -> CoalPowerPlant()
+                            else -> throw RuntimeException("Unknown building: $it")
+                        }
+                        cityMap.buildingLayer[BlockCoordinate(x, y)] = building
+                    }
+                    
                 }
 
                 data["zoneLayer"]?.asJsonArray?.forEach {
