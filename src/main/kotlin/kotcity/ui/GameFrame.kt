@@ -18,6 +18,8 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.ButtonBar.ButtonData
 import javafx.scene.layout.BorderPane
+import kotcity.ui.map.CityMapCanvas
+import kotcity.ui.map.CityRenderer
 import tornadofx.runLater
 import java.text.SimpleDateFormat
 import java.util.*
@@ -41,7 +43,7 @@ const val TICK_DELAY: Int = 10 // only render every X ticks... (framerate limite
 enum class Tool { BULLDOZE, QUERY, ROAD, RESIDENTIAL_ZONE, INDUSTRIAL_ZONE, COMMERCIAL_ZONE, COAL_POWER_PLANT }
 enum class GameSpeed { SLOW, MEDIUM, FAST }
 
-class GameFrame : View(), CanvasFitter {
+class GameFrame : View() {
     override val root: VBox by fxml("/GameFrame.fxml")
     private val canvas = ResizableCanvas()
     private val canvasPane: AnchorPane by fxid("canvasPane")

@@ -57,6 +57,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     var cityName: String? = null
     private var buildingIndex = RTree.create<Building, Rectangle>()!!
 
+    fun elevations(): Pair<Double, Double> {
+        val mapMinElevation = groundLayer.values.mapNotNull { it.elevation }.min() ?: 0.0
+        val mapMaxElevation = groundLayer.values.mapNotNull { it.elevation }.max() ?: 0.0
+        return Pair(mapMinElevation, mapMaxElevation)
+    }
+
     private fun roadBlocks(startBlock: BlockCoordinate, endBlock: BlockCoordinate): MutableList<BlockCoordinate> {
         println("Getting roadblocks for $startBlock to $endBlock")
         val blockList = mutableListOf<BlockCoordinate>()

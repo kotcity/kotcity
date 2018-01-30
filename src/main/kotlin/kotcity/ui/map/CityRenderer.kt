@@ -1,22 +1,18 @@
-package kotcity.ui
+package kotcity.ui.map
 
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import kotcity.data.*
+import kotcity.ui.*
 
 const val MAX_BUILDING_SIZE = 4
 // the coal power plant is the biggest...
 
 class CityRenderer(private val gameFrame: GameFrame, private val canvas: ResizableCanvas, private val map: CityMap) {
 
-    private fun bleach(color: Color, amount: Float): Color {
-        val red = (color.red + amount).coerceIn(0.0, 1.0)
-        val green = (color.green + amount).coerceIn(0.0, 1.0)
-        val blue = (color.blue + amount).coerceIn(0.0, 1.0)
-        return Color.color(red, green, blue)
-    }
+
 
     var zoom = 1.0
         set(value) {
@@ -26,18 +22,20 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         }
     var blockOffsetX = 0.0
     var blockOffsetY = 0.0
-    var mapMin = 0.0
-    var mapMax = 1.0
+    private var mapMinElevation = 0.0
+    private var mapMaxElevation = 1.0
+    private var colorAdjuster: ColorAdjuster = ColorAdjuster(mapMinElevation, mapMaxElevation)
 
     private var mouseDown = false
     var mouseBlock: BlockCoordinate? = null
     private var firstBlockPressed: BlockCoordinate? = null
 
     init {
-        mapMin = map.groundLayer.values.mapNotNull { it.elevation }.min() ?: 0.0
-        mapMax = map.groundLayer.values.mapNotNull { it.elevation }.max() ?: 0.0
+        mapMinElevation = map.groundLayer.values.mapNotNull { it.elevation }.min() ?: 0.0
+        mapMaxElevation = map.groundLayer.values.mapNotNull { it.elevation }.max() ?: 0.0
+        colorAdjuster = ColorAdjuster(mapMinElevation, mapMaxElevation)
 
-        println("Map min: $mapMin Map max: $mapMax")
+        println("Map min: $mapMinElevation Map max: $mapMaxElevation")
         println("Map has been set to: $map. Size is ${canvas.width}x${canvas.height}")
     }
 
@@ -78,8 +76,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     fun centerBlock(): BlockCoordinate {
         val centerX = blockOffsetX + (canvasBlockWidth() / 2)
         val centerY = blockOffsetY + (canvasBlockHeight() / 2)
-        val centerBlock = BlockCoordinate(centerX.toInt(), centerY.toInt())
-        return centerBlock
+        return BlockCoordinate(centerX.toInt(), centerY.toInt())
     }
 
     // returns the first and last block that we dragged from / to
@@ -145,16 +142,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
             yRange.toList().forEachIndexed { yi, y ->
                 val tile = map.groundLayer[BlockCoordinate(x, y)]
                 if (tile != null) {
-                    val newColor =
-                            if (tile.type == TileType.GROUND) {
-                                Color.rgb(153, 102, 0)
-                            } else {
-                                Color.DARKBLUE
-                            }
-                    // this next line maps the elevations from -0.5 to 0.5 so we don't get
-                    // weird looking colors....
-                    val elevation = tile.elevation
-                    val adjustedColor = adjustColor(elevation, newColor)
+                    val adjustedColor = colorAdjuster.colorForTile(tile)
                     gc.fill = adjustedColor
 
                     gc.fillRect(
@@ -172,11 +160,6 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
             }
         }
-    }
-
-    private fun adjustColor(elevation: Double, color: Color): Color {
-        val bleachAmount = Algorithms.scale(elevation, mapMin, mapMax, -0.5, 0.5)
-        return bleach(color, bleachAmount.toFloat())
     }
 
     private fun fillBlocks(g2d: GraphicsContext, blockX: Int, blockY: Int, width: Int, height: Int) {

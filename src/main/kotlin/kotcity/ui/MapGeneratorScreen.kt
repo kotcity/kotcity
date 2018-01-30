@@ -8,10 +8,11 @@ import javafx.scene.control.TextInputDialog
 import javafx.scene.layout.BorderPane
 import kotcity.data.CityMap
 import kotcity.data.MapGenerator
+import kotcity.ui.map.CityMapCanvas
 import tornadofx.View
 
 
-class MapGeneratorScreen : View(), CanvasFitter {
+class MapGeneratorScreen : View() {
     override val root: BorderPane by fxml("/MapGeneratorScreen.fxml")
     // val canvasPane: ScrollPane by fxid("canvasPane")
     private val cityMapCanvas = CityMapCanvas()
