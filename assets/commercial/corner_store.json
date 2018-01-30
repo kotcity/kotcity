@@ -3,7 +3,7 @@
   "width": 1,
   "height": 1,
   "name": "corner_store1",
-  "sprite": "assets/industrial/corner_store1.png",
+  "sprite": "corner_store1.png",
   "description": "Corner Store",
   "level": 1
 }

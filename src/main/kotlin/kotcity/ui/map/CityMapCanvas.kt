@@ -3,6 +3,7 @@ package kotcity.ui.map
 import javafx.scene.paint.Color
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
+import kotcity.data.MapMode
 import kotcity.data.TileType
 import kotcity.ui.Algorithms
 import kotcity.ui.ResizableCanvas
@@ -30,6 +31,7 @@ class CityMapCanvas: ResizableCanvas() {
         }
     }
 
+    var mode: MapMode = MapMode.NORMAL
     var colorAdjuster: ColorAdjuster? = null
 
     fun render() {
@@ -37,6 +39,8 @@ class CityMapCanvas: ResizableCanvas() {
         map?.let {
             // get the graphics context...
             val gc = this.graphicsContext2D
+
+            gc.clearRect(0.0, 0.0, this.width, this.height)
 
             val smallerDimension = if (this.width < this.height) {
                 this.width
@@ -70,6 +74,32 @@ class CityMapCanvas: ResizableCanvas() {
 
                 }
             }
+
+            // now let's highlight the area of the map we can see...
+            visibleBlockRange?.let { visibleBlockRange ->
+                val sx = Algorithms.scale(visibleBlockRange.first.first.toDouble(), 0.0, it.width.toDouble(), 0.0, this.width)
+                val sy = Algorithms.scale(visibleBlockRange.second.first.toDouble(), 0.0, it.height.toDouble(), 0.0, this.height)
+                val ex = Algorithms.scale(visibleBlockRange.first.last.toDouble(), 0.0, it.width.toDouble(), 0.0, this.width)
+                val ey = Algorithms.scale(visibleBlockRange.second.last.toDouble(), 0.0, it.height.toDouble(), 0.0, this.height)
+                var width = ex - sx
+                var height = ey - sy
+
+                if (sx + width > this.width) {
+                    width = this.width - sx
+                }
+
+                if (sy + height > this.height) {
+                    height = this.height - sy
+                }
+
+                val seeThruPink = Color(Color.HOTPINK.red, Color.HOTPINK.green, Color.HOTPINK.blue, 0.8)
+                gc.fill = seeThruPink
+                // println("Minimap rendering starting at $sx, $sy ending at $ex, $ey")
+                gc.fillRect(sx, sy, width, height)
+            }
         }
     }
+
+    var visibleBlockRange: Pair<IntRange, IntRange>? = null
+
 }

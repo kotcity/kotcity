@@ -12,14 +12,13 @@ const val MAX_BUILDING_SIZE = 4
 
 class CityRenderer(private val gameFrame: GameFrame, private val canvas: ResizableCanvas, private val map: CityMap) {
 
-
-
     var zoom = 1.0
         set(value) {
             var oldCenter = centerBlock()
             field = value
             panMap(oldCenter)
         }
+
     var blockOffsetX = 0.0
     var blockOffsetY = 0.0
     private var mapMinElevation = 0.0
@@ -71,6 +70,19 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         // println("Delta is: $dx,$dy")
         blockOffsetX += (dx)
         blockOffsetY += (dy)
+        firePanChanged()
+    }
+
+    private val listeners: MutableList<(Pair<IntRange, IntRange>) -> Unit> = mutableListOf()
+
+    fun addPanListener(listener: (Pair<IntRange, IntRange>) -> Unit) {
+        this.listeners.add(listener)
+    }
+
+    private fun firePanChanged() {
+        this.listeners.forEach {
+            it(this.visibleBlockRange())
+        }
     }
 
     fun centerBlock(): BlockCoordinate {

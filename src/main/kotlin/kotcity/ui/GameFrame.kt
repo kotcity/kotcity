@@ -100,6 +100,10 @@ class GameFrame : View() {
         title = "$GAME_STRING - ${map.cityName}"
         cityNameLabel.text = map.cityName
         this.cityRenderer = CityRenderer(this, canvas, map)
+        this.cityRenderer?.addPanListener { visibleBlockRange ->
+            println("We have moved the map around. Telling the minimal to highlight: $visibleBlockRange")
+            this.cityMapCanvas.visibleBlockRange = visibleBlockRange
+        }
     }
 
     private fun setCanvasSize() {

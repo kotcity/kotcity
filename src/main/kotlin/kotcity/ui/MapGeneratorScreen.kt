@@ -1,15 +1,14 @@
 package kotcity.ui
 
 import javafx.animation.AnimationTimer
-import javafx.scene.control.ScrollPane
-import javafx.scene.control.Slider
-import javafx.scene.control.TextField
-import javafx.scene.control.TextInputDialog
+import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import kotcity.data.CityMap
 import kotcity.data.MapGenerator
+import kotcity.data.MapMode
 import kotcity.ui.map.CityMapCanvas
 import tornadofx.View
+import tornadofx.selectedItem
 
 
 class MapGeneratorScreen : View() {
@@ -25,14 +24,23 @@ class MapGeneratorScreen : View() {
     private val sizeField: TextField by fxid()
     private val seaLevelSlider: Slider by fxid()
 
-    var timer : AnimationTimer? = null
+    private var timer : AnimationTimer? = null
+
+    private val mapModeComboBox: ComboBox<String> by fxid()
 
     private var newMap = mapGenerator.generateMap(sizeField.text.toInt(), sizeField.text.toInt())
+
+    val mapModes = listOf("Normal", "Oil", "Coal", "Gold", "Soil")
 
     init {
 
         cityMapCanvas.map = newMap
         root.center = cityMapCanvas
+
+        mapModeComboBox.items.clear()
+        mapModeComboBox.items.addAll(mapModes)
+
+        mapModeComboBox.selectionModel.select(0)
 
         title = "$GAME_STRING - Generate a Map"
 
@@ -75,6 +83,18 @@ class MapGeneratorScreen : View() {
         cityMapCanvas.prefHeight(newMap.height.toDouble())
         cityMapCanvas.width = newMap.width.toDouble()
         cityMapCanvas.height = newMap.height.toDouble()
+    }
+
+    fun mapModeSelected() {
+        println("We selected this mode: ${mapModeComboBox.selectedItem}")
+        cityMapCanvas.mode = when (mapModeComboBox.selectedItem) {
+            "Coal" -> MapMode.COAL
+            "Gold" -> MapMode.GOLD
+            "Soil" -> MapMode.SOIL
+            "Oil" -> MapMode.OIL
+            "Normal" -> MapMode.NORMAL
+            else -> throw RuntimeException("Unknown map mode: ${mapModeComboBox.selectedItem}")
+        }
     }
 
     fun acceptPressed() {
