@@ -29,6 +29,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     var mouseBlock: BlockCoordinate? = null
     private var firstBlockPressed: BlockCoordinate? = null
 
+    var mapMode: MapMode = MapMode.NORMAL
+
     init {
         mapMinElevation = map.groundLayer.values.mapNotNull { it.elevation }.min() ?: 0.0
         mapMaxElevation = map.groundLayer.values.mapNotNull { it.elevation }.max() ?: 0.0
@@ -191,7 +193,37 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         drawMap(canvas.graphicsContext2D)
         drawZones()
         drawBuildings(canvas.graphicsContext2D)
+        if (mapMode != MapMode.NORMAL) {
+            drawResources()
+        }
         drawHighlights()
+    }
+
+    private fun resourceLayer(mode: MapMode): MutableMap<BlockCoordinate, Double>? {
+        return when(mode) {
+            MapMode.COAL -> map.resourceLayers["coal"]
+            MapMode.OIL -> map.resourceLayers["oil"]
+            MapMode.GOLD -> map.resourceLayers["gold"]
+            MapMode.SOIL -> map.resourceLayers["soil"]
+            else -> null
+        }
+    }
+
+    private fun drawResources() {
+        val (xRange, yRange) = visibleBlockRange()
+        val blockSize = blockSize()
+
+        val layer = resourceLayer(this.mapMode) ?: return
+
+        xRange.toList().forEachIndexed { xi, x ->
+            yRange.toList().forEachIndexed { yi, y ->
+                val tile = layer[BlockCoordinate(x, y)]
+                tile?.let {
+                    canvas.graphicsContext2D.fill = Color.YELLOW
+                    canvas.graphicsContext2D.fillRect(xi.toDouble(), yi.toDouble(), canvas.width, canvas.height)
+                }
+            }
+        }
     }
 
     private fun drawHighlights() {
@@ -448,4 +480,5 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         }
 
     }
+
 }

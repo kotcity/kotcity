@@ -72,6 +72,13 @@ class GameFrame : View() {
     private val coalPowerButton: ToggleButton by fxid()
     private val dezoneButton: ToggleButton by fxid()
 
+    // map modes...
+    private val normalMapMode: RadioMenuItem by fxid()
+    private val coalMapMode: RadioMenuItem by fxid()
+    private val oilMapMode: RadioMenuItem by fxid()
+    private val goldMapMode: RadioMenuItem by fxid()
+    private val soilMapMode: RadioMenuItem by fxid()
+
     private val selectedToolLabel: Label by fxid()
     private val cityNameLabel: Label by fxid()
     private val clockLabel: Label by fxid()
@@ -221,6 +228,14 @@ class GameFrame : View() {
         dezoneButton.setOnAction { activeTool = Tool.DEZONE }
     }
 
+    fun bindMapModes() {
+        normalMapMode.setOnAction {cityRenderer?.mapMode = MapMode.NORMAL }
+        oilMapMode.setOnAction { cityRenderer?.mapMode = MapMode.OIL }
+        goldMapMode.setOnAction { cityRenderer?.mapMode = MapMode.GOLD }
+        coalMapMode.setOnAction { cityRenderer?.mapMode = MapMode.COAL }
+        soilMapMode.setOnAction { cityRenderer?.mapMode = MapMode.SOIL }
+    }
+
     fun loadCityPressed() {
         this.currentStage?.close()
         CityLoader.loadCity(this.primaryStage)
@@ -236,6 +251,7 @@ class GameFrame : View() {
 
         bindCanvas()
         bindButtons()
+        bindMapModes()
 
         mapPane.center = cityMapCanvas
 

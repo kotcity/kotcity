@@ -37,15 +37,15 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Map">
                <items>
-                  <RadioMenuItem mnemonicParsing="false" selected="true" text="Normal">
+                  <RadioMenuItem fx:id="normalMapMode" mnemonicParsing="false" selected="true" text="Normal">
                      <toggleGroup>
                         <ToggleGroup fx:id="mapMode" />
                      </toggleGroup>
                   </RadioMenuItem>
-                  <RadioMenuItem mnemonicParsing="false" text="Coal" toggleGroup="$mapMode" />
-                  <RadioMenuItem mnemonicParsing="false" text="Gold" toggleGroup="$mapMode" />
-                  <RadioMenuItem mnemonicParsing="false" text="Oil" toggleGroup="$mapMode" />
-                  <RadioMenuItem mnemonicParsing="false" text="Soil" toggleGroup="$mapMode" />
+                  <RadioMenuItem fx:id="coalMapMode" mnemonicParsing="false" text="Coal" toggleGroup="$mapMode" />
+                  <RadioMenuItem fx:id="goldMapMode" mnemonicParsing="false" text="Gold" toggleGroup="$mapMode" />
+                  <RadioMenuItem fx:id="oilMapMode" mnemonicParsing="false" text="Oil" toggleGroup="$mapMode" />
+                  <RadioMenuItem fx:id="soilMapMode" mnemonicParsing="false" text="Soil" toggleGroup="$mapMode" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Speed">
