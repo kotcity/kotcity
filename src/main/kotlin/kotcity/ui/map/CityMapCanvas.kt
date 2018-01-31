@@ -33,6 +33,7 @@ class CityMapCanvas: ResizableCanvas() {
 
     var mode: MapMode = MapMode.NORMAL
     var colorAdjuster: ColorAdjuster? = null
+    var visibleBlockRange: Pair<IntRange, IntRange>? = null
 
     fun render() {
 
@@ -75,6 +76,10 @@ class CityMapCanvas: ResizableCanvas() {
                 }
             }
 
+            if (this.mode != MapMode.NORMAL) {
+                renderResources()
+            }
+
             // now let's highlight the area of the map we can see...
             visibleBlockRange?.let { visibleBlockRange ->
                 val sx = Algorithms.scale(visibleBlockRange.first.first.toDouble(), 0.0, it.width.toDouble(), 0.0, this.width)
@@ -100,6 +105,50 @@ class CityMapCanvas: ResizableCanvas() {
         }
     }
 
-    var visibleBlockRange: Pair<IntRange, IntRange>? = null
+    private fun renderResources() {
+        this.map?.let { map ->
+            this.mode?.let { mode ->
+                val layer = when(mode) {
+                    MapMode.COAL -> map.resourceLayers["coal"]
+                    MapMode.OIL -> map.resourceLayers["oil"]
+                    MapMode.GOLD -> map.resourceLayers["gold"]
+                    MapMode.SOIL -> map.resourceLayers["soil"]
+                    else -> null
+                }
+                if (layer != null) {
+                    drawResourceLayer(layer)
+                }
+            }
+        }
+
+    }
+
+    private fun drawResourceLayer(layer: MutableMap<BlockCoordinate, Double>) {
+        val smallerDimension = if (this.width < this.height) {
+            this.width
+        } else {
+            this.height
+        }
+
+        val xRange = 0..smallerDimension.toInt()
+        val yRange = 0..smallerDimension.toInt()
+
+        // println("Map is rendering from 0 to $yRange")
+
+        for (x in xRange) {
+            for (y in yRange) {
+                // OK we gotta scale the map coordinates to this crap...
+                val nx = Algorithms.scale(x.toDouble(), 0.0, smallerDimension, 0.0, this.map?.width?.toDouble() ?: 0.0)
+                val ny = Algorithms.scale(y.toDouble(), 0.0, smallerDimension, 0.0, this.map?.height?.toDouble() ?: 0.0)
+
+                val tile = layer[BlockCoordinate(nx.toInt(), ny.toInt())]
+                if (tile ?: 0.0 > 0.5) {
+                    this.graphicsContext2D.fill = Color.YELLOW
+                    this.graphicsContext2D.fillRect(x.toDouble(), y.toDouble(), 1.0, 1.0)
+                }
+
+            }
+        }
+    }
 
 }

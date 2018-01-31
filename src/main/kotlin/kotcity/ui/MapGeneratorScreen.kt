@@ -119,19 +119,3 @@ class MapGeneratorScreen : View() {
         gameFrame.currentStage?.isMaximized = true
     }
 }
-
-fun ScrollPane.visibleArea(): Pair<IntRange, IntRange> {
-    val hValue = this.hvalue
-    val vValue = this.vvalue
-    val width = this.viewportBoundsProperty().get().width
-    val height = this.viewportBoundsProperty().get().height
-
-    val startX = (this.content.boundsInParent.width - width) * hValue
-    val startY = (this.content.boundsInParent.height - height) * vValue
-    val endX = startX + width
-    val endY = startY + height
-
-    val xRange = startX.toInt()..endX.toInt()
-    val yRange = startY.toInt()..endY.toInt()
-    return Pair(xRange, yRange)
-}
