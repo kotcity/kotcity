@@ -262,5 +262,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         resourceLayers[resourceName]?.put(blockCoordinate, resourceValue)
     }
 
+    fun dezone(firstBlock: BlockCoordinate, lastBlock: BlockCoordinate) {
+        BlockCoordinate.iterate(firstBlock, lastBlock) {
+            zoneLayer.remove(it)
+        }
+    }
+
 }
 

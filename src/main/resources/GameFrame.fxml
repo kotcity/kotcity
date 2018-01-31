@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="744.0" prefWidth="1034.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar>
          <menus>
@@ -35,9 +35,23 @@
                   <MenuItem fx:id="quitButton" mnemonicParsing="false" onAction="#quitPressed" text="Quit" />
                </items>
             </Menu>
+            <Menu mnemonicParsing="false" text="Map">
+               <items>
+                  <RadioMenuItem mnemonicParsing="false" selected="true" text="Normal">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="mapMode" />
+                     </toggleGroup>
+                  </RadioMenuItem>
+                  <RadioMenuItem mnemonicParsing="false" text="Coal" toggleGroup="$mapMode" />
+                  <RadioMenuItem mnemonicParsing="false" text="Gold" toggleGroup="$mapMode" />
+                  <RadioMenuItem mnemonicParsing="false" text="Oil" toggleGroup="$mapMode" />
+                  <RadioMenuItem mnemonicParsing="false" text="Soil" toggleGroup="$mapMode" />
+               </items>
+            </Menu>
             <Menu mnemonicParsing="false" text="Speed">
               <items>
                   <CheckMenuItem fx:id="pauseMenuItem" mnemonicParsing="false" text="Paused" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
                   <RadioMenuItem fx:id="slowMenuItem" mnemonicParsing="false" onAction="#slowClicked" text="Slow">
                      <toggleGroup>
                         <ToggleGroup fx:id="gameSpeed" />
@@ -69,18 +83,19 @@
                            <content>
                               <FlowPane hgap="10.0" maxWidth="200.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
                                  <children>
-                                    <Button fx:id="bulldozeButton" mnemonicParsing="false" text="Bulldoze" />
-                                    <Button fx:id="queryButton" mnemonicParsing="false" text="Query" />
-                                    <Region layoutX="21.0" layoutY="93.0" prefHeight="5.0" prefWidth="200.0" />
-                                    <ToggleButton fx:id="residentialButton" mnemonicParsing="false" text="Residential">
+                                    <ToggleButton fx:id="bulldozeButton" mnemonicParsing="false" text="Bulldoze">
                                        <toggleGroup>
                                           <ToggleGroup fx:id="buildTools" />
                                        </toggleGroup>
                                     </ToggleButton>
+                                    <ToggleButton fx:id="dezoneButton" mnemonicParsing="false" text="Dezone" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="queryButton" mnemonicParsing="false" text="Query" toggleGroup="$buildTools" />
+                                    <Region layoutX="21.0" layoutY="93.0" prefHeight="5.0" prefWidth="200.0" />
+                                    <ToggleButton fx:id="residentialButton" mnemonicParsing="false" text="Residential" toggleGroup="$buildTools" />
                                     <ToggleButton fx:id="commercialButton" mnemonicParsing="false" text="Commercial" toggleGroup="$buildTools" />
                                     <ToggleButton fx:id="industrialButton" mnemonicParsing="false" text="Industrial" toggleGroup="$buildTools" />
                                     <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="5.0" prefWidth="200.0" />
-                                    <Button fx:id="roadButton" mnemonicParsing="false" text="Road" />
+                                    <ToggleButton fx:id="roadButton" mnemonicParsing="false" text="Road" toggleGroup="$buildTools" />
                                     <Region layoutX="21.0" layoutY="93.0" prefHeight="5.0" prefWidth="200.0" />
                                     <Button mnemonicParsing="false" onAction="#zoomIn" text="Zoom In" />
                                     <Button mnemonicParsing="false" onAction="#zoomOut" text="Zoom Out" />
@@ -92,7 +107,7 @@
                            <content>
                               <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
                                  <children>
-                                    <Button fx:id="coalPowerButton" mnemonicParsing="false" text="Coal Power Plant" />
+                                    <ToggleButton fx:id="coalPowerButton" mnemonicParsing="false" text="Coal Power Plant" toggleGroup="$buildTools" />
                                  </children>
                               </FlowPane>
                            </content>
@@ -138,7 +153,7 @@
                         <ScrollBar fx:id="verticalScroll" layoutX="570.0" orientation="VERTICAL" prefHeight="559.0" prefWidth="17.0" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
-                  <Label fx:id="selectedToolLabel" text="Currently Selected Tool" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <Label fx:id="selectedToolLabel" prefWidth="690.0" text="Currently Selected Tool" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                </children>
             </AnchorPane>
          </items>

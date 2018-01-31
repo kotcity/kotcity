@@ -40,7 +40,14 @@ fun serializeDate(date: Date): String {
 const val DRAW_GRID = false
 const val TICK_DELAY: Int = 10 // only render every X ticks... (framerate limiter)
 
-enum class Tool { BULLDOZE, QUERY, ROAD, RESIDENTIAL_ZONE, INDUSTRIAL_ZONE, COMMERCIAL_ZONE, COAL_POWER_PLANT }
+enum class Tool {
+    BULLDOZE,
+    QUERY, ROAD,
+    RESIDENTIAL_ZONE, INDUSTRIAL_ZONE,
+    COMMERCIAL_ZONE, COAL_POWER_PLANT,
+    DEZONE
+}
+
 enum class GameSpeed { SLOW, MEDIUM, FAST }
 
 class GameFrame : View() {
@@ -56,13 +63,14 @@ class GameFrame : View() {
     private val cityMapCanvas: CityMapCanvas = CityMapCanvas()
 
     // BUTTONS
-    private val roadButton: Button by fxid()
-    private val queryButton: Button by fxid()
-    private val bulldozeButton: Button by fxid()
+    private val roadButton: ToggleButton by fxid()
+    private val queryButton: ToggleButton by fxid()
+    private val bulldozeButton: ToggleButton by fxid()
     private val residentialButton: ToggleButton by fxid()
     private val commercialButton: ToggleButton by fxid()
     private val industrialButton: ToggleButton by fxid()
-    private val coalPowerButton: Button by fxid()
+    private val coalPowerButton: ToggleButton by fxid()
+    private val dezoneButton: ToggleButton by fxid()
 
     private val selectedToolLabel: Label by fxid()
     private val cityNameLabel: Label by fxid()
@@ -210,6 +218,7 @@ class GameFrame : View() {
         commercialButton.setOnAction { activeTool = Tool.COMMERCIAL_ZONE }
         industrialButton.setOnAction { activeTool = Tool.INDUSTRIAL_ZONE }
         coalPowerButton.setOnAction { activeTool = Tool.COAL_POWER_PLANT }
+        dezoneButton.setOnAction { activeTool = Tool.DEZONE }
     }
 
     fun loadCityPressed() {
@@ -333,6 +342,8 @@ class GameFrame : View() {
                             map.zone(ZoneType.COMMERCIAL, firstBlock, lastBlock)
                         } else if (activeTool == Tool.INDUSTRIAL_ZONE) {
                             map.zone(ZoneType.INDUSTRIAL, firstBlock, lastBlock)
+                        } else if (activeTool == Tool.DEZONE) {
+                            map.dezone(firstBlock, lastBlock)
                         }
                     }
                 }

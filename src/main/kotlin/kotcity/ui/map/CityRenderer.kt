@@ -215,6 +215,10 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                     firstBlockPressed?.let { first ->
                         highlightBlocks(first, it)
                     }
+                } else if (gameFrame.activeTool == Tool.DEZONE) {
+                    firstBlockPressed?.let { first ->
+                        highlightBlocks(first, it)
+                    }
                 } else {
                     Unit
                 }
