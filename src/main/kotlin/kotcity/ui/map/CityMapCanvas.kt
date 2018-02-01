@@ -33,7 +33,7 @@ class CityMapCanvas: ResizableCanvas() {
 
     var mode: MapMode = MapMode.NORMAL
     var colorAdjuster: ColorAdjuster? = null
-    var visibleBlockRange: Pair<IntRange, IntRange>? = null
+    var visibleBlockRange: Pair<BlockCoordinate, BlockCoordinate>? = null
 
     fun render() {
 
@@ -82,10 +82,10 @@ class CityMapCanvas: ResizableCanvas() {
 
             // now let's highlight the area of the map we can see...
             visibleBlockRange?.let { visibleBlockRange ->
-                val sx = Algorithms.scale(visibleBlockRange.first.first.toDouble(), 0.0, it.width.toDouble(), 0.0, this.width)
-                val sy = Algorithms.scale(visibleBlockRange.second.first.toDouble(), 0.0, it.height.toDouble(), 0.0, this.height)
-                val ex = Algorithms.scale(visibleBlockRange.first.last.toDouble(), 0.0, it.width.toDouble(), 0.0, this.width)
-                val ey = Algorithms.scale(visibleBlockRange.second.last.toDouble(), 0.0, it.height.toDouble(), 0.0, this.height)
+                val sx = Algorithms.scale(visibleBlockRange.first.x.toDouble(), 0.0, it.width.toDouble(), 0.0, this.width)
+                val sy = Algorithms.scale(visibleBlockRange.first.y.toDouble(), 0.0, it.height.toDouble(), 0.0, this.height)
+                val ex = Algorithms.scale(visibleBlockRange.second.x.toDouble(), 0.0, it.width.toDouble(), 0.0, this.width)
+                val ey = Algorithms.scale(visibleBlockRange.second.y.toDouble(), 0.0, it.height.toDouble(), 0.0, this.height)
                 var width = ex - sx
                 var height = ey - sy
 

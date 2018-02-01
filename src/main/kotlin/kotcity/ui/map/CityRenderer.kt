@@ -45,7 +45,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     private fun canvasBlockWidth() = (canvas.width / blockSize()).toInt()
 
     // awkward... we need padding to get building off the screen...
-    private fun visibleBlockRange(padding : Int = 0): Pair<IntRange, IntRange> {
+    private fun visibleBlockRange(padding : Int = 0): Pair<BlockCoordinate, BlockCoordinate> {
         var startBlockX = blockOffsetX.toInt() - padding
         var startBlockY = blockOffsetY.toInt() - padding
         var endBlockX = startBlockX + canvasBlockWidth()
@@ -59,7 +59,10 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
             endBlockY = map.height
         }
 
-        return Pair(startBlockX..endBlockX, startBlockY..endBlockY)
+        val startCoordinate = BlockCoordinate(startBlockX, startBlockY)
+        val endCoordinate = BlockCoordinate(endBlockX, endBlockY)
+
+        return Pair(startCoordinate, endCoordinate)
     }
 
     private fun panMap(coordinate: BlockCoordinate) {
@@ -75,9 +78,9 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         firePanChanged()
     }
 
-    private val listeners: MutableList<(Pair<IntRange, IntRange>) -> Unit> = mutableListOf()
+    private val listeners: MutableList<(Pair<BlockCoordinate, BlockCoordinate>) -> Unit> = mutableListOf()
 
-    fun addPanListener(listener: (Pair<IntRange, IntRange>) -> Unit) {
+    fun addPanListener(listener: (Pair<BlockCoordinate, BlockCoordinate>) -> Unit) {
         this.listeners.add(listener)
     }
 
@@ -149,8 +152,11 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     private fun drawMap(gc: GraphicsContext) {
         // we got that map...
-        val (xRange, yRange) = visibleBlockRange()
+        val (startBlock, endBlock) = visibleBlockRange()
         val blockSize = blockSize()
+
+        val xRange = (startBlock.x..endBlock.x)
+        val yRange = (startBlock.y..endBlock.y)
 
         xRange.toList().forEachIndexed { xi, x ->
             yRange.toList().forEachIndexed { yi, y ->
@@ -210,20 +216,20 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     private fun drawResources() {
-        val (xRange, yRange) = visibleBlockRange()
+        val (startBlock, endBlock) = visibleBlockRange()
         val blockSize = blockSize()
 
         val layer = resourceLayer(this.mapMode) ?: return
 
-        xRange.toList().forEachIndexed { xi, x ->
-            yRange.toList().forEachIndexed { yi, y ->
-                val tile = layer[BlockCoordinate(x, y)]
-                tile?.let {
-                    canvas.graphicsContext2D.fill = Color.YELLOW
-                    canvas.graphicsContext2D.fillRect(xi.toDouble(), yi.toDouble(), canvas.width, canvas.height)
-                }
+        BlockCoordinate.iterate(startBlock, endBlock) {coord ->
+            val tile = layer[coord]
+            tile?.let {
+                canvas.graphicsContext2D.fill = Color.YELLOW
+                canvas.graphicsContext2D.fillRect(coord.x.toDouble(), coord.y.toDouble(), canvas.width, canvas.height)
             }
         }
+
+
     }
 
     private fun drawHighlights() {
@@ -299,8 +305,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     private fun visibleBlocks(padding: Int = 0): MutableList<BlockCoordinate> {
         val blockList = mutableListOf<BlockCoordinate>()
         val (from, to) = visibleBlockRange(padding = padding)
-        for (x in from) {
-            to.mapTo(blockList) { BlockCoordinate(x, it) }
+        BlockCoordinate.iterate(from, to) {
+            blockList.add(it)
         }
         return blockList
     }
