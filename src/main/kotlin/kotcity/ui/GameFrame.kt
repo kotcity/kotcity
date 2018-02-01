@@ -121,7 +121,7 @@ class GameFrame : View() {
             println("We have moved the map around. Telling the minimal to highlight: $visibleBlockRange")
             this.cityMapCanvas.visibleBlockRange = visibleBlockRange
         }
-        this.cityMapCanvas.visibleBlockRange = this.cityRenderer?.visibleBlockRange()
+        this.cityMapCanvas.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
     }
 
     private fun setCanvasSize() {

@@ -90,24 +90,25 @@ class CityMapCanvas: ResizableCanvas() {
 
             // now let's highlight the area of the map we can see...
             visibleBlockRange?.let { visibleBlockRange ->
-                val sx = Algorithms.scale(visibleBlockRange.first.x.toDouble(), 0.0, map.width.toDouble(), 0.0, this.width)
-                val sy = Algorithms.scale(visibleBlockRange.first.y.toDouble(), 0.0, map.height.toDouble(), 0.0, this.height)
-                val ex = Algorithms.scale(visibleBlockRange.second.x.toDouble(), 0.0, map.width.toDouble(), 0.0, this.width)
-                val ey = Algorithms.scale(visibleBlockRange.second.y.toDouble(), 0.0, map.height.toDouble(), 0.0, this.height)
+                println("Blocks visible: ${visibleBlockRange.first} -> ${visibleBlockRange.second}")
+                val sx = Algorithms.scale(visibleBlockRange.first.x.toDouble(), 0.0, map.width.toDouble(), 0.0, smallerDimension)
+                val sy = Algorithms.scale(visibleBlockRange.first.y.toDouble(), 0.0, map.height.toDouble(), 0.0, smallerDimension)
+                val ex = Algorithms.scale(visibleBlockRange.second.x.toDouble(), 0.0, map.width.toDouble(), 0.0, smallerDimension)
+                val ey = Algorithms.scale(visibleBlockRange.second.y.toDouble(), 0.0, map.height.toDouble(), 0.0, smallerDimension)
                 var width = ex - sx
                 var height = ey - sy
 
-                if (sx + width > this.width) {
-                    width = this.width - sx
-                }
-
-                if (sy + height > this.height) {
-                    height = this.height - sy
-                }
+//                if (sx + width > this.width) {
+//                    width = this.width - sx
+//                }
+//
+//                if (sy + height > this.height) {
+//                    height = this.height - sy
+//                }
 
                 val seeThruPink = Color(Color.HOTPINK.red, Color.HOTPINK.green, Color.HOTPINK.blue, 0.8)
                 gc.fill = seeThruPink
-                // println("Minimap rendering starting at $sx, $sy ending at $ex, $ey")
+                println("Minimap rendering starting at $sx, $sy ending at $ex, $ey")
                 gc.fillRect(sx, sy, width, height)
             }
         }
