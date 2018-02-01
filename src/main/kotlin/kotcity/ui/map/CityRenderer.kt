@@ -158,6 +158,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         val xRange = (startBlock.x..endBlock.x)
         val yRange = (startBlock.y..endBlock.y)
 
+        // this handles the offset...
         xRange.toList().forEachIndexed { xi, x ->
             yRange.toList().forEachIndexed { yi, y ->
                 val tile = map.groundLayer[BlockCoordinate(x, y)]
@@ -216,6 +217,9 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     private fun drawResources() {
+        println("Should be drawing resources now!!!")
+
+
         val (startBlock, endBlock) = visibleBlockRange()
         val blockSize = blockSize()
 
@@ -224,8 +228,15 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         BlockCoordinate.iterate(startBlock, endBlock) {coord ->
             val tile = layer[coord]
             tile?.let {
-                canvas.graphicsContext2D.fill = Color.YELLOW
-                canvas.graphicsContext2D.fillRect(coord.x.toDouble(), coord.y.toDouble(), canvas.width, canvas.height)
+
+                if (tile > 0.5) {
+                    val tx = coord.x - blockOffsetX
+                    val ty = coord.y - blockOffsetY
+                    val blockSize = blockSize()
+                    canvas.graphicsContext2D.fill = Color.LIGHTGOLDENRODYELLOW
+                    canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
+                }
+
             }
         }
 

@@ -229,11 +229,26 @@ class GameFrame : View() {
     }
 
     fun bindMapModes() {
-        normalMapMode.setOnAction {cityRenderer?.mapMode = MapMode.NORMAL }
-        oilMapMode.setOnAction { cityRenderer?.mapMode = MapMode.OIL }
-        goldMapMode.setOnAction { cityRenderer?.mapMode = MapMode.GOLD }
-        coalMapMode.setOnAction { cityRenderer?.mapMode = MapMode.COAL }
-        soilMapMode.setOnAction { cityRenderer?.mapMode = MapMode.SOIL }
+        normalMapMode.setOnAction {
+            cityRenderer?.mapMode = MapMode.NORMAL
+            cityMapCanvas.mode = MapMode.NORMAL
+        }
+        oilMapMode.setOnAction {
+            cityRenderer?.mapMode = MapMode.OIL
+            cityMapCanvas.mode = MapMode.OIL
+        }
+        goldMapMode.setOnAction {
+            cityRenderer?.mapMode = MapMode.GOLD
+            cityMapCanvas.mode = MapMode.GOLD
+        }
+        coalMapMode.setOnAction {
+            cityRenderer?.mapMode = MapMode.COAL
+            cityMapCanvas.mode = MapMode.COAL
+        }
+        soilMapMode.setOnAction {
+            cityRenderer?.mapMode = MapMode.SOIL
+            cityMapCanvas.mode = MapMode.SOIL
+        }
     }
 
     fun loadCityPressed() {
