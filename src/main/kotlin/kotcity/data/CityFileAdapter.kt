@@ -104,6 +104,12 @@ val gson = GsonBuilder()
 
                     jsonObject(buildingObj.map {Pair(it.key, it.value)})
                 }.toJsonArray()
+
+                data["powerLineLayer"] = it.src.powerLineLayer.map { entry ->
+                    val x = entry.key.x
+                    val y = entry.key.y
+                    jsonObject("x" to x, "y" to y)
+                }.toJsonArray()
                 data
             }
 
@@ -153,6 +159,12 @@ val gson = GsonBuilder()
                         cityMap.buildingLayer[BlockCoordinate(x, y)] = building
                     }
 
+                }
+
+                data["powerLineLayer"].asJsonArray.forEach {
+                    var x = it["x"].asInt
+                    var y = it["y"].asInt
+                    cityMap.powerLineLayer[BlockCoordinate(x,y)] = PowerLine()
                 }
 
                 data["zoneLayer"]?.asJsonArray?.forEach {

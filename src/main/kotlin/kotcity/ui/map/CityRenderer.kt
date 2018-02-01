@@ -45,11 +45,11 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     private fun canvasBlockWidth() = (canvas.width / blockSize()).toInt()
 
     // awkward... we need padding to get building off the screen...
-    private fun visibleBlockRange(padding : Int = 0): Pair<BlockCoordinate, BlockCoordinate> {
+    fun visibleBlockRange(padding : Int = 0): Pair<BlockCoordinate, BlockCoordinate> {
         var startBlockX = blockOffsetX.toInt() - padding
         var startBlockY = blockOffsetY.toInt() - padding
-        var endBlockX = startBlockX + canvasBlockWidth()
-        var endBlockY = startBlockY + canvasBlockHeight()
+        var endBlockX = startBlockX + canvasBlockWidth() + padding
+        var endBlockY = startBlockY + canvasBlockHeight() + padding
 
         if (endBlockX > map.width) {
             endBlockX = map.width
@@ -221,7 +221,6 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
 
         val (startBlock, endBlock) = visibleBlockRange()
-        val blockSize = blockSize()
 
         val layer = resourceLayer(this.mapMode) ?: return
 
@@ -247,6 +246,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         mouseBlock?.let {
             if (mouseDown) {
                 if (gameFrame.activeTool == Tool.ROAD) {
+                    drawRoadBlueprint(canvas.graphicsContext2D)
+                } else if (gameFrame.activeTool == Tool.POWER_LINES) {
                     drawRoadBlueprint(canvas.graphicsContext2D)
                 } else if (gameFrame.activeTool == Tool.BULLDOZE) {
                     firstBlockPressed?.let { first ->
@@ -274,7 +275,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
             } else {
                 if (gameFrame.activeTool == Tool.COAL_POWER_PLANT) {
                     highlightCenteredBlocks(it, 4, 4)
-                } else if (gameFrame.activeTool == Tool.ROAD) {
+                } else if (gameFrame.activeTool == Tool.ROAD || gameFrame.activeTool == Tool.POWER_LINES) {
                     mouseBlock?.let {
                         highlightBlocks(it, it)
                     }
@@ -323,7 +324,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     private fun visibleBuildings(): List<Pair<BlockCoordinate, Building>> {
-        return visibleBlocks(padding = MAX_BUILDING_SIZE).mapNotNull {
+        // TODO: we can just map over the two different layers... clean up later...
+        val buildings = visibleBlocks(padding = MAX_BUILDING_SIZE).mapNotNull {
             val building = map.buildingLayer[it]
             if (building != null) {
                 Pair(it, building)
@@ -331,6 +333,15 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                 null
             }
         }
+        val powerLines = visibleBlocks(padding = MAX_BUILDING_SIZE).mapNotNull {
+            val building = map.powerLineLayer[it]
+            if (building != null) {
+                Pair(it, building)
+            } else {
+                null
+            }
+        }
+        return buildings.plus(powerLines)
     }
 
     private fun drawBuildings(context: GraphicsContext) {

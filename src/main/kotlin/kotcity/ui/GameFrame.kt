@@ -45,7 +45,8 @@ enum class Tool {
     QUERY, ROAD,
     RESIDENTIAL_ZONE, INDUSTRIAL_ZONE,
     COMMERCIAL_ZONE, COAL_POWER_PLANT,
-    DEZONE
+    DEZONE,
+    POWER_LINES
 }
 
 enum class GameSpeed { SLOW, MEDIUM, FAST }
@@ -71,6 +72,7 @@ class GameFrame : View() {
     private val industrialButton: ToggleButton by fxid()
     private val coalPowerButton: ToggleButton by fxid()
     private val dezoneButton: ToggleButton by fxid()
+    private val powerLinesButton: ToggleButton by fxid()
 
     // map modes...
     private val normalMapMode: RadioMenuItem by fxid()
@@ -119,6 +121,7 @@ class GameFrame : View() {
             println("We have moved the map around. Telling the minimal to highlight: $visibleBlockRange")
             this.cityMapCanvas.visibleBlockRange = visibleBlockRange
         }
+        this.cityMapCanvas.visibleBlockRange = this.cityRenderer?.visibleBlockRange()
     }
 
     private fun setCanvasSize() {
@@ -226,6 +229,7 @@ class GameFrame : View() {
         industrialButton.setOnAction { activeTool = Tool.INDUSTRIAL_ZONE }
         coalPowerButton.setOnAction { activeTool = Tool.COAL_POWER_PLANT }
         dezoneButton.setOnAction { activeTool = Tool.DEZONE }
+        powerLinesButton.setOnAction { activeTool = Tool.POWER_LINES }
     }
 
     fun bindMapModes() {
@@ -365,6 +369,8 @@ class GameFrame : View() {
                         if (activeTool == Tool.ROAD) {
                             println("Want to build road from: $firstBlock, $lastBlock")
                             map.buildRoad(firstBlock, lastBlock)
+                        } else if (activeTool == Tool.POWER_LINES) {
+                            map.buildPowerline(firstBlock, lastBlock)
                         } else if (activeTool == Tool.BULLDOZE) {
                             map.bulldoze(firstBlock, lastBlock)
                         } else if (activeTool == Tool.RESIDENTIAL_ZONE) {

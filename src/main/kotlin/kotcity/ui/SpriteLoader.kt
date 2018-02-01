@@ -9,10 +9,11 @@ object SpriteLoader {
 
     private fun uncachedSpriteForBuildingType(building: Building, width: Double, height: Double): Image? {
         var filename = when (building.type) {
-            BuildingType.COAL_POWER_PLANT -> "/sprites/coal_power_plant.png"
-            BuildingType.COMMERCIAL -> "/assets/commercial/${building.sprite}"
-            BuildingType.RESIDENTIAL -> "/assets/residential/${building.sprite}"
-            BuildingType.INDUSTRIAL -> "/assets/industrial/${building.sprite}"
+            BuildingType.COAL_POWER_PLANT -> "file:./assets/utility/coal_power_plant.png"
+            BuildingType.COMMERCIAL -> "file:./assets/commercial/${building.sprite}"
+            BuildingType.RESIDENTIAL -> "file:./assets/residential/${building.sprite}"
+            BuildingType.INDUSTRIAL -> "file:./assets/industrial/${building.sprite}"
+            BuildingType.POWER_LINE -> "file:./assets/utility/power_line.png"
             else -> throw RuntimeException("Unknown sprite for ${building.type}")
         }
         if (filename != null) {

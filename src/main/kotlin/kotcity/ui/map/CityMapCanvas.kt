@@ -37,7 +37,7 @@ class CityMapCanvas: ResizableCanvas() {
 
     fun render() {
 
-        map?.let {
+        map?.let { map ->
             // get the graphics context...
             val gc = this.graphicsContext2D
 
@@ -54,25 +54,33 @@ class CityMapCanvas: ResizableCanvas() {
 
             // println("Map is rendering from 0 to $yRange")
 
-            for (x in xRange) {
-                for (y in yRange) {
+            for (canvasX in xRange) {
+                for (canvasY in yRange) {
 
                     // OK we gotta scale the map coordinates to this crap...
-                    val nx = Algorithms.scale(x.toDouble(), 0.0, smallerDimension, 0.0, it.width.toDouble())
-                    val ny = Algorithms.scale(y.toDouble(), 0.0, smallerDimension, 0.0, it.height.toDouble())
+                    val nx = Algorithms.scale(canvasX.toDouble(), 0.0, smallerDimension, 0.0, map.width.toDouble())
+                    val ny = Algorithms.scale(canvasY.toDouble(), 0.0, smallerDimension, 0.0, map.height.toDouble())
 
-                    val tile = it.groundLayer[BlockCoordinate(nx.toInt(), ny.toInt())]
-                    tile?.let {
-                        val tileColor = colorAdjuster?.colorForTile(tile)
-                        if (tile?.type == TileType.GROUND) {
-                            gc.fill = tileColor
-                            gc.fillRect(x.toDouble(), y.toDouble(), 1.0, 1.0)
-                        } else {
-                            gc.fill = Color.DARKBLUE
-                            gc.fillRect(x.toDouble(), y.toDouble(), 1.0, 1.0)
+                    val translatedBlock = BlockCoordinate(nx.toInt(), ny.toInt())
+
+                    // TODO: this is a BUG!!!! we are getting the canvas XY coordinates but we care about the building ones...
+                    val buildings = map.buildingsIn(translatedBlock)
+                    if (buildings.count() > 0) {
+                        gc.fill = Color.BLACK
+                        gc.fillRect(canvasX.toDouble(), canvasY.toDouble(), 1.0, 1.0)
+                    } else {
+                        val tile = map.groundLayer[translatedBlock]
+                        tile?.let {
+                            val tileColor = colorAdjuster?.colorForTile(tile)
+                            if (it.type == TileType.GROUND) {
+                                gc.fill = tileColor
+                                gc.fillRect(canvasX.toDouble(), canvasY.toDouble(), 1.0, 1.0)
+                            } else {
+                                gc.fill = Color.DARKBLUE
+                                gc.fillRect(canvasX.toDouble(), canvasY.toDouble(), 1.0, 1.0)
+                            }
                         }
                     }
-
                 }
             }
 
@@ -82,10 +90,10 @@ class CityMapCanvas: ResizableCanvas() {
 
             // now let's highlight the area of the map we can see...
             visibleBlockRange?.let { visibleBlockRange ->
-                val sx = Algorithms.scale(visibleBlockRange.first.x.toDouble(), 0.0, it.width.toDouble(), 0.0, this.width)
-                val sy = Algorithms.scale(visibleBlockRange.first.y.toDouble(), 0.0, it.height.toDouble(), 0.0, this.height)
-                val ex = Algorithms.scale(visibleBlockRange.second.x.toDouble(), 0.0, it.width.toDouble(), 0.0, this.width)
-                val ey = Algorithms.scale(visibleBlockRange.second.y.toDouble(), 0.0, it.height.toDouble(), 0.0, this.height)
+                val sx = Algorithms.scale(visibleBlockRange.first.x.toDouble(), 0.0, map.width.toDouble(), 0.0, this.width)
+                val sy = Algorithms.scale(visibleBlockRange.first.y.toDouble(), 0.0, map.height.toDouble(), 0.0, this.height)
+                val ex = Algorithms.scale(visibleBlockRange.second.x.toDouble(), 0.0, map.width.toDouble(), 0.0, this.width)
+                val ey = Algorithms.scale(visibleBlockRange.second.y.toDouble(), 0.0, map.height.toDouble(), 0.0, this.height)
                 var width = ex - sx
                 var height = ey - sy
 

@@ -23,6 +23,18 @@ data class BlockCoordinate(val x: Int, val y: Int) {
     }
 }
 
+data class Corners(
+        val topLeft: BlockCoordinate,
+        val bottomRight: BlockCoordinate
+) {
+    fun includes(block: BlockCoordinate): Boolean {
+        if (block.x >= topLeft.x && block.x <= bottomRight.x && block.y >= topLeft.y && block.y <= bottomRight.y) {
+            return true
+        }
+        return false
+    }
+}
+
 fun IntRange.reorder(): IntRange {
     return if (first < last) {
         this
@@ -46,6 +58,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val groundLayer = mutableMapOf<BlockCoordinate, MapTile>()
     val buildingLayer = mutableMapOf<BlockCoordinate, Building>()
     val zoneLayer = mutableMapOf<BlockCoordinate, Zone>()
+    val powerLineLayer = mutableMapOf<BlockCoordinate, Building>()
 
     val resourceLayers = mutableMapOf<String, MutableMap<BlockCoordinate, Double>>()
 
@@ -248,6 +261,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         println("Want to bulldoze from $from to $to")
         BlockCoordinate.iterate(from, to) {
             buildingLayer.remove(it)
+            powerLineLayer.remove(it)
         }
         updateBuildingIndex()
     }
@@ -265,6 +279,33 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun dezone(firstBlock: BlockCoordinate, lastBlock: BlockCoordinate) {
         BlockCoordinate.iterate(firstBlock, lastBlock) {
             zoneLayer.remove(it)
+        }
+    }
+
+    fun buildPowerline(firstBlock: BlockCoordinate, lastBlock: BlockCoordinate) {
+        roadBlocks(firstBlock, lastBlock).forEach { block ->
+            // println("Dropping a road at: $block")
+            val newPowerLine = PowerLine()
+            if (buildingLayer[block]?.type == BuildingType.ROAD || canBuildBuildingAt(newPowerLine, block, waterCheck = false)) {
+                powerLineLayer[block] = newPowerLine
+            } else {
+                println("We have an overlap... not building!")
+            }
+        }
+    }
+
+    fun builingCorners(building: Building, block: BlockCoordinate): Corners {
+        val buildingTopLeft = BlockCoordinate(block.x, block.y)
+        val buildingBottomRight = BlockCoordinate(block.x + building.width - 1, block.y + building.height - 1)
+        return Corners(buildingTopLeft, buildingBottomRight)
+    }
+
+    fun buildingsIn(block: BlockCoordinate): List<Pair<BlockCoordinate, Building>> {
+        val nearestBuildings = nearestBuildings(block, 10f)
+        return nearestBuildings.filter {
+            val coord = it.first
+            val building = it.second
+            builingCorners(building, coord).includes(block)
         }
     }
 
