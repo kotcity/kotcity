@@ -47,7 +47,7 @@ compileTestKotlin {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'GameFrameKt'
+        attributes 'Main-Class': 'kotcity.ui.LaunchScreenKt'
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
