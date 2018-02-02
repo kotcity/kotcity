@@ -1,10 +1,7 @@
 package kotcity.ui.map
 
 import javafx.scene.paint.Color
-import kotcity.data.BlockCoordinate
-import kotcity.data.CityMap
-import kotcity.data.MapMode
-import kotcity.data.TileType
+import kotcity.data.*
 import kotcity.ui.Algorithms
 import kotcity.ui.ResizableCanvas
 
@@ -90,7 +87,6 @@ class CityMapCanvas: ResizableCanvas() {
 
             // now let's highlight the area of the map we can see...
             visibleBlockRange?.let { visibleBlockRange ->
-                println("Blocks visible: ${visibleBlockRange.first} -> ${visibleBlockRange.second}")
                 val sx = Algorithms.scale(visibleBlockRange.first.x.toDouble(), 0.0, map.width.toDouble(), 0.0, smallerDimension)
                 val sy = Algorithms.scale(visibleBlockRange.first.y.toDouble(), 0.0, map.height.toDouble(), 0.0, smallerDimension)
                 val ex = Algorithms.scale(visibleBlockRange.second.x.toDouble(), 0.0, map.width.toDouble(), 0.0, smallerDimension)
@@ -108,7 +104,7 @@ class CityMapCanvas: ResizableCanvas() {
 
                 val seeThruPink = Color(Color.HOTPINK.red, Color.HOTPINK.green, Color.HOTPINK.blue, 0.8)
                 gc.fill = seeThruPink
-                println("Minimap rendering starting at $sx, $sy ending at $ex, $ey")
+                // println("Minimap rendering starting at $sx, $sy ending at $ex, $ey")
                 gc.fillRect(sx, sy, width, height)
             }
         }
@@ -132,7 +128,7 @@ class CityMapCanvas: ResizableCanvas() {
 
     }
 
-    private fun drawResourceLayer(layer: MutableMap<BlockCoordinate, Double>) {
+    private fun drawResourceLayer(layer: QuantizedMap<Double>) {
         val smallerDimension = if (this.width < this.height) {
             this.width
         } else {

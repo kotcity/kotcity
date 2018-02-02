@@ -206,7 +206,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         drawHighlights()
     }
 
-    private fun resourceLayer(mode: MapMode): MutableMap<BlockCoordinate, Double>? {
+    private fun resourceLayer(mode: MapMode): QuantizedMap<Double>? {
         return when(mode) {
             MapMode.COAL -> map.resourceLayers["coal"]
             MapMode.OIL -> map.resourceLayers["oil"]
@@ -217,8 +217,6 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     private fun drawResources() {
-        println("Should be drawing resources now!!!")
-
 
         val (startBlock, endBlock) = visibleBlockRange()
 

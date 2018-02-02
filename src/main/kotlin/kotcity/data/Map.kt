@@ -58,9 +58,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val groundLayer = mutableMapOf<BlockCoordinate, MapTile>()
     val buildingLayer = mutableMapOf<BlockCoordinate, Building>()
     val zoneLayer = mutableMapOf<BlockCoordinate, Zone>()
-    val powerLineLayer = mutableMapOf<BlockCoordinate, Building>()
+    val powerLineLayer = QuantizedMap<Building>()
 
-    val resourceLayers = mutableMapOf<String, MutableMap<BlockCoordinate, Double>>()
+    val resourceLayers = mutableMapOf<String, QuantizedMap<Double>>()
 
     var time = defaultTime()
 
@@ -271,7 +271,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
         // make sure that fucker is set!
         if (resourceLayers[resourceName] == null) {
-            resourceLayers[resourceName] = mutableMapOf()
+            resourceLayers[resourceName] = QuantizedMap(4)
         }
         resourceLayers[resourceName]?.put(blockCoordinate, resourceValue)
     }
