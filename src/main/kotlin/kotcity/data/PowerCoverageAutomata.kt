@@ -3,13 +3,12 @@ package kotcity.data
 class PowerCoverageAutomata(
         coordinate: BlockCoordinate,
         powerPlant: PowerPlant,
-        val gridMap: MutableMap<BlockCoordinate, PowerCoverageAutomata>,
-        val map: CityMap,
-        val index: Int
+        private val gridMap: MutableMap<BlockCoordinate, PowerCoverageAutomata>,
+        val map: CityMap
 ) {
 
-    val openList = mutableSetOf<BlockCoordinate>()
-    var powerAvailable = 0
+    private val openList = mutableSetOf<BlockCoordinate>()
+    private var powerAvailable = 0
 
     init {
         openList.add(coordinate)
@@ -21,18 +20,15 @@ class PowerCoverageAutomata(
     }
 
     fun tick() {
-        println("Number of open in $this -> ${this.openList.count()}")
         if (done()) {
             return
         }
         val activeCoord = openList.first()
-        println("Processing: $activeCoord")
         openList.remove(activeCoord)
 
         gridMap[activeCoord] = this
 
         // get neighbors...
-        // TODO: add radius...
         val neighbors = activeCoord.neighbors(radius = 3)
         neighbors.forEach {
             // if the block has no power... AND contains buildings
@@ -51,7 +47,6 @@ class PowerCoverageAutomata(
     }
 
     private fun ingest(otherAutomata: PowerCoverageAutomata) {
-        println("Gotta ingest another automata...")
         // we need to suck up all its open list
         this.openList.addAll(otherAutomata.openList)
         otherAutomata.openList.clear()

@@ -15,7 +15,7 @@ object PowerCoverageUpdater {
 
         val automatas = powerPlants.map {
             autoMataIndex += 1
-            PowerCoverageAutomata(it.key, it.value as PowerPlant, gridmap, map, autoMataIndex)
+            PowerCoverageAutomata(it.key, it.value as PowerPlant, gridmap, map)
         }.toMutableSet()
         while (automatas.any { !it.done() }) {
             automatas.forEach {
