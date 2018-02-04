@@ -16,6 +16,9 @@ class PowerCoverageAutomata(
     }
 
     fun done(): Boolean {
+        if (powerAvailable <= 0) {
+            return true
+        }
         return openList.isEmpty()
     }
 
@@ -25,6 +28,7 @@ class PowerCoverageAutomata(
         }
         val activeCoord = openList.first()
         openList.remove(activeCoord)
+        powerAvailable -= 1
 
         gridMap[activeCoord] = this
 
