@@ -1,12 +1,14 @@
 package kotcity.data
 
 enum class BuildingType {
-    ROAD, COAL_POWER_PLANT, RESIDENTIAL, COMMERCIAL, INDUSTRIAL, POWER_LINE
+    ROAD, RESIDENTIAL, COMMERCIAL, INDUSTRIAL, POWER_LINE, POWER_PLANT
 }
 
 enum class ZoneType {
     RESIDENTIAL, COMMERCIAL, INDUSTRIAL
 }
+
+val POWER_PLANT_TYPES = listOf("coal", "nuclear")
 
 data class Zone(val type: ZoneType)
 
@@ -14,9 +16,12 @@ abstract class Building {
     abstract var width: Int
     abstract var height: Int
     abstract var type: BuildingType
+    open val variety: String? = null
     open var name: String? = null
     open var sprite: String? = null
     open var description: String? = null
+    var powered = false
+    open val powerRequired = 0
 }
 
 class Road : Building() {
@@ -25,8 +30,24 @@ class Road : Building() {
     override var type = BuildingType.ROAD
 }
 
-class CoalPowerPlant : Building() {
-    override var type: BuildingType = BuildingType.COAL_POWER_PLANT
+class PowerPlant : Building {
+
+    override val variety: String
+    var powerGenerated: Int = 0
+
+    constructor(variety: String) : super() {
+        if (!POWER_PLANT_TYPES.contains(variety)) {
+            throw RuntimeException("Invalid power plant type: $variety")
+        }
+        this.variety = variety
+        when (variety) {
+            "coal" -> this.powerGenerated = 2000
+            "nuclear" -> this.powerGenerated = 5000
+        }
+        this.type = BuildingType.POWER_PLANT
+    }
+
+    override var type: BuildingType
     override var width = 4
     override var height = 4
 }
@@ -35,6 +56,7 @@ class PowerLine : Building() {
     override var type: BuildingType = BuildingType.POWER_LINE
     override var width = 1
     override var height = 1
+    override val powerRequired = 1
 }
 
 class LoadableBuilding: Building() {

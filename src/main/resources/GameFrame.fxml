@@ -108,6 +108,7 @@
                               <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
                                  <children>
                                     <ToggleButton fx:id="coalPowerButton" mnemonicParsing="false" text="Coal Power Plant" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="nuclearPowerPlantButton" layoutX="21.0" layoutY="21.0" mnemonicParsing="false" text="Nuclear Power Plant" toggleGroup="$buildTools" />
                                     <ToggleButton fx:id="powerLinesButton" mnemonicParsing="false" text="Power Lines" toggleGroup="$buildTools" />
                                  </children>
                               </FlowPane>

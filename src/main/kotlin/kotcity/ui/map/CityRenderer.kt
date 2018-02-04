@@ -354,9 +354,9 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                     context.fill = Color.BLACK
                     context.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
                 }
-                is CoalPowerPlant -> {
+                is PowerPlant -> {
                     // need that sprite...
-                    val type = BuildingType.COAL_POWER_PLANT
+                    val type = BuildingType.POWER_PLANT
                     drawBuildingType(building, type, tx, ty)
                 }
                 is Building -> {

@@ -45,6 +45,7 @@ enum class Tool {
     QUERY, ROAD,
     RESIDENTIAL_ZONE, INDUSTRIAL_ZONE,
     COMMERCIAL_ZONE, COAL_POWER_PLANT,
+    NUCLEAR_POWER_PLANT,
     DEZONE,
     POWER_LINES
 }
@@ -71,6 +72,7 @@ class GameFrame : View() {
     private val commercialButton: ToggleButton by fxid()
     private val industrialButton: ToggleButton by fxid()
     private val coalPowerButton: ToggleButton by fxid()
+    private val nuclearPowerButton: ToggleButton by fxid()
     private val dezoneButton: ToggleButton by fxid()
     private val powerLinesButton: ToggleButton by fxid()
 
@@ -230,6 +232,7 @@ class GameFrame : View() {
         coalPowerButton.setOnAction { activeTool = Tool.COAL_POWER_PLANT }
         dezoneButton.setOnAction { activeTool = Tool.DEZONE }
         powerLinesButton.setOnAction { activeTool = Tool.POWER_LINES }
+        nuclearPowerButton.setOnAction { activeTool = Tool.NUCLEAR_POWER_PLANT }
     }
 
     fun bindMapModes() {
@@ -402,7 +405,13 @@ class GameFrame : View() {
                     cityRenderer?.getHoveredBlock()?.let {
                         val newX = it.x - 1
                         val newY = it.y - 1
-                        map.build(CoalPowerPlant(), BlockCoordinate(newX, newY))
+                        map.build(PowerPlant("coal"), BlockCoordinate(newX, newY))
+                    }
+                } else if (activeTool == Tool.NUCLEAR_POWER_PLANT) {
+                    cityRenderer?.getHoveredBlock()?.let {
+                        val newX = it.x - 1
+                        val newY = it.y - 1
+                        map.build(PowerPlant("nuclear"), BlockCoordinate(newX, newY))
                     }
                 }
             }

@@ -5,5 +5,6 @@
   "name": "corner_store1",
   "sprite": "corner_store1.png",
   "description": "Corner Store",
-  "level": 1
+  "level": 1,
+  "power_required": 1
 }

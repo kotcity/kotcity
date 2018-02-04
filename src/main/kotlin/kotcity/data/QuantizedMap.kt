@@ -30,4 +30,21 @@ class QuantizedMap<T>(private val quantize: Int = 4) {
         return map.map(function)
     }
 
+    fun clone(): QuantizedMap<T> {
+        val newMap = QuantizedMap<T>(quantize = this.quantize)
+        map.forEach { t, u ->
+            newMap.put(t, u)
+        }
+        return newMap
+    }
+
+    fun unquantized(coordinate: BlockCoordinate): List<BlockCoordinate> {
+        val xRange = (coordinate.x .. coordinate.x+quantize)
+        val yRange = (coordinate.y .. coordinate.y+quantize)
+
+        val blocks = mutableListOf<BlockCoordinate>()
+        xRange.forEach { x -> yRange.mapTo(blocks) { BlockCoordinate(x, it) } }
+        return blocks.toList()
+    }
+
 }

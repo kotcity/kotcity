@@ -102,6 +102,10 @@ val gson = GsonBuilder()
                         buildingObj["description"] = it
                     }
 
+                    entry.value.variety?.let {
+                        buildingObj["variety"] = it
+                    }
+
                     jsonObject(buildingObj.map {Pair(it.key, it.value)})
                 }.toJsonArray()
 
@@ -153,7 +157,8 @@ val gson = GsonBuilder()
                     } else {
                         val building = when(type) {
                             BuildingType.ROAD -> Road()
-                            BuildingType.COAL_POWER_PLANT -> CoalPowerPlant()
+                            BuildingType.POWER_PLANT -> PowerPlant(it["variety"].asString)
+
                             else -> throw RuntimeException("Unknown building: $it")
                         }
                         cityMap.buildingLayer[BlockCoordinate(x, y)] = building

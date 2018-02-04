@@ -21,6 +21,15 @@ data class BlockCoordinate(val x: Int, val y: Int) {
             }
         }
     }
+
+    fun neighbors(): List<BlockCoordinate> {
+        return listOf(
+                BlockCoordinate(this.x - 1, this.y),
+                BlockCoordinate(this.x + 1, this.y),
+                BlockCoordinate(this.x, this.y+1),
+                BlockCoordinate(this.x, this.y+1)
+        )
+    }
 }
 
 data class Corners(
@@ -58,7 +67,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val groundLayer = mutableMapOf<BlockCoordinate, MapTile>()
     val buildingLayer = mutableMapOf<BlockCoordinate, Building>()
     val zoneLayer = mutableMapOf<BlockCoordinate, Zone>()
-    val powerLineLayer = QuantizedMap<Building>()
+    val powerLineLayer = mutableMapOf<BlockCoordinate, Building>()
 
     val resourceLayers = mutableMapOf<String, QuantizedMap<Double>>()
 
@@ -302,11 +311,17 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     fun buildingsIn(block: BlockCoordinate): List<Pair<BlockCoordinate, Building>> {
         val nearestBuildings = nearestBuildings(block, 10f)
-        return nearestBuildings.filter {
+        val filteredBuildings = nearestBuildings.filter {
             val coord = it.first
             val building = it.second
             builingCorners(building, coord).includes(block)
         }
+
+        // now we also need the power lines that are here...
+        powerLineLayer[block]?.let {
+            return filteredBuildings.plus(Pair(block, it))
+        }
+        return filteredBuildings
     }
 
 }

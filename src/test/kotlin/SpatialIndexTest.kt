@@ -15,8 +15,8 @@ class SpatialIndexTest {
         }
 
         // now let's drop a coal power plant...
-        val powerPlant1 = CoalPowerPlant()
-        val powerPlant2 = CoalPowerPlant()
+        val powerPlant1 = PowerPlant("coal")
+        val powerPlant2 = PowerPlant("coal")
 
         map.build(powerPlant1, BlockCoordinate(0, 0))
         map.build(powerPlant2, BlockCoordinate(10, 10))
