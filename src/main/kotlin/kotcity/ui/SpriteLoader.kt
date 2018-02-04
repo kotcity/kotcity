@@ -25,7 +25,7 @@ object SpriteLoader {
     private fun powerPlantSprite(building: Building): String {
         return when {
             building.variety == "coal" -> "file:./assets/utility/coal_power_plant.png"
-            building.variety == "nuclear" -> "file:./assets/utility/coal_power_plant.png"
+            building.variety == "nuclear" -> "file:./assets/utility/nuclear_power_plant.png"
             else -> throw RuntimeException("Unknown power plant variety: ${building.variety}")
         }
 
