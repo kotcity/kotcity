@@ -23,7 +23,7 @@ data class BlockCoordinate(val x: Int, val y: Int) {
     }
 
     fun neighbors(radius: Int = 1): List<BlockCoordinate> {
-        return (0..radius).flatMap {i ->
+        return (1..radius).flatMap {i ->
             listOf(
                     BlockCoordinate(this.x - i, this.y),
                     BlockCoordinate(this.x + i, this.y),
@@ -147,6 +147,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             println("Top of the hour stuff...")
 
             populateZones()
+
+            PowerCoverageUpdater.update(this)
 
             val hour = time.toDateTime().hourOfDay
             println("Hour is: $hour")
