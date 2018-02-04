@@ -1,7 +1,7 @@
 package kotcity.data
 
-class QuantizedMap<T>(private val quantize: Int = 4) {
-    val map: MutableMap<BlockCoordinate, T> = mutableMapOf()
+open class QuantizedMap<T>(private val quantize: Int = 4) {
+    protected var map: MutableMap<BlockCoordinate, T> = mutableMapOf()
 
     fun put(blockCoordinate: BlockCoordinate, value: T) {
         map[quantizeBlockCoordinate(blockCoordinate)] = value
@@ -13,6 +13,10 @@ class QuantizedMap<T>(private val quantize: Int = 4) {
 
     fun count(): Int {
         return map.count()
+    }
+
+    fun entries(): MutableSet<MutableMap.MutableEntry<BlockCoordinate, T>> {
+        return map.entries
     }
 
     operator fun get(blockCoordinate: BlockCoordinate): T? {

@@ -64,6 +64,12 @@ fun defaultTime(): Date {
     return simpleDateFormat.parse("2000-01-01 12:00:00")
 }
 
+data class DesirabilityLayer(val zoneType: ZoneType, val level: Int): QuantizedMap<Double>(4) {
+    init {
+        map = map.withDefault { 0.0 }
+    }
+}
+
 data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     // various layers
@@ -73,6 +79,18 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val powerLineLayer = mutableMapOf<BlockCoordinate, Building>()
 
     val resourceLayers = mutableMapOf<String, QuantizedMap<Double>>()
+
+    val desirabilityLayers = listOf(
+            DesirabilityLayer(ZoneType.RESIDENTIAL, 1),
+            DesirabilityLayer(ZoneType.RESIDENTIAL, 2),
+            DesirabilityLayer(ZoneType.RESIDENTIAL, 3),
+            DesirabilityLayer(ZoneType.COMMERCIAL, 1),
+            DesirabilityLayer(ZoneType.COMMERCIAL, 2),
+            DesirabilityLayer(ZoneType.COMMERCIAL, 3),
+            DesirabilityLayer(ZoneType.INDUSTRIAL, 1),
+            DesirabilityLayer(ZoneType.INDUSTRIAL, 2),
+            DesirabilityLayer(ZoneType.INDUSTRIAL, 3)
+    )
 
     var time = defaultTime()
 
@@ -307,6 +325,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
+    // TODO: we should start throwing back 4 corners again to use this for overlaps...
     fun builingCorners(building: Building, block: BlockCoordinate): Corners {
         val buildingTopLeft = BlockCoordinate(block.x, block.y)
         val buildingBottomRight = BlockCoordinate(block.x + building.width - 1, block.y + building.height - 1)
@@ -316,9 +335,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun buildingsIn(block: BlockCoordinate): List<Pair<BlockCoordinate, Building>> {
         val nearestBuildings = nearestBuildings(block, 10f)
         val filteredBuildings = nearestBuildings.filter {
-            val coord = it.first
+            val coordinate = it.first
             val building = it.second
-            builingCorners(building, coord).includes(block)
+            builingCorners(building, coordinate).includes(block)
         }
 
         // now we also need the power lines that are here...
@@ -326,6 +345,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             return filteredBuildings.plus(Pair(block, it))
         }
         return filteredBuildings
+    }
+
+    fun desirabilityLayer(type: ZoneType, level: Int): DesirabilityLayer? {
+        return desirabilityLayers.find { it.level == level && it.zoneType == type }
     }
 
 }

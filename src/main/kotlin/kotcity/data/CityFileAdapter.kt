@@ -39,81 +39,12 @@ val gson = GsonBuilder()
                 data["width"] = map.width
                 data["cityName"] = map.cityName
                 data["time"] = serializeDate(map.time)
-                data["zoneLayer"] = it.src.zoneLayer.map { entry ->
-                    val x = entry.key.x
-                    val y = entry.key.y
-                    val zone = entry.value
-                    jsonObject(
-                        "type" to zone.type.toString(),
-                        "x" to x,
-                        "y" to y
-                    )
-                }.toJsonArray()
-                data["groundLayer"] = it.src.groundLayer.map { entry ->
-                    val x = entry.key.x
-                    val y = entry.key.y
-                    jsonObject(
-                        "x" to x,
-                        "y" to y,
-                        "elevation" to entry.value.elevation,
-                        "type" to entry.value.type.toString()
-                    )
-                }.toJsonArray()
-
-                val resourceLayers = JsonObject()
-
-                it.src.resourceLayers.forEach { name, layer ->
-
-                    println("How many values in the resource map? -> " + layer.count())
-                    val values = layer.map {
-                        val resource = JsonObject()
-                        // println("OK... dumping ${it.key.x},${it.key.y} with ${it.value}")
-                        resource.putAll(
-                                mapOf(
-                                        "x" to it.key.x,
-                                        "y" to it.key.y,
-                                        "value" to it.value
-                                )
-                        )
-                        resource
-                    }
-
-                    resourceLayers.put(Pair(name, values.toJsonArray()))
-                }
-
-                data["resourceLayers"] = resourceLayers
-
-                data["buildingLayer"] = it.src.buildingLayer.map { entry ->
-                    val x = entry.key.x
-                    val y = entry.key.y
-                    val type = entry.value.type.toString()
-
-                    val buildingObj = mutableMapOf(
-                            "x" to x,
-                            "y" to y,
-                            "type" to type
-                    )
-
-                    entry.value.name?.let {
-                        buildingObj["name"] = it
-                    }
-
-                    entry.value.description?.let {
-                        buildingObj["description"] = it
-                    }
-
-                    entry.value.variety?.let {
-                        buildingObj["variety"] = it
-                    }
-
-                    jsonObject(buildingObj.map {Pair(it.key, it.value)})
-                }.toJsonArray()
-
-                data["powerLineLayer"] = it.src.powerLineLayer.map { entry ->
-                    val x = entry.key.x
-                    val y = entry.key.y
-                    jsonObject("x" to x, "y" to y)
-                }.toJsonArray()
+                writeZoneLayer(data, it)
+                writeGroundLayer(data, it)
+                writeResourceLayers(data, it)
+                writeBuildingLayer(data, it)
+                writePowerlineLayer(data, it)
+                writeDesirabilityLayers(data, it)
                 data
             }
 
@@ -129,67 +60,12 @@ val gson = GsonBuilder()
                 cityMap.width = data["width"].asInt
                 cityMap.cityName = data["cityName"].asString
                 cityMap.time = parseDate(data["time"].asString)
-                val groundTiles = data["groundLayer"].asJsonArray
-                println("The file has this many tiles: ${groundTiles.count()}")
-                groundTiles.forEach {
-                    val tileObj = it.asJsonObject
-                    val coordinate = BlockCoordinate(tileObj["x"].asInt, tileObj["y"].asInt)
-                    val tileType = TileType.valueOf(tileObj["type"].asString)
-                    val tile = MapTile(tileType, tileObj["elevation"].asDouble)
-                    cityMap.groundLayer[coordinate] = tile
-                }
-
-                data["buildingLayer"].asJsonArray.forEach {
-                    val buildingObj = it.asJsonObject
-                    var x = it["x"].asInt
-                    var y = it["y"].asInt
-                    val type = BuildingType.valueOf(buildingObj["type"].asString)
-                    val name = buildingObj["name"]?.asString
-
-                    if (name != null) {
-                        val building = when(type) {
-                            BuildingType.RESIDENTIAL -> assetManager.buildingFor(type, name)
-                            BuildingType.COMMERCIAL -> assetManager.buildingFor(type, name)
-                            BuildingType.INDUSTRIAL -> assetManager.buildingFor(type, name)
-                            else -> throw RuntimeException("Unknown named building: $name")
-                        }
-                        cityMap.buildingLayer[BlockCoordinate(x, y)] = building
-                    } else {
-                        val building = when(type) {
-                            BuildingType.ROAD -> Road()
-                            BuildingType.POWER_PLANT -> PowerPlant(it["variety"].asString)
-
-                            else -> throw RuntimeException("Unknown building: $it")
-                        }
-                        cityMap.buildingLayer[BlockCoordinate(x, y)] = building
-                    }
-
-                }
-
-                data["powerLineLayer"].asJsonArray.forEach {
-                    var x = it["x"].asInt
-                    var y = it["y"].asInt
-                    cityMap.powerLineLayer[BlockCoordinate(x,y)] = PowerLine()
-                }
-
-                data["zoneLayer"]?.asJsonArray?.forEach {
-                    var zoneObj = it.asJsonObject
-                    val x = zoneObj["x"].asInt
-                    val y = zoneObj["y"].asInt
-                    val type = ZoneType.valueOf(zoneObj["type"].asString)
-                    cityMap.zoneLayer[BlockCoordinate(x, y)] = Zone(type)
-                }
-
-                data["resourceLayers"]?.asJsonObject?.forEach { layerName, jsonElement ->
-                    // ok now that element is an array...
-                    (jsonElement as JsonArray).forEach {
-                        val x = it["x"].asInt
-                        val y = it["y"].asInt
-                        val value = it["value"].asDouble
-                        cityMap.setResourceValue(layerName, BlockCoordinate(x, y), value)
-                    }
-
-                }
+                readGroundTiles(data, cityMap)
+                readBuildingLayer(data, cityMap)
+                readPowerlineLayer(data, cityMap)
+                readZoneLayer(data, cityMap)
+                readResourceLayers(data, cityMap)
+                readDesirabilityLayers(data, cityMap)
 
                 cityMap.updateBuildingIndex()
 
@@ -203,6 +79,190 @@ val gson = GsonBuilder()
         }
         .setPrettyPrinting()
         .create()
+
+private fun readResourceLayers(data: JsonObject, cityMap: CityMap) {
+    data["resourceLayers"]?.asJsonObject?.forEach { layerName, jsonElement ->
+        // ok now that element is an array...
+        (jsonElement as JsonArray).forEach {
+            val x = it["x"].asInt
+            val y = it["y"].asInt
+            val value = it["value"].asDouble
+            cityMap.setResourceValue(layerName, BlockCoordinate(x, y), value)
+        }
+
+    }
+}
+
+private fun readZoneLayer(data: JsonObject, cityMap: CityMap) {
+    data["zoneLayer"]?.asJsonArray?.forEach {
+        var zoneObj = it.asJsonObject
+        val x = zoneObj["x"].asInt
+        val y = zoneObj["y"].asInt
+        val type = ZoneType.valueOf(zoneObj["type"].asString)
+        cityMap.zoneLayer[BlockCoordinate(x, y)] = Zone(type)
+    }
+}
+
+private fun readPowerlineLayer(data: JsonObject, cityMap: CityMap) {
+    data["powerLineLayer"].asJsonArray.forEach {
+        var x = it["x"].asInt
+        var y = it["y"].asInt
+        cityMap.powerLineLayer[BlockCoordinate(x, y)] = PowerLine()
+    }
+}
+
+fun writeDesirabilityLayers(data: JsonObject, it: SerializerArg<CityMap>) {
+    data["desirabilityLayers"] = it.src.desirabilityLayers.map { desirabilityLayer ->
+        jsonObject(
+                "type" to desirabilityLayer.zoneType.toString(),
+                "level" to desirabilityLayer.level,
+                "values" to desirabilityLayer.entries().map {
+                    jsonObject(
+                            "x" to it.key.x,
+                            "y" to it.key.y,
+                            "value" to it.value
+                    )
+                }.toJsonArray()
+        )
+    }.toJsonArray()
+}
+
+private fun readDesirabilityLayers(data: JsonObject, cityMap: CityMap) {
+    data["desirabilityLayers"].asJsonArray.forEach {
+        val layerObj = it.asJsonObject
+        val type = ZoneType.valueOf(layerObj["type"].asString)
+        val level = layerObj["level"].asInt
+        val desirabilityLayer = cityMap.desirabilityLayer(type, level)
+    }
+}
+
+private fun readBuildingLayer(data: JsonObject, cityMap: CityMap) {
+    data["buildingLayer"].asJsonArray.forEach {
+        val buildingObj = it.asJsonObject
+        var x = it["x"].asInt
+        var y = it["y"].asInt
+        val type = BuildingType.valueOf(buildingObj["type"].asString)
+        val name = buildingObj["name"]?.asString
+
+        if (name != null) {
+            val building = when (type) {
+                BuildingType.RESIDENTIAL -> assetManager.buildingFor(type, name)
+                BuildingType.COMMERCIAL -> assetManager.buildingFor(type, name)
+                BuildingType.INDUSTRIAL -> assetManager.buildingFor(type, name)
+                else -> throw RuntimeException("Unknown named building: $name")
+            }
+            cityMap.buildingLayer[BlockCoordinate(x, y)] = building
+        } else {
+            val building = when (type) {
+                BuildingType.ROAD -> Road()
+                BuildingType.POWER_PLANT -> PowerPlant(it["variety"].asString)
+
+                else -> throw RuntimeException("Unknown building: $it")
+            }
+            cityMap.buildingLayer[BlockCoordinate(x, y)] = building
+        }
+
+    }
+}
+
+private fun readGroundTiles(data: JsonObject, cityMap: CityMap) {
+    val groundTiles = data["groundLayer"].asJsonArray
+    println("The file has this many tiles: ${groundTiles.count()}")
+    groundTiles.forEach {
+        val tileObj = it.asJsonObject
+        val coordinate = BlockCoordinate(tileObj["x"].asInt, tileObj["y"].asInt)
+        val tileType = TileType.valueOf(tileObj["type"].asString)
+        val tile = MapTile(tileType, tileObj["elevation"].asDouble)
+        cityMap.groundLayer[coordinate] = tile
+    }
+}
+
+private fun writePowerlineLayer(data: JsonObject, it: SerializerArg<CityMap>) {
+    data["powerLineLayer"] = it.src.powerLineLayer.map { entry ->
+        val x = entry.key.x
+        val y = entry.key.y
+        jsonObject("x" to x, "y" to y)
+    }.toJsonArray()
+}
+
+private fun writeBuildingLayer(data: JsonObject, it: SerializerArg<CityMap>) {
+    data["buildingLayer"] = it.src.buildingLayer.map { entry ->
+        val x = entry.key.x
+        val y = entry.key.y
+        val type = entry.value.type.toString()
+
+        val buildingObj = mutableMapOf(
+                "x" to x,
+                "y" to y,
+                "type" to type
+        )
+
+        entry.value.name?.let {
+            buildingObj["name"] = it
+        }
+
+        entry.value.description?.let {
+            buildingObj["description"] = it
+        }
+
+        entry.value.variety?.let {
+            buildingObj["variety"] = it
+        }
+
+        jsonObject(buildingObj.map { Pair(it.key, it.value) })
+    }.toJsonArray()
+}
+
+private fun writeResourceLayers(data: JsonObject, it: SerializerArg<CityMap>) {
+    val resourceLayers = JsonObject()
+
+    it.src.resourceLayers.forEach { name, layer ->
+
+        println("How many values in the resource map? -> " + layer.count())
+        val values = layer.map {
+            val resource = JsonObject()
+            // println("OK... dumping ${it.key.x},${it.key.y} with ${it.value}")
+            resource.putAll(
+                    mapOf(
+                            "x" to it.key.x,
+                            "y" to it.key.y,
+                            "value" to it.value
+                    )
+            )
+            resource
+        }
+
+        resourceLayers.put(Pair(name, values.toJsonArray()))
+    }
+
+    data["resourceLayers"] = resourceLayers
+}
+
+private fun writeGroundLayer(data: JsonObject, it: SerializerArg<CityMap>) {
+    data["groundLayer"] = it.src.groundLayer.map { entry ->
+        val x = entry.key.x
+        val y = entry.key.y
+        jsonObject(
+                "x" to x,
+                "y" to y,
+                "elevation" to entry.value.elevation,
+                "type" to entry.value.type.toString()
+        )
+    }.toJsonArray()
+}
+
+private fun writeZoneLayer(data: JsonObject, it: SerializerArg<CityMap>) {
+    data["zoneLayer"] = it.src.zoneLayer.map { entry ->
+        val x = entry.key.x
+        val y = entry.key.y
+        val zone = entry.value
+        jsonObject(
+                "type" to zone.type.toString(),
+                "x" to x,
+                "y" to y
+        )
+    }.toJsonArray()
+}
 
 object CityFileAdapter {
 
