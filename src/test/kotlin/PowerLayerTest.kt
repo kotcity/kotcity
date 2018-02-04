@@ -22,10 +22,10 @@ class PowerLayerTest {
         map.build(powerPlant2, BlockCoordinate(0, 20))
 
         // ok... that power plant will end at 3,0
-        val roadStart = BlockCoordinate(4,0)
-        val roadEnd = BlockCoordinate(4, 40)
+        val powerlineStart = BlockCoordinate(4,0)
+        val powerlineEnd = BlockCoordinate(4, 40)
 
-        map.buildRoad(roadStart, roadEnd)
+        map.buildPowerline(powerlineStart, powerlineEnd)
 
         PowerCoverageUpdater.update(map)
 

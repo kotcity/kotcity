@@ -89,18 +89,17 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     private fun roadBlocks(startBlock: BlockCoordinate, endBlock: BlockCoordinate): MutableList<BlockCoordinate> {
-        println("Getting roadblocks for $startBlock to $endBlock")
         val blockList = mutableListOf<BlockCoordinate>()
         if (Math.abs(startBlock.x - endBlock.x) > Math.abs(startBlock.y - endBlock.y)) {
             // going horizontally...
             (startBlock.x .. endBlock.x).reorder().forEach { x ->
-                println("adding block for $x, ${startBlock.y}")
+                // println("adding block for $x, ${startBlock.y}")
                 blockList.add(BlockCoordinate(x, startBlock.y))
             }
         } else {
             // going vertically...
             (startBlock.y .. endBlock.y).reorder().forEach { y ->
-                println("adding block for ${startBlock.x},$y")
+                // println("adding block for ${startBlock.x},$y")
                 blockList.add(BlockCoordinate(startBlock.x, y))
             }
         }
@@ -298,10 +297,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     fun buildPowerline(firstBlock: BlockCoordinate, lastBlock: BlockCoordinate) {
         roadBlocks(firstBlock, lastBlock).forEach { block ->
-            // println("Dropping a road at: $block")
             val newPowerLine = PowerLine()
             if (buildingLayer[block]?.type == BuildingType.ROAD || canBuildBuildingAt(newPowerLine, block, waterCheck = false)) {
                 powerLineLayer[block] = newPowerLine
+                // println("Dropping a powerline at: $block")
             } else {
                 println("We have an overlap... not building!")
             }

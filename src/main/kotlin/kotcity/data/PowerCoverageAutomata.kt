@@ -26,23 +26,23 @@ class PowerCoverageAutomata(
         if (done()) {
             return
         }
-        val activeCoord = openList.first()
-        openList.remove(activeCoord)
+        val activeBlock = openList.first()
+        openList.remove(activeBlock)
         powerAvailable -= 1
 
-        gridMap[activeCoord] = this
+        gridMap[activeBlock] = this
 
         // get neighbors...
-        val neighbors = activeCoord.neighbors(radius = 3)
-        neighbors.forEach {
+        val neighbors = activeBlock.neighbors(radius = 3)
+        neighbors.forEach { block ->
             // if the block has no power... AND contains buildings
             // add to open list...
-            val buildings = map.buildingsIn(it)
-            if (buildings.count() > 0 && !gridMap.containsKey(it)) {
-                openList.add(it)
+            val buildings = map.buildingsIn(block)
+            if (buildings.count() > 0 && !gridMap.containsKey(block)) {
+                openList.add(block)
             }
             // if it contains a grid that's NOT us we need to gobble it up...
-            gridMap[it]?.let { otherAutomata ->
+            gridMap[block]?.let { otherAutomata ->
                 if (this != otherAutomata) {
                     ingest(otherAutomata)
                 }
