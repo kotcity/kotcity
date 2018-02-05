@@ -5,33 +5,58 @@ object DesirabilityUpdater {
         // let's update the desirability...
         cityMap.desirabilityLayers.forEach { desirabilityLayer ->
 
-            when(desirabilityLayer.zoneType) {
-                ZoneType.RESIDENTIAL -> updateResidential(desirabilityLayer)
-                ZoneType.INDUSTRIAL -> updateIndustrial(desirabilityLayer)
-                ZoneType.COMMERCIAL -> updateCommercial(desirabilityLayer)
+            when (desirabilityLayer.zoneType) {
+                ZoneType.RESIDENTIAL -> updateResidential(cityMap, desirabilityLayer)
+                ZoneType.INDUSTRIAL -> updateIndustrial(cityMap, desirabilityLayer)
+                ZoneType.COMMERCIAL -> updateCommercial(cityMap, desirabilityLayer)
             }
 
         }
     }
 
-    private fun updateCommercial(desirabilityLayer: DesirabilityLayer) {
+    private fun updateCommercial(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
         desirabilityLayer.keys().forEach { coordinate ->
             desirabilityLayer[coordinate] = 0.5
         }
     }
 
-    private fun updateIndustrial(desirabilityLayer: DesirabilityLayer) {
+    private fun updateIndustrial(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
         desirabilityLayer.keys().forEach { coordinate ->
             desirabilityLayer[coordinate] = 0.5
         }
     }
 
-    private fun updateResidential(desirabilityLayer: DesirabilityLayer) {
+    private fun updateResidential(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
         desirabilityLayer.keys().forEach { coordinate ->
+            desirabilityLayer[coordinate] = 0.5
 
             // res likes being near water...
+            val potentialWaters = desirabilityLayer
+                    .unquantized(coordinate)
+                    .flatMap { coordinate.neighbors(3) }
+                    .mapNotNull { coordinate ->
+                        cityMap.groundLayer[coordinate]?.let {
+                            Pair(coordinate, it)
+                        }
+                    }
+                    .distinct()
+                    .filter { mapTile ->
+                        mapTile.second.type == TileType.WATER
+                    }
 
-            desirabilityLayer[coordinate] = 0.5
+            potentialWaters.mapNotNull {
+                coordinate.distanceTo(it.first)
+            }.min()?.let { waterDistance ->
+                when (waterDistance) {
+                    1.0 -> desirabilityLayer[coordinate]?.plus(3.0)
+                    2.0 -> desirabilityLayer[coordinate]?.plus(2.0)
+                    3.0 -> desirabilityLayer[coordinate]?.plus(1.0)
+                    else -> {
+                        println("I don't know how to handling being $waterDistance away from water...")
+                    }
+                }
+            }
+
         }
     }
 }

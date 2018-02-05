@@ -33,6 +33,10 @@ data class BlockCoordinate(val x: Int, val y: Int) {
         }.distinct()
 
     }
+
+    fun distanceTo(otherCoordinate: BlockCoordinate): Double {
+        return Math.sqrt(((this.x-otherCoordinate.x)*(this.x-otherCoordinate.x) + (this.y-otherCoordinate.y)*(this.y-otherCoordinate.y)).toDouble())
+    }
 }
 
 data class Corners(
