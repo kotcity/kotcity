@@ -1,9 +1,9 @@
 import kotcity.data.*
 import org.junit.jupiter.api.Test
 
-class PowerLayerTest {
+class AutomataTest {
     @Test
-    fun testPowerSpread() {
+    fun testAutomata() {
         val map = CityMap(512, 512)
         // set all tiles to ground...
         val xRange = 0 .. map.width
@@ -27,7 +27,7 @@ class PowerLayerTest {
 
         map.buildPowerline(powerlineStart, powerlineEnd)
 
-        PowerCoverageUpdater.update(map)
+        map.hourlyTick()
 
     }
 }

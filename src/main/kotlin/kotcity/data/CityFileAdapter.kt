@@ -132,7 +132,14 @@ private fun readDesirabilityLayers(data: JsonObject, cityMap: CityMap) {
         val layerObj = it.asJsonObject
         val type = ZoneType.valueOf(layerObj["type"].asString)
         val level = layerObj["level"].asInt
-        val desirabilityLayer = cityMap.desirabilityLayer(type, level)
+        cityMap.desirabilityLayer(type, level)?.let { desirabilityLayer ->
+            layerObj["values"].asJsonArray.forEach {
+                val x = it["x"].asInt
+                val y = it["y"].asInt
+                val value = it["value"].asDouble
+                desirabilityLayer.put(BlockCoordinate(x, y), value)
+            }
+        }
     }
 }
 

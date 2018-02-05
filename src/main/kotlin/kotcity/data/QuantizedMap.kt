@@ -51,4 +51,8 @@ open class QuantizedMap<T>(private val quantize: Int = 4) {
         return blocks.toList()
     }
 
+    fun keys(): MutableSet<BlockCoordinate> {
+        return map.keys
+    }
+
 }

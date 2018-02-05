@@ -161,19 +161,24 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         time += 1000 * 60
         // println("Ticked to: ${kotcity.ui.serializeDate(time)}")
         if (time.toDateTime().minuteOfHour == 0) {
-            println("Top of the hour stuff...")
-
-            populateZones()
-
-            PowerCoverageUpdater.update(this)
-
-            val hour = time.toDateTime().hourOfDay
-            println("Hour is: $hour")
-            if (hour == 0) {
-                println("Top of the day stuff...")
-            }
+            hourlyTick()
         }
 
+    }
+
+    fun hourlyTick() {
+        println("Top of the hour stuff...")
+
+        populateZones()
+
+        PowerCoverageUpdater.update(this)
+        DesirabilityUpdater.update(this)
+
+        val hour = time.toDateTime().hourOfDay
+        println("Hour is: $hour")
+        if (hour == 0) {
+            println("Top of the day stuff...")
+        }
     }
 
     private fun populateZones() {
