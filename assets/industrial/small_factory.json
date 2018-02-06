@@ -6,5 +6,15 @@
   "sprite": "small_factory1.png",
   "description": "Small Manufacturing Plant",
   "level": 1,
-  "power_required": 1
+  "power_required": 1,
+  "production": {
+      "consumes": {
+          "labor": 1,
+          "raw_materials": 1,
+          "money": 1
+      },
+      "produces": {
+          "goods": 1
+      }
+  }
 }

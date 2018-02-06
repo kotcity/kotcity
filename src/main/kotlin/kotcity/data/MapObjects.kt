@@ -12,6 +12,13 @@ val POWER_PLANT_TYPES = listOf("coal", "nuclear")
 
 data class Zone(val type: ZoneType)
 
+enum class Tradeable {
+    MONEY,
+    GOODS,
+    LABOR,
+    RAW_MATERIALS
+}
+
 abstract class Building {
     abstract var width: Int
     abstract var height: Int
@@ -22,6 +29,8 @@ abstract class Building {
     open var description: String? = null
     var powered = false
     open val powerRequired = 0
+    val consumes: MutableMap<Tradeable, Int> = mutableMapOf()
+    val produces: MutableMap<Tradeable, Int> = mutableMapOf()
 }
 
 class Road : Building() {
