@@ -1,0 +1,17 @@
+{
+  "type": "civic",
+  "width": 2,
+  "height": 2,
+  "name": "town_warehouse",
+  "sprite": "town_warehouse.png",
+  "description": "Town Warehouse",
+  "level": 1,
+  "power_required": 1,
+  "upkeep": 100,
+  "production": {
+    "produces": {
+      "raw_materials": 1,
+      "goods": 1
+    }
+  }
+}

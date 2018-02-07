@@ -1,8 +1,6 @@
 package kotcity.data.assets
 
-import com.github.salomonbrys.kotson.fromJson
-import com.github.salomonbrys.kotson.get
-import com.github.salomonbrys.kotson.keys
+import com.github.salomonbrys.kotson.*
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import kotcity.data.*
@@ -16,7 +14,7 @@ import java.util.stream.Collectors.toList
 
 class AssetManager {
 
-    private val directories = listOf("residential", "commercial", "industrial")
+    private val directories = listOf("residential", "commercial", "industrial", "civic")
 
     fun findResources(): List<String> {
         // OK now let's find the files in each...
@@ -49,6 +47,7 @@ class AssetManager {
                         "commercial" -> COMMERCIAL
                         "residential" -> RESIDENTIAL
                         "industrial" -> INDUSTRIAL
+                        "civic" -> CIVIC
                         else -> throw RuntimeException("Unknown building type: $it")
                     }
                 }
@@ -81,6 +80,7 @@ class AssetManager {
             RESIDENTIAL -> "./assets/residential/$name.json"
             COMMERCIAL -> "./assets/commercial/$name.json"
             INDUSTRIAL -> "./assets/industrial/$name.json"
+            CIVIC -> "./assets/civic/$name.json"
             else -> throw RuntimeException("I don't know how to handle asset $type/$name")
         }
     }
@@ -91,23 +91,34 @@ class AssetManager {
         lb.sprite = buildingJson["sprite"].asString
         lb.description = buildingJson["description"].asString
         lb.level = buildingJson["level"].asInt
+        if (buildingJson.has("upkeep")) {
+            lb.upkeep = buildingJson["upkeep"].asInt
+        }
         populateProduction(lb, buildingJson)
     }
 
     private fun populateProduction(lb: LoadableBuilding, buildingJson: JsonObject) {
-        buildingJson["production"]?.let { production ->
+        if (! buildingJson.has("production")) {
+            return
+        }
+        buildingJson["production"].asJsonObject?.let { production ->
 
-            production["consumes"].asJsonObject?.let { consumes ->
-                val names = consumes.keys()
-                names.forEach { name ->
-                    lb.consumes[Tradeable.valueOf(name.toUpperCase())] = consumes[name].asInt
+            if (production.has("consumes")) {
+                production["consumes"].asJsonObject?.let { consumes ->
+                    val names = consumes.keys()
+                    names.forEach { name ->
+                        lb.consumes[Tradeable.valueOf(name.toUpperCase())] = consumes[name].asInt
+                    }
                 }
             }
 
-            production["produces"].asJsonObject?.let { produces ->
-                val names = produces.keys()
-                names.forEach { name ->
-                    lb.produces[Tradeable.valueOf(name.toUpperCase())] = produces[name].asInt
+
+            if (production.has("produces")) {
+                production["produces"].asJsonObject?.let { produces ->
+                    val names = produces.keys()
+                    names.forEach { name ->
+                        lb.produces[Tradeable.valueOf(name.toUpperCase())] = produces[name].asInt
+                    }
                 }
             }
 

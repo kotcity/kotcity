@@ -18,6 +18,7 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.ButtonBar.ButtonData
 import javafx.scene.layout.BorderPane
+import kotcity.data.assets.AssetManager
 import kotcity.ui.map.CityMapCanvas
 import kotcity.ui.map.CityRenderer
 import tornadofx.runLater
@@ -47,7 +48,9 @@ enum class Tool {
     COMMERCIAL_ZONE, COAL_POWER_PLANT,
     NUCLEAR_POWER_PLANT,
     DEZONE,
-    POWER_LINES
+    POWER_LINES,
+    JOB_CENTER,
+    TOWN_WAREHOUSE
 }
 
 enum class GameSpeed { SLOW, MEDIUM, FAST }
@@ -75,6 +78,8 @@ class GameFrame : View() {
     private val nuclearPowerButton: ToggleButton by fxid()
     private val dezoneButton: ToggleButton by fxid()
     private val powerLinesButton: ToggleButton by fxid()
+    private val jobCenterButton: ToggleButton by fxid()
+    private val townWarehouseButton: ToggleButton by fxid()
 
     // map modes...
     private val normalMapMode: RadioMenuItem by fxid()
@@ -233,6 +238,8 @@ class GameFrame : View() {
         dezoneButton.setOnAction { activeTool = Tool.DEZONE }
         powerLinesButton.setOnAction { activeTool = Tool.POWER_LINES }
         nuclearPowerButton.setOnAction { activeTool = Tool.NUCLEAR_POWER_PLANT }
+        townWarehouseButton.setOnAction { activeTool = Tool.TOWN_WAREHOUSE }
+        jobCenterButton.setOnAction { activeTool= Tool.JOB_CENTER }
     }
 
     fun bindMapModes() {
@@ -412,6 +419,20 @@ class GameFrame : View() {
                         val newX = it.x - 1
                         val newY = it.y - 1
                         map.build(PowerPlant("nuclear"), BlockCoordinate(newX, newY))
+                    }
+                } else if (activeTool == Tool.JOB_CENTER) {
+                    cityRenderer?.getHoveredBlock()?.let {
+                        val newX = it.x - 1
+                        val newY = it.y - 1
+                        val jobCenter = assetManager.buildingFor(BuildingType.CIVIC, "job_center")
+                        map.build(jobCenter, BlockCoordinate(newX, newY))
+                    }
+                } else if (activeTool == Tool.TOWN_WAREHOUSE) {
+                    cityRenderer?.getHoveredBlock()?.let {
+                        val newX = it.x - 1
+                        val newY = it.y - 1
+                        val townWarehouse = assetManager.buildingFor(BuildingType.CIVIC, "town_warehouse")
+                        map.build(townWarehouse, BlockCoordinate(newX, newY))
                     }
                 }
             }

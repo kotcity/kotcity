@@ -1,7 +1,7 @@
 package kotcity.data
 
 enum class BuildingType {
-    ROAD, RESIDENTIAL, COMMERCIAL, INDUSTRIAL, POWER_LINE, POWER_PLANT
+    ROAD, RESIDENTIAL, COMMERCIAL, INDUSTRIAL, POWER_LINE, POWER_PLANT, CIVIC
 }
 
 enum class ZoneType {
@@ -31,6 +31,7 @@ abstract class Building {
     open val powerRequired = 0
     val consumes: MutableMap<Tradeable, Int> = mutableMapOf()
     val produces: MutableMap<Tradeable, Int> = mutableMapOf()
+    open var upkeep: Int = 0
 }
 
 class Road : Building() {

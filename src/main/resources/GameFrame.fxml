@@ -115,6 +115,16 @@
                            </content>
                         </TitledPane>
                         <TitledPane animated="false" text="Other" />
+                        <TitledPane animated="false" text="Civic">
+                           <content>
+                              <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
+                                 <children>
+                                    <ToggleButton fx:id="jobCenterButton" mnemonicParsing="false" text="Job Center" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="townWarehouseButton" mnemonicParsing="false" text="Town Warehouse" toggleGroup="$buildTools" />
+                                 </children>
+                              </FlowPane>
+                           </content>
+                        </TitledPane>
                      </panes>
                      <VBox.margin>
                         <Insets />

@@ -4,15 +4,8 @@ import org.junit.jupiter.api.Test
 class SpatialIndexTest {
     @Test
     fun testSpatialIndex() {
-        val map = CityMap(512, 512)
-        // set all tiles to ground...
-        val xRange = 0 .. map.width
-        val yRange = 0 .. map.height
-        xRange.map { x ->
-            yRange.map { y ->
-                map.groundLayer[BlockCoordinate(x, y)] = MapTile(TileType.GROUND, 0.1)
-            }
-        }
+
+        val map = CityMap.flatMap(512, 512)
 
         // now let's drop a coal power plant...
         val powerPlant1 = PowerPlant("coal")

@@ -76,6 +76,21 @@ data class DesirabilityLayer(val zoneType: ZoneType, val level: Int): QuantizedM
 
 data class CityMap(var width: Int = 512, var height: Int = 512) {
 
+    companion object {
+        fun flatMap(width: Int = 512, height: Int = 512): CityMap {
+            val map = CityMap(width, height)
+            // set all tiles to ground...
+            val xRange = 0 .. map.width
+            val yRange = 0 .. map.height
+            xRange.map { x ->
+                yRange.map { y ->
+                    map.groundLayer[BlockCoordinate(x, y)] = MapTile(TileType.GROUND, 0.1)
+                }
+            }
+            return map
+        }
+    }
+
     // various layers
     val groundLayer = mutableMapOf<BlockCoordinate, MapTile>()
     val buildingLayer = mutableMapOf<BlockCoordinate, Building>()

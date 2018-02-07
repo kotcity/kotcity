@@ -156,6 +156,7 @@ private fun readBuildingLayer(data: JsonObject, cityMap: CityMap) {
                 BuildingType.RESIDENTIAL -> assetManager.buildingFor(type, name)
                 BuildingType.COMMERCIAL -> assetManager.buildingFor(type, name)
                 BuildingType.INDUSTRIAL -> assetManager.buildingFor(type, name)
+                BuildingType.CIVIC -> assetManager.buildingFor(type, name)
                 else -> throw RuntimeException("Unknown named building: $name")
             }
             cityMap.buildingLayer[BlockCoordinate(x, y)] = building
