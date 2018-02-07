@@ -277,6 +277,10 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                     mouseBlock?.let {
                         highlightBlocks(it, it)
                     }
+                } else if (gameFrame.activeTool == Tool.JOB_CENTER || gameFrame.activeTool == Tool.TOWN_WAREHOUSE) {
+                    mouseBlock?.let {
+                        highlightCenteredBlocks(it, 2, 2)
+                    }
                 } else {
                     Unit
                 }
@@ -286,10 +290,18 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     private fun highlightCenteredBlocks(start: BlockCoordinate, width: Int, height: Int) {
         // TODO: we want to make this shit kind of centered...
-        val offsetX = (width / 2) - 1
-        val offsetY = (height / 2) - 1
-        val newBlock = BlockCoordinate(start.x - offsetX, start.y - offsetY)
-        highlightBlocks(newBlock, width, height)
+        if (width == 2 || height == 2) {
+            val offsetX = (width / 2)
+            val offsetY = (height / 2)
+            val newBlock = BlockCoordinate(start.x - offsetX, start.y - offsetY)
+            highlightBlocks(newBlock, width, height)
+        } else {
+            val offsetX = (width / 2) - 1
+            val offsetY = (height / 2) - 1
+            val newBlock = BlockCoordinate(start.x - offsetX, start.y - offsetY)
+            highlightBlocks(newBlock, width, height)
+        }
+
     }
 
     private fun highlightBlocks(start: BlockCoordinate, width: Int, height: Int) {
@@ -428,7 +440,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     private fun highlightBlock(g2d: GraphicsContext, x: Int, y: Int) {
-        g2d.fill = Color.MAGENTA
+        g2d.fill = Color(Color.MAGENTA.red, Color.MAGENTA.green, Color.MAGENTA.blue, 0.50)
         // gotta translate here...
         val tx = x - blockOffsetX
         val ty = y - blockOffsetY

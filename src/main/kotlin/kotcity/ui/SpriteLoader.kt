@@ -14,6 +14,7 @@ object SpriteLoader {
             BuildingType.RESIDENTIAL -> "file:./assets/residential/${building.sprite}"
             BuildingType.INDUSTRIAL -> "file:./assets/industrial/${building.sprite}"
             BuildingType.POWER_LINE -> "file:./assets/utility/power_line.png"
+            BuildingType.CIVIC -> "file:./assets/civic/${building.sprite}"
             else -> throw RuntimeException("Unknown sprite for ${building.type}")
         }
         if (filename != null) {
