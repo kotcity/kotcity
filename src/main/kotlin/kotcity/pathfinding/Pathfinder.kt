@@ -7,8 +7,14 @@ import kotcity.data.Tradeable
 
 const val MAX_DISTANCE = 50f
 
+data class NavigationNode(
+        val coordinate: BlockCoordinate,
+        val parent: BlockCoordinate,
+        val score: Int
+)
+
 object Pathfinder {
-    fun findNearestLabor(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int = 1): BlockCoordinate? {
+    fun findNearestLabor(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int = 1): List<BlockCoordinate> {
         // OK! what we want to do here is find the nearest labor
 
         // TODO: find the cheapest labor by transit...
@@ -23,17 +29,27 @@ object Pathfinder {
                 val building = it.second
                 building.tradeableAvailable(Tradeable.LABOR, quantity)
             }
-        }.distinct().firstOrNull()?.first
+        }.flatMap { blocksFor(it.second, it.first) }
 
+    }
+
+    private fun blocksFor(building: Building, coordinate: BlockCoordinate): List<BlockCoordinate> {
+        val xRange = coordinate.x .. (coordinate.x + building.width - 1)
+        val yRange = coordinate.y .. (coordinate.y + building.height - 1)
+        return xRange.flatMap { x->
+            yRange.map { y->
+                BlockCoordinate(x, y)
+            }
+        }
     }
 
     fun pathToNearestLabor(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int = 1): List<BlockCoordinate> {
         val nearest = findNearestLabor(cityMap, start, quantity) ?: return emptyList()
         // ok now we want to find a path...
-        return tripTo(listOf(nearest), nearest)
+        return tripTo(start, nearest)
     }
 
-    private fun tripTo(source: List<BlockCoordinate>, destination: BlockCoordinate): List<BlockCoordinate> {
+    private fun tripTo(source: List<BlockCoordinate>, destinations: List<BlockCoordinate>): List<BlockCoordinate> {
         // TODO: A* PATHFINDING!
 
         // At initialization add the starting location to the open list and empty the closed list
@@ -51,6 +67,7 @@ object Pathfinder {
 
         val openList = mutableListOf(*source.toTypedArray())
         val closedList = mutableListOf<BlockCoordinate>()
+        val cameFrom : Map<BlockCoordinate, BlockCoordinate> = mapOf()
 
         while (openList.count() > 0) {
             val activeCoordinate = openList.removeAt(0)
