@@ -10,8 +10,8 @@
   "upkeep": 100,
   "production": {
     "produces": {
-      "raw_materials": 1,
-      "goods": 1
+      "raw_materials": 10,
+      "goods": 10
     }
   }
 }

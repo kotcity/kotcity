@@ -19,6 +19,12 @@ enum class Tradeable {
     RAW_MATERIALS
 }
 
+data class Contract(
+        val to: Building,
+        val tradeable: Tradeable,
+        val quantity: Int
+)
+
 abstract class Building {
     abstract var width: Int
     abstract var height: Int
@@ -32,6 +38,28 @@ abstract class Building {
     val consumes: MutableMap<Tradeable, Int> = mutableMapOf()
     val produces: MutableMap<Tradeable, Int> = mutableMapOf()
     open var upkeep: Int = 0
+    val contracts: MutableList<Contract> = mutableListOf()
+
+    fun tradeableAvailable(tradeable: Tradeable, quantity: Int): Boolean {
+        // OK... what we want to do here is figure out what we provide...
+        val produceCount = produces[tradeable] ?: return false
+
+        val contractCount = contracts.filter {
+            it.tradeable == tradeable
+        }.map { it.quantity }.sum()
+
+        return (produceCount - contractCount) >= quantity
+    }
+
+    fun createContract(to: Building, tradeable: Tradeable, quantity: Int) {
+        contracts.add(Contract(to, tradeable, quantity))
+    }
+
+    fun voidContractsWith(to: Building) {
+        contracts.removeAll {
+            it.to == to
+        }
+    }
 }
 
 class Road : Building() {

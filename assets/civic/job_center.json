@@ -10,7 +10,7 @@
   "upkeep": 100,
   "production": {
     "produces": {
-      "labor": 1
+      "labor": 10
     }
   }
 }
