@@ -131,6 +131,7 @@ object Pathfinder {
                 lastNode = activeNode
             }
 
+            // TODO: maybe pull out into lambda so we can re-use pathfinder...
             fun maybeAppendNode(node: NavigationNode) {
                 if (!closedList.contains(node) && !openList.contains(node)) {
                     if (drivable(cityMap, node) || destinations.contains(node.coordinate)) {

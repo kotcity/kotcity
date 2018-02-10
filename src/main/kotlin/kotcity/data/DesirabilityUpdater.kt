@@ -1,5 +1,7 @@
 package kotcity.data
 
+import kotcity.pathfinding.Pathfinder
+
 object DesirabilityUpdater {
     fun update(cityMap: CityMap) {
         // let's update the desirability...
@@ -16,19 +18,24 @@ object DesirabilityUpdater {
 
     private fun updateCommercial(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
         desirabilityLayer.keys().forEach { coordinate ->
-            desirabilityLayer[coordinate] = 0.5
+            desirabilityLayer[coordinate] = 0.0
         }
     }
 
     private fun updateIndustrial(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
         desirabilityLayer.keys().forEach { coordinate ->
-            desirabilityLayer[coordinate] = 0.5
+
+            val nearestLabor = Pathfinder.pathToNearestLabor(cityMap, listOf(coordinate))?.distance() ?: 0
+
+            // last step...
+            desirabilityLayer[coordinate] = (100 - nearestLabor).toDouble()
+
         }
     }
 
     private fun updateResidential(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
         desirabilityLayer.keys().forEach { coordinate ->
-            desirabilityLayer[coordinate] = 0.5
+            desirabilityLayer[coordinate] = 0.0
 
             // res likes being near water...
             val potentialWaters = desirabilityLayer

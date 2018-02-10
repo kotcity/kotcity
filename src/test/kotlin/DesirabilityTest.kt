@@ -30,5 +30,15 @@ class DesirabilityTest {
             it.distance() > 0
         }
         // ok now let's make sure the desirability is actually kosher...
+        DesirabilityUpdater.update(map)
+
+        var nonDefaultFound = false
+
+        map.desirabilityLayer(ZoneType.INDUSTRIAL, 1)?.forEach { t, d ->
+            if (d != 0.0) {
+                nonDefaultFound = true
+            }
+        }
+        assert(nonDefaultFound)
     }
 }

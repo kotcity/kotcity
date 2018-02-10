@@ -99,17 +99,33 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     val resourceLayers = mutableMapOf<String, QuantizedMap<Double>>()
 
-    val desirabilityLayers = listOf(
-            DesirabilityLayer(ZoneType.RESIDENTIAL, 1),
-            DesirabilityLayer(ZoneType.RESIDENTIAL, 2),
-            DesirabilityLayer(ZoneType.RESIDENTIAL, 3),
-            DesirabilityLayer(ZoneType.COMMERCIAL, 1),
-            DesirabilityLayer(ZoneType.COMMERCIAL, 2),
-            DesirabilityLayer(ZoneType.COMMERCIAL, 3),
-            DesirabilityLayer(ZoneType.INDUSTRIAL, 1),
-            DesirabilityLayer(ZoneType.INDUSTRIAL, 2),
-            DesirabilityLayer(ZoneType.INDUSTRIAL, 3)
-    )
+    val desirabilityLayers = initializeDesirabilityLayers()
+
+    private fun initializeDesirabilityLayers(): List<DesirabilityLayer> {
+        val layers = listOf(
+                DesirabilityLayer(ZoneType.RESIDENTIAL, 1),
+                DesirabilityLayer(ZoneType.RESIDENTIAL, 2),
+                DesirabilityLayer(ZoneType.RESIDENTIAL, 3),
+                DesirabilityLayer(ZoneType.COMMERCIAL, 1),
+                DesirabilityLayer(ZoneType.COMMERCIAL, 2),
+                DesirabilityLayer(ZoneType.COMMERCIAL, 3),
+                DesirabilityLayer(ZoneType.INDUSTRIAL, 1),
+                DesirabilityLayer(ZoneType.INDUSTRIAL, 2),
+                DesirabilityLayer(ZoneType.INDUSTRIAL, 3)
+        )
+
+        layers.forEach { layer ->
+            val xRange = 0 .. width
+            val yRange = 0 .. height
+            xRange.forEach { x ->
+                yRange.forEach { y ->
+                    layer[BlockCoordinate(x,y)] = 0.5
+                }
+            }
+        }
+
+        return layers
+    }
 
     var time = defaultTime()
 
