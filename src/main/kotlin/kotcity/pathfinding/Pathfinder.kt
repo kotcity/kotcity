@@ -8,11 +8,24 @@ enum class Direction {
     NORTH, SOUTH, EAST, WEST, STATIONARY
 }
 
+enum class TransitType {
+    ROAD
+}
+
+data class Path (
+        val nodes: List<NavigationNode> = emptyList()
+) {
+    fun distance(): Int {
+        return nodes.count()
+    }
+}
+
 data class NavigationNode(
         val cityMap: CityMap,
         val coordinate: BlockCoordinate,
         val parent: NavigationNode?,
         val score: Double,
+        val transitType: TransitType = TransitType.ROAD,
         val direction: Direction
 ) {
     override fun equals(other: Any?): Boolean {
@@ -59,7 +72,7 @@ object Pathfinder {
         }
     }
 
-    fun pathToNearestLabor(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int = 1): List<BlockCoordinate> {
+    fun pathToNearestLabor(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int = 1): Path? {
         val nearest = findNearestLabor(cityMap, start, quantity)
         // ok now we want to find a path...
         return tripTo(cityMap, start, nearest)
@@ -87,7 +100,7 @@ object Pathfinder {
             cityMap: CityMap,
             source: List<BlockCoordinate>,
             destinations: List<BlockCoordinate>
-    ): List<BlockCoordinate> {
+    ): Path? {
 
         // switch these to list of navigation nodes...
         val openList = mutableSetOf(*(
@@ -96,6 +109,7 @@ object Pathfinder {
                         it,
                         null,
                         heuristic(it, destinations),
+                        TransitType.ROAD,
                         Direction.STATIONARY
                 )}.toTypedArray())
         )
@@ -107,7 +121,7 @@ object Pathfinder {
 
         while (!done) {
             // bail out if we have no nodes left in the open list
-            val activeNode = openList.minBy { it.score } ?: return emptyList()
+            val activeNode = openList.minBy { it.score } ?: return null
             // now remove it from open list...
             openList.remove(activeNode)
             closedList.add(activeNode)
@@ -129,19 +143,19 @@ object Pathfinder {
 
             // ok figure out the dang neighbors...
             val north = BlockCoordinate(activeNode.coordinate.x, activeNode.coordinate.y-1)
-            val northNode = NavigationNode(cityMap, north, activeNode, heuristic(north, destinations), Direction.NORTH)
+            val northNode = NavigationNode(cityMap, north, activeNode, heuristic(north, destinations), TransitType.ROAD, Direction.NORTH)
             maybeAppendNode(northNode)
 
             val south = BlockCoordinate(activeNode.coordinate.x, activeNode.coordinate.y+1)
-            val southNode = NavigationNode(cityMap, south, activeNode, heuristic(south, destinations), Direction.SOUTH)
+            val southNode = NavigationNode(cityMap, south, activeNode, heuristic(south, destinations), TransitType.ROAD, Direction.SOUTH)
             maybeAppendNode(southNode)
 
             val east = BlockCoordinate(activeNode.coordinate.x+1, activeNode.coordinate.y)
-            val eastNode = NavigationNode(cityMap, east, activeNode, heuristic(east, destinations), Direction.EAST)
+            val eastNode = NavigationNode(cityMap, east, activeNode, heuristic(east, destinations), TransitType.ROAD, Direction.EAST)
             maybeAppendNode(eastNode)
 
             val west = BlockCoordinate(activeNode.coordinate.x-1, activeNode.coordinate.y)
-            val westNode = NavigationNode(cityMap, west, activeNode, heuristic(west, destinations), Direction.WEST)
+            val westNode = NavigationNode(cityMap, west, activeNode, heuristic(west, destinations), TransitType.ROAD, Direction.WEST)
             maybeAppendNode(westNode)
 
         }
@@ -158,8 +172,8 @@ object Pathfinder {
                 activeNode = activeNode.parent
             }
 
-            pathNodes.map {it.coordinate}
-        } ?: emptyList()
+            Path(pathNodes)
+        } ?: null
 
     }
 }

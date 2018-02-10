@@ -1,6 +1,7 @@
 import kotcity.data.*
 import kotcity.data.assets.AssetManager
 import kotcity.pathfinding.Pathfinder
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 
 class DesirabilityTest {
@@ -21,7 +22,13 @@ class DesirabilityTest {
         map.zone(ZoneType.INDUSTRIAL, BlockCoordinate(3, 0), BlockCoordinate(5, 30))
 
         val path = Pathfinder.pathToNearestLabor(map, listOf(BlockCoordinate(3, 10)))
-        assert(path.count() > 0)
+
+        if (path == null) {
+            fail("The path was null...")
+        }
+        path?.let {
+            it.distance() > 0
+        }
         // ok now let's make sure the desirability is actually kosher...
     }
 }
