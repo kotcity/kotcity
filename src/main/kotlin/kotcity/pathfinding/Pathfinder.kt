@@ -1,17 +1,33 @@
 package kotcity.pathfinding
 
-import kotcity.data.BlockCoordinate
-import kotcity.data.Building
-import kotcity.data.CityMap
-import kotcity.data.Tradeable
+import kotcity.data.*
 
 const val MAX_DISTANCE = 50f
 
+enum class Direction {
+    NORTH, SOUTH, EAST, WEST, STATIONARY
+}
+
 data class NavigationNode(
+        val cityMap: CityMap,
         val coordinate: BlockCoordinate,
-        val parent: BlockCoordinate,
-        val score: Int
-)
+        val parent: NavigationNode?,
+        val score: Double,
+        val direction: Direction
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as NavigationNode
+        return this.coordinate == that.coordinate
+    }
+
+    override fun hashCode(): Int {
+        return this.coordinate.hashCode()
+    }
+}
 
 object Pathfinder {
     fun findNearestLabor(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int = 1): List<BlockCoordinate> {
@@ -44,37 +60,106 @@ object Pathfinder {
     }
 
     fun pathToNearestLabor(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int = 1): List<BlockCoordinate> {
-        val nearest = findNearestLabor(cityMap, start, quantity) ?: return emptyList()
+        val nearest = findNearestLabor(cityMap, start, quantity)
         // ok now we want to find a path...
-        return tripTo(start, nearest)
+        return tripTo(cityMap, start, nearest)
     }
 
-    private fun tripTo(source: List<BlockCoordinate>, destinations: List<BlockCoordinate>): List<BlockCoordinate> {
-        // TODO: A* PATHFINDING!
-
-        // At initialization add the starting location to the open list and empty the closed list
-        // While there are still more possible next steps in the open list and we haven’t found the target:
-        //    Select the most likely next step (based on both the heuristic and path costs)
-        //    Remove it from the open list and add it to the closed
-        //    Consider each neighbor of the step. For each neighbor:
-        //       Calculate the path cost of reaching the neighbor
-        //       If the cost is less than the cost known for this location
-        //              then remove it from the open or closed lists (since we’ve now found a better route)
-        //       If the location isn’t in either the open or closed list
-        //              then record the costs for the location and
-        //              add it to the open list (this means it’ll be considered in the next search).
-        //              Record how we got to this location
-
-        val openList = mutableListOf(*source.toTypedArray())
-        val closedList = mutableListOf<BlockCoordinate>()
-        val cameFrom : Map<BlockCoordinate, BlockCoordinate> = mapOf()
-
-        while (openList.count() > 0) {
-            val activeCoordinate = openList.removeAt(0)
-            val neighbors = activeCoordinate.neighbors(1)
-            // let's see if its the destination!
+    private fun heuristic(start: BlockCoordinate, destinations: List<BlockCoordinate>): Double {
+        // calculate manhattan distance to each...
+        val scores = destinations.map {
+            manhattanDistance(start, it)
         }
 
-        return emptyList()
+        return scores.min() ?: 0.0
+    }
+
+    private fun manhattanDistance(start: BlockCoordinate, destination: BlockCoordinate): Double {
+        return Math.abs(start.x-destination.x) + Math.abs(start.y-destination.y).toDouble()
+    }
+
+    private fun drivable(cityMap: CityMap, node: NavigationNode): Boolean {
+        // make sure we got a road under it...
+        return cityMap.buildingLayer[node.coordinate]?.type == BuildingType.ROAD
+    }
+
+    private fun tripTo(
+            cityMap: CityMap,
+            source: List<BlockCoordinate>,
+            destinations: List<BlockCoordinate>
+    ): List<BlockCoordinate> {
+
+        // switch these to list of navigation nodes...
+        val openList = mutableSetOf(*(
+                source.map { NavigationNode(
+                        cityMap,
+                        it,
+                        null,
+                        heuristic(it, destinations),
+                        Direction.STATIONARY
+                )}.toTypedArray())
+        )
+        val closedList = mutableSetOf<NavigationNode>()
+
+        var done = false
+
+        var lastNode: NavigationNode? = null
+
+        while (!done) {
+            // bail out if we have no nodes left in the open list
+            val activeNode = openList.minBy { it.score } ?: return emptyList()
+            // now remove it from open list...
+            openList.remove(activeNode)
+            closedList.add(activeNode)
+
+            if (destinations.contains(activeNode.coordinate)) {
+                done = true
+                lastNode = activeNode
+            }
+
+            fun maybeAppendNode(node: NavigationNode) {
+                if (!closedList.contains(node) && !openList.contains(node)) {
+                    if (drivable(cityMap, node) || destinations.contains(node.coordinate)) {
+                        openList.add(node)
+                    } else {
+                        closedList.add(node)
+                    }
+                }
+            }
+
+            // ok figure out the dang neighbors...
+            val north = BlockCoordinate(activeNode.coordinate.x, activeNode.coordinate.y-1)
+            val northNode = NavigationNode(cityMap, north, activeNode, heuristic(north, destinations), Direction.NORTH)
+            maybeAppendNode(northNode)
+
+            val south = BlockCoordinate(activeNode.coordinate.x, activeNode.coordinate.y+1)
+            val southNode = NavigationNode(cityMap, south, activeNode, heuristic(south, destinations), Direction.SOUTH)
+            maybeAppendNode(southNode)
+
+            val east = BlockCoordinate(activeNode.coordinate.x+1, activeNode.coordinate.y)
+            val eastNode = NavigationNode(cityMap, east, activeNode, heuristic(east, destinations), Direction.EAST)
+            maybeAppendNode(eastNode)
+
+            val west = BlockCoordinate(activeNode.coordinate.x-1, activeNode.coordinate.y)
+            val westNode = NavigationNode(cityMap, west, activeNode, heuristic(west, destinations), Direction.WEST)
+            maybeAppendNode(westNode)
+
+        }
+
+        return lastNode?.let {
+            // now we can just recurse back from
+            val pathNodes = mutableListOf<NavigationNode>()
+            var activeNode = lastNode
+
+            while (activeNode != null) {
+                activeNode.let {
+                    pathNodes.add(it)
+                }
+                activeNode = activeNode.parent
+            }
+
+            pathNodes.map {it.coordinate}
+        } ?: emptyList()
+
     }
 }

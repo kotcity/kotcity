@@ -1,6 +1,6 @@
 import kotcity.data.*
 import kotcity.data.assets.AssetManager
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class EconomyTest {
     @Test
