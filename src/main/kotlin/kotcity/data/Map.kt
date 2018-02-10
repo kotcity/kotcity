@@ -23,14 +23,14 @@ data class BlockCoordinate(val x: Int, val y: Int) {
     }
 
     fun neighbors(radius: Int = 1): List<BlockCoordinate> {
-        return (1..radius).flatMap {i ->
-            listOf(
-                    BlockCoordinate(this.x - i, this.y),
-                    BlockCoordinate(this.x + i, this.y),
-                    BlockCoordinate(this.x, this.y+i),
-                    BlockCoordinate(this.x, this.y+i)
-            )
-        }.distinct()
+        val xRange = this.x - 1 .. this.x + 1
+        val yRange = this.y - 1 .. this.y + 1
+
+        return xRange.flatMap { x ->
+            yRange.map { y ->
+                BlockCoordinate(x,y)
+            }
+        }
 
     }
 

@@ -34,6 +34,9 @@ object DesirabilityUpdater {
     }
 
     private fun updateResidential(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
+
+        // TODO: this is too fucking slow...
+
         desirabilityLayer.keys().forEach { coordinate ->
             desirabilityLayer[coordinate] = 0.0
 
