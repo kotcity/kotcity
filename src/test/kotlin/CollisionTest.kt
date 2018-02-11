@@ -1,0 +1,25 @@
+import kotcity.data.*
+import kotcity.data.assets.AssetManager
+import kotcity.pathfinding.Pathfinder
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.Test
+
+class CollisionTest {
+    @Test
+    fun collisionTest() {
+        val assetManager = AssetManager()
+        val map = CityMap.flatMap(512, 512)
+        val slum1 = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
+        val slum2 = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
+        val slum3 = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
+        val slum4 = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
+
+        map.build(slum1, BlockCoordinate(0, 0))
+        map.build(slum2, BlockCoordinate(0, 2))
+        map.build(slum3, BlockCoordinate(0, 4))
+        // try to do an overlap
+        map.build(slum4, BlockCoordinate(0, 0))
+        assertTrue(map.buildingLayer.count() == 3)
+    }
+}
