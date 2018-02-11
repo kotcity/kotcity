@@ -1,6 +1,7 @@
 import kotcity.data.*
 import kotcity.data.assets.AssetManager
 import kotcity.pathfinding.Pathfinder
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 
@@ -21,6 +22,13 @@ class DesirabilityTest {
         // now we gotta make some industrial zone...
         map.zone(ZoneType.INDUSTRIAL, BlockCoordinate(3, 0), BlockCoordinate(5, 30))
 
+        // let's plop a small house down...
+        val slum = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
+        map.build(slum, BlockCoordinate(3, 5))
+
+        val factory = assetManager.buildingFor(BuildingType.INDUSTRIAL, "small_factory")
+        map.build(factory, BlockCoordinate(3, 15))
+
         val path = Pathfinder.pathToNearestLabor(map, listOf(BlockCoordinate(3, 10)))
 
         if (path == null) {
@@ -35,11 +43,11 @@ class DesirabilityTest {
         listOf(ZoneType.INDUSTRIAL, ZoneType.RESIDENTIAL, ZoneType.COMMERCIAL).forEach { zt ->
             var nonDefaultFound = false
             map.desirabilityLayer(zt, 1)?.forEach { _, d ->
-                if (d != 0.0) {
+                if (d != DEFAULT_DESIRABILITY) {
                     nonDefaultFound = true
                 }
             }
-            assert(nonDefaultFound)
+            assertTrue(nonDefaultFound, "Error setting desirability for $zt")
         }
 
     }

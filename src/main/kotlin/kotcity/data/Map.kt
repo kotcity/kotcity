@@ -8,6 +8,8 @@ import com.github.debop.javatimes.toDateTime
 import java.text.SimpleDateFormat
 import java.util.*
 
+const val DEFAULT_DESIRABILITY = 0.0
+
 data class BlockCoordinate(val x: Int, val y: Int) {
     companion object {
         fun iterate(from: BlockCoordinate, to: BlockCoordinate, callback: (BlockCoordinate) -> Unit) {
@@ -40,10 +42,10 @@ data class BlockCoordinate(val x: Int, val y: Int) {
 }
 
 data class Corners(
-        val topLeft: BlockCoordinate,
-        val bottomRight: BlockCoordinate,
-        val topRight: BlockCoordinate,
-        val bottomLeft: BlockCoordinate
+        private val topLeft: BlockCoordinate,
+        private val bottomRight: BlockCoordinate,
+        private val topRight: BlockCoordinate,
+        private val bottomLeft: BlockCoordinate
 ) {
     fun includes(block: BlockCoordinate): Boolean {
         if (block.x >= topLeft.x && block.x <= bottomRight.x && block.y >= topLeft.y && block.y <= bottomRight.y) {
@@ -126,7 +128,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             val yRange = 0 .. height
             xRange.forEach { x ->
                 yRange.forEach { y ->
-                    layer[BlockCoordinate(x,y)] = 0.5
+                    layer[BlockCoordinate(x,y)] = DEFAULT_DESIRABILITY
                 }
             }
         }
@@ -280,29 +282,33 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             // now let's test...
             // top left corner...
             if (coordinate.x <= otherBuildingEnd.x && coordinate.x >= otherBuildingStart.x && coordinate.y <= otherBuildingEnd.y && coordinate.y >= otherBuildingStart.y) {
-                println("Collision with $building!")
+                collisionWarning("Collision with top left!", newBuilding, coordinate, building, pair.first)
                 return false
             }
 
             // bottom right corner...
             if (newBuildingEnd.x <= otherBuildingEnd.x && newBuildingEnd.x >= otherBuildingStart.x && newBuildingEnd.y <= otherBuildingEnd.y && newBuildingEnd.y >= otherBuildingStart.y) {
-                println("Collision with $building!")
+                collisionWarning("Collision with bottom right!", newBuilding, coordinate, building, pair.first)
                 return false
             }
 
             // top right corner...
             if (newBuildingTopRight.x <= otherBuildingEnd.x && newBuildingTopRight.x >= otherBuildingStart.x && newBuildingTopRight.y <= otherBuildingEnd.y && newBuildingTopRight.y >= otherBuildingStart.y) {
-                println("Collision with $building!")
+                collisionWarning("Collision with top right!", newBuilding, coordinate, building, pair.first)
                 return false
             }
 
             // bottom left corner...
             if (newBuildingBottomLeft.x <= otherBuildingEnd.x && newBuildingBottomLeft.x >= otherBuildingStart.x && newBuildingBottomLeft.y <= otherBuildingEnd.y && newBuildingBottomLeft.y >= otherBuildingStart.y) {
-                println("Collision with $building!")
+                collisionWarning("Collision with bottom left!", newBuilding, coordinate, building, pair.first)
                 return false
             }
         }
         return true
+    }
+
+    private fun collisionWarning(errorMessage: String, newBuilding: Building, coordinate: BlockCoordinate, building: Building, otherCoordinate: BlockCoordinate) {
+        println("$errorMessage -> $newBuilding at $coordinate: collision with $building at $otherCoordinate!")
     }
 
     fun buildRoad(from: BlockCoordinate, to: BlockCoordinate) {

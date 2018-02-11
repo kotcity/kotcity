@@ -56,6 +56,11 @@ object Pathfinder {
         }.flatMap { blocksFor(it.second, it.first) }
     }
 
+    fun pathToNearestTrade(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int, buildingFilter: (Building, Int) -> Boolean): Path? {
+        val nearest = findNearestTrade(cityMap, start, quantity, buildingFilter)
+        return tripTo(cityMap, start, nearest)
+    }
+
     private fun blocksFor(building: Building, coordinate: BlockCoordinate): List<BlockCoordinate> {
         val xRange = coordinate.x .. (coordinate.x + building.width - 1)
         val yRange = coordinate.y .. (coordinate.y + building.height - 1)
@@ -79,8 +84,6 @@ object Pathfinder {
         }
         return tripTo(cityMap, start, nearest)
     }
-
-
 
     private fun heuristic(start: BlockCoordinate, destinations: List<BlockCoordinate>): Double {
         // calculate manhattan distance to each...

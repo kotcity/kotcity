@@ -2,7 +2,10 @@ package kotcity.data
 
 import kotcity.pathfinding.Pathfinder
 
+val MAX_DISTANCE = 100
+
 object DesirabilityUpdater {
+
     fun update(cityMap: CityMap) {
         // let's update the desirability...
         cityMap.desirabilityLayers.forEach { desirabilityLayer ->
@@ -18,17 +21,26 @@ object DesirabilityUpdater {
 
     private fun updateCommercial(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
         desirabilityLayer.keys().forEach { coordinate ->
-            desirabilityLayer[coordinate] = 0.0
+
+            val distanceToGoods = Pathfinder.pathToNearestTrade(cityMap, listOf(coordinate), 1) { building, qty ->
+                building.sellingTradeable(Tradeable.GOODS, 1)
+            }?.distance() ?: MAX_DISTANCE
+
+            val distanceToLabor = Pathfinder.pathToNearestTrade(cityMap, listOf(coordinate), 1) { building, qty ->
+                building.sellingTradeable(Tradeable.LABOR, 1)
+            }?.distance() ?: MAX_DISTANCE
+
+            desirabilityLayer[coordinate] = (MAX_DISTANCE - distanceToGoods - distanceToLabor).toDouble()
         }
     }
 
     private fun updateIndustrial(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
         desirabilityLayer.keys().forEach { coordinate ->
 
-            val nearestLabor = Pathfinder.pathToNearestLabor(cityMap, listOf(coordinate))?.distance() ?: 0
+            val nearestLabor = Pathfinder.pathToNearestLabor(cityMap, listOf(coordinate))?.distance() ?: MAX_DISTANCE
 
             // last step...
-            desirabilityLayer[coordinate] = (100 - nearestLabor).toDouble()
+            desirabilityLayer[coordinate] = (MAX_DISTANCE - nearestLabor).toDouble()
 
         }
     }
@@ -37,7 +49,8 @@ object DesirabilityUpdater {
         // we like being near places that NEED labor
         // we like being near places that PROVIDE goods
         desirabilityLayer.keys().forEach { coordinate ->
-            var nearestJob = Pathfinder.pathToNearestJob(cityMap, listOf(coordinate))?.distance() ?: 0
+            var nearestJob = Pathfinder.pathToNearestJob(cityMap, listOf(coordinate))?.distance() ?: MAX_DISTANCE
+            desirabilityLayer[coordinate] = (MAX_DISTANCE - nearestJob).toDouble()
         }
     }
 }

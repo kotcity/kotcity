@@ -2,7 +2,7 @@
   "type": "industrial",
   "width": 1,
   "height": 1,
-  "name": "small_factory1",
+  "name": "small_factory",
   "sprite": "small_factory1.png",
   "description": "Small Manufacturing Plant",
   "level": 1,
