@@ -38,9 +38,19 @@ abstract class Building {
     val consumes: MutableMap<Tradeable, Int> = mutableMapOf()
     val produces: MutableMap<Tradeable, Int> = mutableMapOf()
     open var upkeep: Int = 0
-    val contracts: MutableList<Contract> = mutableListOf()
+    private val contracts: MutableList<Contract> = mutableListOf()
 
-    fun tradeableAvailable(tradeable: Tradeable, quantity: Int): Boolean {
+    fun buyingTradeable(tradeable: Tradeable, quantity: Int): Boolean {
+        val buyingCount = consumes[tradeable] ?: return false
+
+        val contractCount = contracts.filter {
+            it.tradeable == tradeable
+        }.map { it.quantity }.sum()
+
+        return (buyingCount - contractCount) >= quantity
+    }
+
+    fun sellingTradeable(tradeable: Tradeable, quantity: Int): Boolean {
         // OK... what we want to do here is figure out what we provide...
         val produceCount = produces[tradeable] ?: return false
 

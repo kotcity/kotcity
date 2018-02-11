@@ -32,13 +32,15 @@ class DesirabilityTest {
         // ok now let's make sure the desirability is actually kosher...
         DesirabilityUpdater.update(map)
 
-        var nonDefaultFound = false
-
-        map.desirabilityLayer(ZoneType.INDUSTRIAL, 1)?.forEach { t, d ->
-            if (d != 0.0) {
-                nonDefaultFound = true
+        listOf(ZoneType.INDUSTRIAL, ZoneType.RESIDENTIAL, ZoneType.COMMERCIAL).forEach { zt ->
+            var nonDefaultFound = false
+            map.desirabilityLayer(zt, 1)?.forEach { _, d ->
+                if (d != 0.0) {
+                    nonDefaultFound = true
+                }
             }
+            assert(nonDefaultFound)
         }
-        assert(nonDefaultFound)
+
     }
 }

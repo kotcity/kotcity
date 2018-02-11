@@ -43,23 +43,17 @@ data class NavigationNode(
 }
 
 object Pathfinder {
-    fun findNearestLabor(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int = 1): List<BlockCoordinate> {
-        // OK! what we want to do here is find the nearest labor
 
-        // TODO: find the cheapest labor by transit...
-        // this just sloppily returns the first one...
-
-        // step 1! get buildings within radius...
+    private fun findNearestTrade(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int, buildingFilter: (Building, Int) -> Boolean): List<BlockCoordinate> {
         return start.flatMap { coordinate ->
             val buildings = cityMap.nearestBuildings(coordinate, MAX_DISTANCE)
 
             // OK now we want only ones with labor...
             buildings.filter {
                 val building = it.second
-                building.tradeableAvailable(Tradeable.LABOR, quantity)
+                buildingFilter(building, quantity)
             }
         }.flatMap { blocksFor(it.second, it.first) }
-
     }
 
     private fun blocksFor(building: Building, coordinate: BlockCoordinate): List<BlockCoordinate> {
@@ -73,10 +67,20 @@ object Pathfinder {
     }
 
     fun pathToNearestLabor(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int = 1): Path? {
-        val nearest = findNearestLabor(cityMap, start, quantity)
-        // ok now we want to find a path...
+        val nearest = findNearestTrade(cityMap, start, quantity) {
+            building, quantity -> building.sellingTradeable(Tradeable.LABOR, quantity)
+        }
         return tripTo(cityMap, start, nearest)
     }
+
+    fun pathToNearestJob(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int = 1): Path? {
+        val nearest = findNearestTrade(cityMap, start, quantity) {
+            building, quantity -> building.buyingTradeable(Tradeable.LABOR, quantity)
+        }
+        return tripTo(cityMap, start, nearest)
+    }
+
+
 
     private fun heuristic(start: BlockCoordinate, destinations: List<BlockCoordinate>): Double {
         // calculate manhattan distance to each...
@@ -177,4 +181,6 @@ object Pathfinder {
         } ?: null
 
     }
+
+
 }

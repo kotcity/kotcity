@@ -23,8 +23,8 @@ data class BlockCoordinate(val x: Int, val y: Int) {
     }
 
     fun neighbors(radius: Int = 1): List<BlockCoordinate> {
-        val xRange = this.x - 1 .. this.x + 1
-        val yRange = this.y - 1 .. this.y + 1
+        val xRange = this.x - radius .. this.x + radius
+        val yRange = this.y - radius .. this.y + radius
 
         return xRange.flatMap { x ->
             yRange.map { y ->
@@ -41,12 +41,19 @@ data class BlockCoordinate(val x: Int, val y: Int) {
 
 data class Corners(
         val topLeft: BlockCoordinate,
-        val bottomRight: BlockCoordinate
+        val bottomRight: BlockCoordinate,
+        val topRight: BlockCoordinate,
+        val bottomLeft: BlockCoordinate
 ) {
     fun includes(block: BlockCoordinate): Boolean {
         if (block.x >= topLeft.x && block.x <= bottomRight.x && block.y >= topLeft.y && block.y <= bottomRight.y) {
             return true
         }
+
+        if (block.x <= topRight.x && block.x >= bottomLeft.x && block.y <= topRight.y && block.y >= bottomLeft.y) {
+            return true
+        }
+
         return false
     }
 }
@@ -366,10 +373,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     // TODO: we should start throwing back 4 corners again to use this for overlaps...
-    fun builingCorners(building: Building, block: BlockCoordinate): Corners {
+    private fun buildingCorners(building: Building, block: BlockCoordinate): Corners {
         val buildingTopLeft = BlockCoordinate(block.x, block.y)
         val buildingBottomRight = BlockCoordinate(block.x + building.width - 1, block.y + building.height - 1)
-        return Corners(buildingTopLeft, buildingBottomRight)
+
+        val buildingTopRight = BlockCoordinate(block.x + building.width - 1, block.y)
+        val buildingBottomLeft = BlockCoordinate(block.x, block.y + building.height - 1)
+
+        return Corners(buildingTopLeft, buildingBottomRight, buildingTopRight, buildingBottomLeft)
     }
 
     fun buildingsIn(block: BlockCoordinate): List<Pair<BlockCoordinate, Building>> {
@@ -377,7 +388,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val filteredBuildings = nearestBuildings.filter {
             val coordinate = it.first
             val building = it.second
-            builingCorners(building, coordinate).includes(block)
+            buildingCorners(building, coordinate).includes(block)
         }
 
         // now we also need the power lines that are here...

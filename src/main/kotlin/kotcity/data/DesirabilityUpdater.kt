@@ -34,39 +34,10 @@ object DesirabilityUpdater {
     }
 
     private fun updateResidential(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
-
-        // TODO: this is too fucking slow...
-
+        // we like being near places that NEED labor
+        // we like being near places that PROVIDE goods
         desirabilityLayer.keys().forEach { coordinate ->
-            desirabilityLayer[coordinate] = 0.0
-
-            // res likes being near water...
-            val potentialWaters = desirabilityLayer
-                    .unquantized(coordinate)
-                    .flatMap { coordinate.neighbors(3) }
-                    .mapNotNull { coordinate ->
-                        cityMap.groundLayer[coordinate]?.let {
-                            Pair(coordinate, it)
-                        }
-                    }
-                    .distinct()
-                    .filter { mapTile ->
-                        mapTile.second.type == TileType.WATER
-                    }
-
-            potentialWaters.mapNotNull {
-                coordinate.distanceTo(it.first)
-            }.min()?.let { waterDistance ->
-                when (waterDistance) {
-                    1.0 -> desirabilityLayer[coordinate]?.plus(3.0)
-                    2.0 -> desirabilityLayer[coordinate]?.plus(2.0)
-                    3.0 -> desirabilityLayer[coordinate]?.plus(1.0)
-                    else -> {
-                        println("I don't know how to handling being $waterDistance away from water...")
-                    }
-                }
-            }
-
+            var nearestJob = Pathfinder.pathToNearestJob(cityMap, listOf(coordinate))?.distance() ?: 0
         }
     }
 }
