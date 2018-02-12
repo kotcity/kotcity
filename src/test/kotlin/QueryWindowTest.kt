@@ -10,20 +10,20 @@ import kotcity.ui.QueryWindow
 import tornadofx.App
 import tornadofx.find
 
-fun setBuilding(): Building {
+fun setBuilding(): Pair<CityMap, BlockCoordinate> {
     val assetManager = AssetManager()
     val map = CityMap.flatMap(512, 512)
     // let's plop a small house down...
     val slum = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
     map.build(slum, BlockCoordinate(3, 5))
-    return slum
+    return Pair(map, BlockCoordinate(3, 5))
 }
 
 class QueryWindowApp : App(QueryWindow::class, KotcityStyles::class) {
     override fun start(stage: Stage) {
         val queryWindow = find(QueryWindow::class)
-        val slum1 = setBuilding()
-        queryWindow.building = slum1
+        val buildingAndCity = setBuilding()
+        queryWindow.mapAndCoordinate = buildingAndCity
         super.start(stage)
     }
 }

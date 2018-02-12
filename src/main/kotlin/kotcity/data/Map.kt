@@ -389,6 +389,13 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return Corners(buildingTopLeft, buildingBottomRight, buildingTopRight, buildingBottomLeft)
     }
 
+    // TODO: this kind of sucks...
+    fun coordinatesForBuilding(building: Building): BlockCoordinate? {
+        return buildingLayer.toList().find {
+            it.second === building
+        }?.first
+    }
+
     fun buildingsIn(block: BlockCoordinate): List<Pair<BlockCoordinate, Building>> {
         val nearestBuildings = nearestBuildings(block, 10f)
         val filteredBuildings = nearestBuildings.filter {

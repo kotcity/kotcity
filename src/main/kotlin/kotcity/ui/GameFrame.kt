@@ -18,7 +18,6 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.ButtonBar.ButtonData
 import javafx.scene.layout.BorderPane
-import kotcity.data.assets.AssetManager
 import kotcity.ui.map.CityMapCanvas
 import kotcity.ui.map.CityRenderer
 import tornadofx.runLater
@@ -395,12 +394,8 @@ class GameFrame : View() {
                             // let's do that query...
                             val queryWindow = find(QueryWindow::class)
                             // get building under the active block...
-                            val buildings = map.buildingsIn(firstBlock)
-                            if (buildings.count() > 0) {
-                                queryWindow.building = buildings.first().second
-                                queryWindow.openModal()
-                            }
-
+                            queryWindow.mapAndCoordinate = Pair(map, firstBlock)
+                            queryWindow.openModal()
                         }
                     }
                 }
