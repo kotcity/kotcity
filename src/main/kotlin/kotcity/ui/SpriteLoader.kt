@@ -18,7 +18,7 @@ object SpriteLoader {
             else -> throw RuntimeException("Unknown sprite for ${building.type}")
         }
         if (filename != null) {
-            return Image(filename, width, height, false, false)
+            return Image(filename, width, height, true, false)
         }
         throw RuntimeException("Could not find a sprite for: $building")
     }

@@ -273,7 +273,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
             } else {
                 if (gameFrame.activeTool == Tool.COAL_POWER_PLANT || gameFrame.activeTool == Tool.NUCLEAR_POWER_PLANT) {
                     highlightCenteredBlocks(it, 4, 4)
-                } else if (gameFrame.activeTool == Tool.ROAD || gameFrame.activeTool == Tool.POWER_LINES) {
+                } else if (gameFrame.activeTool == Tool.ROAD || gameFrame.activeTool == Tool.POWER_LINES || gameFrame.activeTool == Tool.QUERY) {
                     mouseBlock?.let {
                         highlightBlocks(it, it)
                     }

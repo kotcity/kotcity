@@ -76,6 +76,7 @@ class Road : Building() {
     override var width = 1
     override var height = 1
     override var type = BuildingType.ROAD
+    override var description: String? = "Road"
 }
 
 class PowerPlant : Building {
