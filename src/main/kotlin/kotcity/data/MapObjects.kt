@@ -89,8 +89,8 @@ class PowerPlant : Building {
         }
         this.variety = variety
         when (variety) {
-            "coal" -> this.powerGenerated = 2000
-            "nuclear" -> this.powerGenerated = 5000
+            "coal" -> { this.powerGenerated = 2000; this.description = "Coal Power Plant" }
+            "nuclear" -> { this.powerGenerated = 5000; this.description = "Nuclear Power Plant" }
         }
         this.type = BuildingType.POWER_PLANT
     }
@@ -105,6 +105,7 @@ class PowerLine : Building() {
     override var width = 1
     override var height = 1
     override val powerRequired = 1
+    override var description: String? = "Power Line"
 }
 
 class LoadableBuilding: Building() {

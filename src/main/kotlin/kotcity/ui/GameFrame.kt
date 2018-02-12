@@ -391,6 +391,16 @@ class GameFrame : View() {
                             map.zone(ZoneType.INDUSTRIAL, firstBlock, lastBlock)
                         } else if (activeTool == Tool.DEZONE) {
                             map.dezone(firstBlock, lastBlock)
+                        } else if (activeTool == Tool.QUERY) {
+                            // let's do that query...
+                            val queryWindow = find(QueryWindow::class)
+                            // get building under the active block...
+                            val buildings = map.buildingsIn(firstBlock)
+                            if (buildings.count() > 0) {
+                                queryWindow.building = buildings.first().second
+                                queryWindow.openModal()
+                            }
+
                         }
                     }
                 }
