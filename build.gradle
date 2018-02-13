@@ -4,6 +4,7 @@ buildscript {
     repositories {
         mavenCentral()
     }
+
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
@@ -23,6 +24,7 @@ repositories {
 }
 
 dependencies {
+
     // compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile 'no.tornado:tornadofx:1.7.14'
     compile 'com.github.salomonbrys.kotson:kotson:2.5.0'

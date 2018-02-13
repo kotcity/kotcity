@@ -12,31 +12,37 @@ class DesirabilityTest {
         val map = CityMap.flatMap(1024, 1024)
         // ok what we want to do here is drop a job center at 0,0
         val jobCenter = assetManager.buildingFor(BuildingType.CIVIC, "job_center")
-        map.build(jobCenter, BlockCoordinate(0,0))
+        map.build(jobCenter, BlockCoordinate(3,0))
 
         val warehouse = assetManager.buildingFor(BuildingType.CIVIC, "town_warehouse")
-        map.build(warehouse, BlockCoordinate(0, 2))
+        map.build(warehouse, BlockCoordinate(3, 2))
 
         // now let's drop a road...
         map.buildRoad(BlockCoordinate(2,0), BlockCoordinate(2, 30))
         // now we gotta make some industrial zone...
         map.zone(ZoneType.INDUSTRIAL, BlockCoordinate(3, 0), BlockCoordinate(5, 30))
+        map.zone(ZoneType.RESIDENTIAL, BlockCoordinate(0, 10), BlockCoordinate(2, 12))
+        map.zone(ZoneType.COMMERCIAL, BlockCoordinate(0, 20), BlockCoordinate(1, 25))
 
         // let's plop a small house down...
         val slum = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
-        map.build(slum, BlockCoordinate(3, 5))
+        map.build(slum, BlockCoordinate(0, 5))
 
         val factory = assetManager.buildingFor(BuildingType.INDUSTRIAL, "small_factory")
-        map.build(factory, BlockCoordinate(3, 15))
+        map.build(factory, BlockCoordinate(1, 15))
 
         val path = Pathfinder.pathToNearestLabor(map, listOf(BlockCoordinate(3, 10)))
 
         if (path == null) {
             fail("The path was null...")
         }
-        path?.let {
-            it.distance() > 0
+
+        val pathToJob = Pathfinder.pathToNearestJob(map, listOf(BlockCoordinate(3, 10)))
+
+        if (pathToJob == null) {
+            fail("The path was null...")
         }
+
         // ok now let's make sure the desirability is actually kosher...
         DesirabilityUpdater.update(map)
 
