@@ -77,7 +77,7 @@ fun defaultTime(): Date {
     return simpleDateFormat.parse("2000-01-01 12:00:00")
 }
 
-data class DesirabilityLayer(val zoneType: ZoneType, val level: Int): QuantizedMap<Double>(4) {
+data class DesirabilityLayer(val zoneType: ZoneType, val level: Int): QuantizedMap<Double>(1) {
     init {
         map = map.withDefault { 0.0 }
     }
@@ -123,15 +123,15 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 DesirabilityLayer(ZoneType.INDUSTRIAL, 3)
         )
 
-        layers.forEach { layer ->
-            val xRange = 0 .. width
-            val yRange = 0 .. height
-            xRange.forEach { x ->
-                yRange.forEach { y ->
-                    layer[BlockCoordinate(x,y)] = DEFAULT_DESIRABILITY
-                }
-            }
-        }
+//        layers.forEach { layer ->
+//            val xRange = 0 .. width
+//            val yRange = 0 .. height
+//            xRange.forEach { x ->
+//                yRange.forEach { y ->
+//                    layer[BlockCoordinate(x,y)] = DEFAULT_DESIRABILITY
+//                }
+//            }
+//        }
 
         return layers
     }

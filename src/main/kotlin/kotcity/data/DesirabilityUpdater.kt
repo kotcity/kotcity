@@ -20,6 +20,7 @@ object DesirabilityUpdater {
     }
 
     private fun updateCommercial(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
+
         desirabilityLayer.keys().forEach { coordinate ->
 
             val distanceToGoods = Pathfinder.pathToNearestTrade(cityMap, listOf(coordinate), 1) { building, qty ->
@@ -35,14 +36,33 @@ object DesirabilityUpdater {
     }
 
     private fun updateIndustrial(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
-        desirabilityLayer.keys().forEach { coordinate ->
+
+        var highest = 0.0
+
+        // ok... we just gotta find each block with an industrial zone...
+        val industryZones = cityMap.zoneLayer.toList().filter { it.second == Zone(ZoneType.INDUSTRIAL) }.map { it.first}
+
+        industryZones.forEach { coordinate ->
 
             val nearestLabor = Pathfinder.pathToNearestLabor(cityMap, listOf(coordinate))?.distance() ?: MAX_DISTANCE
 
             // last step...
-            desirabilityLayer[coordinate] = (MAX_DISTANCE - nearestLabor).toDouble()
-
+            val score = (MAX_DISTANCE - nearestLabor).toDouble()
+            desirabilityLayer[coordinate] = score
+            if (score > highest) {
+                highest = score
+            }
         }
+
+        // now trim any that were not in our zones...
+        val keysToTrim = mutableListOf<BlockCoordinate>()
+        desirabilityLayer.forEach { t, d ->
+            if (!industryZones.contains(t)) {
+                keysToTrim.add(t)
+            }
+        }
+
+        keysToTrim.forEach { desirabilityLayer.remove(it) }
     }
 
     private fun updateResidential(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {

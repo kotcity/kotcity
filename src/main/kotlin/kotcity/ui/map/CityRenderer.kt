@@ -200,10 +200,78 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         drawMap(canvas.graphicsContext2D)
         drawZones()
         drawBuildings(canvas.graphicsContext2D)
-        if (mapMode != MapMode.NORMAL) {
+        if (mapMode == MapMode.SOIL || mapMode == MapMode.COAL || mapMode == MapMode.GOLD || mapMode == MapMode.OIL) {
             drawResources()
+        } else if (mapMode == MapMode.DESIRABILITY) {
+            drawDesirability()
         }
         drawHighlights()
+    }
+
+    private fun drawDesirability() {
+        val (startBlock, endBlock) = visibleBlockRange()
+
+        BlockCoordinate.iterate(startBlock, endBlock) { coord ->
+            val desirabilityScores = map.desirabilityLayers.map {
+                it[coord]
+            }
+
+            val maxDesirability = desirabilityScores.filterNotNull().max() ?: 0.0
+
+            val tx = coord.x - blockOffsetX
+            val ty = coord.y - blockOffsetY
+            val blockSize = blockSize()
+            canvas.graphicsContext2D.fill = desirabilityColor(maxDesirability)
+            canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
+        }
+    }
+
+    private fun interpolateColor(color1:  java.awt.Color, color2: java.awt.Color, fraction: Float): Color {
+        var fraction = fraction
+        val INT_TO_FLOAT_CONST = 1f / 255f
+        fraction = Math.min(fraction, 1f)
+        fraction = Math.max(fraction, 0f)
+
+        val RED1 = (color1.red * INT_TO_FLOAT_CONST).toFloat()
+        val GREEN1 = (color1.green * INT_TO_FLOAT_CONST).toFloat()
+        val BLUE1 = (color1.blue * INT_TO_FLOAT_CONST).toFloat()
+        val ALPHA1 = color1.getAlpha() * INT_TO_FLOAT_CONST
+
+        val RED2 = (color2.red * INT_TO_FLOAT_CONST).toFloat()
+        val GREEN2 = (color2.green * INT_TO_FLOAT_CONST).toFloat()
+        val BLUE2 = (color2.blue * INT_TO_FLOAT_CONST).toFloat()
+        val ALPHA2 = color2.getAlpha() * INT_TO_FLOAT_CONST
+
+        val DELTA_RED = RED2 - RED1
+        val DELTA_GREEN = GREEN2 - GREEN1
+        val DELTA_BLUE = BLUE2 - BLUE1
+        val DELTA_ALPHA = ALPHA2 - ALPHA1
+
+        var red = RED1 + DELTA_RED * fraction
+        var green = GREEN1 + DELTA_GREEN * fraction
+        var blue = BLUE1 + DELTA_BLUE * fraction
+        var alpha = ALPHA1 + DELTA_ALPHA * fraction
+
+        red = Math.min(red, 1f)
+        red = Math.max(red, 0f)
+        green = Math.min(green, 1f)
+        green = Math.max(green, 0f)
+        blue = Math.min(blue, 1f)
+        blue = Math.max(blue, 0f)
+        alpha = Math.min(alpha, 1f)
+        alpha = Math.max(alpha, 0f)
+
+        return Color(red.toDouble(), green.toDouble(), blue.toDouble(), alpha.toDouble())
+    }
+
+    private fun desirabilityColor(desirability: Double): Color {
+        val color1 = java.awt.Color.RED
+        val color2 = java.awt.Color.GREEN
+        // gotta clamp desirability between 0.0f and 1.0f
+        val frac = Algorithms.scale(desirability.coerceAtMost(100.0), 0.00, 100.0, 0.0, 1.0)
+        val newColor = interpolateColor(color1, color2, frac.toFloat())
+        val transparentColor = Color(newColor.red, newColor.green, newColor.blue, 0.5)
+        return transparentColor
     }
 
     private fun resourceLayer(mode: MapMode): QuantizedMap<Double>? {

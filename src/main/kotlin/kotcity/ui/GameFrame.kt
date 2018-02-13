@@ -86,6 +86,7 @@ class GameFrame : View() {
     private val oilMapMode: RadioMenuItem by fxid()
     private val goldMapMode: RadioMenuItem by fxid()
     private val soilMapMode: RadioMenuItem by fxid()
+    private val desirabilityMapMode: RadioMenuItem by fxid()
 
     private val selectedToolLabel: Label by fxid()
     private val cityNameLabel: Label by fxid()
@@ -260,6 +261,10 @@ class GameFrame : View() {
         }
         soilMapMode.setOnAction {
             cityRenderer?.mapMode = MapMode.SOIL
+            cityMapCanvas.mode = MapMode.SOIL
+        }
+        desirabilityMapMode.setOnAction {
+            cityRenderer?.mapMode = MapMode.DESIRABILITY
             cityMapCanvas.mode = MapMode.SOIL
         }
     }
