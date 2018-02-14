@@ -2,7 +2,7 @@ package kotcity.data
 
 import kotcity.pathfinding.Pathfinder
 
-val MAX_DISTANCE = 100
+const val MAX_DISTANCE = 100
 
 object DesirabilityUpdater {
 

@@ -5,6 +5,7 @@ import com.github.davidmoten.rtree.geometry.Geometries
 import com.github.davidmoten.rtree.geometry.Rectangle
 import com.github.debop.javatimes.plus
 import com.github.debop.javatimes.toDateTime
+import kotlinx.coroutines.experimental.async
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -123,16 +124,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 DesirabilityLayer(ZoneType.INDUSTRIAL, 3)
         )
 
-//        layers.forEach { layer ->
-//            val xRange = 0 .. width
-//            val yRange = 0 .. height
-//            xRange.forEach { x ->
-//                yRange.forEach { y ->
-//                    layer[BlockCoordinate(x,y)] = DEFAULT_DESIRABILITY
-//                }
-//            }
-//        }
-
         return layers
     }
 
@@ -205,12 +196,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         time += 1000 * 60
         // println("Ticked to: ${kotcity.ui.serializeDate(time)}")
         if (time.toDateTime().minuteOfHour == 0) {
-            hourlyTick()
+            async {
+                hourlyTick()
+            }
         }
 
     }
 
-    fun hourlyTick() {
+    @Synchronized suspend fun hourlyTick() {
         println("Top of the hour stuff...")
 
         populateZones()

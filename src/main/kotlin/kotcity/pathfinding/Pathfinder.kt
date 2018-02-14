@@ -109,9 +109,13 @@ object Pathfinder {
             destinations: List<BlockCoordinate>
     ): Path? {
 
+        // that first time we can go up to 3 hops away and still work right...
+        val paddedSources = mutableListOf(*source.toTypedArray())
+        paddedSources.addAll(source.toTypedArray().flatMap { it.neighbors(3) }.distinct() )
+
         // switch these to list of navigation nodes...
         val openList = mutableSetOf(*(
-                source.map { NavigationNode(
+                paddedSources.map { NavigationNode(
                         cityMap,
                         it,
                         null,

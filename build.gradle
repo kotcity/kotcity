@@ -34,6 +34,7 @@ dependencies {
     testCompile("org.junit.jupiter:junit-jupiter-api:5.0.0-M4")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.0-M4")
     compile "com.github.debop:koda-time:1.2.1"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21"
 
     // Enable use of the JUnitPlatform Runner within the IDE
     testCompile("org.junit.platform:junit-platform-runner:1.0.0-M4")
@@ -56,4 +57,10 @@ jar {
 
 junitPlatform {
     details 'tree'
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
 }
