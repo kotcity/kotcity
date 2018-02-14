@@ -1,8 +1,11 @@
 package kotcity.data
 
 import kotcity.pathfinding.Pathfinder
+import kotcity.util.getRandomElements
 
 const val MAX_DISTANCE = 100
+
+private const val ZONES_TO_UPDATE = 512
 
 object DesirabilityUpdater {
 
