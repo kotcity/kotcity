@@ -6,7 +6,6 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
 import kotcity.data.BlockCoordinate
-import kotcity.data.Building
 import kotcity.data.CityMap
 import tornadofx.View
 
@@ -48,12 +47,20 @@ class QueryWindow(): View() {
                 city.zoneLayer[coordinate]?.let {
                     buffer.append("Zone: ${it.type}\n")
                 }
+
+                // let's get that desirability...
+                buffer.append("Desirability: ${desirability(city, coordinate)}\n")
+
                 buffer.append("Elevation: ${city.groundLayer[coordinate]?.elevation}\n")
                 buffer.append("Land Value: ???")
                 buildingDescriptionArea.text = buffer.toString()
             }
 
         }
+
+    private fun desirability(map: CityMap, coordinate: BlockCoordinate): Double {
+        return map.desirabilityLayers.maxBy { it[coordinate] ?: 0.0 }?.get(coordinate) ?: 0.0
+    }
 
     fun dismissClicked() {
         println("We want to close...")

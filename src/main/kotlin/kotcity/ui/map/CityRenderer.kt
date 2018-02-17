@@ -8,6 +8,7 @@ import kotcity.data.*
 import kotcity.ui.*
 
 const val MAX_BUILDING_SIZE = 4
+const val DESIRABILITY_CAP: Double = 300.0
 // the coal power plant is the biggest...
 
 class CityRenderer(private val gameFrame: GameFrame, private val canvas: ResizableCanvas, private val map: CityMap) {
@@ -268,7 +269,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         val color1 = java.awt.Color.RED
         val color2 = java.awt.Color.GREEN
         // gotta clamp desirability between 0.0f and 1.0f
-        val frac = Algorithms.scale(desirability.coerceAtMost(100.0), 0.00, 100.0, 0.0, 1.0)
+        val frac = Algorithms.scale(desirability.coerceAtMost(DESIRABILITY_CAP), 0.00, 100.0, 0.0, 1.0)
         val newColor = interpolateColor(color1, color2, frac.toFloat())
         val transparentColor = Color(newColor.red, newColor.green, newColor.blue, 0.5)
         return transparentColor

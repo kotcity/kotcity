@@ -40,10 +40,10 @@ object DesirabilityUpdater {
                     0.0
                 } else {
                     listOf(*availableGoods.toTypedArray(), *availableLabor.toTypedArray()).map {
-                        it.second.toDouble() / it.first.distance()
+                        it.second.toDouble() / (it.first.distance() * 0.1)
                     }.sum()
                 }
-                desirabilityLayer[coordinate] = score * 10
+                desirabilityLayer[coordinate] = score
             }
         }
 
@@ -66,7 +66,7 @@ object DesirabilityUpdater {
                     0.0
                 } else {
                     availableLabor.map {
-                        it.second.toDouble() / it.first.distance()
+                        it.second.toDouble() / (it.first.distance() / 0.1)
                     }.sum()
                 }
                 desirabilityLayer[coordinate] = score * 10
@@ -107,7 +107,7 @@ object DesirabilityUpdater {
                     0.0
                 } else {
                     availableJobs.map {
-                        it.second.toDouble() / it.first.distance()
+                        it.second.toDouble() / ( it.first.distance() / 0.1 )
                     }.sum()
                 }
                 desirabilityLayer[coordinate] = score * 10
