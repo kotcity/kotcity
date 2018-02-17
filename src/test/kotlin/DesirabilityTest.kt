@@ -30,8 +30,14 @@ class DesirabilityTest {
         val slum = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
         map.build(slum, BlockCoordinate(0, 5))
 
+        val slum2 = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
+        map.build(slum, BlockCoordinate(0, 6))
+
         val factory = assetManager.buildingFor(BuildingType.INDUSTRIAL, "small_factory")
         map.build(factory, BlockCoordinate(1, 15))
+
+        val cornerStore = assetManager.buildingFor(BuildingType.COMMERCIAL, "corner_store")
+        map.build(cornerStore, BlockCoordinate(3, 5))
 
         val path = Pathfinder.pathToNearestLabor(map, listOf(BlockCoordinate(3, 10)))
 
@@ -60,6 +66,12 @@ class DesirabilityTest {
 
         val cf = ContactFulfiller(map)
         cf.tick()
+
+        // ok now let's make sure the desirability is actually kosher...
+        DesirabilityUpdater.update(map)
+
+        println(slum.summarizeContracts())
+        println(slum2.summarizeContracts())
 
     }
 }

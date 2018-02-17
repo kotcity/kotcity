@@ -8,9 +8,9 @@ class ContactFulfiller(val cityMap: CityMap) {
             building.consumes.forEach { tradeable, quantity ->
                 val needsCount = building.needs(tradeable)
                 if (needsCount > 0) {
-                    val nearby = ResourceFinder.findSource(cityMap, cityMap.buildingBlocks(coordinate, building),tradeable, needsCount)
+                    val nearby = ResourceFinder.findSource(cityMap, cityMap.buildingBlocks(coordinate, building),tradeable, 1)
                     if (nearby != null) {
-                        building.createContract(nearby, tradeable, needsCount)
+                        building.createContract(nearby, tradeable, 1)
                         println("Signed contract with $building for $needsCount $tradeable")
                         println("New setup: ${building.summarizeContracts()}")
                     } else {

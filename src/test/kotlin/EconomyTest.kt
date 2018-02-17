@@ -1,4 +1,3 @@
-import kotcity.automata.ContactFulfiller
 import kotcity.data.*
 import kotcity.data.assets.AssetManager
 import org.junit.jupiter.api.Test
@@ -9,12 +8,13 @@ class EconomyTest {
         val map = CityMap.flatMap(256,256)
         val assetManager = AssetManager()
         val jobCenter = assetManager.buildingFor(BuildingType.CIVIC, "job_center")
-        assert(jobCenter.sellingQuantity(Tradeable.LABOR) >= 10)
+        assert(jobCenter.quantityForSale(Tradeable.LABOR) >= 2)
         val industrialBuilding = assetManager.buildingFor(BuildingType.INDUSTRIAL, "small_factory")
-        jobCenter.createContract(industrialBuilding, Tradeable.LABOR, 10)
-        assert(jobCenter.sellingQuantity(Tradeable.LABOR) == 0)
+        jobCenter.createContract(industrialBuilding, Tradeable.LABOR, 2)
+        println("Jobcenter: ${jobCenter.quantityForSale(Tradeable.LABOR) }")
+        assert(jobCenter.quantityForSale(Tradeable.LABOR) == 2)
         // now void the contracts...
         jobCenter.voidContractsWith(industrialBuilding)
-        assert(jobCenter.sellingQuantity(Tradeable.LABOR) >= 1)
+        assert(jobCenter.quantityForSale(Tradeable.LABOR) >= 1)
     }
 }

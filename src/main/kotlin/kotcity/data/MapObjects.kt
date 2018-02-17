@@ -56,6 +56,10 @@ abstract class Building {
             summaryBuffer.append("Consumes: ${consumes[it]} $it\n")
         }
 
+        produces.keys.distinct().forEach {
+            summaryBuffer.append("Produces: ${produces[it]} $it\n")
+        }
+
         contracts.forEach {
             // summaryBuffer.append(it.toString() + "\n")
             if (it.to == this) {
@@ -68,13 +72,13 @@ abstract class Building {
         return summaryBuffer.toString()
     }
 
-    fun sellingQuantity(tradeable: Tradeable): Int {
+    fun quantityForSale(tradeable: Tradeable): Int {
         val filter = {contract: Contract -> contract.from }
         val hash = produces
         return calculateAvailable(hash, tradeable, filter)
     }
 
-    fun buyingQuantity(tradeable: Tradeable): Int {
+    fun quantityWanted(tradeable: Tradeable): Int {
         val filter = {contract: Contract -> contract.to }
         val hash = consumes
         return calculateAvailable(hash, tradeable, filter)
@@ -92,8 +96,13 @@ abstract class Building {
 
     fun createContract(otherBuilding: Building, tradeable: Tradeable, quantity: Int) {
         val newContract = Contract(this, otherBuilding, tradeable, quantity)
-        contracts.add(newContract)
-        otherBuilding.addContract(newContract)
+        // TODO: check to make sure we actually have this amount...
+        if (otherBuilding.quantityForSale(tradeable) >= newContract.quantity) {
+            contracts.add(newContract)
+            otherBuilding.addContract(newContract)
+        } else {
+            println("Tried to make an invalid contract: $newContract but failed because ${this.name} doesn't have enough $tradeable")
+        }
     }
 
     fun voidContractsWith(otherBuilding: Building, reciprocate: Boolean = true) {
