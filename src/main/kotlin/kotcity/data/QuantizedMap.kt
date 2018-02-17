@@ -34,6 +34,10 @@ open class QuantizedMap<T>(val quantize: Int = 4) {
         return map.map(function)
     }
 
+    fun maxBy(function: (Map.Entry<BlockCoordinate, T>) -> Double): Map.Entry<BlockCoordinate, T>? {
+        return map.maxBy { function(it) }
+    }
+
     fun clone(): QuantizedMap<T> {
         val newMap = QuantizedMap<T>(quantize = this.quantize)
         map.forEach { t, u ->

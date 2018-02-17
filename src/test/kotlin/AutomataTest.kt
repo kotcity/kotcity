@@ -27,7 +27,7 @@ class AutomataTest {
 
         map.buildPowerline(powerlineStart, powerlineEnd)
 
-        map.hourlyTick()
+        map.hourlyTick(0)
 
     }
 }

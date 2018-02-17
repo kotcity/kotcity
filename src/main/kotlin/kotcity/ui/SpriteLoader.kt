@@ -8,7 +8,15 @@ import kotcity.data.BuildingType
 object SpriteLoader {
 
     private fun uncachedSpriteForBuildingType(building: Building, width: Double, height: Double): Image? {
-        var filename = when (building.type) {
+        var filename = filename(building)
+        if (filename != null) {
+            return Image(filename, width, height, true, false)
+        }
+        throw RuntimeException("Could not find a sprite for: $building")
+    }
+
+    fun filename(building: Building): String {
+        return when (building.type) {
             BuildingType.POWER_PLANT -> powerPlantSprite(building)
             BuildingType.COMMERCIAL -> "file:./assets/commercial/${building.sprite}"
             BuildingType.RESIDENTIAL -> "file:./assets/residential/${building.sprite}"
@@ -17,10 +25,6 @@ object SpriteLoader {
             BuildingType.CIVIC -> "file:./assets/civic/${building.sprite}"
             else -> throw RuntimeException("Unknown sprite for ${building.type}")
         }
-        if (filename != null) {
-            return Image(filename, width, height, true, false)
-        }
-        throw RuntimeException("Could not find a sprite for: $building")
     }
 
     private fun powerPlantSprite(building: Building): String {

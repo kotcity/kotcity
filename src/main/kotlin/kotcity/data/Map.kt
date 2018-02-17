@@ -5,6 +5,7 @@ import com.github.davidmoten.rtree.geometry.Geometries
 import com.github.davidmoten.rtree.geometry.Rectangle
 import com.github.debop.javatimes.plus
 import com.github.debop.javatimes.toDateTime
+import kotcity.automata.Constructor
 import kotcity.automata.DesirabilityUpdater
 import kotcity.automata.PowerCoverageUpdater
 import kotlinx.coroutines.experimental.async
@@ -108,10 +109,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val buildingLayer = mutableMapOf<BlockCoordinate, Building>()
     val zoneLayer = mutableMapOf<BlockCoordinate, Zone>()
     val powerLineLayer = mutableMapOf<BlockCoordinate, Building>()
-
     val resourceLayers = mutableMapOf<String, QuantizedMap<Double>>()
-
     val desirabilityLayers = initializeDesirabilityLayers()
+
+    val constructor = Constructor(this)
 
     private fun initializeDesirabilityLayers(): List<DesirabilityLayer> {
 
@@ -218,6 +219,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     @Synchronized fun hourlyTick(hour: Int) {
         println("Top of the hour stuff...")
 
+        constructor.tick()
+
         if (hour % 6 == 0) {
             val startMillis = System.currentTimeMillis()
             DesirabilityUpdater.update(this)
@@ -273,7 +276,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return waterFound
     }
 
-    private fun canBuildBuildingAt(newBuilding: Building, coordinate: BlockCoordinate, waterCheck: Boolean = true): Boolean {
+    fun canBuildBuildingAt(newBuilding: Building, coordinate: BlockCoordinate, waterCheck: Boolean = true): Boolean {
 
         // OK... let's get nearby buildings to really cut this down...
         val newBuildingEnd = BlockCoordinate(coordinate.x + newBuilding.width - 1, coordinate.y + newBuilding.height - 1)

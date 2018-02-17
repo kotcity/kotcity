@@ -5,6 +5,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import kotcity.data.*
 import kotcity.data.BuildingType.*
+import kotcity.ui.SpriteLoader
 import java.io.FileReader
 import java.nio.file.FileSystems
 import java.nio.file.Files
@@ -89,12 +90,20 @@ class AssetManager {
         lb.width = buildingJson["width"].asInt
         lb.height = buildingJson["height"].asInt
         lb.sprite = buildingJson["sprite"].asString
+        checkSprite(lb)
         lb.description = buildingJson["description"].asString
         lb.level = buildingJson["level"].asInt
         if (buildingJson.has("upkeep")) {
             lb.upkeep = buildingJson["upkeep"].asInt
         }
         populateProduction(lb, buildingJson)
+    }
+
+    private fun checkSprite(loadableBuilding: LoadableBuilding) {
+        if (loadableBuilding.sprite == null || loadableBuilding.sprite == "") {
+            throw RuntimeException("Could not load sprite for $loadableBuilding")
+        }
+        SpriteLoader.filename(loadableBuilding)
     }
 
     private fun populateProduction(lb: LoadableBuilding, buildingJson: JsonObject) {
