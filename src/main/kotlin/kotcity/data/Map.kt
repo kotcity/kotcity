@@ -206,18 +206,17 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val self = this
         if (time.toDateTime().minuteOfHour == 0) {
 
+            val hour = time.toDateTime().hourOfDay
             async {
-                hourlyTick()
+                hourlyTick(hour)
             }
 
         }
 
     }
 
-    @Synchronized fun hourlyTick() {
+    @Synchronized fun hourlyTick(hour: Int) {
         println("Top of the hour stuff...")
-
-        val hour = time.toDateTime().hourOfDay
 
         if (hour % 6 == 0) {
             val startMillis = System.currentTimeMillis()
@@ -226,8 +225,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             val totalTime = endMillis - startMillis
             println("Desirability calc took $totalTime millis")
         }
-
-
 
         println("Hour is: $hour")
         if (hour == 0) {
