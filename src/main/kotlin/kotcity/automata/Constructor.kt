@@ -63,11 +63,11 @@ class Constructor(val cityMap: CityMap) {
                     done = true
                     cityMap.build(newBuilding, fuzzedCoordinate)
                 }
-                tries++
             } else {
                 println("$fuzzedCoordinate didn't have any desirable blocks...")
             }
-            
+            tries++
+
         }
     }
 

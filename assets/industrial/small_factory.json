@@ -10,11 +10,10 @@
   "production": {
       "consumes": {
           "labor": 1,
-          "raw_materials": 1,
-          "money": 1
+          "raw_materials": 1
       },
       "produces": {
-          "goods": 1
+          "wholesale_goods": 1
       }
   }
 }

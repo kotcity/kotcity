@@ -1,3 +1,4 @@
+import kotcity.automata.ContactFulfiller
 import kotcity.automata.DesirabilityUpdater
 import kotcity.data.*
 import kotcity.data.assets.AssetManager
@@ -56,6 +57,9 @@ class DesirabilityTest {
             }
             assertTrue(nonDefaultFound, "Error setting desirability for $zt")
         }
+
+        val cf = ContactFulfiller(map)
+        cf.tick()
 
     }
 }

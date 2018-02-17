@@ -6,6 +6,7 @@ import com.github.davidmoten.rtree.geometry.Rectangle
 import com.github.debop.javatimes.plus
 import com.github.debop.javatimes.toDateTime
 import kotcity.automata.Constructor
+import kotcity.automata.ContactFulfiller
 import kotcity.automata.DesirabilityUpdater
 import kotcity.automata.PowerCoverageUpdater
 import kotlinx.coroutines.experimental.async
@@ -113,6 +114,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val desirabilityLayers = initializeDesirabilityLayers()
 
     val constructor = Constructor(this)
+    val contractFulfiller = ContactFulfiller(this)
 
     private fun initializeDesirabilityLayers(): List<DesirabilityLayer> {
 
@@ -218,44 +220,26 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     @Synchronized fun hourlyTick(hour: Int) {
         println("Top of the hour stuff...")
-
-        constructor.tick()
+        println("Hour is: $hour")
 
         if (hour % 6 == 0) {
-            val startMillis = System.currentTimeMillis()
-            DesirabilityUpdater.update(this)
-            val endMillis = System.currentTimeMillis()
-            val totalTime = endMillis - startMillis
-            println("Desirability calc took $totalTime millis")
+            timeFunction("Desirability") { DesirabilityUpdater.update(this) }
+            constructor.tick()
+            timeFunction("ContractFulfiller") { contractFulfiller.tick() }
         }
 
-        println("Hour is: $hour")
         if (hour == 0) {
             println("Top of the day stuff...")
-            populateZones()
-
             PowerCoverageUpdater.update(this)
-
         }
     }
 
-    private fun populateZones() {
-        // what we want to do here is find an empty residential zone and toss a house in...
-        // we will add smarts later to make sure it makes sense...
-//        val houseToBuild = SmallHouse()
-//        findEmptyZone(houseToBuild, ZoneType.RESIDENTIAL)?.let {
-//            build(houseToBuild, it)
-//        }
-//
-//        val cornerStoreToBuild = CornerStore()
-//        findEmptyZone(cornerStoreToBuild, ZoneType.COMMERCIAL)?.let {
-//            build(cornerStoreToBuild, it)
-//        }
-//
-//        val workshopToBuild = Workshop()
-//        findEmptyZone(workshopToBuild, ZoneType.INDUSTRIAL)?.let {
-//            build(workshopToBuild, it)
-//        }
+    private fun timeFunction(desc: String, timedFunction: () -> Unit) {
+        val startMillis = System.currentTimeMillis()
+        val endMillis = System.currentTimeMillis()
+        timedFunction()
+        val totalTime = endMillis - startMillis
+        println("$desc calc took $totalTime millis")
     }
 
     private fun findEmptyZone(building: Building, zoneType: ZoneType): BlockCoordinate? {

@@ -37,6 +37,10 @@ class QueryWindow(): View() {
                         val filename = "file:./assets/misc/unknown.png"
                         buildingImageView.image = Image(filename, 64.0, 64.0, true, false)
                     }
+                    val contractSummary = building.summarizeContracts()
+                    if (contractSummary != "") {
+                        buffer.append(contractSummary)
+                    }
                 } else {
                     this.title = "Inspecting Terrain"
                     buildingNameLabel.text = "Inspecting Terrain"
@@ -53,6 +57,7 @@ class QueryWindow(): View() {
 
                 buffer.append("Elevation: ${city.groundLayer[coordinate]?.elevation}\n")
                 buffer.append("Land Value: ???")
+
                 buildingDescriptionArea.text = buffer.toString()
             }
 

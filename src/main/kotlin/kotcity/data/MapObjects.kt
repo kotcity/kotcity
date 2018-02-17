@@ -16,7 +16,8 @@ enum class Tradeable {
     MONEY,
     GOODS,
     LABOR,
-    RAW_MATERIALS
+    RAW_MATERIALS,
+    WHOLESALE_GOODS
 }
 
 data class Contract(
@@ -24,7 +25,13 @@ data class Contract(
         val from: Building,
         val tradeable: Tradeable,
         val quantity: Int
-)
+
+
+) {
+    override fun toString(): String {
+        return "Contract(to=${to.name} from=${from.name} tradeable=$tradeable quantity=$quantity)"
+    }
+}
 
 abstract class Building {
     abstract var width: Int
@@ -40,6 +47,26 @@ abstract class Building {
     val produces: MutableMap<Tradeable, Int> = mutableMapOf()
     open var upkeep: Int = 0
     private val contracts: MutableList<Contract> = mutableListOf()
+
+    fun summarizeContracts(): String {
+        val summaryBuffer = StringBuffer()
+
+        val tradeables = consumes.keys.distinct()
+        tradeables.forEach {
+            summaryBuffer.append("Consumes: ${consumes[it]} $it\n")
+        }
+
+        contracts.forEach {
+            // summaryBuffer.append(it.toString() + "\n")
+            if (it.to == this) {
+                summaryBuffer.append("Receiving ${it.quantity} ${it.tradeable} from ${it.from.name}\n")
+            }
+            if (it.from == this) {
+                summaryBuffer.append("Sending ${it.quantity} ${it.tradeable} to ${it.to.name}\n")
+            }
+        }
+        return summaryBuffer.toString()
+    }
 
     fun sellingQuantity(tradeable: Tradeable): Int {
         val filter = {contract: Contract -> contract.from }
@@ -59,15 +86,33 @@ abstract class Building {
         return inventoryCount - contractCount
     }
 
-    fun createContract(to: Building, tradeable: Tradeable, quantity: Int) {
-        contracts.add(Contract(to, this, tradeable, quantity))
-        contracts.add(Contract(this, to, tradeable, -quantity))
+    private fun addContract(contract: Contract) {
+        this.contracts.add(contract)
     }
 
-    fun voidContractsWith(otherBuilding: Building) {
+    fun createContract(otherBuilding: Building, tradeable: Tradeable, quantity: Int) {
+        val newContract = Contract(this, otherBuilding, tradeable, quantity)
+        contracts.add(newContract)
+        otherBuilding.addContract(newContract)
+    }
+
+    fun voidContractsWith(otherBuilding: Building, reciprocate: Boolean = true) {
         contracts.removeAll {
             it.to == otherBuilding || it.from == otherBuilding
         }
+        if (reciprocate) {
+            otherBuilding.voidContractsWith(this, false)
+        }
+    }
+
+    fun needs(tradeable: Tradeable): Int {
+        val requiredCount = consumes[tradeable] ?: 0
+        println("Building requires $requiredCount $tradeable")
+        val contractCount = contracts.filter { it.to == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+        println("Same building has $contractCount $tradeable being received")
+        val balance = requiredCount - contractCount
+        println("That means we need $balance $tradeable")
+        return balance
     }
 }
 
