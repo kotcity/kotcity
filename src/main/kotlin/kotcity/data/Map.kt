@@ -205,11 +205,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         // println("Ticked to: ${kotcity.ui.serializeDate(time)}")
         val self = this
         if (time.toDateTime().minuteOfHour == 0) {
-            synchronized(self) {
-                async {
-                    hourlyTick()
-                }
+
+            async {
+                hourlyTick()
             }
+
         }
 
     }
@@ -218,13 +218,24 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         println("Top of the hour stuff...")
 
         val hour = time.toDateTime().hourOfDay
+
+        if (hour % 6 == 0) {
+            val startMillis = System.currentTimeMillis()
+            DesirabilityUpdater.update(this)
+            val endMillis = System.currentTimeMillis()
+            val totalTime = endMillis - startMillis
+            println("Desirability calc took $totalTime millis")
+        }
+
+
+
         println("Hour is: $hour")
         if (hour == 0) {
             println("Top of the day stuff...")
             populateZones()
 
             PowerCoverageUpdater.update(this)
-            DesirabilityUpdater.update(this)
+
         }
     }
 

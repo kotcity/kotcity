@@ -105,6 +105,16 @@ object Pathfinder {
         return Math.abs(start.x-destination.x) + Math.abs(start.y-destination.y).toDouble()
     }
 
+    fun nearbyRoad(cityMap: CityMap, sourceBlocks: List<BlockCoordinate>, distance: Int = 3): Boolean {
+        sourceBlocks.forEach {
+            val nearbyRoads = cityMap.nearestBuildings(it, distance.toFloat())
+            if (nearbyRoads.count() > 0) {
+                return true
+            }
+        }
+        return false
+    }
+
     private fun drivable(cityMap: CityMap, node: NavigationNode): Boolean {
         // make sure we got a road under it...
         return cityMap.buildingLayer[node.coordinate]?.type == BuildingType.ROAD

@@ -1,6 +1,7 @@
 package kotcity.automata
 
 import kotcity.data.*
+import kotcity.pathfinding.Path
 import kotcity.pathfinding.Pathfinder
 
 const val MAX_DISTANCE = 100
@@ -29,18 +30,24 @@ object DesirabilityUpdater {
 
         commercialZones.forEach { coordinate ->
 
-            val availableGoods = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.GOODS, listOf(coordinate), MAX_DISTANCE)
-            val availableLabor = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
+            if (!Pathfinder.nearbyRoad(cityMap, listOf(coordinate))) {
+                desirabilityLayer[coordinate] = 0.0
+            } else {
+                val availableGoods = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.GOODS, listOf(coordinate), MAX_DISTANCE)
+                val availableLabor = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
 
-            val score = listOf(*availableGoods.toTypedArray(), *availableLabor.toTypedArray()).map {
-                it.second.toDouble() / it.first.distance()
-            }.sum()
-
-            desirabilityLayer[coordinate] = score
+                val score = if (availableGoods.count() == 0 || availableLabor.count() == 0) {
+                    0.0
+                } else {
+                    listOf(*availableGoods.toTypedArray(), *availableLabor.toTypedArray()).map {
+                        it.second.toDouble() / it.first.distance()
+                    }.sum()
+                }
+                desirabilityLayer[coordinate] = score * 10
+            }
         }
 
         trimDesirabilityLayer(desirabilityLayer, commercialZones)
-
     }
 
     private fun updateIndustrial(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
@@ -50,13 +57,20 @@ object DesirabilityUpdater {
 
         industryZones.forEach { coordinate ->
 
-            val availableLabor = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
+            if (!Pathfinder.nearbyRoad(cityMap, listOf(coordinate))) {
+                desirabilityLayer[coordinate] = 0.0
+            } else {
+                val availableLabor = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
 
-            val score = availableLabor.map {
-                it.second.toDouble() / it.first.distance()
-            }.sum()
-
-            desirabilityLayer[coordinate] = score.toDouble()
+                val score = if (availableLabor.count() == 0) {
+                    0.0
+                } else {
+                    availableLabor.map {
+                        it.second.toDouble() / it.first.distance()
+                    }.sum()
+                }
+                desirabilityLayer[coordinate] = score * 10
+            }
         }
 
         trimDesirabilityLayer(desirabilityLayer, industryZones)
@@ -84,9 +98,20 @@ object DesirabilityUpdater {
 
         val residentialZones = zoneCoordinates(cityMap, ZoneType.RESIDENTIAL)
         residentialZones.forEach { coordinate ->
-            val nearestJob = Pathfinder.pathToNearestJob(cityMap, listOf(coordinate))?.distance() ?: MAX_DISTANCE
-            val desirabilityScore = (MAX_DISTANCE - nearestJob).toDouble()
-            desirabilityLayer[coordinate] = desirabilityScore
+            if (!Pathfinder.nearbyRoad(cityMap, listOf(coordinate))) {
+                desirabilityLayer[coordinate] = 0.0
+            } else {
+                val availableJobs = ResourceFinder.nearbyBuyingTradeable(cityMap, Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
+
+                val score = if (availableJobs.count() == 0) {
+                    0.0
+                } else {
+                    availableJobs.map {
+                        it.second.toDouble() / it.first.distance()
+                    }.sum()
+                }
+                desirabilityLayer[coordinate] = score * 10
+            }
         }
 
         trimDesirabilityLayer(desirabilityLayer, residentialZones)

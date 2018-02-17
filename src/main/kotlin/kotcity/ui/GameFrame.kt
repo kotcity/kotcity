@@ -319,7 +319,7 @@ class GameFrame : View() {
                 runLater {
                     if (!pauseMenuItem.isSelected) {
                         map.tick()
-                        clockLabel.text = "Clock: ${serializeDate(map.time)}"
+                        clockLabel.text = "${serializeDate(map.time)}"
                     }
                 }
             }
