@@ -18,7 +18,10 @@ class Constructor(val cityMap: CityMap) {
 
     fun tick() {
         // find most desirable place to stick an industrial zone...
-        val blockAndScore = cityMap.desirabilityLayer(ZoneType.INDUSTRIAL, 1)
+
+        val layer = cityMap.desirabilityLayer(ZoneType.INDUSTRIAL, 1) ?: return
+
+        val blockAndScore = layer
                 ?.entries()?.filter { filterOccupied(it) }
                 ?.maxBy { it.value }
         if (blockAndScore == null) {
@@ -38,20 +41,33 @@ class Constructor(val cityMap: CityMap) {
         }
 
         // let's try like X times...
-        tryToBuild(coordinate, newBuilding)
+        tryToBuild(coordinate, newBuilding, layer)
     }
 
-    private fun tryToBuild(coordinate: BlockCoordinate, newBuilding: Building) {
+    private fun tryToBuild(coordinate: BlockCoordinate, newBuilding: Building, layer: DesirabilityLayer) {
         var tries = 0
         var done = false
         while (tries < maxTries && !done) {
             val fuzzedCoordinate: BlockCoordinate = fuzz(coordinate)
-            println("Trying to build $newBuilding at $fuzzedCoordinate")
-            if (cityMap.canBuildBuildingAt(newBuilding, fuzzedCoordinate)) {
-                done = true
-                cityMap.build(newBuilding, fuzzedCoordinate)
+
+            // ok... desirability STILL has to be above 0...
+            val buildingBlocks = cityMap.buildingBlocks(fuzzedCoordinate, newBuilding)
+            // ok, each proposed block has to have desirability > 0
+            val desirabilityScores = buildingBlocks.map { layer[it] ?: 0.0 }
+
+            val acceptableDesirability = desirabilityScores.all { it > 0.0 }
+
+            if (acceptableDesirability) {
+                println("Trying to build $newBuilding at $fuzzedCoordinate")
+                if (cityMap.canBuildBuildingAt(newBuilding, fuzzedCoordinate)) {
+                    done = true
+                    cityMap.build(newBuilding, fuzzedCoordinate)
+                }
+                tries++
+            } else {
+                println("$fuzzedCoordinate didn't have any desirable blocks...")
             }
-            tries++
+            
         }
     }
 
