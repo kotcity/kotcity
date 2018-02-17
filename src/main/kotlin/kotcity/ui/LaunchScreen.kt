@@ -31,7 +31,7 @@ class LaunchScreen : View() {
     fun loadCityPressed() {
         val launchScreen = this
         runLater {
-            CityLoader.loadCity(launchScreen.primaryStage)
+            CityLoader.loadCity(launchScreen)
         }
     }
 

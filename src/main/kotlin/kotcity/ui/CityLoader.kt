@@ -8,11 +8,11 @@ import tornadofx.runLater
 import java.io.File
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.Alert
-
+import tornadofx.View
 
 
 object CityLoader {
-    fun loadCity(stage: Stage) {
+    fun loadCity(view: View) {
         val fileChooser = FileChooser()
         fileChooser.title = "Load a city"
         // fileChooser.initialDirectory = File(System.getProperty("user.home"))
@@ -20,7 +20,7 @@ object CityLoader {
                 FileChooser.ExtensionFilter("KotCity Data", "*.kcity")
         )
         runLater {
-            val file = fileChooser.showOpenDialog(stage)
+            val file = fileChooser.showOpenDialog(view.currentStage)
             if (file != null) {
                 val map = CityFileAdapter.load(file)
                 val gameFrame = tornadofx.find(GameFrame::class)
@@ -29,6 +29,7 @@ object CityLoader {
                 gameFrame.openWindow()
                 println("Gameframe should be open at this point...")
                 gameFrame.currentStage?.isMaximized = true
+                view.close()
             } else {
                 val alert = Alert(AlertType.ERROR)
                 alert.title = "Error during load"

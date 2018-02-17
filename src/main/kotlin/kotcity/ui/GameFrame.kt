@@ -271,7 +271,7 @@ class GameFrame : View() {
 
     fun loadCityPressed() {
         this.currentStage?.close()
-        CityLoader.loadCity(this.primaryStage)
+        CityLoader.loadCity(this)
         title = "$GAME_STRING - ${map.cityName}"
     }
 
