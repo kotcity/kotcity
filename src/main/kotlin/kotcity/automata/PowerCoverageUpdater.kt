@@ -1,4 +1,6 @@
-package kotcity.data
+package kotcity.automata
+
+import kotcity.data.*
 
 object PowerCoverageUpdater {
     fun update(map: CityMap) {

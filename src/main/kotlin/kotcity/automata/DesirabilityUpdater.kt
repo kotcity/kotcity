@@ -1,7 +1,7 @@
-package kotcity.data
+package kotcity.automata
 
+import kotcity.data.*
 import kotcity.pathfinding.Pathfinder
-import kotcity.util.getRandomElements
 
 const val MAX_DISTANCE = 100
 
@@ -29,15 +29,14 @@ object DesirabilityUpdater {
 
         commercialZones.forEach { coordinate ->
 
-            val distanceToGoods = Pathfinder.pathToNearestTrade(cityMap, listOf(coordinate), 1) { building, qty ->
-                building.sellingTradeable(Tradeable.GOODS, 1)
-            }?.distance() ?: MAX_DISTANCE
+            val availableGoods = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.GOODS, listOf(coordinate), MAX_DISTANCE)
+            val availableLabor = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
 
-            val distanceToLabor = Pathfinder.pathToNearestTrade(cityMap, listOf(coordinate), 1) { building, qty ->
-                building.sellingTradeable(Tradeable.LABOR, 1)
-            }?.distance() ?: MAX_DISTANCE
+            val score = listOf(*availableGoods.toTypedArray(), *availableLabor.toTypedArray()).map {
+                it.second.toDouble() / it.first.distance()
+            }.sum()
 
-            desirabilityLayer[coordinate] = (MAX_DISTANCE - distanceToGoods - distanceToLabor).toDouble()
+            desirabilityLayer[coordinate] = score
         }
 
         trimDesirabilityLayer(desirabilityLayer, commercialZones)
@@ -51,11 +50,13 @@ object DesirabilityUpdater {
 
         industryZones.forEach { coordinate ->
 
-            val nearestLabor = Pathfinder.pathToNearestLabor(cityMap, listOf(coordinate))?.distance() ?: MAX_DISTANCE
+            val availableLabor = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
 
-            // last step...
-            val score = (MAX_DISTANCE - nearestLabor).toDouble()
-            desirabilityLayer[coordinate] = score
+            val score = availableLabor.map {
+                it.second.toDouble() / it.first.distance()
+            }.sum()
+
+            desirabilityLayer[coordinate] = score.toDouble()
         }
 
         trimDesirabilityLayer(desirabilityLayer, industryZones)

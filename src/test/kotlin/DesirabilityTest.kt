@@ -1,3 +1,4 @@
+import kotcity.automata.DesirabilityUpdater
 import kotcity.data.*
 import kotcity.data.assets.AssetManager
 import kotcity.pathfinding.Pathfinder

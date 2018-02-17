@@ -5,6 +5,8 @@ import com.github.davidmoten.rtree.geometry.Geometries
 import com.github.davidmoten.rtree.geometry.Rectangle
 import com.github.debop.javatimes.plus
 import com.github.debop.javatimes.toDateTime
+import kotcity.automata.DesirabilityUpdater
+import kotcity.automata.PowerCoverageUpdater
 import kotlinx.coroutines.experimental.async
 import java.text.SimpleDateFormat
 import java.util.*
@@ -112,7 +114,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val desirabilityLayers = initializeDesirabilityLayers()
 
     private fun initializeDesirabilityLayers(): List<DesirabilityLayer> {
-        val layers = listOf(
+
+        return listOf(
                 DesirabilityLayer(ZoneType.RESIDENTIAL, 1),
                 DesirabilityLayer(ZoneType.RESIDENTIAL, 2),
                 DesirabilityLayer(ZoneType.RESIDENTIAL, 3),
@@ -123,8 +126,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 DesirabilityLayer(ZoneType.INDUSTRIAL, 2),
                 DesirabilityLayer(ZoneType.INDUSTRIAL, 3)
         )
-
-        return layers
     }
 
     var time = defaultTime()
@@ -139,6 +140,13 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val mapMinElevation = groundLayer.values.mapNotNull { it.elevation }.min() ?: 0.0
         val mapMaxElevation = groundLayer.values.mapNotNull { it.elevation }.max() ?: 0.0
         return Pair(mapMinElevation, mapMaxElevation)
+    }
+
+
+    fun buildingBlocks(coordinate: BlockCoordinate, building: Building): List<BlockCoordinate> {
+        val xRange = coordinate.x .. coordinate.x + (building.width - 1)
+        val yRange = coordinate.y .. coordinate.y + (building.height - 1)
+        return xRange.flatMap { x -> yRange.map { BlockCoordinate(x, it) } }
     }
 
     private fun roadBlocks(startBlock: BlockCoordinate, endBlock: BlockCoordinate): MutableList<BlockCoordinate> {

@@ -1,4 +1,8 @@
-package kotcity.data
+package kotcity.automata
+
+import kotcity.data.BlockCoordinate
+import kotcity.data.CityMap
+import kotcity.data.PowerPlant
 
 class PowerCoverageAutomata(
         coordinate: BlockCoordinate,

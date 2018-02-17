@@ -21,6 +21,7 @@ enum class Tradeable {
 
 data class Contract(
         val to: Building,
+        val from: Building,
         val tradeable: Tradeable,
         val quantity: Int
 )
@@ -40,34 +41,32 @@ abstract class Building {
     open var upkeep: Int = 0
     private val contracts: MutableList<Contract> = mutableListOf()
 
-    fun buyingTradeable(tradeable: Tradeable, quantity: Int): Boolean {
-        val buyingCount = consumes[tradeable] ?: return false
-
-        val contractCount = contracts.filter {
-            it.tradeable == tradeable
-        }.map { it.quantity }.sum()
-
-        return (buyingCount - contractCount) >= quantity
+    fun sellingQuantity(tradeable: Tradeable): Int {
+        val filter = {contract: Contract -> contract.from }
+        val hash = produces
+        return calculateAvailable(hash, tradeable, filter)
     }
 
-    fun sellingTradeable(tradeable: Tradeable, quantity: Int): Boolean {
-        // OK... what we want to do here is figure out what we provide...
-        val produceCount = produces[tradeable] ?: return false
+    fun buyingQuantity(tradeable: Tradeable): Int {
+        val filter = {contract: Contract -> contract.to }
+        val hash = consumes
+        return calculateAvailable(hash, tradeable, filter)
+    }
 
-        val contractCount = contracts.filter {
-            it.tradeable == tradeable
-        }.map { it.quantity }.sum()
-
-        return (produceCount - contractCount) >= quantity
+    private fun calculateAvailable(hash: MutableMap<Tradeable, Int>, tradeable: Tradeable, filter: (Contract) -> Building): Int {
+        val inventoryCount = hash[tradeable] ?: 0
+        val contractCount = contracts.filter { filter(it) == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+        return inventoryCount - contractCount
     }
 
     fun createContract(to: Building, tradeable: Tradeable, quantity: Int) {
-        contracts.add(Contract(to, tradeable, quantity))
+        contracts.add(Contract(to, this, tradeable, quantity))
+        contracts.add(Contract(this, to, tradeable, -quantity))
     }
 
-    fun voidContractsWith(to: Building) {
+    fun voidContractsWith(otherBuilding: Building) {
         contracts.removeAll {
-            it.to == to
+            it.to == otherBuilding || it.from == otherBuilding
         }
     }
 }
