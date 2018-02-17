@@ -168,7 +168,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun nearestBuildings(coordinate: BlockCoordinate, distance: Float = 10f): List<Pair<BlockCoordinate, Building>> {
-        val point = Geometries.point(coordinate.x.toFloat(), coordinate.y.toFloat())
+        val point = Geometries.rectangle(coordinate.x.toFloat(), coordinate.y.toFloat(),coordinate.x.toFloat()+1, coordinate.y.toFloat()+1)
         return buildingIndex.search(point, distance.toDouble())
                 .toBlocking().toIterable().mapNotNull { entry ->
             // println("Found entry: $entry")

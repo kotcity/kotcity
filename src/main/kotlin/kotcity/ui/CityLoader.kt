@@ -29,7 +29,8 @@ object CityLoader {
                 gameFrame.openWindow()
                 println("Gameframe should be open at this point...")
                 gameFrame.currentStage?.isMaximized = true
-                view.close()
+                val launchScreen = find(LaunchScreen::class)
+                launchScreen.close()
             } else {
                 val alert = Alert(AlertType.ERROR)
                 alert.title = "Error during load"

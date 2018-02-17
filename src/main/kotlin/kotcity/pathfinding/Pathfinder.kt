@@ -107,7 +107,7 @@ object Pathfinder {
 
     fun nearbyRoad(cityMap: CityMap, sourceBlocks: List<BlockCoordinate>, distance: Int = 3): Boolean {
         sourceBlocks.forEach {
-            val nearbyRoads = cityMap.nearestBuildings(it, distance.toFloat())
+            val nearbyRoads = cityMap.nearestBuildings(it, distance.toFloat()).filter { it.second.type == BuildingType.ROAD}
             if (nearbyRoads.count() > 0) {
                 return true
             }
