@@ -115,8 +115,8 @@ abstract class Building {
     }
 
     fun needs(tradeable: Tradeable): Int {
-        val requiredCount = consumes[tradeable] ?: 0
-        println("Building requires $requiredCount $tradeable")
+        val requiredCount = consumes[tradeable] ?: return 0
+        println("${this.name} requires $requiredCount $tradeable")
         val contractCount = contracts.filter { it.to == this && it.tradeable == tradeable }.map { it.quantity }.sum()
         println("Same building has $contractCount $tradeable being received")
         val balance = requiredCount - contractCount

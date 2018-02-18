@@ -222,7 +222,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         println("Top of the hour stuff...")
         println("Hour is: $hour")
 
-        if (hour % 6 == 0) {
+        if (hour % 3 == 0) {
             timeFunction("Desirability") { DesirabilityUpdater.update(this) }
             constructor.tick()
             timeFunction("ContractFulfiller") { contractFulfiller.tick() }
@@ -236,8 +236,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     private fun timeFunction(desc: String, timedFunction: () -> Unit) {
         val startMillis = System.currentTimeMillis()
-        val endMillis = System.currentTimeMillis()
         timedFunction()
+        val endMillis = System.currentTimeMillis()
         val totalTime = endMillis - startMillis
         println("$desc calc took $totalTime millis")
     }
@@ -306,7 +306,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     private fun collisionWarning(errorMessage: String, newBuilding: Building, coordinate: BlockCoordinate, building: Building, otherCoordinate: BlockCoordinate) {
-        println("$errorMessage -> $newBuilding at $coordinate: collision with $building at $otherCoordinate!")
+        println("$errorMessage -> ${newBuilding.name} at $coordinate: collision with ${building.name} at $otherCoordinate!")
     }
 
     fun buildRoad(from: BlockCoordinate, to: BlockCoordinate) {

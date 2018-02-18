@@ -31,7 +31,7 @@ class DesirabilityTest {
         map.build(slum, BlockCoordinate(0, 5))
 
         val slum2 = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
-        map.build(slum, BlockCoordinate(0, 6))
+        map.build(slum, BlockCoordinate(0, 7))
 
         val factory = assetManager.buildingFor(BuildingType.INDUSTRIAL, "small_factory")
         map.build(factory, BlockCoordinate(1, 15))
@@ -64,14 +64,15 @@ class DesirabilityTest {
             assertTrue(nonDefaultFound, "Error setting desirability for $zt")
         }
 
+        assertTrue(slum.quantityForSale(Tradeable.LABOR) == 2, "Has no labor...")
         val cf = ContactFulfiller(map)
         cf.tick()
 
         // ok now let's make sure the desirability is actually kosher...
         DesirabilityUpdater.update(map)
 
-        println(slum.summarizeContracts())
-        println(slum2.summarizeContracts())
+        assertTrue(slum.quantityForSale(Tradeable.LABOR) == 0, "Has no labor...")
+        assertTrue(slum2.quantityForSale(Tradeable.LABOR) == 2, "Has no labor...")
 
     }
 }

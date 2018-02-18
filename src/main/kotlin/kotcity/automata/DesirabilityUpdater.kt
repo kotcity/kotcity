@@ -33,10 +33,10 @@ object DesirabilityUpdater {
             if (!Pathfinder.nearbyRoad(cityMap, listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
-                val availableGoods = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.GOODS, listOf(coordinate), MAX_DISTANCE)
+                val availableGoods = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.WHOLESALE_GOODS, listOf(coordinate), MAX_DISTANCE)
                 val availableLabor = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
 
-                val score = if (availableGoods.count() == 0 || availableLabor.count() == 0) {
+                val score = if (availableGoods.count() == 0) {
                     0.0
                 } else {
                     listOf(*availableGoods.toTypedArray(), *availableLabor.toTypedArray()).map {

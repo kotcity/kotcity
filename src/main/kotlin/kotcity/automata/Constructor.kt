@@ -17,34 +17,33 @@ class Constructor(val cityMap: CityMap) {
     }
 
     fun tick() {
-        // find most desirable place to stick an industrial zone...
+        repeat(3, {
+            val zoneTypes = listOf(ZoneType.INDUSTRIAL, ZoneType.COMMERCIAL, ZoneType.RESIDENTIAL)
+            zoneTypes.forEach { zoneType ->
+                val layer = cityMap.desirabilityLayer(zoneType, 1) ?: return
 
-        val zoneTypes = listOf(ZoneType.INDUSTRIAL, ZoneType.COMMERCIAL, ZoneType.RESIDENTIAL)
-        zoneTypes.forEach { zoneType ->
-            val layer = cityMap.desirabilityLayer(zoneType, 1) ?: return
+                val blockAndScore = layer
+                        ?.entries()?.filter { isEmpty(it) }.filter { it.value > 0}
+                        ?.maxBy { it.value }
+                if (blockAndScore == null) {
+                    println("Could not find most desirable $zoneType zone!")
+                } else {
+                    println("We will be trying to build at ${blockAndScore.key} with desirability ${blockAndScore.value}")
+                    val coordinate = blockAndScore.key
+                    val desirability = blockAndScore.value
+                    val newBuilding = findBuilding(zoneType, desirability)
+                    if (newBuilding != null) {
+                        println("The building to be attempted is: $newBuilding")
+                        // let's try like X times...
+                        tryToBuild(coordinate, newBuilding, layer)
+                    } else {
+                        println("Sorry, no building could be found for $zoneType and $desirability")
+                    }
+                    
+                }
 
-            val blockAndScore = layer
-                    ?.entries()?.filter { isEmpty(it) }.filter { it.value > 0}
-                    ?.maxBy { it.value }
-            if (blockAndScore == null) {
-                println("Could not find most desirable industrial zone!")
-                return
-            } else {
-                println("We will be trying to build at ${blockAndScore.key} with desirability ${blockAndScore.value}")
             }
-            val coordinate = blockAndScore.key
-            val desirability = blockAndScore.value
-            val newBuilding = findBuilding(zoneType, desirability)
-            if (newBuilding != null) {
-                println("The building to be attempted is: $newBuilding")
-            } else {
-                println("Sorry, no building could be found for $zoneType and $desirability")
-                return
-            }
-
-            // let's try like X times...
-            tryToBuild(coordinate, newBuilding, layer)
-        }
+        })
     }
 
     private fun tryToBuild(coordinate: BlockCoordinate, newBuilding: Building, layer: DesirabilityLayer) {

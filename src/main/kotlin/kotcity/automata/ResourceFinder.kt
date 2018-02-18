@@ -57,6 +57,7 @@ object ResourceFinder {
             if (path == null) {
                 null
             } else {
+                // println("${coordAndBuilding.second.name} is ${path.distance()} away from ${sourceBlocks} and has $tradeable")
                 Pair(path, coordAndBuilding.second.quantityWanted(tradeable))
             }
         }

@@ -157,7 +157,7 @@ object Pathfinder {
             // look within 3 nodes of here... (we can jump 3 nodes...
             val neighbors = activeNode.coordinate.neighbors(3)
 
-            if (destinations.contains(activeNode.coordinate) || neighbors.contains(activeNode.coordinate)) {
+            if (destinations.contains(activeNode.coordinate) || destinations.any { neighbors.contains(it) }) {
                 done = true
                 lastNode = activeNode
             }
