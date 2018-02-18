@@ -16,5 +16,6 @@ class EconomyTest {
         // now void the contracts...
         jobCenter.voidContractsWith(industrialBuilding)
         assert(jobCenter.quantityForSale(Tradeable.LABOR) >= 1)
+        map.tick()
     }
 }

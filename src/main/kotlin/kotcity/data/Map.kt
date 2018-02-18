@@ -5,10 +5,7 @@ import com.github.davidmoten.rtree.geometry.Geometries
 import com.github.davidmoten.rtree.geometry.Rectangle
 import com.github.debop.javatimes.plus
 import com.github.debop.javatimes.toDateTime
-import kotcity.automata.Constructor
-import kotcity.automata.ContactFulfiller
-import kotcity.automata.DesirabilityUpdater
-import kotcity.automata.PowerCoverageUpdater
+import kotcity.automata.*
 import kotlinx.coroutines.experimental.async
 import java.text.SimpleDateFormat
 import java.util.*
@@ -111,6 +108,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     private val constructor = Constructor(this)
     private val contractFulfiller = ContactFulfiller(this)
+    private val manufacturer = Manufacturer(this)
 
     private var doingHourly: Boolean = false
 
@@ -220,6 +218,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 timeFunction("Constructing Buildings") {constructor.tick() }
                 timeFunction("Signing Contracts") { contractFulfiller.signContracts() }
                 timeFunction("Terminating Random Contracts") { contractFulfiller.terminateRandomContracts() }
+                timeFunction("Doing Manufacturing") { manufacturer.tick() }
             }
 
             if (hour == 0) {

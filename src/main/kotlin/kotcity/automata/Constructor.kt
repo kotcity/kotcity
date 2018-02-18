@@ -11,6 +11,7 @@ class Constructor(val cityMap: CityMap) {
     val assetManager = AssetManager(cityMap)
     val random = Random()
     val maxTries = 30
+    private val DEFAULT_MONEY = 10
 
     fun isEmpty(entry: MutableMap.MutableEntry<BlockCoordinate, Double>): Boolean {
         return cityMap.buildingsIn(entry.key).count() == 0

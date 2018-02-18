@@ -4,6 +4,9 @@ import kotcity.data.CityMap
 import kotcity.util.getRandomElements
 
 class ContactFulfiller(val cityMap: CityMap) {
+
+    var debug = false
+
     fun signContracts() {
         cityMap.buildingLayer.forEach { coordinate, building ->
             building.consumes.forEach { tradeable, _ ->
@@ -11,13 +14,19 @@ class ContactFulfiller(val cityMap: CityMap) {
                 if (needsCount > 0) {
                     val nearby = ResourceFinder.findSource(cityMap, cityMap.buildingBlocks(coordinate, building),tradeable, 1)
                     if (nearby != null) {
-                        // println()
+                        if (debug) {
+                            println()
+                        }
                         building.createContract(nearby, tradeable, 1)
-                        // println("${building.name}: Signed contract with ${nearby.name} for 1 $tradeable")
-                        // println("${building.name} now requires ${building.needs(tradeable)} $tradeable")
-                        // println("New setup: ${building.summarizeContracts()}")
+                        if (debug) {
+                            println("${building.name}: Signed contract with ${nearby.name} for 1 $tradeable")
+                            println("${building.name} now requires ${building.needs(tradeable)} $tradeable")
+                            println("New setup: ${building.summarizeContracts()}")
+                        }
                     } else {
-                        println("Could not find $needsCount $tradeable for ${building.name} at $coordinate")
+                        if (debug) {
+                            println("Could not find $needsCount $tradeable for ${building.name} at $coordinate")
+                        }
                     }
                 }
             }

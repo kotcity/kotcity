@@ -1,5 +1,6 @@
 import kotcity.automata.ContactFulfiller
 import kotcity.automata.DesirabilityUpdater
+import kotcity.automata.Manufacturer
 import kotcity.data.*
 import kotcity.data.assets.AssetManager
 import kotcity.pathfinding.Pathfinder
@@ -66,13 +67,20 @@ class DesirabilityTest {
 
         assertTrue(slum.quantityForSale(Tradeable.LABOR) == 2, "Has no labor...")
         val cf = ContactFulfiller(map)
+        cf.debug = true
         cf.signContracts()
 
         // ok now let's make sure the desirability is actually kosher...
         DesirabilityUpdater.update(map)
 
-        assertTrue(slum.quantityForSale(Tradeable.LABOR) == 2, "Expected 0 labor but has: ${slum.quantityForSale(Tradeable.LABOR)} labor...")
+        assertTrue(slum.quantityForSale(Tradeable.LABOR) == 0, "Expected 0 labor but has: ${slum.quantityForSale(Tradeable.LABOR)} labor...")
         assertTrue(slum2.quantityForSale(Tradeable.LABOR) == 2, "Expected 0 labor but has: ${slum2.quantityForSale(Tradeable.LABOR)} labor...")
+
+        assertTrue(factory.supplyCount(Tradeable.LABOR) > 0, "Expected factory to have labor but has none...")
+
+        val manufacturer = Manufacturer(map)
+        manufacturer.debug = true
+        manufacturer.tick()
 
     }
 }

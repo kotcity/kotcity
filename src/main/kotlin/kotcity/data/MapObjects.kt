@@ -36,6 +36,32 @@ data class Contract(
     }
 }
 
+class Inventory {
+    private val inventory : MutableMap<Tradeable, Int> = mutableMapOf()
+
+    fun add(tradeable: Tradeable, quantity: Int): Int {
+        val onHand = inventory.getOrDefault(tradeable, 0)
+        inventory[tradeable] = onHand + quantity
+        return inventory[tradeable] ?: 0
+    }
+
+    fun subtract(tradeable: Tradeable, quantity: Int): Int {
+        val onHand = inventory.getOrDefault(tradeable, 0)
+        inventory[tradeable] = onHand - quantity
+        return inventory[tradeable] ?: 0
+    }
+
+    fun has(tradeable: Tradeable, quantity: Int): Boolean {
+        return inventory.getOrDefault(tradeable, 0) >= quantity
+    }
+
+    fun quantity(tradeable: Tradeable): Int {
+        return inventory.getOrDefault(tradeable, 0)
+    }
+}
+
+const val DEFAULT_MONEY = 10
+
 abstract class Building(private val cityMap: CityMap) {
     abstract var width: Int
     abstract var height: Int
@@ -50,6 +76,16 @@ abstract class Building(private val cityMap: CityMap) {
     val produces: MutableMap<Tradeable, Int> = mutableMapOf()
     open var upkeep: Int = 0
     val contracts: MutableList<Contract> = mutableListOf()
+    private val inventory: Inventory = Inventory()
+
+    init {
+        // everyone gets 10 dollars...
+        addInventory(Tradeable.MONEY, DEFAULT_MONEY)
+    }
+
+    fun balance(): Int {
+        return inventory.quantity(Tradeable.MONEY)
+    }
 
     fun summarizeContracts(): String {
         val summaryBuffer = StringBuffer()
@@ -106,7 +142,7 @@ abstract class Building(private val cityMap: CityMap) {
         }
         val ourLocation = Location(ourBlocks, this)
         val theirLocation = Location(theirBlocks, otherBuilding)
-        val newContract = Contract(theirLocation, ourLocation, tradeable, quantity)
+        val newContract = Contract(ourLocation, theirLocation, tradeable, quantity)
         if (otherBuilding.quantityForSale(tradeable) >= newContract.quantity) {
             contracts.add(newContract)
             otherBuilding.addContract(newContract)
@@ -134,6 +170,43 @@ abstract class Building(private val cityMap: CityMap) {
         if (contracts.count() > 0) {
             val contractToKill = contracts.getRandomElement()
             voidContractsWith(contractToKill.to.building)
+        }
+    }
+
+    fun supplyCount(tradeable: Tradeable): Int {
+        return contracts.filter { it.to.building == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+    }
+
+    fun productList(): List<Tradeable> {
+        return produces.keys.distinct()
+    }
+
+    fun addInventory(tradeable: Tradeable, quantity: Int): Int {
+        return inventory.add(tradeable, quantity)
+    }
+
+    fun subtractInventory(tradeable: Tradeable, quantity: Int): Int {
+        if (inventory.has(tradeable, quantity)) {
+            return inventory.subtract(tradeable, quantity)
+        }
+        return 0
+    }
+
+    fun transferInventory(to: Location, tradeable: Tradeable, quantity: Int): Int {
+        if (inventory.has(tradeable, quantity)) {
+            inventory.subtract(tradeable, quantity)
+            to.building.addInventory(tradeable, quantity)
+            return quantity
+        }
+        return 0
+    }
+
+    fun payWorkers() {
+        val workContracts = contracts.filter { it.to.building == this && it.tradeable == Tradeable.LABOR }
+        workContracts.forEach { contract ->
+            if (inventory.has(Tradeable.MONEY, 1)) {
+                transferInventory(contract.from, Tradeable.MONEY, 1)
+            }
         }
     }
 }

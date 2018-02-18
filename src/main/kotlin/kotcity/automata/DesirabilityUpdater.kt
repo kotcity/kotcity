@@ -1,14 +1,12 @@
 package kotcity.automata
 
 import kotcity.data.*
-import kotcity.pathfinding.Path
 import kotcity.pathfinding.Pathfinder
 
-const val MAX_DISTANCE = 100
-
-private const val ZONES_TO_UPDATE = 512
 
 object DesirabilityUpdater {
+
+    private const val MAX_DISTANCE = 100
 
     fun update(cityMap: CityMap) {
         // let's update the desirability...
@@ -22,8 +20,6 @@ object DesirabilityUpdater {
                     ZoneType.COMMERCIAL -> updateCommercial(cityMap, desirabilityLayer)
                 }
             }
-
-
 
         }
     }
