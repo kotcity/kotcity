@@ -22,20 +22,21 @@ enum class Tradeable {
     WHOLESALE_GOODS
 }
 
+data class Location(val coordinate: BlockCoordinate, val building: Building)
+
 data class Contract(
-        val to: Building,
-        val from: Building,
+        val to: Location,
+        val from: Location,
         val tradeable: Tradeable,
         val quantity: Int
 
-
 ) {
     override fun toString(): String {
-        return "Contract(to=${to.name} from=${from.name} tradeable=$tradeable quantity=$quantity)"
+        return "Contract(to=${to.building.description} from=${from.building.description} tradeable=$tradeable quantity=$quantity)"
     }
 }
 
-abstract class Building {
+abstract class Building(private val cityMap: CityMap) {
     abstract var width: Int
     abstract var height: Int
     abstract var type: BuildingType
@@ -64,25 +65,25 @@ abstract class Building {
 
         contracts.forEach {
             // summaryBuffer.append(it.toString() + "\n")
-            if (it.to == this) {
-                summaryBuffer.append("Receiving ${it.quantity} ${it.tradeable} from ${it.from.name}\n")
+            if (it.to.building == this) {
+                summaryBuffer.append("Receiving ${it.quantity} ${it.tradeable} from ${it.from.building.description}\n")
             }
-            if (it.from == this) {
-                summaryBuffer.append("Sending ${it.quantity} ${it.tradeable} to ${it.to.name}\n")
+            if (it.from.building == this) {
+                summaryBuffer.append("Sending ${it.quantity} ${it.tradeable} to ${it.to.building.description}\n")
             }
         }
         return summaryBuffer.toString()
     }
 
     fun quantityForSale(tradeable: Tradeable): Int {
-        val filter = {contract: Contract -> contract.from }
+        val filter = {contract: Contract -> contract.from.building }
         val hash = produces
         return calculateAvailable(hash, tradeable, filter)
     }
 
     fun quantityWanted(tradeable: Tradeable): Int {
         val inventoryCount = consumes[tradeable] ?: 0
-        val contractCount = contracts.filter { it.to == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+        val contractCount = contracts.filter { it.to.building == this && it.tradeable == tradeable }.map { it.quantity }.sum()
         return inventoryCount - contractCount
     }
 
@@ -97,7 +98,11 @@ abstract class Building {
     }
 
     fun createContract(otherBuilding: Building, tradeable: Tradeable, quantity: Int) {
-        val newContract = Contract(this, otherBuilding, tradeable, quantity)
+        val ourBlocks = cityMap.coordinatesForBuilding(this) ?: return
+        val theirBlocks = cityMap.coordinatesForBuilding(otherBuilding) ?: return
+        val ourLocation = Location(ourBlocks, this)
+        val theirLocation = Location(theirBlocks, otherBuilding)
+        val newContract = Contract(ourLocation, theirLocation, tradeable, quantity)
         // TODO: check to make sure we actually have this amount...
         if (otherBuilding.quantityForSale(tradeable) >= newContract.quantity) {
             contracts.add(newContract)
@@ -109,7 +114,7 @@ abstract class Building {
 
     fun voidContractsWith(otherBuilding: Building, reciprocate: Boolean = true) {
         contracts.removeAll {
-            it.to == otherBuilding || it.from == otherBuilding
+            it.to.building == otherBuilding || it.from.building == otherBuilding
         }
         if (reciprocate) {
             otherBuilding.voidContractsWith(this, false)
@@ -118,35 +123,24 @@ abstract class Building {
 
     fun needs(tradeable: Tradeable): Int {
         val requiredCount = consumes[tradeable] ?: return 0
-        println("${this.name} requires $requiredCount $tradeable")
-        val contractCount = contracts.filter { it.to == this && it.tradeable == tradeable }.map { it.quantity }.sum()
-        println("Same building has $contractCount $tradeable being received")
-        val balance = requiredCount - contractCount
-        println("That means we need $balance $tradeable")
-        return balance
+        val contractCount = contracts.filter { it.to.building == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+        return requiredCount - contractCount
     }
 
     fun voidRandomContract() {
         if (contracts.count() > 0) {
             val contractToKill = contracts.getRandomElement()
-            voidContractsWith(contractToKill.to)
+            voidContractsWith(contractToKill.to.building)
         }
     }
 }
 
-class Road : Building() {
-    override var width = 1
-    override var height = 1
-    override var type = BuildingType.ROAD
-    override var description: String? = "Road"
-}
-
-class PowerPlant : Building {
+open class PowerPlant : Building {
 
     override val variety: String
     var powerGenerated: Int = 0
 
-    constructor(variety: String) : super() {
+    constructor(variety: String, cityMap: CityMap) : super(cityMap) {
         if (!POWER_PLANT_TYPES.contains(variety)) {
             throw RuntimeException("Invalid power plant type: $variety")
         }
@@ -163,7 +157,14 @@ class PowerPlant : Building {
     override var height = 4
 }
 
-class PowerLine : Building() {
+class Road(cityMap: CityMap) : Building(cityMap) {
+    override var width = 1
+    override var height = 1
+    override var type = BuildingType.ROAD
+    override var description: String? = "Road"
+}
+
+class PowerLine(cityMap: CityMap) : Building(cityMap) {
     override var type: BuildingType = BuildingType.POWER_LINE
     override var width = 1
     override var height = 1
@@ -171,7 +172,7 @@ class PowerLine : Building() {
     override var description: String? = "Power Line"
 }
 
-class LoadableBuilding: Building() {
+class LoadableBuilding(cityMap: CityMap) : Building(cityMap) {
     var level: Int = 1
     override var height: Int = 1
     override var width: Int = 1

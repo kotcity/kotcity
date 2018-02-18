@@ -1,18 +1,21 @@
 
+import kotcity.data.CityMap
 import kotcity.data.assets.AssetManager
 import org.junit.jupiter.api.Test
 
 class AssetManagerTest {
     @Test
     fun testassetManagerScan() {
-        val assetManager = AssetManager()
+        val flatMap = CityMap.flatMap(128, 128)
+        val assetManager = AssetManager(flatMap)
         val resources = assetManager.findResources()
         assert(resources.count() > 0)
     }
 
     @Test
     fun testAllAssets() {
-        val assetManager = AssetManager()
+        val flatMap = CityMap.flatMap(128, 128)
+        val assetManager = AssetManager(flatMap)
         assetManager.all().forEach { building ->
             println("Loaded asset: ${building.name}")
             println("Produces: ${building.produces}")

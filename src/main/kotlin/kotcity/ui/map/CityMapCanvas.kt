@@ -112,7 +112,7 @@ class CityMapCanvas: ResizableCanvas() {
 
     private fun renderResources() {
         this.map?.let { map ->
-            this.mode?.let { mode ->
+            this.mode.let { mode ->
                 val layer = when(mode) {
                     MapMode.COAL -> map.resourceLayers["coal"]
                     MapMode.OIL -> map.resourceLayers["oil"]

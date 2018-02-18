@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test
 class ConstructorTest {
     @Test
     fun constructorTest() {
-        val assetManager = AssetManager()
+        val flatMap = CityMap.flatMap(128, 128)
+        val assetManager = AssetManager(flatMap)
         val all = assetManager.all()
         assert(all.count() > 0)
         val industrial = all.filter { it.type == BuildingType.INDUSTRIAL }

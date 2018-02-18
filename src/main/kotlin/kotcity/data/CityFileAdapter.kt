@@ -22,8 +22,6 @@ fun serializeDate(date: Date): String {
     return simpleDateFormat.format(date)
 }
 
-val assetManager = AssetManager()
-
 val gson = GsonBuilder()
         .registerTypeAdapter<CityMap> {
 
@@ -107,7 +105,7 @@ private fun readPowerlineLayer(data: JsonObject, cityMap: CityMap) {
     data["powerLineLayer"].asJsonArray.forEach {
         var x = it["x"].asInt
         var y = it["y"].asInt
-        cityMap.powerLineLayer[BlockCoordinate(x, y)] = PowerLine()
+        cityMap.powerLineLayer[BlockCoordinate(x, y)] = PowerLine(cityMap)
     }
 }
 
@@ -144,6 +142,7 @@ private fun readDesirabilityLayers(data: JsonObject, cityMap: CityMap) {
 }
 
 private fun readBuildingLayer(data: JsonObject, cityMap: CityMap) {
+    val assetManager = AssetManager(cityMap)
     data["buildingLayer"].asJsonArray.forEach {
         val buildingObj = it.asJsonObject
         var x = it["x"].asInt
@@ -162,8 +161,8 @@ private fun readBuildingLayer(data: JsonObject, cityMap: CityMap) {
             cityMap.buildingLayer[BlockCoordinate(x, y)] = building
         } else {
             val building = when (type) {
-                BuildingType.ROAD -> Road()
-                BuildingType.POWER_PLANT -> PowerPlant(it["variety"].asString)
+                BuildingType.ROAD -> Road(cityMap)
+                BuildingType.POWER_PLANT -> PowerPlant(it["variety"].asString, cityMap)
 
                 else -> throw RuntimeException("Unknown building: $it")
             }

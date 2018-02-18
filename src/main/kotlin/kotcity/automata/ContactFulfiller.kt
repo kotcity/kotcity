@@ -6,7 +6,7 @@ import kotcity.util.getRandomElements
 class ContactFulfiller(val cityMap: CityMap) {
     fun signContracts() {
         cityMap.buildingLayer.forEach { coordinate, building ->
-            building.consumes.forEach { tradeable, quantity ->
+            building.consumes.forEach { tradeable, _ ->
                 val needsCount = building.needs(tradeable)
                 if (needsCount > 0) {
                     val nearby = ResourceFinder.findSource(cityMap, cityMap.buildingBlocks(coordinate, building),tradeable, 1)
@@ -25,14 +25,13 @@ class ContactFulfiller(val cityMap: CityMap) {
     }
 
     fun terminateRandomContracts() {
-        // be chatotic and kill 3 contracts...
+        // be chaotic and kill 3 contracts...
         cityMap.buildingLayer.keys.toList().getRandomElements(3)?.forEach { block ->
             val buildings = cityMap.buildingsIn(block)
             val blockAndBuilding = buildings.toList().getRandomElements(1)?.first()
             if (blockAndBuilding != null) {
-                val coord = blockAndBuilding.first
                 val building = blockAndBuilding.second
-                val contracts = building.voidRandomContract()
+                building.voidRandomContract()
             }
         }
     }

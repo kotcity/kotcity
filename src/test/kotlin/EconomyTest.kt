@@ -6,7 +6,7 @@ class EconomyTest {
     @Test
     fun economyTest() {
         val map = CityMap.flatMap(256,256)
-        val assetManager = AssetManager()
+        val assetManager = AssetManager(map)
         val jobCenter = assetManager.buildingFor(BuildingType.CIVIC, "job_center")
         assert(jobCenter.quantityForSale(Tradeable.LABOR) >= 2)
         val industrialBuilding = assetManager.buildingFor(BuildingType.INDUSTRIAL, "small_factory")

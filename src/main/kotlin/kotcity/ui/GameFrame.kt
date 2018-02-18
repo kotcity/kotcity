@@ -18,6 +18,7 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.ButtonBar.ButtonData
 import javafx.scene.layout.BorderPane
+import kotcity.data.assets.AssetManager
 import kotcity.ui.map.CityMapCanvas
 import kotcity.ui.map.CityRenderer
 import tornadofx.runLater
@@ -104,6 +105,7 @@ class GameFrame : View() {
     private var renderTimer: AnimationTimer? = null
     private var gameTickTimer: Timer = Timer()
     private var gameTickTask: TimerTask? = null
+    private lateinit var assetManager: AssetManager
 
     var activeTool: Tool = Tool.QUERY
         set(value) {
@@ -114,18 +116,19 @@ class GameFrame : View() {
     private lateinit var map: CityMap
     private var cityRenderer: CityRenderer? = null
 
-    fun setMap(map: CityMap) {
-        this.map = map
-        cityMapCanvas.map = map
+    fun setMap(cityMap: CityMap) {
+        this.map = cityMap
+        cityMapCanvas.map = cityMap
+        this.assetManager = AssetManager(cityMap)
         // gotta resize the component now...
         setScrollbarSizes()
         setCanvasSize()
         initComponents()
-        title = "$GAME_STRING - ${map.cityName}"
-        cityNameLabel.text = map.cityName
-        this.cityRenderer = CityRenderer(this, canvas, map)
+        title = "$GAME_STRING - ${cityMap.cityName}"
+        cityNameLabel.text = cityMap.cityName
+        this.cityRenderer = CityRenderer(this, canvas, cityMap)
         this.cityRenderer?.addPanListener { visibleBlockRange ->
-            println("We have moved the map around. Telling the minimal to highlight: $visibleBlockRange")
+            println("We have moved the cityMap around. Telling the minimal to highlight: $visibleBlockRange")
             this.cityMapCanvas.visibleBlockRange = visibleBlockRange
         }
         this.cityMapCanvas.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
@@ -294,7 +297,7 @@ class GameFrame : View() {
             override fun handle(now: Long) {
                 if (ticks == TICK_DELAY) {
                     cityRenderer?.render()
-                    cityMapCanvas?.render()
+                    cityMapCanvas.render()
                     ticks = 0
                 }
                 ticks++
@@ -422,13 +425,13 @@ class GameFrame : View() {
                     cityRenderer?.getHoveredBlock()?.let {
                         val newX = it.x - 1
                         val newY = it.y - 1
-                        map.build(PowerPlant("coal"), BlockCoordinate(newX, newY))
+                        map.build(PowerPlant("coal", map), BlockCoordinate(newX, newY))
                     }
                 } else if (activeTool == Tool.NUCLEAR_POWER_PLANT) {
                     cityRenderer?.getHoveredBlock()?.let {
                         val newX = it.x - 1
                         val newY = it.y - 1
-                        map.build(PowerPlant("nuclear"), BlockCoordinate(newX, newY))
+                        map.build(PowerPlant("nuclear", map), BlockCoordinate(newX, newY))
                     }
                 } else if (activeTool == Tool.JOB_CENTER) {
                     cityRenderer?.getHoveredBlock()?.let {

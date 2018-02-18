@@ -8,7 +8,7 @@ import java.util.*
 
 class Constructor(val cityMap: CityMap) {
 
-    val assetManager = AssetManager()
+    val assetManager = AssetManager(cityMap)
     val random = Random()
     val maxTries = 30
 
@@ -22,16 +22,14 @@ class Constructor(val cityMap: CityMap) {
             zoneTypes.forEach { zoneType ->
                 val layer = cityMap.desirabilityLayer(zoneType, 1) ?: return
 
-                val blockAndScore = layer
-                        ?.entries()?.filter { isEmpty(it) }.filter { it.value > 0}
-                        ?.maxBy { it.value }
+                val blockAndScore = layer.entries().filter { isEmpty(it) }.filter { it.value > 0}.maxBy { it.value }
                 if (blockAndScore == null) {
                     println("Could not find most desirable $zoneType zone!")
                 } else {
                     println("We will be trying to build at ${blockAndScore.key} with desirability ${blockAndScore.value}")
                     val coordinate = blockAndScore.key
                     val desirability = blockAndScore.value
-                    val newBuilding = findBuilding(zoneType, desirability)
+                    val newBuilding = findBuilding(zoneType)
                     if (newBuilding != null) {
                         println("The building to be attempted is: $newBuilding")
                         // let's try like X times...
@@ -92,7 +90,7 @@ class Constructor(val cityMap: CityMap) {
     }
 
     // TODO: use desirability later...
-    private fun findBuilding(zoneType: ZoneType, desirability: Double): Building? {
+    private fun findBuilding(zoneType: ZoneType): Building? {
         return assetManager.all().filter { it.type == zoneTypeToBuildingType(zoneType) }.getRandomElements(1)?.first()
     }
 }

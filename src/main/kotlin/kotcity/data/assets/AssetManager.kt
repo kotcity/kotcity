@@ -13,7 +13,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.stream.Collectors.toList
 
-class AssetManager {
+class AssetManager(val cityMap: CityMap) {
 
     private val directories = listOf("residential", "commercial", "industrial", "civic")
 
@@ -41,7 +41,7 @@ class AssetManager {
         return directories.map { dir ->
             assetsInDir(dir).map { assetFile ->
                 val buildingJson = gson.fromJson<JsonElement>(FileReader(assetFile)).asJsonObject
-                val lb = LoadableBuilding()
+                val lb = LoadableBuilding(cityMap)
                 lb.name = buildingJson["name"].asString
                 buildingJson["type"].asString.let {
                     lb.type = when(it) {
@@ -68,7 +68,7 @@ class AssetManager {
 
         val buildingJson = gson.fromJson<JsonObject>(FileReader(assetFile))
 
-        val lb = LoadableBuilding()
+        val lb = LoadableBuilding(cityMap)
         lb.name = name
         lb.type = buildingType
         // OK let's populate the rest...

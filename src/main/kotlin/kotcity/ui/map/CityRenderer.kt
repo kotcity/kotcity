@@ -119,7 +119,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     fun onMouseReleased(evt: MouseEvent) {
-        this.mouseDown = false
+        this.mouseDown = evt.isPrimaryButtonDown
     }
 
     fun onMouseDragged(evt: MouseEvent) {
@@ -228,30 +228,30 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     private fun interpolateColor(color1:  java.awt.Color, color2: java.awt.Color, fraction: Float): Color {
-        var fraction = fraction
-        val INT_TO_FLOAT_CONST = 1f / 255f
-        fraction = Math.min(fraction, 1f)
-        fraction = Math.max(fraction, 0f)
+        var colorFraction = fraction
+        val intToFloatConst = 1f / 255f
+        colorFraction = Math.min(colorFraction, 1f)
+        colorFraction = Math.max(colorFraction, 0f)
 
-        val RED1 = (color1.red * INT_TO_FLOAT_CONST).toFloat()
-        val GREEN1 = (color1.green * INT_TO_FLOAT_CONST).toFloat()
-        val BLUE1 = (color1.blue * INT_TO_FLOAT_CONST).toFloat()
-        val ALPHA1 = color1.getAlpha() * INT_TO_FLOAT_CONST
+        val red1 = (color1.red * intToFloatConst)
+        val green1 = (color1.green * intToFloatConst)
+        val blue1 = (color1.blue * intToFloatConst)
+        val alpha1 = color1.alpha * intToFloatConst
 
-        val RED2 = (color2.red * INT_TO_FLOAT_CONST).toFloat()
-        val GREEN2 = (color2.green * INT_TO_FLOAT_CONST).toFloat()
-        val BLUE2 = (color2.blue * INT_TO_FLOAT_CONST).toFloat()
-        val ALPHA2 = color2.getAlpha() * INT_TO_FLOAT_CONST
+        val red2 = (color2.red * intToFloatConst)
+        val green2 = (color2.green * intToFloatConst)
+        val blue2 = (color2.blue * intToFloatConst)
+        val alpha2 = color2.alpha * intToFloatConst
 
-        val DELTA_RED = RED2 - RED1
-        val DELTA_GREEN = GREEN2 - GREEN1
-        val DELTA_BLUE = BLUE2 - BLUE1
-        val DELTA_ALPHA = ALPHA2 - ALPHA1
+        val deltaRed = red2 - red1
+        val deltaGreen = green2 - green1
+        val deltaBlue = blue2 - blue1
+        val deltaAlpha = alpha2 - alpha1
 
-        var red = RED1 + DELTA_RED * fraction
-        var green = GREEN1 + DELTA_GREEN * fraction
-        var blue = BLUE1 + DELTA_BLUE * fraction
-        var alpha = ALPHA1 + DELTA_ALPHA * fraction
+        var red = red1 + deltaRed * colorFraction
+        var green = green1 + deltaGreen * colorFraction
+        var blue = blue1 + deltaBlue * colorFraction
+        var alpha = alpha1 + deltaAlpha * colorFraction
 
         red = Math.min(red, 1f)
         red = Math.max(red, 0f)
@@ -435,19 +435,14 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                     context.fill = Color.BLACK
                     context.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
                 }
-                is PowerPlant -> {
-                    // need that sprite...
-                    val type = BuildingType.POWER_PLANT
-                    drawBuildingType(building, type, tx, ty)
-                }
-                is Building -> {
-                    drawBuildingType(building, building.type, tx, ty)
+                else -> {
+                    drawBuildingType(building, tx, ty)
                 }
             }
         }
     }
 
-    private fun drawBuildingType(building: Building, type: BuildingType, tx: Double, ty: Double) {
+    private fun drawBuildingType(building: Building, tx: Double, ty: Double) {
         val blockSize = blockSize()
         val width = building.width * blockSize
         val height = building.height * blockSize

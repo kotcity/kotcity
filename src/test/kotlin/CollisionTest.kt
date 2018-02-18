@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test
 class CollisionTest {
     @Test
     fun collisionTest() {
-        val assetManager = AssetManager()
         val map = CityMap.flatMap(512, 512)
+        val assetManager = AssetManager(map)
         val slum1 = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
         val slum2 = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
         val slum3 = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")

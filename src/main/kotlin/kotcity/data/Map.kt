@@ -113,21 +113,17 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val resourceLayers = mutableMapOf<String, QuantizedMap<Double>>()
     val desirabilityLayers = initializeDesirabilityLayers()
 
-    val constructor = Constructor(this)
-    val contractFulfiller = ContactFulfiller(this)
+    private val constructor = Constructor(this)
+    private val contractFulfiller = ContactFulfiller(this)
+
+    private var doingHourly: Boolean = false
 
     private fun initializeDesirabilityLayers(): List<DesirabilityLayer> {
 
         return listOf(
                 DesirabilityLayer(ZoneType.RESIDENTIAL, 1),
-                DesirabilityLayer(ZoneType.RESIDENTIAL, 2),
-                DesirabilityLayer(ZoneType.RESIDENTIAL, 3),
                 DesirabilityLayer(ZoneType.COMMERCIAL, 1),
-                DesirabilityLayer(ZoneType.COMMERCIAL, 2),
-                DesirabilityLayer(ZoneType.COMMERCIAL, 3),
-                DesirabilityLayer(ZoneType.INDUSTRIAL, 1),
-                DesirabilityLayer(ZoneType.INDUSTRIAL, 2),
-                DesirabilityLayer(ZoneType.INDUSTRIAL, 3)
+                DesirabilityLayer(ZoneType.INDUSTRIAL, 1)
         )
     }
 
@@ -157,13 +153,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         if (Math.abs(startBlock.x - endBlock.x) > Math.abs(startBlock.y - endBlock.y)) {
             // going horizontally...
             (startBlock.x .. endBlock.x).reorder().forEach { x ->
-                // println("adding block for $x, ${startBlock.y}")
                 blockList.add(BlockCoordinate(x, startBlock.y))
             }
         } else {
             // going vertically...
             (startBlock.y .. endBlock.y).reorder().forEach { y ->
-                // println("adding block for ${startBlock.x},$y")
                 blockList.add(BlockCoordinate(startBlock.x, y))
             }
         }
@@ -174,9 +168,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val point = Geometries.rectangle(coordinate.x.toFloat(), coordinate.y.toFloat(),coordinate.x.toFloat()+1, coordinate.y.toFloat()+1)
         return buildingIndex.search(point, distance.toDouble())
                 .toBlocking().toIterable().mapNotNull { entry ->
-            // println("Found entry: $entry")
-            val geometry = entry.geometry() as Rectangle
-            val building = entry.value() as Building
+            val geometry = entry.geometry()
+            val building = entry.value()
             if (geometry != null && building != null) {
                 Pair(BlockCoordinate(geometry.x1().toInt(), geometry.y1().toInt()), building)
             } else {
@@ -205,8 +198,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     fun tick() {
         time += 1000 * 60
-        // println("Ticked to: ${kotcity.ui.serializeDate(time)}")
-        val self = this
         if (time.toDateTime().minuteOfHour == 0) {
 
             val hour = time.toDateTime().hourOfDay
@@ -222,8 +213,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     }
 
-    private var doingHourly: Boolean = false
-
     fun hourlyTick(hour: Int) {
         try {
             doingHourly = true
@@ -231,16 +220,17 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             println("Hour is: $hour")
 
             if (hour % 3 == 0) {
-                timeFunction("Desirability") { DesirabilityUpdater.update(this) }
-                constructor.tick()
-                timeFunction("ContractFulfiller") { contractFulfiller.signContracts() }
-                timeFunction("TerminateRandomContracts") { contractFulfiller.terminateRandomContracts() }
+                timeFunction("Calculating Desirability") { DesirabilityUpdater.update(this) }
+                timeFunction("Constructing Buildings") {constructor.tick() }
+                timeFunction("Signing Contracts") { contractFulfiller.signContracts() }
+                timeFunction("Terminating Random Contracts") { contractFulfiller.terminateRandomContracts() }
             }
 
             if (hour == 0) {
                 println("Top of the day stuff...")
-                PowerCoverageUpdater.update(this)
+                timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(this) }
             }
+
         } finally {
             doingHourly = false
         }
@@ -252,14 +242,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val endMillis = System.currentTimeMillis()
         val totalTime = endMillis - startMillis
         println("$desc calc took $totalTime millis")
-    }
-
-    private fun findEmptyZone(building: Building, zoneType: ZoneType): BlockCoordinate? {
-        return zoneLayer.toList().shuffled().find { entry ->
-            val coordinate = entry.first
-            val zone = entry.second
-            zone.type == zoneType && canBuildBuildingAt(building, coordinate)
-        }?.first
     }
 
     private fun waterFound(from: BlockCoordinate, to: BlockCoordinate): Boolean {
@@ -324,7 +306,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun buildRoad(from: BlockCoordinate, to: BlockCoordinate) {
         roadBlocks(from, to).forEach { block ->
             // println("Dropping a road at: $block")
-            val newRoad = Road()
+            val newRoad = Road(this)
             if (canBuildBuildingAt(newRoad, block, waterCheck = false)) {
                 buildingLayer[block] = newRoad
                 // dezone under us...
@@ -386,7 +368,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     fun buildPowerline(firstBlock: BlockCoordinate, lastBlock: BlockCoordinate) {
         roadBlocks(firstBlock, lastBlock).forEach { block ->
-            val newPowerLine = PowerLine()
+            val newPowerLine = PowerLine(this)
             if (buildingLayer[block]?.type == BuildingType.ROAD || canBuildBuildingAt(newPowerLine, block, waterCheck = false)) {
                 powerLineLayer[block] = newPowerLine
                 // println("Dropping a powerline at: $block")

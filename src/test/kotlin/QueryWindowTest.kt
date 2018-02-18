@@ -11,8 +11,8 @@ import tornadofx.App
 import tornadofx.find
 
 fun setBuilding(): Pair<CityMap, BlockCoordinate> {
-    val assetManager = AssetManager()
     val map = CityMap.flatMap(512, 512)
+    val assetManager = AssetManager(map)
     // let's plop a small house down...
     val slum = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
     map.build(slum, BlockCoordinate(3, 5))

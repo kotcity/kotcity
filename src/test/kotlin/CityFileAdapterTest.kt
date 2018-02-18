@@ -27,7 +27,7 @@ class CityFileAdapterTest {
     @Test
     fun testSaveCivicBuildings() {
         val map = CityMap.flatMap(100, 100)
-        val assetManager = AssetManager()
+        val assetManager = AssetManager(map)
         map.cityName = "CivicVille"
 
         val jobCenter = assetManager.buildingFor(BuildingType.CIVIC, "job_center")

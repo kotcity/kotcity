@@ -75,15 +75,15 @@ object Pathfinder {
     }
 
     fun pathToNearestLabor(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int = 1): Path? {
-        val nearest = findNearestTrade(cityMap, start, quantity) {
-            building, quantity -> building.quantityForSale(Tradeable.LABOR) >= quantity
+        val nearest = findNearestTrade(cityMap, start, quantity) { building, _ ->
+            building.quantityForSale(Tradeable.LABOR) >= quantity
         }
         return tripTo(cityMap, start, nearest)
     }
 
     fun pathToNearestJob(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int = 1): Path? {
-        val nearest = findNearestTrade(cityMap, start, quantity) {
-            building, quantity -> building.quantityWanted(Tradeable.LABOR) >= quantity
+        val nearest = findNearestTrade(cityMap, start, quantity) { building, _ ->
+            building.quantityWanted(Tradeable.LABOR) >= quantity
         }
         return tripTo(cityMap, start, nearest)
     }
@@ -205,7 +205,7 @@ object Pathfinder {
             }
 
             Path(pathNodes)
-        } ?: null
+        }
 
     }
 

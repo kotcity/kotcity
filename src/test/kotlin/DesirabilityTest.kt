@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test
 class DesirabilityTest {
     @Test
     fun desirabilityTest() {
-        val assetManager = AssetManager()
         val map = CityMap.flatMap(1024, 1024)
+        val assetManager = AssetManager(map)
         // ok what we want to do here is drop a job center at 0,0
         val jobCenter = assetManager.buildingFor(BuildingType.CIVIC, "job_center")
         map.build(jobCenter, BlockCoordinate(3,0))
