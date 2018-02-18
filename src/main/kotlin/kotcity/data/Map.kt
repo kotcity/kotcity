@@ -109,6 +109,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private val constructor = Constructor(this)
     private val contractFulfiller = ContactFulfiller(this)
     private val manufacturer = Manufacturer(this)
+    private val shipper = Shipper(this)
 
     private var doingHourly: Boolean = false
 
@@ -219,6 +220,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 timeFunction("Signing Contracts") { contractFulfiller.signContracts() }
                 timeFunction("Terminating Random Contracts") { contractFulfiller.terminateRandomContracts() }
                 timeFunction("Doing Manufacturing") { manufacturer.tick() }
+                timeFunction("Shipping products") { shipper.tick() }
             }
 
             if (hour == 0) {

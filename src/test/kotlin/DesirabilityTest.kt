@@ -1,6 +1,7 @@
 import kotcity.automata.ContactFulfiller
 import kotcity.automata.DesirabilityUpdater
 import kotcity.automata.Manufacturer
+import kotcity.automata.Shipper
 import kotcity.data.*
 import kotcity.data.assets.AssetManager
 import kotcity.pathfinding.Pathfinder
@@ -81,6 +82,10 @@ class DesirabilityTest {
         val manufacturer = Manufacturer(map)
         manufacturer.debug = true
         manufacturer.tick()
+
+        val shipper = Shipper(map)
+        shipper.debug = true
+        shipper.tick()
 
     }
 }
