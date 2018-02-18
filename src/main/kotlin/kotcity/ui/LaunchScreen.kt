@@ -1,6 +1,7 @@
 package kotcity.ui
 
 import javafx.application.Application
+import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import tornadofx.App
@@ -13,13 +14,15 @@ import java.util.Collections.addAll
 import java.io.File
 
 
-const val GAME_STRING = "KotCity 0.2"
+const val GAME_STRING = "KotCity 0.3"
 
 class LaunchScreen : View() {
     override val root: VBox by fxml("/LaunchScreen.fxml")
+    val titleLabel: Label by fxid()
 
     init {
         title = GAME_STRING
+        titleLabel.text = GAME_STRING
     }
 
     fun newCityPressed() {

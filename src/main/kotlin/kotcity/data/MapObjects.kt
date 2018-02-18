@@ -1,5 +1,7 @@
 package kotcity.data
 
+import kotcity.util.getRandomElement
+
 enum class BuildingType {
     ROAD, RESIDENTIAL, COMMERCIAL, INDUSTRIAL, POWER_LINE, POWER_PLANT, CIVIC
 }
@@ -122,6 +124,11 @@ abstract class Building {
         val balance = requiredCount - contractCount
         println("That means we need $balance $tradeable")
         return balance
+    }
+
+    fun voidRandomContract() {
+        val contractToKill = contracts.getRandomElement()
+        voidContractsWith(contractToKill.to)
     }
 }
 

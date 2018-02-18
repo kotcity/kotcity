@@ -211,26 +211,37 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
             val hour = time.toDateTime().hourOfDay
             async {
-                hourlyTick(hour)
+                if (!doingHourly) {
+                    hourlyTick(hour)
+                } else {
+                    println("Warning... hourly still in progress!")
+                }
             }
 
         }
 
     }
 
-    @Synchronized fun hourlyTick(hour: Int) {
-        println("Top of the hour stuff...")
-        println("Hour is: $hour")
+    private var doingHourly: Boolean = false
 
-        if (hour % 3 == 0) {
-            timeFunction("Desirability") { DesirabilityUpdater.update(this) }
-            constructor.tick()
-            timeFunction("ContractFulfiller") { contractFulfiller.tick() }
-        }
+    fun hourlyTick(hour: Int) {
+        try {
+            doingHourly = true
+            println("Top of the hour stuff...")
+            println("Hour is: $hour")
 
-        if (hour == 0) {
-            println("Top of the day stuff...")
-            PowerCoverageUpdater.update(this)
+            if (hour % 3 == 0) {
+                timeFunction("Desirability") { DesirabilityUpdater.update(this) }
+                constructor.tick()
+                timeFunction("ContractFulfiller") { contractFulfiller.tick() }
+            }
+
+            if (hour == 0) {
+                println("Top of the day stuff...")
+                PowerCoverageUpdater.update(this)
+            }
+        } finally {
+            doingHourly = false
         }
     }
 
@@ -315,6 +326,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             val newRoad = Road()
             if (canBuildBuildingAt(newRoad, block, waterCheck = false)) {
                 buildingLayer[block] = newRoad
+                // dezone under us...
+                zoneLayer.remove(block)
             } else {
                 println("We have an overlap... not building!")
             }
@@ -325,7 +338,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun zone(type: ZoneType, from: BlockCoordinate, to: BlockCoordinate) {
         BlockCoordinate.iterate(from, to) {
             if (!waterFound(it, it)) {
-                zoneLayer[it] = Zone(type)
+                if (buildingsIn(it).count() == 0) {
+                    zoneLayer[it] = Zone(type)
+                }
             }
         }
     }
@@ -333,6 +348,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun build(building: Building, block: BlockCoordinate) {
         if (canBuildBuildingAt(building, block)) {
             this.buildingLayer[block] = building
+            if (building.type != BuildingType.COMMERCIAL && building.type != BuildingType.RESIDENTIAL && building.type != BuildingType.INDUSTRIAL) {
+                val buildingBlocks = buildingBlocks(block, building)
+                buildingBlocks.forEach { zoneLayer.remove(it) }
+            }
             updateBuildingIndex()
         } else {
             println("We have an overlap! not building!")

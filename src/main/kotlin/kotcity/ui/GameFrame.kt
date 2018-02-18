@@ -38,7 +38,7 @@ fun serializeDate(date: Date): String {
 }
 
 const val DRAW_GRID = false
-const val TICK_DELAY: Int = 10 // only render every X ticks... (framerate limiter)
+const val TICK_DELAY: Int = 5 // only render every X ticks... (framerate limiter)
 
 enum class Tool {
     BULLDOZE,
@@ -309,9 +309,9 @@ class GameFrame : View() {
         val delay = 0L // delay for 0 sec.
 
         val period = when (gameSpeed) {
-            GameSpeed.SLOW -> 500L
-            GameSpeed.MEDIUM -> 200L
-            GameSpeed.FAST -> 100L
+            GameSpeed.SLOW -> 200L
+            GameSpeed.MEDIUM -> 100L
+            GameSpeed.FAST -> 30L
         }
         gameTickTask?.cancel()
         gameTickTask = object : TimerTask() {

@@ -1,6 +1,7 @@
 package kotcity.automata
 
 import kotcity.data.CityMap
+import kotcity.util.getRandomElements
 
 class ContactFulfiller(val cityMap: CityMap) {
     fun tick() {
@@ -19,6 +20,16 @@ class ContactFulfiller(val cityMap: CityMap) {
                         println("Could not find $needsCount $tradeable for ${building.name} at $coordinate")
                     }
                 }
+            }
+        }
+        // be chatotic and kill 3 contracts...
+        cityMap.buildingLayer.keys.toList().getRandomElements(3)?.forEach { block ->
+            val buildings = cityMap.buildingsIn(block)
+            val blockAndBuilding = buildings.toList().getRandomElements(1)?.first()
+            if (blockAndBuilding != null) {
+                val coord = blockAndBuilding.first
+                val building = blockAndBuilding.second
+                val contracts = building.voidRandomContract()
             }
         }
     }

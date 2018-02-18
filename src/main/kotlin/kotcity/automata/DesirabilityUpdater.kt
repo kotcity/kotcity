@@ -14,11 +14,16 @@ object DesirabilityUpdater {
         // let's update the desirability...
         cityMap.desirabilityLayers.forEach { desirabilityLayer ->
 
-            when (desirabilityLayer.zoneType) {
-                ZoneType.RESIDENTIAL -> updateResidential(cityMap, desirabilityLayer)
-                ZoneType.INDUSTRIAL -> updateIndustrial(cityMap, desirabilityLayer)
-                ZoneType.COMMERCIAL -> updateCommercial(cityMap, desirabilityLayer)
+            // TODO: worry about other levels later...
+            if (desirabilityLayer.level == 1) {
+                when (desirabilityLayer.zoneType) {
+                    ZoneType.RESIDENTIAL -> updateResidential(cityMap, desirabilityLayer)
+                    ZoneType.INDUSTRIAL -> updateIndustrial(cityMap, desirabilityLayer)
+                    ZoneType.COMMERCIAL -> updateCommercial(cityMap, desirabilityLayer)
+                }
             }
+
+
 
         }
     }

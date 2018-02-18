@@ -451,7 +451,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         val blockSize = blockSize()
         val width = building.width * blockSize
         val height = building.height * blockSize
-        drawBuildingBorder(tx, ty, width, height, blockSize)
+        drawBuildingBorder(building, tx, ty, width, height, blockSize)
 
         val shrink = blockSize * 0.10
 
@@ -470,7 +470,12 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     }
 
-    private fun drawBuildingBorder(tx: Double, ty: Double, width: Double, height: Double, blockSize: Double) {
+    private fun drawBuildingBorder(building: Building, tx: Double, ty: Double, width: Double, height: Double, blockSize: Double) {
+
+        if (building.type == BuildingType.ROAD) {
+            return
+        }
+
         // this looks like shit when we are zoomed way out...
         val arcSize = arcWidth()
         canvas.graphicsContext2D.lineWidth = borderWidth()
@@ -484,7 +489,17 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         canvas.graphicsContext2D.fill = Color.WHITE
         canvas.graphicsContext2D.fillRoundRect(sx, sy, ex, ey, arcSize, arcSize)
 
-        canvas.graphicsContext2D.fill = Color.BLACK
+        val borderColor = when (building.type) {
+            BuildingType.ROAD -> Color.BLACK
+            BuildingType.RESIDENTIAL -> Color.GREEN
+            BuildingType.COMMERCIAL -> Color.BLUE
+            BuildingType.INDUSTRIAL -> Color.GOLD
+            BuildingType.POWER_LINE -> Color.BLACK
+            BuildingType.POWER_PLANT -> Color.DARKGRAY
+            BuildingType.CIVIC -> Color.DARKGRAY
+        }
+
+        canvas.graphicsContext2D.stroke = borderColor
         canvas.graphicsContext2D.strokeRoundRect(sx, sy, ex, ey, arcSize, arcSize)
     }
 

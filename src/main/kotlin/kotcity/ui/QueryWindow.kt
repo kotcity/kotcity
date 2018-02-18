@@ -31,7 +31,7 @@ class QueryWindow(): View() {
                     this.title = "Inspecting ${building.description}"
                     buffer.append(building.description + "\n")
                     buffer.append("Powered: ${building.powered}\n")
-                    if (building.sprite != null) {
+                    if (building.sprite != null && building.sprite != "") {
                         buildingImageView.image = SpriteLoader.spriteForBuildingType(building, 64.0, 64.0)
                     } else {
                         val filename = "file:./assets/misc/unknown.png"

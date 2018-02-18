@@ -39,7 +39,7 @@ class Constructor(val cityMap: CityMap) {
                     } else {
                         println("Sorry, no building could be found for $zoneType and $desirability")
                     }
-                    
+
                 }
 
             }
