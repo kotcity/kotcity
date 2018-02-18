@@ -98,12 +98,15 @@ abstract class Building(private val cityMap: CityMap) {
     }
 
     fun createContract(otherBuilding: Building, tradeable: Tradeable, quantity: Int) {
-        val ourBlocks = cityMap.coordinatesForBuilding(this) ?: return
-        val theirBlocks = cityMap.coordinatesForBuilding(otherBuilding) ?: return
+        val ourBlocks = cityMap.coordinatesForBuilding(this)
+        val theirBlocks = cityMap.coordinatesForBuilding(otherBuilding)
+        if (ourBlocks == null || theirBlocks == null) {
+            println("Sorry, we couldn't find one of the buildings!")
+            return
+        }
         val ourLocation = Location(ourBlocks, this)
         val theirLocation = Location(theirBlocks, otherBuilding)
         val newContract = Contract(ourLocation, theirLocation, tradeable, quantity)
-        // TODO: check to make sure we actually have this amount...
         if (otherBuilding.quantityForSale(tradeable) >= newContract.quantity) {
             contracts.add(newContract)
             otherBuilding.addContract(newContract)
@@ -135,7 +138,7 @@ abstract class Building(private val cityMap: CityMap) {
     }
 }
 
-open class PowerPlant : Building {
+class PowerPlant : Building {
 
     override val variety: String
     var powerGenerated: Int = 0

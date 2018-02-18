@@ -53,10 +53,10 @@ object Pathfinder {
 
             // OK now we want only ones with labor...
             buildings.filter {
-                val building = it.second
+                val building = it.building
                 buildingFilter(building, quantity)
             }
-        }.flatMap { blocksFor(it.second, it.first) }
+        }.flatMap { blocksFor(it.building, it.coordinate) }
     }
 
     fun pathToNearestTrade(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int, buildingFilter: (Building, Int) -> Boolean): Path? {
@@ -107,7 +107,7 @@ object Pathfinder {
 
     fun nearbyRoad(cityMap: CityMap, sourceBlocks: List<BlockCoordinate>, distance: Int = 3): Boolean {
         sourceBlocks.forEach {
-            val nearbyRoads = cityMap.nearestBuildings(it, distance.toFloat()).filter { it.second.type == BuildingType.ROAD}
+            val nearbyRoads = cityMap.nearestBuildings(it, distance.toFloat()).filter { it.building.type == BuildingType.ROAD}
             if (nearbyRoads.count() > 0) {
                 return true
             }

@@ -43,11 +43,11 @@ class MapGenerator {
 
                 tileElevation = pow(tileElevation, exp)
 
-                if (x == 0 && y == 0) {
-                    println("nx: $nx, ny: $ny")
-                    println("n1: $n1, n2: $n2, n3: $n3")
-                    println("Our value is: $tileElevation")
-                }
+//                if (x == 0 && y == 0) {
+//                    println("nx: $nx, ny: $ny")
+//                    println("n1: $n1, n2: $n2, n3: $n3")
+//                    println("Our value is: $tileElevation")
+//                }
 
                 // println("Sea level is: $seaLevel")
 
@@ -96,11 +96,11 @@ class MapGenerator {
 
                     resourceValue = pow(resourceValue, exp)
 
-                    if (x == 0 && y == 0) {
-                        println("nx: $nx, ny: $ny")
-                        println("n1: $n1, n2: $n2, n3: $n3")
-                        println("Our resource value is: $resourceValue")
-                    }
+//                    if (x == 0 && y == 0) {
+//                        println("nx: $nx, ny: $ny")
+//                        println("n1: $n1, n2: $n2, n3: $n3")
+//                        println("Our resource value is: $resourceValue")
+//                    }
 
                     // println("Sea level is: $seaLevel")
 

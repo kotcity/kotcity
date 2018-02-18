@@ -41,9 +41,6 @@ data class BlockCoordinate(val x: Int, val y: Int) {
 
     }
 
-    fun distanceTo(otherCoordinate: BlockCoordinate): Double {
-        return Math.sqrt(((this.x-otherCoordinate.x)*(this.x-otherCoordinate.x) + (this.y-otherCoordinate.y)*(this.y-otherCoordinate.y)).toDouble())
-    }
 }
 
 data class Corners(
@@ -164,14 +161,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return blockList
     }
 
-    fun nearestBuildings(coordinate: BlockCoordinate, distance: Float = 10f): List<Pair<BlockCoordinate, Building>> {
+    fun nearestBuildings(coordinate: BlockCoordinate, distance: Float = 10f): List<Location> {
         val point = Geometries.rectangle(coordinate.x.toFloat(), coordinate.y.toFloat(),coordinate.x.toFloat()+1, coordinate.y.toFloat()+1)
         return buildingIndex.search(point, distance.toDouble())
                 .toBlocking().toIterable().mapNotNull { entry ->
             val geometry = entry.geometry()
             val building = entry.value()
             if (geometry != null && building != null) {
-                Pair(BlockCoordinate(geometry.x1().toInt(), geometry.y1().toInt()), building)
+                Location(BlockCoordinate(geometry.x1().toInt(), geometry.y1().toInt()), building)
             } else {
                 null
             }
@@ -267,32 +264,32 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
 
         val nearby = nearestBuildings(coordinate)
-        nearby.forEach { pair: Pair<BlockCoordinate, Building> ->
-            val building = pair.second
-            val otherBuildingStart = pair.first
+        nearby.forEach { location: Location ->
+            val building = location.building
+            val otherBuildingStart = location.coordinate
             val otherBuildingEnd = BlockCoordinate(otherBuildingStart.x + building.width - 1, otherBuildingStart.y + building.height - 1)
             // now let's test...
             // top left corner...
             if (coordinate.x <= otherBuildingEnd.x && coordinate.x >= otherBuildingStart.x && coordinate.y <= otherBuildingEnd.y && coordinate.y >= otherBuildingStart.y) {
-                collisionWarning("Collision with top left!", newBuilding, coordinate, building, pair.first)
+                collisionWarning("Collision with top left!", newBuilding, coordinate, building, location.coordinate)
                 return false
             }
 
             // bottom right corner...
             if (newBuildingEnd.x <= otherBuildingEnd.x && newBuildingEnd.x >= otherBuildingStart.x && newBuildingEnd.y <= otherBuildingEnd.y && newBuildingEnd.y >= otherBuildingStart.y) {
-                collisionWarning("Collision with bottom right!", newBuilding, coordinate, building, pair.first)
+                collisionWarning("Collision with bottom right!", newBuilding, coordinate, building, location.coordinate)
                 return false
             }
 
             // top right corner...
             if (newBuildingTopRight.x <= otherBuildingEnd.x && newBuildingTopRight.x >= otherBuildingStart.x && newBuildingTopRight.y <= otherBuildingEnd.y && newBuildingTopRight.y >= otherBuildingStart.y) {
-                collisionWarning("Collision with top right!", newBuilding, coordinate, building, pair.first)
+                collisionWarning("Collision with top right!", newBuilding, coordinate, building, location.coordinate)
                 return false
             }
 
             // bottom left corner...
             if (newBuildingBottomLeft.x <= otherBuildingEnd.x && newBuildingBottomLeft.x >= otherBuildingStart.x && newBuildingBottomLeft.y <= otherBuildingEnd.y && newBuildingBottomLeft.y >= otherBuildingStart.y) {
-                collisionWarning("Collision with bottom left!", newBuilding, coordinate, building, pair.first)
+                collisionWarning("Collision with bottom left!", newBuilding, coordinate, building, location.coordinate)
                 return false
             }
         }
@@ -305,7 +302,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     fun buildRoad(from: BlockCoordinate, to: BlockCoordinate) {
         roadBlocks(from, to).forEach { block ->
-            // println("Dropping a road at: $block")
             val newRoad = Road(this)
             if (canBuildBuildingAt(newRoad, block, waterCheck = false)) {
                 buildingLayer[block] = newRoad
@@ -343,16 +339,27 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     fun bulldoze(from: BlockCoordinate, to: BlockCoordinate) {
         println("Want to bulldoze from $from to $to")
-        BlockCoordinate.iterate(from, to) {
-            buildingLayer.remove(it)
-            powerLineLayer.remove(it)
+        BlockCoordinate.iterate(from, to) { coordinate ->
+            powerLineLayer.remove(coordinate)
+            val buildings = buildingsIn(coordinate)
+            // now kill all those contracts...
+            buildings.forEach {
+                buildingLayer.values.forEach { otherBuilding ->
+                    otherBuilding.voidContractsWith(it.building)
+                }
+                // gotta remove building from the list...
+                val iterator = buildingLayer.iterator()
+                iterator.forEach { mutableEntry ->
+                    if (mutableEntry.value == it.building) {
+                       iterator.remove()
+                    }
+                }
+            }
         }
         updateBuildingIndex()
     }
 
     fun setResourceValue(resourceName: String, blockCoordinate: BlockCoordinate, resourceValue: Double) {
-        // println("On the resourceZone: $resourceName we want to set $resourceValue at $blockCoordinate")
-
         // make sure that fucker is set!
         if (resourceLayers[resourceName] == null) {
             resourceLayers[resourceName] = QuantizedMap(4)
@@ -378,7 +385,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
-    // TODO: we should start throwing back 4 corners again to use this for overlaps...
     private fun buildingCorners(building: Building, block: BlockCoordinate): Corners {
         val buildingTopLeft = BlockCoordinate(block.x, block.y)
         val buildingBottomRight = BlockCoordinate(block.x + building.width - 1, block.y + building.height - 1)
@@ -396,17 +402,17 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }?.first
     }
 
-    fun buildingsIn(block: BlockCoordinate): List<Pair<BlockCoordinate, Building>> {
+    fun buildingsIn(block: BlockCoordinate): List<Location> {
         val nearestBuildings = nearestBuildings(block, 10f)
         val filteredBuildings = nearestBuildings.filter {
-            val coordinate = it.first
-            val building = it.second
+            val coordinate = it.coordinate
+            val building = it.building
             buildingCorners(building, coordinate).includes(block)
         }
 
         // now we also need the power lines that are here...
         powerLineLayer[block]?.let {
-            return filteredBuildings.plus(Pair(block, it))
+            return filteredBuildings.plus(Location(block, it))
         }
         return filteredBuildings
     }

@@ -269,10 +269,9 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         val color1 = java.awt.Color.RED
         val color2 = java.awt.Color.GREEN
         // gotta clamp desirability between 0.0f and 1.0f
-        val frac = Algorithms.scale(desirability.coerceAtMost(DESIRABILITY_CAP), 0.00, 100.0, 0.0, 1.0)
-        val newColor = interpolateColor(color1, color2, frac.toFloat())
-        val transparentColor = Color(newColor.red, newColor.green, newColor.blue, 0.5)
-        return transparentColor
+        val fraction = Algorithms.scale(desirability.coerceAtMost(DESIRABILITY_CAP), 0.00, 100.0, 0.0, 1.0)
+        val newColor = interpolateColor(color1, color2, fraction.toFloat())
+        return Color(newColor.red, newColor.green, newColor.blue, 0.5)
     }
 
     private fun resourceLayer(mode: MapMode): QuantizedMap<Double>? {
@@ -459,7 +458,6 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         SpriteLoader.spriteForBuildingType(building, imgWidth, imgHeight)?.let { img ->
             val ix = (tx * blockSize) + shrink
             val iy = (ty * blockSize) + shrink
-            // println("ix: $ix iy: $iy width: $imgWidth height: $imgHeight")
             canvas.graphicsContext2D.drawImage(img, ix, iy)
         }
 

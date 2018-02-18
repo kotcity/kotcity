@@ -30,7 +30,7 @@ class ContactFulfiller(val cityMap: CityMap) {
             val buildings = cityMap.buildingsIn(block)
             val blockAndBuilding = buildings.toList().getRandomElements(1)?.first()
             if (blockAndBuilding != null) {
-                val building = blockAndBuilding.second
+                val building = blockAndBuilding.building
                 building.voidRandomContract()
             }
         }

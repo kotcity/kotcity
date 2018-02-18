@@ -24,7 +24,7 @@ class QueryWindow(): View() {
                 val buildings = city.buildingsIn(coordinate)
                 val buffer = StringBuffer()
                 if (buildings.count() > 0) {
-                    val building = buildings.first().second
+                    val building = buildings.first().building
                     println("Updating the components...")
                     // ok now let's do the text
                     buildingNameLabel.text = building.description
