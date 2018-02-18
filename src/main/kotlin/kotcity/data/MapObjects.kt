@@ -79,9 +79,9 @@ abstract class Building {
     }
 
     fun quantityWanted(tradeable: Tradeable): Int {
-        val filter = {contract: Contract -> contract.to }
-        val hash = consumes
-        return calculateAvailable(hash, tradeable, filter)
+        val inventoryCount = consumes[tradeable] ?: 0
+        val contractCount = contracts.filter { it.to == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+        return inventoryCount - contractCount
     }
 
     private fun calculateAvailable(hash: MutableMap<Tradeable, Int>, tradeable: Tradeable, filter: (Contract) -> Building): Int {
