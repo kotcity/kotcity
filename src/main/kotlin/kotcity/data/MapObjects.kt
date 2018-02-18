@@ -49,7 +49,7 @@ abstract class Building(private val cityMap: CityMap) {
     val consumes: MutableMap<Tradeable, Int> = mutableMapOf()
     val produces: MutableMap<Tradeable, Int> = mutableMapOf()
     open var upkeep: Int = 0
-    private val contracts: MutableList<Contract> = mutableListOf()
+    val contracts: MutableList<Contract> = mutableListOf()
 
     fun summarizeContracts(): String {
         val summaryBuffer = StringBuffer()
@@ -106,12 +106,12 @@ abstract class Building(private val cityMap: CityMap) {
         }
         val ourLocation = Location(ourBlocks, this)
         val theirLocation = Location(theirBlocks, otherBuilding)
-        val newContract = Contract(ourLocation, theirLocation, tradeable, quantity)
+        val newContract = Contract(theirLocation, ourLocation, tradeable, quantity)
         if (otherBuilding.quantityForSale(tradeable) >= newContract.quantity) {
             contracts.add(newContract)
             otherBuilding.addContract(newContract)
         } else {
-            println("Tried to make an invalid contract: $newContract but failed because ${this.name} doesn't have enough $tradeable")
+            println("Tried to make an invalid contract: $newContract but failed because ${otherBuilding.name} doesn't have enough $tradeable (it has ${otherBuilding.quantityForSale(tradeable)})")
         }
     }
 

@@ -1,11 +1,12 @@
 package kotcity.data
 
-import java.io.File
+import GzipUtil
 import com.github.salomonbrys.kotson.*
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kotcity.data.assets.AssetManager
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -43,6 +44,7 @@ val gson = GsonBuilder()
                 writeBuildingLayer(data, it)
                 writePowerlineLayer(data, it)
                 writeDesirabilityLayers(data, it)
+                writeContracts(data, it)
                 data
             }
 
@@ -60,10 +62,12 @@ val gson = GsonBuilder()
                 cityMap.time = parseDate(data["time"].asString)
                 readGroundTiles(data, cityMap)
                 readBuildingLayer(data, cityMap)
+                cityMap.updateBuildingIndex()
                 readPowerlineLayer(data, cityMap)
                 readZoneLayer(data, cityMap)
                 readResourceLayers(data, cityMap)
                 readDesirabilityLayers(data, cityMap)
+                readContracts(data, cityMap)
 
                 cityMap.updateBuildingIndex()
 
@@ -192,11 +196,50 @@ private fun writePowerlineLayer(data: JsonObject, it: SerializerArg<CityMap>) {
     }.toJsonArray()
 }
 
+fun readContracts(data: JsonObject, cityMap: CityMap) {
+    val contractData = data["contracts"].asJsonArray
+    contractData.forEach { contractElement ->
+        val contractObj = contractElement.asJsonObject
+        // the first building MAY not be correct but let's try...
+        val from = BlockCoordinate(contractObj["from_x"].asInt, contractObj["from_y"].asInt)
+        val to = BlockCoordinate(contractObj["to_x"].asInt, contractObj["to_y"].asInt)
+        val fromBuilding = cityMap.buildingsIn(from).first()
+        val toBuilding = cityMap.buildingsIn(to).first()
+        val tradeable = Tradeable.valueOf(contractObj["tradeable"].asString)
+        val quantity = contractObj["quantity"].asInt
+        // val newContract = Contract(fromBuilding, toBuilding, tradeable, quantity)
+        fromBuilding.building.createContract(toBuilding.building, tradeable, quantity)
+    }
+}
+
+fun writeContracts(data: JsonObject, it: SerializerArg<CityMap>) {
+    if (it.src.buildingLayer.keys.count() > 0) {
+        data["contracts"] = it.src.buildingLayer.mapNotNull { entry->
+            val building = entry.value
+            if (building.contracts.count() == 0) {
+                null
+            } else {
+                building.contracts.map { contract ->
+                    jsonObject(
+                            "to_x" to contract.to.coordinate.x,
+                            "to_y" to contract.to.coordinate.y,
+                            "from_x" to contract.from.coordinate.x,
+                            "from_y" to contract.from.coordinate.y,
+                            "tradeable" to contract.tradeable.toString(),
+                            "quantity" to contract.quantity
+                    )
+                }.toJsonArray()
+            }
+        }.flatten().toJsonArray()
+    }
+}
+
 private fun writeBuildingLayer(data: JsonObject, it: SerializerArg<CityMap>) {
     data["buildingLayer"] = it.src.buildingLayer.map { entry ->
         val x = entry.key.x
         val y = entry.key.y
-        val type = entry.value.type.toString()
+        val building = entry.value
+        val type = building.type.toString()
 
         val buildingObj = mutableMapOf(
                 "x" to x,
@@ -204,15 +247,15 @@ private fun writeBuildingLayer(data: JsonObject, it: SerializerArg<CityMap>) {
                 "type" to type
         )
 
-        entry.value.name?.let {
+        building.name?.let {
             buildingObj["name"] = it
         }
 
-        entry.value.description?.let {
+        building.description?.let {
             buildingObj["description"] = it
         }
 
-        entry.value.variety?.let {
+        building.variety?.let {
             buildingObj["variety"] = it
         }
 

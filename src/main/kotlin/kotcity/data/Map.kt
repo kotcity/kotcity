@@ -20,7 +20,6 @@ data class BlockCoordinate(val x: Int, val y: Int) {
         fun iterate(from: BlockCoordinate, to: BlockCoordinate, callback: (BlockCoordinate) -> Unit) {
             val xRange = (from.x .. to.x).reorder()
             val yRange = (from.y ..to.y).reorder()
-            // println("Wanting to iterate: $xRange to $yRange")
             for (x in xRange) {
                 for (y in yRange) {
                     callback(BlockCoordinate(x, y))
