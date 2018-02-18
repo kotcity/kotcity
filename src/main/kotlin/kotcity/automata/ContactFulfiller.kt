@@ -4,7 +4,7 @@ import kotcity.data.CityMap
 import kotcity.util.getRandomElements
 
 class ContactFulfiller(val cityMap: CityMap) {
-    fun tick() {
+    fun signContracts() {
         cityMap.buildingLayer.forEach { coordinate, building ->
             building.consumes.forEach { tradeable, quantity ->
                 val needsCount = building.needs(tradeable)
@@ -22,6 +22,9 @@ class ContactFulfiller(val cityMap: CityMap) {
                 }
             }
         }
+    }
+
+    fun terminateRandomContracts() {
         // be chatotic and kill 3 contracts...
         cityMap.buildingLayer.keys.toList().getRandomElements(3)?.forEach { block ->
             val buildings = cityMap.buildingsIn(block)

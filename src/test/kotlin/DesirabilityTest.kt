@@ -66,7 +66,7 @@ class DesirabilityTest {
 
         assertTrue(slum.quantityForSale(Tradeable.LABOR) == 2, "Has no labor...")
         val cf = ContactFulfiller(map)
-        cf.tick()
+        cf.signContracts()
 
         // ok now let's make sure the desirability is actually kosher...
         DesirabilityUpdater.update(map)

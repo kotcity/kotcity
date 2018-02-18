@@ -127,8 +127,10 @@ abstract class Building {
     }
 
     fun voidRandomContract() {
-        val contractToKill = contracts.getRandomElement()
-        voidContractsWith(contractToKill.to)
+        if (contracts.count() > 0) {
+            val contractToKill = contracts.getRandomElement()
+            voidContractsWith(contractToKill.to)
+        }
     }
 }
 

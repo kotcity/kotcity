@@ -233,7 +233,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             if (hour % 3 == 0) {
                 timeFunction("Desirability") { DesirabilityUpdater.update(this) }
                 constructor.tick()
-                timeFunction("ContractFulfiller") { contractFulfiller.tick() }
+                timeFunction("ContractFulfiller") { contractFulfiller.signContracts() }
+                timeFunction("TerminateRandomContracts") { contractFulfiller.terminateRandomContracts() }
             }
 
             if (hour == 0) {
