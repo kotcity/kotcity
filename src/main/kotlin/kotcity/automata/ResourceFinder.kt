@@ -25,7 +25,7 @@ class ResourceFinder(val map: CityMap) {
             }
         }.toMutableList()
 
-        val outsidePath = pathfinder.pathToOutside(sourceBlocks)
+        val outsidePath = pathfinder.cachedPathToOutside(sourceBlocks)
         if (outsidePath != null) {
             pathsAndQuantity.add(Pair(outsidePath, 999))
         }
@@ -62,7 +62,7 @@ class ResourceFinder(val map: CityMap) {
 
         if (preferredTradeEntity == null) {
             // let's try and get a path to the outside...
-            val destinationBlock = pathfinder.pathToOutside(sourceBlocks)?.blockList()?.last()
+            val destinationBlock = pathfinder.cachedPathToOutside(sourceBlocks)?.blockList()?.last()
             if (destinationBlock != null) {
                 preferredTradeEntity = OutsideTradeEntity(destinationBlock)
             }
@@ -87,7 +87,7 @@ class ResourceFinder(val map: CityMap) {
             }
         }.toMutableList()
 
-        val outsidePath = pathfinder.pathToOutside(sourceBlocks)
+        val outsidePath = pathfinder.cachedPathToOutside(sourceBlocks)
         if (outsidePath != null) {
             pathsAndQuantity.add(Pair(outsidePath, 999))
         }

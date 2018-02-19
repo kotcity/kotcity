@@ -11,6 +11,13 @@ class Constructor(val cityMap: CityMap) {
     val assetManager = AssetManager(cityMap)
     val random = Random()
     val maxTries = 30
+    var debug = false
+
+    fun debug(message: String) {
+        if (debug) {
+            println(message)
+        }
+    }
 
     private fun isEmpty(entry: MutableMap.MutableEntry<BlockCoordinate, Double>): Boolean {
         return cityMap.buildingsIn(entry.key).count() == 0
@@ -24,18 +31,20 @@ class Constructor(val cityMap: CityMap) {
 
                 val blockAndScore = layer.entries().filter { isEmpty(it) }.filter { it.value > 0}.maxBy { it.value }
                 if (blockAndScore == null) {
-                    println("Could not find most desirable $zoneType zone!")
+                    if (debug) {
+                        println("Could not find most desirable $zoneType zone!")
+                    }
                 } else {
-                    println("We will be trying to build at ${blockAndScore.key} with desirability ${blockAndScore.value}")
+                    debug("We will be trying to build at ${blockAndScore.key} with desirability ${blockAndScore.value}")
                     val coordinate = blockAndScore.key
                     val desirability = blockAndScore.value
                     val newBuilding = findBuilding(zoneType)
                     if (newBuilding != null) {
-                        println("The building to be attempted is: $newBuilding")
+                        debug("The building to be attempted is: $newBuilding")
                         // let's try like X times...
                         tryToBuild(coordinate, newBuilding, layer)
                     } else {
-                        println("Sorry, no building could be found for $zoneType and $desirability")
+                        debug("Sorry, no building could be found for $zoneType and $desirability")
                     }
 
                 }

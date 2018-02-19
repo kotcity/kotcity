@@ -52,10 +52,13 @@ data class NavigationNode(
 
 class Pathfinder(val cityMap: CityMap) {
 
-
     private val cachedHeuristicPair = ::heuristic.cache()
     private val heuristicCache = cachedHeuristicPair.first
     private val cachedHeuristic = cachedHeuristicPair.second
+
+    private val cachedPathToOutsidePair = ::pathToOutside.cache()
+    private val pathToOutsideCache = cachedPathToOutsidePair.first
+    val cachedPathToOutside = cachedPathToOutsidePair.second
 
     private val mapBorders: List<BlockCoordinate> by lazy {
         // OK... what the fuck...
