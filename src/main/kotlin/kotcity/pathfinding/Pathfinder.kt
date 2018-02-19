@@ -2,6 +2,7 @@ package kotcity.pathfinding
 
 import aballano.kotlinmemoization.memoize
 import kotcity.data.*
+import kotcity.memoization.cache
 import kotcity.util.pmap
 import kotlinx.coroutines.experimental.runBlocking
 
@@ -51,14 +52,12 @@ data class NavigationNode(
 
 class Pathfinder(val cityMap: CityMap) {
 
-    // TODO: this is too slow... maybe cache?
-    fun pathToOutside(start: List<BlockCoordinate>): Path? {
-        // OK... let's see if we can get a trip to the outside...
-        return tripTo(start, mapBorders())
-    }
 
-    // TODO: this can get cached forever! borders won't change...
-    fun mapBorders(): List<BlockCoordinate> {
+    private val cachedHeuristicPair = ::heuristic.cache()
+    private val heuristicCache = cachedHeuristicPair.first
+    private val cachedHeuristic = cachedHeuristicPair.second
+
+    private val mapBorders: List<BlockCoordinate> by lazy {
         // OK... what the fuck...
         val widthRange = -1 .. cityMap.width
         val heightRange = -1 .. cityMap.height
@@ -75,7 +74,17 @@ class Pathfinder(val cityMap: CityMap) {
             borderBlocks.add(BlockCoordinate(widthRange.last, y))
         }
 
-        return borderBlocks.toList()
+        borderBlocks.toList()
+    }
+
+    fun purgeCaches() {
+        heuristicCache.invalidateAll()
+    }
+
+    // TODO: this is too slow... maybe cache?
+    fun pathToOutside(start: List<BlockCoordinate>): Path? {
+        // OK... let's see if we can get a trip to the outside...
+        return tripTo(start, mapBorders)
     }
 
     private fun findNearestTrade(start: List<BlockCoordinate>, quantity: Int, buildingFilter: (Building, Int) -> Boolean): List<BlockCoordinate> {
@@ -165,7 +174,7 @@ class Pathfinder(val cityMap: CityMap) {
                         cityMap,
                         it,
                         null,
-                        heuristic(it, destinations),
+                        cachedHeuristic(it, destinations),
                         TransitType.ROAD,
                         Direction.STATIONARY
                 )}.toTypedArray())
@@ -218,19 +227,19 @@ class Pathfinder(val cityMap: CityMap) {
 
             // ok figure out the dang neighbors...
             val north = BlockCoordinate(activeNode.coordinate.x, activeNode.coordinate.y-1)
-            val northNode = NavigationNode(cityMap, north, activeNode, heuristic(north, destinations), TransitType.ROAD, Direction.NORTH)
+            val northNode = NavigationNode(cityMap, north, activeNode, cachedHeuristic(north, destinations), TransitType.ROAD, Direction.NORTH)
             maybeAppendNode(northNode)
 
             val south = BlockCoordinate(activeNode.coordinate.x, activeNode.coordinate.y+1)
-            val southNode = NavigationNode(cityMap, south, activeNode, heuristic(south, destinations), TransitType.ROAD, Direction.SOUTH)
+            val southNode = NavigationNode(cityMap, south, activeNode, cachedHeuristic(south, destinations), TransitType.ROAD, Direction.SOUTH)
             maybeAppendNode(southNode)
 
             val east = BlockCoordinate(activeNode.coordinate.x+1, activeNode.coordinate.y)
-            val eastNode = NavigationNode(cityMap, east, activeNode, heuristic(east, destinations), TransitType.ROAD, Direction.EAST)
+            val eastNode = NavigationNode(cityMap, east, activeNode, cachedHeuristic(east, destinations), TransitType.ROAD, Direction.EAST)
             maybeAppendNode(eastNode)
 
             val west = BlockCoordinate(activeNode.coordinate.x-1, activeNode.coordinate.y)
-            val westNode = NavigationNode(cityMap, west, activeNode, heuristic(west, destinations), TransitType.ROAD, Direction.WEST)
+            val westNode = NavigationNode(cityMap, west, activeNode, cachedHeuristic(west, destinations), TransitType.ROAD, Direction.WEST)
             maybeAppendNode(westNode)
 
         }

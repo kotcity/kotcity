@@ -38,6 +38,12 @@ dependencies {
 
     // Enable use of the JUnitPlatform Runner within the IDE
     testCompile("org.junit.platform:junit-platform-runner:1.0.0-M4")
+
+    compile 'com.github.ben-manes.caffeine:caffeine:2.6.1'
+
+    // Optional extensions
+    compile 'com.github.ben-manes.caffeine:guava:2.6.1'
+    compile 'com.github.ben-manes.caffeine:jcache:2.6.1'
 }
 
 compileKotlin {
