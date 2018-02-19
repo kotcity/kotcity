@@ -272,6 +272,7 @@ abstract class Building(private val cityMap: CityMap) {
             }
         }
     }
+
 }
 
 class PowerPlant : Building {

@@ -130,14 +130,23 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     var time = defaultTime()
 
+    var debug = true
+
     // where we loaded OR saved this city to...
     // used to determine save vs. save as...
     var fileName: String? = null
     var cityName: String? = null
     private var buildingIndex = RTree.create<Building, Rectangle>()!!
 
+    fun debug(message: String) {
+        if (debug) {
+            println("Map: $message")
+        }
+    }
+
     init {
-        shipper.debug = true
+        shipper.debug = false
+        contractFulfiller.debug = true
     }
 
     fun elevations(): Pair<Double, Double> {
@@ -169,7 +178,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return blockList
     }
 
-    fun nearestBuildings(coordinate: BlockCoordinate, distance: Float = 10f): List<Location> {
+    fun nearestBuildings(coordinate: BlockCoordinate, distance: Int = 10): List<Location> {
         val point = Geometries.rectangle(coordinate.x.toFloat(), coordinate.y.toFloat(),coordinate.x.toFloat()+1, coordinate.y.toFloat()+1)
         return buildingIndex.search(point, distance.toDouble())
                 .toBlocking().toIterable().mapNotNull { entry ->
@@ -210,7 +219,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 if (!doingHourly) {
                     hourlyTick(hour)
                 } else {
-                    println("Warning... hourly still in progress!")
+                    debug("Warning... hourly still in progress!")
                 }
             }
 
@@ -221,8 +230,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun hourlyTick(hour: Int) {
         try {
             doingHourly = true
-            println("Top of the hour stuff...")
-            println("Hour is: $hour")
+            debug("Top of the hour stuff...")
+            debug("Hour is: $hour")
 
             if (hour % 3 == 0) {
                 timeFunction("Calculating Desirability") { desirabilityUpdater.update() }
@@ -234,7 +243,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
 
             if (hour == 0) {
-                println("Top of the day stuff...")
+                debug("Top of the day stuff...")
                 timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(this) }
             }
 
@@ -281,25 +290,25 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             // now let's test...
             // top left corner...
             if (coordinate.x <= otherBuildingEnd.x && coordinate.x >= otherBuildingStart.x && coordinate.y <= otherBuildingEnd.y && coordinate.y >= otherBuildingStart.y) {
-                collisionWarning("Collision with top left!", newBuilding, coordinate, building, cityLocation.coordinate)
+                // collisionWarning("Collision with top left!", newBuilding, coordinate, building, cityLocation.coordinate)
                 return false
             }
 
             // bottom right corner...
             if (newBuildingEnd.x <= otherBuildingEnd.x && newBuildingEnd.x >= otherBuildingStart.x && newBuildingEnd.y <= otherBuildingEnd.y && newBuildingEnd.y >= otherBuildingStart.y) {
-                collisionWarning("Collision with bottom right!", newBuilding, coordinate, building, cityLocation.coordinate)
+                // collisionWarning("Collision with bottom right!", newBuilding, coordinate, building, cityLocation.coordinate)
                 return false
             }
 
             // top right corner...
             if (newBuildingTopRight.x <= otherBuildingEnd.x && newBuildingTopRight.x >= otherBuildingStart.x && newBuildingTopRight.y <= otherBuildingEnd.y && newBuildingTopRight.y >= otherBuildingStart.y) {
-                collisionWarning("Collision with top right!", newBuilding, coordinate, building, cityLocation.coordinate)
+                // collisionWarning("Collision with top right!", newBuilding, coordinate, building, cityLocation.coordinate)
                 return false
             }
 
             // bottom left corner...
             if (newBuildingBottomLeft.x <= otherBuildingEnd.x && newBuildingBottomLeft.x >= otherBuildingStart.x && newBuildingBottomLeft.y <= otherBuildingEnd.y && newBuildingBottomLeft.y >= otherBuildingStart.y) {
-                collisionWarning("Collision with bottom left!", newBuilding, coordinate, building, cityLocation.coordinate)
+                // collisionWarning("Collision with bottom left!", newBuilding, coordinate, building, cityLocation.coordinate)
                 return false
             }
         }
@@ -307,7 +316,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     private fun collisionWarning(errorMessage: String, newBuilding: Building, coordinate: BlockCoordinate, building: Building, otherCoordinate: BlockCoordinate) {
-        println("$errorMessage -> ${newBuilding.name} at $coordinate: collision with ${building.name} at $otherCoordinate!")
+        debug("$errorMessage -> ${newBuilding.name} at $coordinate: collision with ${building.name} at $otherCoordinate!")
     }
 
     fun buildRoad(from: BlockCoordinate, to: BlockCoordinate) {
@@ -318,7 +327,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 // dezone under us...
                 zoneLayer.remove(block)
             } else {
-                println("We have an overlap... not building!")
+                // debug("We have an overlap... not building!")
             }
         }
         updateBuildingIndex()
@@ -343,12 +352,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
             updateBuildingIndex()
         } else {
-            println("We have an overlap! not building!")
+            // debug("We have an overlap! not building!")
         }
     }
 
     fun bulldoze(from: BlockCoordinate, to: BlockCoordinate) {
-        println("Want to bulldoze from $from to $to")
+        debug("Want to bulldoze from $from to $to")
         BlockCoordinate.iterate(from, to) { coordinate ->
             powerLineLayer.remove(coordinate)
             val buildings = buildingsIn(coordinate)
@@ -395,7 +404,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 powerLineLayer[block] = newPowerLine
                 // println("Dropping a powerline at: $block")
             } else {
-                println("We have an overlap... not building!")
+                // debug("We have an overlap... not building!")
             }
         }
     }
@@ -418,7 +427,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun buildingsIn(block: BlockCoordinate): List<Location> {
-        val nearestBuildings = nearestBuildings(block, 10f)
+        val nearestBuildings = nearestBuildings(block, 10)
         val filteredBuildings = nearestBuildings.filter {
             val coordinate = it.coordinate
             val building = it.building

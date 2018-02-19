@@ -67,13 +67,13 @@ class Constructor(val cityMap: CityMap) {
             val acceptableDesirability = desirabilityScores.all { it > 0.0 }
 
             if (acceptableDesirability) {
-                println("Trying to build $newBuilding at $fuzzedCoordinate")
+                debug("Trying to build $newBuilding at $fuzzedCoordinate")
                 if (cityMap.canBuildBuildingAt(newBuilding, fuzzedCoordinate)) {
                     done = true
                     cityMap.build(newBuilding, fuzzedCoordinate)
                 }
             } else {
-                println("$fuzzedCoordinate didn't have any desirable blocks...")
+                debug("$fuzzedCoordinate didn't have any desirable blocks...")
             }
             tries++
 

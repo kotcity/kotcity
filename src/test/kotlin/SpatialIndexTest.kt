@@ -14,7 +14,7 @@ class SpatialIndexTest {
         map.build(powerPlant1, BlockCoordinate(0, 0))
         map.build(powerPlant2, BlockCoordinate(10, 10))
 
-        val nearestBuildings = map.nearestBuildings(BlockCoordinate(0, 0), 100f)
+        val nearestBuildings = map.nearestBuildings(BlockCoordinate(0, 0), 100)
         println("Nearest buildings: $nearestBuildings")
         assert(nearestBuildings.count() > 1)
     }

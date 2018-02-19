@@ -6,7 +6,7 @@ import kotcity.pathfinding.Pathfinder
 
 class DesirabilityUpdater(val cityMap: CityMap) {
 
-    private val MAX_DISTANCE = 100
+    private val maxDistance = 100
     private val pathFinder: Pathfinder = Pathfinder(cityMap)
     private val resourceFinder = ResourceFinder(cityMap)
 
@@ -36,8 +36,8 @@ class DesirabilityUpdater(val cityMap: CityMap) {
             if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
-                val availableGoods = resourceFinder.nearbyAvailableTradeable(Tradeable.WHOLESALE_GOODS, listOf(coordinate), MAX_DISTANCE)
-                val availableLabor = resourceFinder.nearbyAvailableTradeable(Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
+                val availableGoods = resourceFinder.nearbyAvailableTradeable(Tradeable.WHOLESALE_GOODS, listOf(coordinate), maxDistance)
+                val availableLabor = resourceFinder.nearbyAvailableTradeable(Tradeable.LABOR, listOf(coordinate), maxDistance)
 
                 val score = if (availableGoods.count() == 0) {
                     0.0
@@ -63,7 +63,7 @@ class DesirabilityUpdater(val cityMap: CityMap) {
             if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
-                val availableLabor = resourceFinder.nearbyAvailableTradeable(Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
+                val availableLabor = resourceFinder.nearbyAvailableTradeable(Tradeable.LABOR, listOf(coordinate), maxDistance)
 
                 val score = if (availableLabor.count() == 0) {
                     0.0
@@ -104,7 +104,7 @@ class DesirabilityUpdater(val cityMap: CityMap) {
             if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
-                val availableJobs = resourceFinder.nearbyBuyingTradeable(Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
+                val availableJobs = resourceFinder.nearbyBuyingTradeable(Tradeable.LABOR, listOf(coordinate), maxDistance)
 
                 val score = if (availableJobs.count() == 0) {
                     0.0

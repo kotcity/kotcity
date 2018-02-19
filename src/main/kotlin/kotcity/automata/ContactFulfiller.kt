@@ -1,6 +1,6 @@
 package kotcity.automata
 
-import kotcity.data.CityMap
+import kotcity.data.*
 import kotcity.util.getRandomElements
 
 class ContactFulfiller(val cityMap: CityMap) {
@@ -10,6 +10,9 @@ class ContactFulfiller(val cityMap: CityMap) {
 
     fun signContracts() {
         cityMap.buildingLayer.forEach { coordinate, building ->
+
+            val buildingTradeEntity = CityTradeEntity(coordinate, building)
+
             building.consumes.forEach { tradeable, _ ->
                 val needsCount = building.needs(tradeable)
                 if (needsCount > 0) {
@@ -28,6 +31,33 @@ class ContactFulfiller(val cityMap: CityMap) {
                         if (debug) {
                             println("Could not find $needsCount $tradeable for ${building.name} at $coordinate")
                         }
+                    }
+                }
+            }
+
+            building.produces.forEach { tradeable, _ ->
+                val producesCount = building.quantityForSale(tradeable)
+                if (producesCount > 0) {
+                    val nearbyBuying = resourceFinder.nearbyBuyingTradeable(tradeable, cityMap.buildingBlocks(coordinate, building))
+                    val nearest = nearbyBuying.minBy { it.first.distance() }
+                    if (nearest != null) {
+                        val sourceBlock = nearest.first.blockList().last()
+                        val buildings = cityMap.buildingsIn(sourceBlock).filter { it.building.type != BuildingType.ROAD }
+                        var sourceTradeEntity = if (buildings.count() > 0) {
+                            val sourceBuilding = buildings.first()
+                            CityTradeEntity(sourceBlock, sourceBuilding.building)
+                        } else {
+                            // it must be outside the city...
+                            OutsideTradeEntity(coordinate)
+                        }
+                        if (debug) {
+                            println("${building.name}: Signed contract with ${sourceTradeEntity.description()} for 1 $tradeable")
+                            println("${building.name} now sends ${building.needs(tradeable)} $tradeable")
+                            println("New setup: ${building.summarizeContracts()}")
+                        }
+                        val newContract = Contract(sourceTradeEntity, buildingTradeEntity, tradeable, 1)
+                        sourceTradeEntity.addContract(newContract)
+                        buildingTradeEntity.addContract(newContract)
                     }
                 }
             }

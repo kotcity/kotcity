@@ -1,6 +1,7 @@
 package kotcity.automata
 
 import kotcity.data.*
+import kotcity.pathfinding.MAX_DISTANCE
 import kotcity.pathfinding.Path
 import kotcity.pathfinding.Pathfinder
 
@@ -11,7 +12,7 @@ class ResourceFinder(val map: CityMap) {
     // TODO: let's be able to get paths from outside the city...
     fun nearbyAvailableTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int): List<Pair<Path, Int>> {
         // OK... we need to find nearby buildings...
-        val buildings = sourceBlocks.flatMap { map.nearestBuildings(it, maxDistance.toFloat()) }.distinct()
+        val buildings = sourceBlocks.flatMap { map.nearestBuildings(it, maxDistance) }.distinct()
         // now we gotta make sure they got the resource...
         val buildingsWithResource = buildings.filter { it.building.quantityForSale(tradeable) > 0 }
 
@@ -71,9 +72,9 @@ class ResourceFinder(val map: CityMap) {
         return preferredTradeEntity
     }
 
-    fun nearbyBuyingTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int): List<Pair<Path, Int>> {
+    fun nearbyBuyingTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int = MAX_DISTANCE): List<Pair<Path, Int>> {
         // OK... we need to find nearby buildings...
-        val buildings = sourceBlocks.flatMap { map.nearestBuildings(it, maxDistance.toFloat()) }.distinct()
+        val buildings = sourceBlocks.flatMap { map.nearestBuildings(it, maxDistance) }.distinct()
         // now we gotta make sure they got the resource...
         val buildingsWithResource = buildings.filter { it.building.quantityWanted(tradeable) > 0 }
 
@@ -92,7 +93,7 @@ class ResourceFinder(val map: CityMap) {
             pathsAndQuantity.add(Pair(outsidePath, 999))
         }
 
-        return pathsAndQuantity.toList()
+        return pathsAndQuantity.sortedWith(compareBy({it.second}))
 
     }
 

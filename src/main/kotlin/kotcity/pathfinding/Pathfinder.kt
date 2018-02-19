@@ -1,12 +1,11 @@
 package kotcity.pathfinding
 
-import aballano.kotlinmemoization.memoize
 import kotcity.data.*
 import kotcity.memoization.cache
 import kotcity.util.pmap
 import kotlinx.coroutines.experimental.runBlocking
 
-const val MAX_DISTANCE = 50f
+const val MAX_DISTANCE = 50
 
 enum class Direction {
     NORTH, SOUTH, EAST, WEST, STATIONARY
@@ -149,7 +148,7 @@ class Pathfinder(val cityMap: CityMap) {
 
     fun nearbyRoad(sourceBlocks: List<BlockCoordinate>, distance: Int = 3): Boolean {
         sourceBlocks.forEach {
-            val nearbyRoads = cityMap.nearestBuildings(it, distance.toFloat()).filter { it.building.type == BuildingType.ROAD}
+            val nearbyRoads = cityMap.nearestBuildings(it, distance).filter { it.building.type == BuildingType.ROAD}
             if (nearbyRoads.count() > 0) {
                 return true
             }
