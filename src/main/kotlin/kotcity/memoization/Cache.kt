@@ -5,11 +5,12 @@ import aballano.kotlinmemoization.tuples.Quintuple
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
+import com.github.benmanes.caffeine.cache.RemovalListener
 import java.util.concurrent.TimeUnit
 
-private fun caffeinate(): Caffeine<Any, Any> {
+private fun caffeinate(): Caffeine<Any?, Any?> {
     return Caffeine.newBuilder()
-            .maximumSize(1000)
+            .maximumSize(100000)
             .expireAfterWrite(3, TimeUnit.MINUTES)
             .softValues()
 }
