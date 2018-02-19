@@ -49,12 +49,27 @@ class Pathfinder(val cityMap: CityMap) {
 
     fun pathToOutside(start: List<BlockCoordinate>): Path? {
         // OK... let's see if we can get a trip to the outside...
-        return null
+        return tripTo(start, mapBorders())
     }
 
     fun mapBorders(): List<BlockCoordinate> {
         // OK... what the fuck...
-        return emptyList()
+        val widthRange = -1 .. cityMap.width
+        val heightRange = -1 .. cityMap.height
+
+        val borderBlocks = mutableSetOf<BlockCoordinate>()
+
+        widthRange.forEach { x ->
+            borderBlocks.add(BlockCoordinate(x, heightRange.first))
+            borderBlocks.add(BlockCoordinate(x, heightRange.last))
+        }
+
+        heightRange.forEach { y ->
+            borderBlocks.add(BlockCoordinate(widthRange.first, y))
+            borderBlocks.add(BlockCoordinate(widthRange.last, y))
+        }
+
+        return borderBlocks.toList()
     }
 
     private fun findNearestTrade(start: List<BlockCoordinate>, quantity: Int, buildingFilter: (Building, Int) -> Boolean): List<BlockCoordinate> {
@@ -160,6 +175,7 @@ class Pathfinder(val cityMap: CityMap) {
 
             // look within 3 nodes of here... (we can jump 3 nodes...
             val neighbors = activeNode.coordinate.neighbors(3)
+            // TODO: if we are within 3 blocks we can disregard driveable nodes...
 
             if (destinations.contains(activeNode.coordinate) || destinations.any { neighbors.contains(it) }) {
                 done = true
