@@ -208,7 +208,7 @@ fun readContracts(data: JsonObject, cityMap: CityMap) {
         val tradeable = Tradeable.valueOf(contractObj["tradeable"].asString)
         val quantity = contractObj["quantity"].asInt
         // val newContract = Contract(fromBuilding, toBuilding, tradeable, quantity)
-        fromBuilding.building.createContract(toBuilding.building, tradeable, quantity)
+        toBuilding.building.createContract(CityTradeEntity(fromBuilding.coordinate, fromBuilding.building), tradeable, quantity)
     }
 }
 
@@ -219,15 +219,21 @@ fun writeContracts(data: JsonObject, it: SerializerArg<CityMap>) {
             if (building.contracts.count() == 0) {
                 null
             } else {
-                building.contracts.map { contract ->
-                    jsonObject(
-                            "to_x" to contract.to.coordinate.x,
-                            "to_y" to contract.to.coordinate.y,
-                            "from_x" to contract.from.coordinate.x,
-                            "from_y" to contract.from.coordinate.y,
-                            "tradeable" to contract.tradeable.toString(),
-                            "quantity" to contract.quantity
-                    )
+                building.contracts.mapNotNull { contract ->
+                    if (contract.from is CityTradeEntity && contract.to is CityTradeEntity) {
+                        jsonObject(
+                                "to_x" to contract.to.coordinate.x,
+                                "to_y" to contract.to.coordinate.y,
+                                "from_x" to contract.from.coordinate.x,
+                                "from_y" to contract.from.coordinate.y,
+                                "tradeable" to contract.tradeable.toString(),
+                                "quantity" to contract.quantity
+                        )
+                    } else {
+                        println("We are trading with outside... not writing!")
+                        null
+                    }
+
                 }.toJsonArray()
             }
         }.flatten().toJsonArray()

@@ -22,13 +22,27 @@ enum class Tradeable {
     WHOLESALE_GOODS
 }
 
-abstract class Location {
+abstract class TradeEntity {
     abstract fun description(): String?
     abstract fun building(): Building?
     abstract val coordinate: BlockCoordinate
+    abstract fun quantityForSale(tradeable: Tradeable): Int
+    abstract fun addContract(contract: Contract)
 }
 
-data class OutsideLocation(override val coordinate: BlockCoordinate) : Location() {
+val outsideContracts: MutableList<Contract> = mutableListOf()
+
+// all the outside shares one contract list...
+data class OutsideTradeEntity(override val coordinate: BlockCoordinate) : TradeEntity() {
+
+    override fun addContract(contract: Contract) {
+        outsideContracts.add(contract)
+    }
+
+    override fun quantityForSale(tradeable: Tradeable): Int {
+        return 999
+    }
+
     override fun building(): Building? {
         return null
     }
@@ -39,7 +53,11 @@ data class OutsideLocation(override val coordinate: BlockCoordinate) : Location(
 
 }
 
-data class CityLocation(override val coordinate: BlockCoordinate, val building: Building) : Location() {
+data class CityTradeEntity(override val coordinate: BlockCoordinate, val building: Building) : TradeEntity() {
+    override fun addContract(contract: Contract) {
+        building.addContract(contract)
+    }
+
     override fun building(): Building? {
         return building
     }
@@ -47,11 +65,15 @@ data class CityLocation(override val coordinate: BlockCoordinate, val building: 
     override fun description(): String? {
         return building.description
     }
+
+    override fun quantityForSale(tradeable: Tradeable): Int {
+        return building.quantityForSale(tradeable)
+    }
 }
 
 data class Contract(
-        val to: Location,
-        val from: Location,
+        val to: TradeEntity,
+        val from: TradeEntity,
         val tradeable: Tradeable,
         val quantity: Int
 
@@ -60,6 +82,8 @@ data class Contract(
         return "Contract(to=${to.description()} from=${from.description()} tradeable=$tradeable quantity=$quantity)"
     }
 }
+
+data class Location(val coordinate: BlockCoordinate, val building: Building)
 
 class Inventory {
     private val inventory : MutableMap<Tradeable, Int> = mutableMapOf()
@@ -97,11 +121,13 @@ abstract class Building(private val cityMap: CityMap) {
     open var description: String? = null
     var powered = false
     open val powerRequired = 0
+    open var upkeep: Int = 0
+
     val consumes: MutableMap<Tradeable, Int> = mutableMapOf()
     val produces: MutableMap<Tradeable, Int> = mutableMapOf()
-    open var upkeep: Int = 0
-    val contracts: MutableList<Contract> = mutableListOf()
     private val inventory: Inventory = Inventory()
+
+    val contracts: MutableList<Contract> = mutableListOf()
 
     init {
         // everyone gets 10 dollars...
@@ -154,25 +180,23 @@ abstract class Building(private val cityMap: CityMap) {
         return inventoryCount - contractCount
     }
 
-    private fun addContract(contract: Contract) {
+    internal fun addContract(contract: Contract) {
         this.contracts.add(contract)
     }
 
-    fun createContract(otherBuilding: Building, tradeable: Tradeable, quantity: Int) {
+    fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int) {
         val ourBlocks = cityMap.coordinatesForBuilding(this)
-        val theirBlocks = cityMap.coordinatesForBuilding(otherBuilding)
-        if (ourBlocks == null || theirBlocks == null) {
+        if (ourBlocks == null) {
             println("Sorry, we couldn't find one of the buildings!")
             return
         }
-        val ourLocation = CityLocation(ourBlocks, this)
-        val theirLocation = CityLocation(theirBlocks, otherBuilding)
-        val newContract = Contract(ourLocation, theirLocation, tradeable, quantity)
-        if (otherBuilding.quantityForSale(tradeable) >= newContract.quantity) {
+        val ourLocation = CityTradeEntity(ourBlocks, this)
+        val newContract = Contract(ourLocation, otherTradeEntity, tradeable, quantity)
+        if (otherTradeEntity.quantityForSale(tradeable) >= newContract.quantity) {
             contracts.add(newContract)
-            otherBuilding.addContract(newContract)
+            otherTradeEntity.addContract(newContract)
         } else {
-            println("Tried to make an invalid contract: $newContract but failed because ${otherBuilding.name} doesn't have enough $tradeable (it has ${otherBuilding.quantityForSale(tradeable)})")
+            println("Tried to make an invalid contract: $newContract but failed because ${otherTradeEntity.description()} doesn't have enough $tradeable (it has ${otherTradeEntity.quantityForSale(tradeable)})")
         }
     }
 
@@ -221,7 +245,7 @@ abstract class Building(private val cityMap: CityMap) {
         return 0
     }
 
-    fun transferInventory(to: Location, tradeable: Tradeable, quantity: Int): Int {
+    fun transferInventory(to: TradeEntity, tradeable: Tradeable, quantity: Int): Int {
         if (inventory.has(tradeable, quantity)) {
             inventory.subtract(tradeable, quantity)
             to.building()?.addInventory(tradeable, quantity)

@@ -1,9 +1,6 @@
 package kotcity.automata
 
-import kotcity.data.BlockCoordinate
-import kotcity.data.Building
-import kotcity.data.CityMap
-import kotcity.data.Tradeable
+import kotcity.data.*
 import kotcity.pathfinding.Path
 import kotcity.pathfinding.Pathfinder
 
@@ -28,7 +25,7 @@ class ResourceFinder(val map: CityMap) {
         }
     }
 
-    fun findSource(sourceBlocks: List<BlockCoordinate> , tradeable: Tradeable, quantity: Int): Building? {
+    fun findSource(sourceBlocks: List<BlockCoordinate> , tradeable: Tradeable, quantity: Int): TradeEntity? {
         val buildings = sourceBlocks.flatMap { map.nearestBuildings(it, kotcity.pathfinding.MAX_DISTANCE) }.distinct()
         // now we gotta make sure they got the resource...
         val buildingsWithResource = buildings.filter { it.building.quantityForSale(tradeable) >= quantity }
@@ -41,11 +38,29 @@ class ResourceFinder(val map: CityMap) {
                 Pair(path, location.building)
             }
         }
+
         // we have to find the nearest one now...
+
+        var preferredTradeEntity: TradeEntity? = null
+
         if (buildingsWithPath.count() > 0) {
-            return buildingsWithPath.minBy { it.first.distance() }?.second
+            // ok so the last link in the path is the actual location...
+            val nearestBuildingAndPath = buildingsWithPath.minBy { it.first.distance() }
+            if (nearestBuildingAndPath != null) {
+                val buildingCoordinate = nearestBuildingAndPath.first.blockList().last()
+                preferredTradeEntity = CityTradeEntity(buildingCoordinate, building = nearestBuildingAndPath.second)
+            }
         }
-        return null
+
+        if (preferredTradeEntity == null) {
+            // let's try and get a path to the outside...
+            val destinationBlock = pathfinder.pathToOutside(sourceBlocks)?.blockList()?.last()
+            if (destinationBlock != null) {
+                preferredTradeEntity = OutsideTradeEntity(destinationBlock)
+            }
+        }
+
+        return preferredTradeEntity
     }
 
     fun nearbyBuyingTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int): List<Pair<Path, Int>> {

@@ -9,11 +9,12 @@ class PathfinderTest {
     fun testPathfinder() {
         val flatMap = CityMap.flatMap(100, 100)
         val pathfinder = Pathfinder(flatMap)
-        var outsidePath = pathfinder.pathToOutside(listOf(BlockCoordinate(50, 50)))
+        var outsidePath = pathfinder.pathToOutside(listOf(BlockCoordinate(50, 50)))?.blockList()
         assertTrue(outsidePath == null, "Path to outside should not be null")
         // let's build a road right across...
         flatMap.buildRoad(BlockCoordinate(0, 50), BlockCoordinate(100, 50))
-        outsidePath = pathfinder.pathToOutside(listOf(BlockCoordinate(50, 50)))
+        outsidePath = pathfinder.pathToOutside(listOf(BlockCoordinate(50, 50)))?.blockList()
         assertTrue(outsidePath != null, "Path to outside should not be null")
+        assertTrue(outsidePath?.count() == 51, "Path to outside should be 51 nodes!")
     }
 }

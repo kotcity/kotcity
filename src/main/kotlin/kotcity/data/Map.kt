@@ -37,6 +37,11 @@ data class BlockCoordinate(val x: Int, val y: Int) {
 
     }
 
+    fun distanceTo(otherCoordinate: BlockCoordinate): Double {
+        return Math.sqrt(((this.x-otherCoordinate.x)*(this.x-otherCoordinate.x) + (this.y-otherCoordinate.y)*(this.y-otherCoordinate.y)).toDouble())
+    }
+
+
 }
 
 data class Corners(
@@ -160,14 +165,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return blockList
     }
 
-    fun nearestBuildings(coordinate: BlockCoordinate, distance: Float = 10f): List<CityLocation> {
+    fun nearestBuildings(coordinate: BlockCoordinate, distance: Float = 10f): List<Location> {
         val point = Geometries.rectangle(coordinate.x.toFloat(), coordinate.y.toFloat(),coordinate.x.toFloat()+1, coordinate.y.toFloat()+1)
         return buildingIndex.search(point, distance.toDouble())
                 .toBlocking().toIterable().mapNotNull { entry ->
             val geometry = entry.geometry()
             val building = entry.value()
             if (geometry != null && building != null) {
-                CityLocation(BlockCoordinate(geometry.x1().toInt(), geometry.y1().toInt()), building)
+                Location(BlockCoordinate(geometry.x1().toInt(), geometry.y1().toInt()), building)
             } else {
                 null
             }
@@ -265,7 +270,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
 
         val nearby = nearestBuildings(coordinate)
-        nearby.forEach { cityLocation: CityLocation ->
+        nearby.forEach { cityLocation: Location ->
             val building = cityLocation.building
             val otherBuildingStart = cityLocation.coordinate
             val otherBuildingEnd = BlockCoordinate(otherBuildingStart.x + building.width - 1, otherBuildingStart.y + building.height - 1)
@@ -403,7 +408,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }?.first
     }
 
-    fun buildingsIn(block: BlockCoordinate): List<CityLocation> {
+    fun buildingsIn(block: BlockCoordinate): List<Location> {
         val nearestBuildings = nearestBuildings(block, 10f)
         val filteredBuildings = nearestBuildings.filter {
             val coordinate = it.coordinate
@@ -413,7 +418,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
         // now we also need the power lines that are here...
         powerLineLayer[block]?.let {
-            return filteredBuildings.plus(CityLocation(block, it))
+            return filteredBuildings.plus(Location(block, it))
         }
         return filteredBuildings
     }

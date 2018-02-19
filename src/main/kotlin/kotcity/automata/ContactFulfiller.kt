@@ -20,7 +20,7 @@ class ContactFulfiller(val cityMap: CityMap) {
                         }
                         building.createContract(nearby, tradeable, 1)
                         if (debug) {
-                            println("${building.name}: Signed contract with ${nearby.name} for 1 $tradeable")
+                            println("${building.name}: Signed contract with ${nearby.description()} for 1 $tradeable")
                             println("${building.name} now requires ${building.needs(tradeable)} $tradeable")
                             println("New setup: ${building.summarizeContracts()}")
                         }

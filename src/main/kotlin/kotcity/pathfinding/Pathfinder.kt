@@ -21,6 +21,10 @@ data class Path (
     fun distance(): Int {
         return nodes.count()
     }
+
+    fun blockList(): List<BlockCoordinate> {
+        return nodes.map { it.coordinate }
+    }
 }
 
 data class NavigationNode(
@@ -108,13 +112,18 @@ class Pathfinder(val cityMap: CityMap) {
         return tripTo(start, nearest)
     }
 
-    private fun heuristic(start: BlockCoordinate, destinations: List<BlockCoordinate>): Double {
+    private fun heuristic(current: BlockCoordinate, destinations: List<BlockCoordinate>): Double {
         // calculate manhattan distance to each...
         return runBlocking {
-            val scores = destinations.pmap(this.coroutineContext) {
-                manhattanDistance(start, it)
+            val scores = destinations.pmap(this.coroutineContext) {coordinate ->
+                var score = manhattanDistance(current, coordinate)
+                // see if this is road and lower score by a tiny bit...
+                if (cityMap.buildingLayer[current]?.type == BuildingType.ROAD) {
+                    score -= 5
+                }
+                score
             }
-            scores.min() ?: 0.0
+            scores.min() ?: 100.0
         }
 
     }
@@ -140,22 +149,22 @@ class Pathfinder(val cityMap: CityMap) {
         return cityMap.buildingLayer[node.coordinate]?.type == BuildingType.ROAD
     }
 
+    private fun isGround(node: NavigationNode): Boolean {
+        return cityMap.groundLayer[node.coordinate]?.type == TileType.GROUND
+    }
+
     fun tripTo(
             source: List<BlockCoordinate>,
             destinations: List<BlockCoordinate>
     ): Path? {
 
-        // that first time we can go up to 3 hops away and still work right...
-        val paddedSources = mutableListOf(*source.toTypedArray())
-        paddedSources.addAll(source.toTypedArray().flatMap { it.neighbors(3) }.distinct() )
-
         // switch these to list of navigation nodes...
         val openList = mutableSetOf(*(
-                paddedSources.map { NavigationNode(
+                source.map { NavigationNode(
                         cityMap,
                         it,
                         null,
-                        memoizedHeuristic(it, destinations),
+                        heuristic(it, destinations),
                         TransitType.ROAD,
                         Direction.STATIONARY
                 )}.toTypedArray())
@@ -174,10 +183,11 @@ class Pathfinder(val cityMap: CityMap) {
             closedList.add(activeNode)
 
             // look within 3 nodes of here... (we can jump 3 nodes...
-            val neighbors = activeNode.coordinate.neighbors(3)
             // TODO: if we are within 3 blocks we can disregard driveable nodes...
+            val distanceToGoal = destinations.map { activeNode.coordinate.distanceTo(it) }.min() ?: 999.0
+            val distanceFromStart = source.map { activeNode.coordinate.distanceTo(it) }.min() ?: 999.0
 
-            if (destinations.contains(activeNode.coordinate) || destinations.any { neighbors.contains(it) }) {
+            if (destinations.contains(activeNode.coordinate)) {
                 done = true
                 lastNode = activeNode
             }
@@ -185,29 +195,41 @@ class Pathfinder(val cityMap: CityMap) {
             // TODO: maybe pull out into lambda so we can re-use pathfinder...
             fun maybeAppendNode(node: NavigationNode) {
                 if (!closedList.contains(node) && !openList.contains(node)) {
-                    if (drivable(node) || destinations.contains(node.coordinate)) {
-                        openList.add(node)
+
+                    // if we are within 3 we can just skip around...
+                    if (distanceToGoal <= 3 || distanceFromStart <= 3) {
+                        if (isGround(node) || destinations.contains(node.coordinate)) {
+                            openList.add(node)
+                        } else {
+                            closedList.add(node)
+                        }
                     } else {
-                        closedList.add(node)
+                        if (drivable(node) || destinations.contains(node.coordinate)) {
+                            openList.add(node)
+                        } else {
+                            closedList.add(node)
+                        }
                     }
+
+
                 }
             }
 
             // ok figure out the dang neighbors...
             val north = BlockCoordinate(activeNode.coordinate.x, activeNode.coordinate.y-1)
-            val northNode = NavigationNode(cityMap, north, activeNode, memoizedHeuristic(north, destinations), TransitType.ROAD, Direction.NORTH)
+            val northNode = NavigationNode(cityMap, north, activeNode, heuristic(north, destinations), TransitType.ROAD, Direction.NORTH)
             maybeAppendNode(northNode)
 
             val south = BlockCoordinate(activeNode.coordinate.x, activeNode.coordinate.y+1)
-            val southNode = NavigationNode(cityMap, south, activeNode, memoizedHeuristic(south, destinations), TransitType.ROAD, Direction.SOUTH)
+            val southNode = NavigationNode(cityMap, south, activeNode, heuristic(south, destinations), TransitType.ROAD, Direction.SOUTH)
             maybeAppendNode(southNode)
 
             val east = BlockCoordinate(activeNode.coordinate.x+1, activeNode.coordinate.y)
-            val eastNode = NavigationNode(cityMap, east, activeNode, memoizedHeuristic(east, destinations), TransitType.ROAD, Direction.EAST)
+            val eastNode = NavigationNode(cityMap, east, activeNode, heuristic(east, destinations), TransitType.ROAD, Direction.EAST)
             maybeAppendNode(eastNode)
 
             val west = BlockCoordinate(activeNode.coordinate.x-1, activeNode.coordinate.y)
-            val westNode = NavigationNode(cityMap, west, activeNode, memoizedHeuristic(west, destinations), TransitType.ROAD, Direction.WEST)
+            val westNode = NavigationNode(cityMap, west, activeNode, heuristic(west, destinations), TransitType.ROAD, Direction.WEST)
             maybeAppendNode(westNode)
 
         }
@@ -224,7 +246,7 @@ class Pathfinder(val cityMap: CityMap) {
                 activeNode = activeNode.parent
             }
 
-            Path(pathNodes)
+            Path(pathNodes.reversed())
         }
 
     }
