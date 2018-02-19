@@ -6,13 +6,14 @@ import kotcity.util.getRandomElements
 class ContactFulfiller(val cityMap: CityMap) {
 
     var debug = false
+    val resourceFinder = ResourceFinder(cityMap)
 
     fun signContracts() {
         cityMap.buildingLayer.forEach { coordinate, building ->
             building.consumes.forEach { tradeable, _ ->
                 val needsCount = building.needs(tradeable)
                 if (needsCount > 0) {
-                    val nearby = ResourceFinder.findSource(cityMap, cityMap.buildingBlocks(coordinate, building),tradeable, 1)
+                    val nearby = resourceFinder.findSource(cityMap.buildingBlocks(coordinate, building),tradeable, 1)
                     if (nearby != null) {
                         if (debug) {
                             println()

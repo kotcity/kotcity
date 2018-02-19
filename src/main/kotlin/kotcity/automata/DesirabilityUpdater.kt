@@ -4,38 +4,40 @@ import kotcity.data.*
 import kotcity.pathfinding.Pathfinder
 
 
-object DesirabilityUpdater {
+class DesirabilityUpdater(val cityMap: CityMap) {
 
-    private const val MAX_DISTANCE = 100
+    private val MAX_DISTANCE = 100
+    private val pathFinder: Pathfinder = Pathfinder(cityMap)
+    private val resourceFinder = ResourceFinder(cityMap)
 
-    fun update(cityMap: CityMap) {
+    fun update() {
         // let's update the desirability...
         cityMap.desirabilityLayers.forEach { desirabilityLayer ->
 
             // TODO: worry about other levels later...
             if (desirabilityLayer.level == 1) {
                 when (desirabilityLayer.zoneType) {
-                    ZoneType.RESIDENTIAL -> updateResidential(cityMap, desirabilityLayer)
-                    ZoneType.INDUSTRIAL -> updateIndustrial(cityMap, desirabilityLayer)
-                    ZoneType.COMMERCIAL -> updateCommercial(cityMap, desirabilityLayer)
+                    ZoneType.RESIDENTIAL -> updateResidential(desirabilityLayer)
+                    ZoneType.INDUSTRIAL -> updateIndustrial(desirabilityLayer)
+                    ZoneType.COMMERCIAL -> updateCommercial(desirabilityLayer)
                 }
             }
 
         }
     }
 
-    private fun updateCommercial(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
+    private fun updateCommercial(desirabilityLayer: DesirabilityLayer) {
 
         // ok... we just gotta find each block with an industrial zone...
-        val commercialZones = zoneCoordinates(cityMap, ZoneType.COMMERCIAL)
+        val commercialZones = zoneCoordinates(ZoneType.COMMERCIAL)
 
         commercialZones.forEach { coordinate ->
 
-            if (!Pathfinder.nearbyRoad(cityMap, listOf(coordinate))) {
+            if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
-                val availableGoods = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.WHOLESALE_GOODS, listOf(coordinate), MAX_DISTANCE)
-                val availableLabor = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
+                val availableGoods = resourceFinder.nearbyAvailableTradeable(Tradeable.WHOLESALE_GOODS, listOf(coordinate), MAX_DISTANCE)
+                val availableLabor = resourceFinder.nearbyAvailableTradeable(Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
 
                 val score = if (availableGoods.count() == 0) {
                     0.0
@@ -51,17 +53,17 @@ object DesirabilityUpdater {
         trimDesirabilityLayer(desirabilityLayer, commercialZones)
     }
 
-    private fun updateIndustrial(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
+    private fun updateIndustrial(desirabilityLayer: DesirabilityLayer) {
 
         // ok... we just gotta find each block with an industrial zone...
-        val industryZones = zoneCoordinates(cityMap, ZoneType.INDUSTRIAL)
+        val industryZones = zoneCoordinates(ZoneType.INDUSTRIAL)
 
         industryZones.forEach { coordinate ->
 
-            if (!Pathfinder.nearbyRoad(cityMap, listOf(coordinate))) {
+            if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
-                val availableLabor = ResourceFinder.nearbyAvailableTradeable(cityMap, Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
+                val availableLabor = resourceFinder.nearbyAvailableTradeable(Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
 
                 val score = if (availableLabor.count() == 0) {
                     0.0
@@ -89,20 +91,20 @@ object DesirabilityUpdater {
         keysToTrim.forEach { desirabilityLayer.remove(it) }
     }
 
-    private fun zoneCoordinates(cityMap: CityMap, zoneType: ZoneType): List<BlockCoordinate> {
+    private fun zoneCoordinates(zoneType: ZoneType): List<BlockCoordinate> {
         return cityMap.zoneLayer.toList().filter { it.second == Zone(zoneType) }.map { it.first }
     }
 
-    private fun updateResidential(cityMap: CityMap, desirabilityLayer: DesirabilityLayer) {
+    private fun updateResidential(desirabilityLayer: DesirabilityLayer) {
         // we like being near places that NEED labor
         // we like being near places that PROVIDE goods
 
-        val residentialZones = zoneCoordinates(cityMap, ZoneType.RESIDENTIAL)
+        val residentialZones = zoneCoordinates(ZoneType.RESIDENTIAL)
         residentialZones.forEach { coordinate ->
-            if (!Pathfinder.nearbyRoad(cityMap, listOf(coordinate))) {
+            if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
-                val availableJobs = ResourceFinder.nearbyBuyingTradeable(cityMap, Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
+                val availableJobs = resourceFinder.nearbyBuyingTradeable(Tradeable.LABOR, listOf(coordinate), MAX_DISTANCE)
 
                 val score = if (availableJobs.count() == 0) {
                     0.0

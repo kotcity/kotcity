@@ -13,6 +13,10 @@ class DesirabilityTest {
     @Test
     fun desirabilityTest() {
         val map = CityMap.flatMap(1024, 1024)
+
+        val pathfinder = Pathfinder(map)
+        val desirabilityUpdater = DesirabilityUpdater(map)
+
         val assetManager = AssetManager(map)
         // ok what we want to do here is drop a job center at 0,0
         val jobCenter = assetManager.buildingFor(BuildingType.CIVIC, "job_center")
@@ -41,20 +45,20 @@ class DesirabilityTest {
         val cornerStore = assetManager.buildingFor(BuildingType.COMMERCIAL, "corner_store")
         map.build(cornerStore, BlockCoordinate(3, 5))
 
-        val path = Pathfinder.pathToNearestLabor(map, listOf(BlockCoordinate(3, 10)))
+        val path = pathfinder.pathToNearestLabor(listOf(BlockCoordinate(3, 10)))
 
         if (path == null) {
             fail("The path was null...")
         }
 
-        val pathToJob = Pathfinder.pathToNearestJob(map, listOf(BlockCoordinate(3, 10)))
+        val pathToJob = pathfinder.pathToNearestJob(listOf(BlockCoordinate(3, 10)))
 
         if (pathToJob == null) {
             fail("The path was null...")
         }
 
         // ok now let's make sure the desirability is actually kosher...
-        DesirabilityUpdater.update(map)
+        desirabilityUpdater.update()
 
         listOf(ZoneType.INDUSTRIAL, ZoneType.RESIDENTIAL, ZoneType.COMMERCIAL).forEach { zt ->
             var nonDefaultFound = false
@@ -72,7 +76,7 @@ class DesirabilityTest {
         cf.signContracts()
 
         // ok now let's make sure the desirability is actually kosher...
-        DesirabilityUpdater.update(map)
+        desirabilityUpdater.update()
 
         assertTrue(slum.quantityForSale(Tradeable.LABOR) == 0, "Expected 0 labor but has: ${slum.quantityForSale(Tradeable.LABOR)} labor...")
         assertTrue(slum2.quantityForSale(Tradeable.LABOR) == 2, "Expected 0 labor but has: ${slum2.quantityForSale(Tradeable.LABOR)} labor...")

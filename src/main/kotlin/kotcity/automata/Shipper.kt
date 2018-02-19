@@ -13,11 +13,11 @@ class Shipper(val cityMap: CityMap) {
             building.contracts.forEach { contract ->
                 // we only want to deal with "to" and not to ourself...
                 // we also don't SEND labor
-                if (contract.to.building != building && contract.tradeable != Tradeable.LABOR) {
+                if (contract.to.building() != building && contract.tradeable != Tradeable.LABOR) {
                     val howManyTransferred = building.transferInventory(contract.to, contract.tradeable, contract.quantity)
                     building.addInventory(Tradeable.MONEY, howManyTransferred)
                     if (debug) {
-                        println("${building.description}: We transferred ${contract.quantity} ${contract.tradeable} to ${contract.to.building.description}")
+                        println("${building.description}: We transferred ${contract.quantity} ${contract.tradeable} to ${contract.to.description()}")
                     }
                 }
             }

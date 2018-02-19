@@ -45,9 +45,19 @@ data class NavigationNode(
     }
 }
 
-object Pathfinder {
+class Pathfinder(val cityMap: CityMap) {
 
-    private fun findNearestTrade(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int, buildingFilter: (Building, Int) -> Boolean): List<BlockCoordinate> {
+    fun pathToOutside(start: List<BlockCoordinate>): Path? {
+        // OK... let's see if we can get a trip to the outside...
+        return null
+    }
+
+    fun mapBorders(): List<BlockCoordinate> {
+        // OK... what the fuck...
+        return emptyList()
+    }
+
+    private fun findNearestTrade(start: List<BlockCoordinate>, quantity: Int, buildingFilter: (Building, Int) -> Boolean): List<BlockCoordinate> {
         return start.flatMap { coordinate ->
             val buildings = cityMap.nearestBuildings(coordinate, MAX_DISTANCE)
 
@@ -57,11 +67,6 @@ object Pathfinder {
                 buildingFilter(building, quantity)
             }
         }.flatMap { blocksFor(it.building, it.coordinate) }
-    }
-
-    fun pathToNearestTrade(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int, buildingFilter: (Building, Int) -> Boolean): Path? {
-        val nearest = findNearestTrade(cityMap, start, quantity, buildingFilter)
-        return tripTo(cityMap, start, nearest)
     }
 
     private fun blocksFor(building: Building, coordinate: BlockCoordinate): List<BlockCoordinate> {
@@ -74,18 +79,18 @@ object Pathfinder {
         }
     }
 
-    fun pathToNearestLabor(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int = 1): Path? {
-        val nearest = findNearestTrade(cityMap, start, quantity) { building, _ ->
+    fun pathToNearestLabor(start: List<BlockCoordinate>, quantity: Int = 1): Path? {
+        val nearest = findNearestTrade(start, quantity) { building, _ ->
             building.quantityForSale(Tradeable.LABOR) >= quantity
         }
-        return tripTo(cityMap, start, nearest)
+        return tripTo(start, nearest)
     }
 
-    fun pathToNearestJob(cityMap: CityMap, start: List<BlockCoordinate>, quantity: Int = 1): Path? {
-        val nearest = findNearestTrade(cityMap, start, quantity) { building, _ ->
+    fun pathToNearestJob(start: List<BlockCoordinate>, quantity: Int = 1): Path? {
+        val nearest = findNearestTrade(start, quantity) { building, _ ->
             building.quantityWanted(Tradeable.LABOR) >= quantity
         }
-        return tripTo(cityMap, start, nearest)
+        return tripTo(start, nearest)
     }
 
     private fun heuristic(start: BlockCoordinate, destinations: List<BlockCoordinate>): Double {
@@ -105,7 +110,7 @@ object Pathfinder {
         return Math.abs(start.x-destination.x) + Math.abs(start.y-destination.y).toDouble()
     }
 
-    fun nearbyRoad(cityMap: CityMap, sourceBlocks: List<BlockCoordinate>, distance: Int = 3): Boolean {
+    fun nearbyRoad(sourceBlocks: List<BlockCoordinate>, distance: Int = 3): Boolean {
         sourceBlocks.forEach {
             val nearbyRoads = cityMap.nearestBuildings(it, distance.toFloat()).filter { it.building.type == BuildingType.ROAD}
             if (nearbyRoads.count() > 0) {
@@ -115,13 +120,12 @@ object Pathfinder {
         return false
     }
 
-    private fun drivable(cityMap: CityMap, node: NavigationNode): Boolean {
+    private fun drivable(node: NavigationNode): Boolean {
         // make sure we got a road under it...
         return cityMap.buildingLayer[node.coordinate]?.type == BuildingType.ROAD
     }
 
     fun tripTo(
-            cityMap: CityMap,
             source: List<BlockCoordinate>,
             destinations: List<BlockCoordinate>
     ): Path? {
@@ -165,7 +169,7 @@ object Pathfinder {
             // TODO: maybe pull out into lambda so we can re-use pathfinder...
             fun maybeAppendNode(node: NavigationNode) {
                 if (!closedList.contains(node) && !openList.contains(node)) {
-                    if (drivable(cityMap, node) || destinations.contains(node.coordinate)) {
+                    if (drivable(node) || destinations.contains(node.coordinate)) {
                         openList.add(node)
                     } else {
                         closedList.add(node)

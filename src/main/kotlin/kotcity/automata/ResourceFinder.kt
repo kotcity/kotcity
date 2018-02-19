@@ -7,8 +7,11 @@ import kotcity.data.Tradeable
 import kotcity.pathfinding.Path
 import kotcity.pathfinding.Pathfinder
 
-object ResourceFinder {
-    fun nearbyAvailableTradeable(map: CityMap, tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int): List<Pair<Path, Int>> {
+class ResourceFinder(val map: CityMap) {
+
+    val pathfinder = Pathfinder(map)
+
+    fun nearbyAvailableTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int): List<Pair<Path, Int>> {
         // OK... we need to find nearby buildings...
         val buildings = sourceBlocks.flatMap { map.nearestBuildings(it, maxDistance.toFloat()) }.distinct()
         // now we gotta make sure they got the resource...
@@ -16,7 +19,7 @@ object ResourceFinder {
 
         return buildingsWithResource.mapNotNull { location ->
             val buildingBlocks = map.buildingBlocks(location.coordinate, location.building)
-            val path = Pathfinder.tripTo(map, sourceBlocks, buildingBlocks)
+            val path = pathfinder.tripTo(sourceBlocks, buildingBlocks)
             if (path == null) {
                 null
             } else {
@@ -25,13 +28,13 @@ object ResourceFinder {
         }
     }
 
-    fun findSource(map: CityMap, sourceBlocks: List<BlockCoordinate> , tradeable: Tradeable, quantity: Int): Building? {
+    fun findSource(sourceBlocks: List<BlockCoordinate> , tradeable: Tradeable, quantity: Int): Building? {
         val buildings = sourceBlocks.flatMap { map.nearestBuildings(it, kotcity.pathfinding.MAX_DISTANCE) }.distinct()
         // now we gotta make sure they got the resource...
         val buildingsWithResource = buildings.filter { it.building.quantityForSale(tradeable) >= quantity }
         val buildingsWithPath = buildingsWithResource.mapNotNull { location ->
             val buildingBlocks = map.buildingBlocks(location.coordinate, location.building)
-            val path = Pathfinder.tripTo(map, sourceBlocks, buildingBlocks)
+            val path = pathfinder.tripTo(sourceBlocks, buildingBlocks)
             if (path == null) {
                 null
             } else {
@@ -45,7 +48,7 @@ object ResourceFinder {
         return null
     }
 
-    fun nearbyBuyingTradeable(map: CityMap, tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int): List<Pair<Path, Int>> {
+    fun nearbyBuyingTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int): List<Pair<Path, Int>> {
         // OK... we need to find nearby buildings...
         val buildings = sourceBlocks.flatMap { map.nearestBuildings(it, maxDistance.toFloat()) }.distinct()
         // now we gotta make sure they got the resource...
@@ -53,7 +56,7 @@ object ResourceFinder {
 
         return buildingsWithResource.mapNotNull { location ->
             val buildingBlocks = map.buildingBlocks(location.coordinate, location.building)
-            val path = Pathfinder.tripTo(map, sourceBlocks, buildingBlocks)
+            val path = pathfinder.tripTo(sourceBlocks, buildingBlocks)
             if (path == null) {
                 null
             } else {

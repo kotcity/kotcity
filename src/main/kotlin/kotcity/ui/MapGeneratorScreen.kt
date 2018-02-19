@@ -13,7 +13,7 @@ import tornadofx.selectedItem
 
 class MapGeneratorScreen : View() {
     override val root: BorderPane by fxml("/MapGeneratorScreen.fxml")
-    // val canvasPane: ScrollPane by fxid("canvasPane")
+
     private val cityMapCanvas = CityMapCanvas()
     private val mapGenerator = MapGenerator()
 
