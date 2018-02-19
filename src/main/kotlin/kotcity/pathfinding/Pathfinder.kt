@@ -51,11 +51,13 @@ data class NavigationNode(
 
 class Pathfinder(val cityMap: CityMap) {
 
+    // TODO: this is too slow... maybe cache?
     fun pathToOutside(start: List<BlockCoordinate>): Path? {
         // OK... let's see if we can get a trip to the outside...
         return tripTo(start, mapBorders())
     }
 
+    // TODO: this can get cached forever! borders won't change...
     fun mapBorders(): List<BlockCoordinate> {
         // OK... what the fuck...
         val widthRange = -1 .. cityMap.width
@@ -112,6 +114,7 @@ class Pathfinder(val cityMap: CityMap) {
         return tripTo(start, nearest)
     }
 
+    // TODO: maybe cache this???
     private fun heuristic(current: BlockCoordinate, destinations: List<BlockCoordinate>): Double {
         // calculate manhattan distance to each...
         return runBlocking {
@@ -127,8 +130,6 @@ class Pathfinder(val cityMap: CityMap) {
         }
 
     }
-
-    private val memoizedHeuristic = ::heuristic.memoize(256)
 
     private fun manhattanDistance(start: BlockCoordinate, destination: BlockCoordinate): Double {
         return Math.abs(start.x-destination.x) + Math.abs(start.y-destination.y).toDouble()

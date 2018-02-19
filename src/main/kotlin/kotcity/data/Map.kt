@@ -351,7 +351,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             // now kill all those contracts...
             buildings.forEach {
                 buildingLayer.values.forEach { otherBuilding ->
-                    otherBuilding.voidContractsWith(it.building)
+                    val otherCoords = coordinatesForBuilding(otherBuilding)
+                    if (otherCoords != null) {
+                        val otherEntity = CityTradeEntity(otherCoords, otherBuilding)
+                        otherBuilding.voidContractsWith(otherEntity)
+                    }
+
                 }
                 // gotta remove building from the list...
                 val iterator = buildingLayer.iterator()

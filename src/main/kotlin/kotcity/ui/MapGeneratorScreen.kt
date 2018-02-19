@@ -44,7 +44,7 @@ class MapGeneratorScreen : View() {
 
         title = "$GAME_STRING - Generate a Map"
 
-        newMap = generate(sizeField.text.toInt(), sizeField.text.toInt())
+        // newMap = generate(sizeField.text.toInt(), sizeField.text.toInt())
         fitMap()
 
         var ticks = 0

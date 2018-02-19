@@ -29,11 +29,8 @@ class MapGenerator {
         repeat(map.width) { x ->
             repeat(map.height) { y ->
 
-                //   double nx = x/width - 0.5, ny = y/height - 0.5;
                 val nx = (x.toDouble() / map.width.toDouble()) - 0.5
                 val ny = (y.toDouble() / map.height.toDouble()) - 0.5
-
-                // val randomTile = noiseGen.eval(nx * freq, ny * freq)
 
                 val n1 = (1.0 * noiseGen.eval(f1 * nx, f1 * ny))
                 val n2 = (0.5 * noiseGen.eval(f2 * nx, f2 * ny))
@@ -42,14 +39,6 @@ class MapGenerator {
                 var tileElevation = n1 + n2 + n3
 
                 tileElevation = pow(tileElevation, exp)
-
-//                if (x == 0 && y == 0) {
-//                    println("nx: $nx, ny: $ny")
-//                    println("n1: $n1, n2: $n2, n3: $n3")
-//                    println("Our value is: $tileElevation")
-//                }
-
-                // println("Sea level is: $seaLevel")
 
                 tileElevation = round(tileElevation - seaLevel, 2)
 
@@ -65,6 +54,7 @@ class MapGenerator {
 
         addResources(seed, map)
 
+        println("The map was generated!!!!")
         return map
     }
 

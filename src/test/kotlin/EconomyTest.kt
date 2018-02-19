@@ -15,7 +15,7 @@ class EconomyTest {
         println("Jobcenter: ${jobCenter.quantityForSale(Tradeable.LABOR) }")
         assert(jobCenter.quantityForSale(Tradeable.LABOR) == 2)
         // now void the contracts...
-        jobCenter.voidContractsWith(industrialBuilding)
+        jobCenter.voidContractsWith(industrialTrader)
         assert(jobCenter.quantityForSale(Tradeable.LABOR) >= 1)
         map.tick()
     }

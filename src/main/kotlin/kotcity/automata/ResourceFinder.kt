@@ -8,13 +8,14 @@ class ResourceFinder(val map: CityMap) {
 
     val pathfinder = Pathfinder(map)
 
+    // TODO: let's be able to get paths from outside the city...
     fun nearbyAvailableTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int): List<Pair<Path, Int>> {
         // OK... we need to find nearby buildings...
         val buildings = sourceBlocks.flatMap { map.nearestBuildings(it, maxDistance.toFloat()) }.distinct()
         // now we gotta make sure they got the resource...
         val buildingsWithResource = buildings.filter { it.building.quantityForSale(tradeable) > 0 }
 
-        return buildingsWithResource.mapNotNull { location ->
+        val pathsAndQuantity = buildingsWithResource.mapNotNull { location ->
             val buildingBlocks = map.buildingBlocks(location.coordinate, location.building)
             val path = pathfinder.tripTo(sourceBlocks, buildingBlocks)
             if (path == null) {
@@ -22,7 +23,14 @@ class ResourceFinder(val map: CityMap) {
             } else {
                 Pair(path, location.building.quantityForSale(tradeable))
             }
+        }.toMutableList()
+
+        val outsidePath = pathfinder.pathToOutside(sourceBlocks)
+        if (outsidePath != null) {
+            pathsAndQuantity.add(Pair(outsidePath, 999))
         }
+
+        return pathsAndQuantity.toList()
     }
 
     fun findSource(sourceBlocks: List<BlockCoordinate> , tradeable: Tradeable, quantity: Int): TradeEntity? {
@@ -69,7 +77,7 @@ class ResourceFinder(val map: CityMap) {
         // now we gotta make sure they got the resource...
         val buildingsWithResource = buildings.filter { it.building.quantityWanted(tradeable) > 0 }
 
-        return buildingsWithResource.mapNotNull { location ->
+        val pathsAndQuantity = buildingsWithResource.mapNotNull { location ->
             val buildingBlocks = map.buildingBlocks(location.coordinate, location.building)
             val path = pathfinder.tripTo(sourceBlocks, buildingBlocks)
             if (path == null) {
@@ -77,7 +85,15 @@ class ResourceFinder(val map: CityMap) {
             } else {
                 Pair(path, location.building.quantityWanted(tradeable))
             }
+        }.toMutableList()
+
+        val outsidePath = pathfinder.pathToOutside(sourceBlocks)
+        if (outsidePath != null) {
+            pathsAndQuantity.add(Pair(outsidePath, 999))
         }
+
+        return pathsAndQuantity.toList()
+
     }
 
 

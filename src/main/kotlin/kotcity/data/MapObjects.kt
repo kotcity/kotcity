@@ -28,12 +28,21 @@ abstract class TradeEntity {
     abstract val coordinate: BlockCoordinate
     abstract fun quantityForSale(tradeable: Tradeable): Int
     abstract fun addContract(contract: Contract)
+    abstract fun voidContractsWith(otherTradeEntity: TradeEntity)
 }
 
 val outsideContracts: MutableList<Contract> = mutableListOf()
 
 // all the outside shares one contract list...
 data class OutsideTradeEntity(override val coordinate: BlockCoordinate) : TradeEntity() {
+    override fun voidContractsWith(otherTradeEntity: TradeEntity) {
+        val iterator = outsideContracts.iterator()
+        iterator.forEach { contract ->
+            if (contract.from == otherTradeEntity || contract.to == otherTradeEntity) {
+                iterator.remove()
+            }
+        }
+    }
 
     override fun addContract(contract: Contract) {
         outsideContracts.add(contract)
@@ -54,6 +63,10 @@ data class OutsideTradeEntity(override val coordinate: BlockCoordinate) : TradeE
 }
 
 data class CityTradeEntity(override val coordinate: BlockCoordinate, val building: Building) : TradeEntity() {
+    override fun voidContractsWith(otherTradeEntity: TradeEntity) {
+        building.voidContractsWith(otherTradeEntity)
+    }
+
     override fun addContract(contract: Contract) {
         building.addContract(contract)
     }
@@ -200,12 +213,9 @@ abstract class Building(private val cityMap: CityMap) {
         }
     }
 
-    fun voidContractsWith(otherBuilding: Building, reciprocate: Boolean = true) {
+    fun voidContractsWith(otherEntity: TradeEntity) {
         contracts.removeAll {
-            it.to.building() == otherBuilding || it.from.building() == otherBuilding
-        }
-        if (reciprocate) {
-            otherBuilding.voidContractsWith(this, false)
+            it.to == otherEntity || it.from == otherEntity
         }
     }
 
@@ -218,7 +228,7 @@ abstract class Building(private val cityMap: CityMap) {
     fun voidRandomContract() {
         if (contracts.count() > 0) {
             val contractToKill = contracts.getRandomElement()
-            val otherBuilding = contractToKill.to.building()
+            val otherBuilding = contractToKill.to
             if (otherBuilding != null) {
                 voidContractsWith(otherBuilding)
             }
