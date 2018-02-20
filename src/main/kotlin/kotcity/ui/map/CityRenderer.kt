@@ -152,7 +152,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     private fun drawMap(gc: GraphicsContext) {
-        // we got that map...
+        // we got that cityMap...
         val (startBlock, endBlock) = visibleBlockRange()
         val blockSize = blockSize()
 
@@ -402,7 +402,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     private fun visibleBuildings(): List<Pair<BlockCoordinate, Building>> {
-        // TODO: we can just map over the two different layers... clean up later...
+        // TODO: we can just cityMap over the two different layers... clean up later...
         val buildings = visibleBlocks(padding = MAX_BUILDING_SIZE).mapNotNull {
             val building = map.buildingLayer[it]
             if (building != null) {

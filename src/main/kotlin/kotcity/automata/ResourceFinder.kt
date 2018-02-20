@@ -6,20 +6,20 @@ import kotcity.pathfinding.Path
 import kotcity.pathfinding.Pathfinder
 import kotcity.util.Debuggable
 
-class ResourceFinder(val map: CityMap): Debuggable {
+class ResourceFinder(val cityMap: CityMap): Debuggable {
     override var debug = false
 
-    val pathfinder = Pathfinder(map)
+    val pathfinder = Pathfinder(cityMap)
 
     // TODO: let's be able to get paths from outside the city...
     fun nearbyAvailableTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int): List<Pair<Path, Int>> {
         // OK... we need to find nearby buildings...
-        val buildings = sourceBlocks.flatMap { map.nearestBuildings(it, maxDistance) }.distinct()
+        val buildings = sourceBlocks.flatMap { cityMap.nearestBuildings(it, maxDistance) }.distinct()
         // now we gotta make sure they got the resource...
         val buildingsWithResource = buildings.filter { it.building.quantityForSale(tradeable) > 0 }
 
         val pathsAndQuantity = buildingsWithResource.mapNotNull { location ->
-            val buildingBlocks = map.buildingBlocks(location.coordinate, location.building)
+            val buildingBlocks = cityMap.buildingBlocks(location.coordinate, location.building)
             val path = pathfinder.tripTo(sourceBlocks, buildingBlocks)
             if (path == null) {
                 null
@@ -37,11 +37,11 @@ class ResourceFinder(val map: CityMap): Debuggable {
     }
 
     fun findSource(sourceBlocks: List<BlockCoordinate> , tradeable: Tradeable, quantity: Int): TradeEntity? {
-        val buildings = sourceBlocks.flatMap { map.nearestBuildings(it, kotcity.pathfinding.MAX_DISTANCE) }.distinct()
+        val buildings = sourceBlocks.flatMap { cityMap.nearestBuildings(it, kotcity.pathfinding.MAX_DISTANCE) }.distinct()
         // now we gotta make sure they got the resource...
         val buildingsWithResource = buildings.filter { it.building.quantityForSale(tradeable) >= quantity }
         val buildingsWithPath = buildingsWithResource.mapNotNull { location ->
-            val buildingBlocks = map.buildingBlocks(location.coordinate, location.building)
+            val buildingBlocks = cityMap.buildingBlocks(location.coordinate, location.building)
             val path = pathfinder.tripTo(sourceBlocks, buildingBlocks)
             if (path == null) {
                 null
@@ -59,7 +59,7 @@ class ResourceFinder(val map: CityMap): Debuggable {
             val nearestBuildingAndPath = buildingsWithPath.minBy { it.first.distance() }
             if (nearestBuildingAndPath != null) {
                 val buildingCoordinate = nearestBuildingAndPath.first.blockList().last()
-                preferredTradeEntity = CityTradeEntity(buildingCoordinate, building = nearestBuildingAndPath.second)
+                preferredTradeEntity = CityTradeEntity(buildingCoordinate, nearestBuildingAndPath.second)
             }
         }
 
@@ -67,7 +67,7 @@ class ResourceFinder(val map: CityMap): Debuggable {
             // let's try and get a path to the outside...
             val destinationBlock = pathfinder.cachedPathToOutside(sourceBlocks)?.blockList()?.last()
             if (destinationBlock != null) {
-                preferredTradeEntity = OutsideTradeEntity(destinationBlock)
+                preferredTradeEntity = OutsideTradeEntity(destinationBlock, cityMap)
             }
         }
 
@@ -76,12 +76,12 @@ class ResourceFinder(val map: CityMap): Debuggable {
 
     fun nearbyBuyingTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int = MAX_DISTANCE): List<Pair<Path, Int>> {
         // OK... we need to find nearby buildings...
-        val buildings = sourceBlocks.flatMap { map.nearestBuildings(it, maxDistance) }.distinct()
+        val buildings = sourceBlocks.flatMap { cityMap.nearestBuildings(it, maxDistance) }.distinct()
         // now we gotta make sure they got the resource...
         val buildingsWithResource = buildings.filter { it.building.quantityWanted(tradeable) > 0 }
 
         val pathsAndQuantity = buildingsWithResource.mapNotNull { location ->
-            val buildingBlocks = map.buildingBlocks(location.coordinate, location.building)
+            val buildingBlocks = cityMap.buildingBlocks(location.coordinate, location.building)
             val path = pathfinder.tripTo(sourceBlocks, buildingBlocks)
             if (path == null) {
                 null

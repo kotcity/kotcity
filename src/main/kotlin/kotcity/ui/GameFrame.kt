@@ -81,7 +81,7 @@ class GameFrame : View() {
     private val jobCenterButton: ToggleButton by fxid()
     private val townWarehouseButton: ToggleButton by fxid()
 
-    // map modes...
+    // cityMap modes...
     private val normalMapMode: RadioMenuItem by fxid()
     private val coalMapMode: RadioMenuItem by fxid()
     private val oilMapMode: RadioMenuItem by fxid()
@@ -135,7 +135,7 @@ class GameFrame : View() {
     }
 
     private fun setCanvasSize() {
-        println("map size is: ${this.map.width},${this.map.height}")
+        println("cityMap size is: ${this.map.width},${this.map.height}")
         println("Canvas pane size is: ${canvasPane.width},${canvasPane.height}")
         canvas.prefHeight(canvasPane.height - 20)
         canvas.prefWidth(canvasPane.width - 20)
@@ -218,7 +218,7 @@ class GameFrame : View() {
         val file = fileChooser.showSaveDialog(this.primaryStage)
         CityFileAdapter.save(map, file)
         map.fileName = file.absoluteFile.toString()
-        println("The new map filename is: ${map.fileName}")
+        println("The new cityMap filename is: ${map.fileName}")
         saveMessageBox()
     }
 

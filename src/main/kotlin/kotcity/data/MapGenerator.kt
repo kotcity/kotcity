@@ -54,7 +54,7 @@ class MapGenerator {
 
         addResources(seed, map)
 
-        println("The map was generated!!!!")
+        println("The cityMap was generated!!!!")
         return map
     }
 

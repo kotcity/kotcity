@@ -116,6 +116,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private val manufacturer = Manufacturer(this)
     private val shipper = Shipper(this)
     private val desirabilityUpdater = DesirabilityUpdater(this)
+    val censusTaker = CensusTaker(this)
+    private val taxCollector = TaxCollector(this)
+    private val liquidator = Liquidator(this)
 
     private var doingHourly: Boolean = false
 
@@ -146,7 +149,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     init {
         shipper.debug = false
-        contractFulfiller.debug = true
+        contractFulfiller.debug = false
+        manufacturer.debug = false
+        taxCollector.debug = true
+        liquidator.debug = true
     }
 
     fun elevations(): Pair<Double, Double> {
@@ -240,11 +246,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 timeFunction("Terminating Random Contracts") { contractFulfiller.terminateRandomContracts() }
                 timeFunction("Doing Manufacturing") { manufacturer.tick() }
                 timeFunction("Shipping products") { shipper.tick() }
+                timeFunction("Taking Census") { censusTaker.tick() }
             }
 
             if (hour == 0) {
                 debug("Top of the day stuff...")
                 timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(this) }
+                timeFunction("Collect Taxes") { taxCollector.tick() }
+                timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
             }
 
         } finally {

@@ -54,7 +54,7 @@ class CityMapCanvas: ResizableCanvas() {
             for (canvasX in xRange) {
                 for (canvasY in yRange) {
 
-                    // OK we gotta scale the map coordinates to this crap...
+                    // OK we gotta scale the cityMap coordinates to this crap...
                     val nx = Algorithms.scale(canvasX.toDouble(), 0.0, smallerDimension, 0.0, map.width.toDouble())
                     val ny = Algorithms.scale(canvasY.toDouble(), 0.0, smallerDimension, 0.0, map.height.toDouble())
 
@@ -85,7 +85,7 @@ class CityMapCanvas: ResizableCanvas() {
                 renderResources()
             }
 
-            // now let's highlight the area of the map we can see...
+            // now let's highlight the area of the cityMap we can see...
             visibleBlockRange?.let { visibleBlockRange ->
                 val sx = Algorithms.scale(visibleBlockRange.first.x.toDouble(), 0.0, map.width.toDouble(), 0.0, smallerDimension)
                 val sy = Algorithms.scale(visibleBlockRange.first.y.toDouble(), 0.0, map.height.toDouble(), 0.0, smallerDimension)
@@ -142,7 +142,7 @@ class CityMapCanvas: ResizableCanvas() {
 
         for (x in xRange) {
             for (y in yRange) {
-                // OK we gotta scale the map coordinates to this crap...
+                // OK we gotta scale the cityMap coordinates to this crap...
                 val nx = Algorithms.scale(x.toDouble(), 0.0, smallerDimension, 0.0, this.map?.width?.toDouble() ?: 0.0)
                 val ny = Algorithms.scale(y.toDouble(), 0.0, smallerDimension, 0.0, this.map?.height?.toDouble() ?: 0.0)
 

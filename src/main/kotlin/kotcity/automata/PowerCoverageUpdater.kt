@@ -5,7 +5,7 @@ import kotcity.data.*
 object PowerCoverageUpdater {
     fun update(map: CityMap) {
 
-        // OK we gotta find all the power plants on the map...
+        // OK we gotta find all the power plants on the cityMap...
         val powerPlants = map.buildingLayer.filter { entry: Map.Entry<BlockCoordinate, Building> ->
             entry.value.type == BuildingType.POWER_PLANT
         }

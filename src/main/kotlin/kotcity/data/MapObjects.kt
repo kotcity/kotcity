@@ -35,7 +35,7 @@ abstract class TradeEntity {
 val outsideContracts: MutableList<Contract> = mutableListOf()
 
 // all the outside shares one contract list...
-data class OutsideTradeEntity(override val coordinate: BlockCoordinate) : TradeEntity() {
+data class OutsideTradeEntity(override val coordinate: BlockCoordinate, val cityMap: CityMap) : TradeEntity() {
 
     override fun voidContractsWith(otherTradeEntity: TradeEntity) {
         val iterator = outsideContracts.iterator()
@@ -52,11 +52,11 @@ data class OutsideTradeEntity(override val coordinate: BlockCoordinate) : TradeE
 
     // TODO: make these a function of population...
     override fun wantsHowMany(tradeable: Tradeable): Int {
-        return 999
+        return (cityMap.censusTaker.population.toDouble() * 0.20).toInt()
     }
 
     override fun quantityForSale(tradeable: Tradeable): Int {
-        return 999
+        return (cityMap.censusTaker.population.toDouble() * 0.20).toInt()
     }
 
     override fun building(): Building? {
@@ -136,6 +136,10 @@ class Inventory {
         inventory.forEach { entry ->
             action(entry.key, entry.value)
         }
+    }
+
+    fun put(tradeable: Tradeable, quantity: Int): Int {
+        return inventory.put(tradeable, quantity) ?: 0
     }
 }
 
@@ -253,6 +257,11 @@ abstract class Building(private val cityMap: CityMap) {
         }
     }
 
+    fun totalProvided(tradeable: Tradeable): Int {
+        return contracts.filter { it.from.building() == this && it.tradeable == tradeable}
+                        .map { it.quantity }.sum()
+    }
+
     fun supplyCount(tradeable: Tradeable): Int {
         return contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
     }
@@ -263,6 +272,10 @@ abstract class Building(private val cityMap: CityMap) {
 
     fun addInventory(tradeable: Tradeable, quantity: Int): Int {
         return inventory.add(tradeable, quantity)
+    }
+
+    fun setInventory(tradeable: Tradeable, quantity: Int): Int {
+        return inventory.put(tradeable, quantity)
     }
 
     fun subtractInventory(tradeable: Tradeable, quantity: Int): Int {
@@ -300,6 +313,10 @@ abstract class Building(private val cityMap: CityMap) {
             inventoryBuffer.append("Has $qty $tradeable\n")
         }
         return inventoryBuffer.toString()
+    }
+
+    fun quantityOnHand(tradeable: Tradeable): Int {
+        return inventory.quantity(tradeable)
     }
 
 }

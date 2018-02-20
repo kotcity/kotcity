@@ -274,7 +274,7 @@ private fun writeResourceLayers(data: JsonObject, it: SerializerArg<CityMap>) {
 
     it.src.resourceLayers.forEach { name, layer ->
 
-        println("How many values in the resource map? -> " + layer.count())
+        println("How many values in the resource cityMap? -> " + layer.count())
         val values = layer.map {
             val resource = JsonObject()
             // println("OK... dumping ${it.key.x},${it.key.y} with ${it.value}")
@@ -340,7 +340,7 @@ object CityFileAdapter {
     }
 
     fun load(file: File): CityMap {
-        println("Want to load map from $file")
+        println("Want to load cityMap from $file")
         val bytes = GzipUtil.uncompress(file.readBytes())
         val city = gson.fromJson<CityMap>(bytes)
         city.fileName = file.absoluteFile.toString()

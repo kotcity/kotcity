@@ -93,7 +93,7 @@ class MapGeneratorScreen : View() {
             "Soil" -> MapMode.SOIL
             "Oil" -> MapMode.OIL
             "Normal" -> MapMode.NORMAL
-            else -> throw RuntimeException("Unknown map mode: ${mapModeComboBox.selectedItem}")
+            else -> throw RuntimeException("Unknown cityMap mode: ${mapModeComboBox.selectedItem}")
         }
     }
 

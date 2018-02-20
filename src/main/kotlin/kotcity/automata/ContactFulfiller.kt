@@ -25,9 +25,7 @@ class ContactFulfiller(val cityMap: CityMap): Debuggable {
                         debug("${building.name} now requires ${building.needs(tradeable)} $tradeable")
                         debug("New setup: ${building.summarizeContracts()}")
                     } else {
-                        if (debug) {
-                            println("Could not find $needsCount $tradeable for ${building.name} at $coordinate")
-                        }
+                        debug("Could not find $needsCount $tradeable for ${building.name} at $coordinate")
                     }
                 }
             }
@@ -45,7 +43,7 @@ class ContactFulfiller(val cityMap: CityMap): Debuggable {
                             CityTradeEntity(sourceBlock, sourceBuilding.building)
                         } else {
                             // it must be outside the city...
-                            OutsideTradeEntity(coordinate)
+                            OutsideTradeEntity(coordinate, cityMap)
                         }
                         debug("${building.name}: Signed contract with ${sourceTradeEntity.description()} for 1 $tradeable")
                         debug("${building.name} now sends ${building.needs(tradeable)} $tradeable")
