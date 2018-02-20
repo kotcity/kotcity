@@ -29,12 +29,14 @@ abstract class TradeEntity {
     abstract fun quantityForSale(tradeable: Tradeable): Int
     abstract fun addContract(contract: Contract)
     abstract fun voidContractsWith(otherTradeEntity: TradeEntity)
+    abstract fun wantsHowMany(tradeable: Tradeable): Int
 }
 
 val outsideContracts: MutableList<Contract> = mutableListOf()
 
 // all the outside shares one contract list...
 data class OutsideTradeEntity(override val coordinate: BlockCoordinate) : TradeEntity() {
+
     override fun voidContractsWith(otherTradeEntity: TradeEntity) {
         val iterator = outsideContracts.iterator()
         iterator.forEach { contract ->
@@ -46,6 +48,11 @@ data class OutsideTradeEntity(override val coordinate: BlockCoordinate) : TradeE
 
     override fun addContract(contract: Contract) {
         outsideContracts.add(contract)
+    }
+
+    // TODO: make these a function of population...
+    override fun wantsHowMany(tradeable: Tradeable): Int {
+        return 999
     }
 
     override fun quantityForSale(tradeable: Tradeable): Int {
@@ -63,6 +70,10 @@ data class OutsideTradeEntity(override val coordinate: BlockCoordinate) : TradeE
 }
 
 data class CityTradeEntity(override val coordinate: BlockCoordinate, val building: Building) : TradeEntity() {
+    override fun wantsHowMany(tradeable: Tradeable): Int {
+        return building.wantsHowMany(tradeable)
+    }
+
     override fun voidContractsWith(otherTradeEntity: TradeEntity) {
         building.voidContractsWith(otherTradeEntity)
     }
@@ -119,6 +130,12 @@ class Inventory {
 
     fun quantity(tradeable: Tradeable): Int {
         return inventory.getOrDefault(tradeable, 0)
+    }
+
+    fun forEach(tradeable: Tradeable, action: ) {
+        return inventory.forEach { entry ->
+
+        }
     }
 }
 
@@ -270,6 +287,17 @@ abstract class Building(private val cityMap: CityMap) {
             if (inventory.has(Tradeable.MONEY, 1)) {
                 transferInventory(contract.from, Tradeable.MONEY, 1)
             }
+        }
+    }
+
+    fun wantsHowMany(tradeable: Tradeable): Int {
+        return needs(tradeable)
+    }
+
+    fun summarizeInventory(): String {
+        val inventoryBuffer = StringBuffer()
+        inventory.forEach { tradeable, qty ->
+
         }
     }
 

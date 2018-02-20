@@ -28,6 +28,7 @@ class LaunchScreen : View() {
     fun newCityPressed() {
         println("We want a new city!")
         this.currentStage?.close()
+        this.primaryStage.close()
         MapGeneratorScreen().openWindow()
     }
 

@@ -42,6 +42,11 @@ class QueryWindow(): View() {
                     if (contractSummary != "") {
                         buffer.append(contractSummary)
                     }
+
+                    val inventorySummary = building.summarizeInventory()
+                    if (inventorySummary != "") {
+                        buffer.append(inventorySummary)
+                    }
                 } else {
                     this.title = "Inspecting Terrain"
                     buildingNameLabel.text = "Inspecting Terrain"

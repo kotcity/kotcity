@@ -22,6 +22,12 @@ object CityLoader {
         runLater {
             val file = fileChooser.showOpenDialog(view.currentStage)
             if (file != null) {
+                val launchScreen = find(LaunchScreen::class)
+                launchScreen.close()
+                view.close()
+                view.currentStage?.close()
+                view.primaryStage.close()
+
                 val map = CityFileAdapter.load(file)
                 val gameFrame = tornadofx.find(GameFrame::class)
                 gameFrame.setMap(map)
@@ -29,8 +35,6 @@ object CityLoader {
                 gameFrame.openWindow()
                 println("Gameframe should be open at this point...")
                 gameFrame.currentStage?.isMaximized = true
-                val launchScreen = find(LaunchScreen::class)
-                launchScreen.close()
             } else {
                 val alert = Alert(AlertType.ERROR)
                 alert.title = "Error during load"
