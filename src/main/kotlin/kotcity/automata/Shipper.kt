@@ -3,10 +3,11 @@ package kotcity.automata
 import kotcity.data.CityMap
 import kotcity.data.OutsideTradeEntity
 import kotcity.data.Tradeable
+import kotcity.util.Debuggable
 
-class Shipper(val cityMap: CityMap) {
+class Shipper(val cityMap: CityMap): Debuggable {
 
-    var debug = false
+    override var debug = false
 
     fun tick() {
         // what we want to do here is find all industrial zones with WHOLESALE GOODS and ship them to commercial zones
@@ -17,9 +18,7 @@ class Shipper(val cityMap: CityMap) {
                 if (contract.to.building() != building && contract.tradeable != Tradeable.LABOR) {
                     val howManyTransferred = building.transferInventory(contract.to, contract.tradeable, contract.quantity)
                     building.addInventory(Tradeable.MONEY, howManyTransferred)
-                    if (debug) {
-                        println("${building.description}: We transferred ${contract.quantity} ${contract.tradeable} to ${contract.to.description()}")
-                    }
+                    debug("${building.description}: We transferred ${contract.quantity} ${contract.tradeable} to ${contract.to.description()}")
                 }
 
                 // let's get the FROM contracts and rig up export...
@@ -30,15 +29,13 @@ class Shipper(val cityMap: CityMap) {
                         if (contract.tradeable == Tradeable.LABOR) {
                             // don't actually SEND anything... we just get $$$
                             building.addInventory(Tradeable.MONEY, contract.quantity)
-                            if (debug) {
-                                println("${building.description} sent some ${contract.tradeable} to ${contract.to.description()}")
-                            }
+                            debug("${building.description} sent some ${contract.tradeable} to ${contract.to.description()}")
+
                         } else if (contract.tradeable != Tradeable.MONEY) {
                             val howManyTransferred = building.transferInventory(contract.to, contract.tradeable, contract.quantity)
                             building.addInventory(Tradeable.MONEY, howManyTransferred)
-                            if (debug) {
-                                println("${building.description}: We sent ${contract.quantity} ${contract.tradeable} to ${contract.to.description()}")
-                            }
+                            debug("${building.description}: We sent ${contract.quantity} ${contract.tradeable} to ${contract.to.description()}")
+                            
                         }
                     }
 

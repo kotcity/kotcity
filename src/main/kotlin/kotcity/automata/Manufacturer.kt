@@ -4,10 +4,11 @@ import kotcity.data.Building
 import kotcity.data.BuildingType
 import kotcity.data.CityMap
 import kotcity.data.Tradeable
+import kotcity.util.Debuggable
 
-class Manufacturer(val cityMap: CityMap) {
+class Manufacturer(val cityMap: CityMap): Debuggable {
 
-    var debug = false
+    override var debug = false
 
     fun tick() {
         // for each industrial zone we want to see if we have at least one labor...
@@ -27,18 +28,16 @@ class Manufacturer(val cityMap: CityMap) {
         val availableWholesaleGoods: Int = building.supplyCount(Tradeable.WHOLESALE_GOODS)
         // we want to convert "wholesale goods" to "goods"
         if (availableWholesaleGoods == 0 || availableLabor == 0) {
-            if (debug) {
-                println("${building.description}: We are missing either goods or workers...")
-            }
+
+            debug("${building.description}: We are missing either goods or workers...")
+
             return
         }
         repeat(availableLabor) {
             if (building.supplyCount(Tradeable.WHOLESALE_GOODS) > 0) {
                 building.subtractInventory(Tradeable.WHOLESALE_GOODS, 1)
                 building.addInventory(Tradeable.GOODS, 1)
-                if (debug) {
-                    println("${building.description}: Converted 1 wholesale goods to goods...")
-                }
+                debug("${building.description}: Converted 1 wholesale goods to goods...")
             }
         }
     }
@@ -50,16 +49,12 @@ class Manufacturer(val cityMap: CityMap) {
         val products: List<Tradeable> = building.productList()
         if (availableLabor > 0 && building.supplyCount(Tradeable.LABOR) > 0) {
             products.forEach { tradeable ->
-                if (debug) {
-                    println("${building.description} just manufactured $availableLabor $tradeable")
-                }
+                debug("${building.description} just manufactured $availableLabor $tradeable")
                 building.addInventory(tradeable, availableLabor)
                 building.payWorkers()
             }
         } else {
-            if (debug) {
-                println("Wanted to make products but we didn't have any labor!")
-            }
+            debug("Wanted to make products but we didn't have any labor!")
         }
         // TODO: Pay whoever gives us labor now...
     }

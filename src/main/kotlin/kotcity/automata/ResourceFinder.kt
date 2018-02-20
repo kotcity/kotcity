@@ -4,8 +4,10 @@ import kotcity.data.*
 import kotcity.pathfinding.MAX_DISTANCE
 import kotcity.pathfinding.Path
 import kotcity.pathfinding.Pathfinder
+import kotcity.util.Debuggable
 
-class ResourceFinder(val map: CityMap) {
+class ResourceFinder(val map: CityMap): Debuggable {
+    override var debug = false
 
     val pathfinder = Pathfinder(map)
 

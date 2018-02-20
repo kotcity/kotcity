@@ -132,9 +132,9 @@ class Inventory {
         return inventory.getOrDefault(tradeable, 0)
     }
 
-    fun forEach(tradeable: Tradeable, action: ) {
-        return inventory.forEach { entry ->
-
+    fun forEach(action: (Tradeable, Int) -> Unit) {
+        inventory.forEach { entry ->
+            action(entry.key, entry.value)
         }
     }
 }
@@ -297,8 +297,9 @@ abstract class Building(private val cityMap: CityMap) {
     fun summarizeInventory(): String {
         val inventoryBuffer = StringBuffer()
         inventory.forEach { tradeable, qty ->
-
+            inventoryBuffer.append("Has $qty $tradeable\n")
         }
+        return inventoryBuffer.toString()
     }
 
 }

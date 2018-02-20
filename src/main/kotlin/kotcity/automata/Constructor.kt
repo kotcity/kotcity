@@ -3,21 +3,16 @@ package kotcity.automata
 import kotcity.data.*
 import kotcity.data.assets.AssetManager
 import kotcity.ui.map.MAX_BUILDING_SIZE
+import kotcity.util.Debuggable
 import kotcity.util.getRandomElements
 import java.util.*
 
-class Constructor(val cityMap: CityMap) {
+class Constructor(val cityMap: CityMap) : Debuggable {
 
     val assetManager = AssetManager(cityMap)
     val random = Random()
     val maxTries = 30
-    var debug = false
-
-    fun debug(message: String) {
-        if (debug) {
-            println(message)
-        }
-    }
+    override var debug = false
 
     private fun isEmpty(entry: MutableMap.MutableEntry<BlockCoordinate, Double>): Boolean {
         return cityMap.buildingsIn(entry.key).count() == 0

@@ -2,9 +2,11 @@ package kotcity.automata
 
 import kotcity.data.*
 import kotcity.pathfinding.Pathfinder
+import kotcity.util.Debuggable
 
 
-class DesirabilityUpdater(val cityMap: CityMap) {
+class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
+    override var debug: Boolean = false
 
     private val maxDistance = 100
     private val pathFinder: Pathfinder = Pathfinder(cityMap)
