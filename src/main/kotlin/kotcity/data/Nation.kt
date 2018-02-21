@@ -10,6 +10,10 @@ data class OutsideTradeEntity(private val nationalTradeEntity: NationalTradeEnti
         nationalTradeEntity.addContract(contract)
     }
 
+    override fun transferInventory(to: TradeEntity, tradeable: Tradeable, quantity: Int): Int {
+        return nationalTradeEntity.transferInventory(to, tradeable, quantity)
+    }
+
     override fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int) {
         val newContract = Contract(this, otherTradeEntity, tradeable, quantity)
         if (otherTradeEntity.quantityForSale(tradeable) >= newContract.quantity) {
@@ -30,10 +34,6 @@ data class OutsideTradeEntity(private val nationalTradeEntity: NationalTradeEnti
 
     override fun quantityForSale(tradeable: Tradeable): Int {
         return nationalTradeEntity.quantityForSale(tradeable)
-    }
-
-    override fun wantsHowMany(tradeable: Tradeable): Int {
-        return nationalTradeEntity.wantsHowMany(tradeable)
     }
 
 }
@@ -67,6 +67,7 @@ data class NationalTradeEntity(val cityMap: CityMap): HasContracts, HasInventory
     private val contracts: MutableList<Contract> = mutableListOf()
     private val wantsCounter: TradeableCounter = TradeableCounter()
     private val providesCounter: TradeableCounter = TradeableCounter()
+    private val inventory: Inventory = Inventory()
 
     fun resetCounts() {
         // gotta read population from citymap...
@@ -74,20 +75,33 @@ data class NationalTradeEntity(val cityMap: CityMap): HasContracts, HasInventory
         listOf(wantsCounter, providesCounter).forEach { counter ->
             Tradeable.values().forEach { tradeable ->
                 counter[tradeable] = Math.floor(population * 0.05).toInt()
+                // we do this 8 times since nation only replenishes 1x per day
+                // and manufacturing happens every 3 hours...
+                inventory.put(tradeable, Math.floor(population * 0.05).toInt()) * (24/3)
             }
         }
     }
 
+    private fun existingBuyQuantity(tradeable: Tradeable): Int {
+        return contracts.filter { it.to is OutsideTradeEntity && it.tradeable == tradeable }
+                        .map { it.quantity }.sum()
+    }
+
+    private fun existingSellQuantity(tradeable: Tradeable): Int {
+        return contracts.filter { it.from is OutsideTradeEntity && it.tradeable == tradeable }
+                        .map { it.quantity }.sum()
+    }
+
     override fun quantityForSale(tradeable: Tradeable): Int {
-        return providesCounter[tradeable]
+        return providesCounter[tradeable] - existingSellQuantity(tradeable)
     }
 
     override fun quantityWanted(tradeable: Tradeable): Int {
-        return wantsCounter[tradeable]
+        return wantsCounter[tradeable] - existingBuyQuantity(tradeable)
     }
 
     override fun needs(tradeable: Tradeable): Int {
-        return wantsCounter[tradeable]
+        return wantsCounter[tradeable] - existingBuyQuantity(tradeable)
     }
 
     override fun totalProvided(tradeable: Tradeable): Int {
@@ -95,15 +109,11 @@ data class NationalTradeEntity(val cityMap: CityMap): HasContracts, HasInventory
     }
 
     override fun supplyCount(tradeable: Tradeable): Int {
-        return providesCounter[tradeable]
+        return inventory.quantity(tradeable)
     }
 
     override fun productList(): List<Tradeable> {
         return Tradeable.values().toList()
-    }
-
-    override fun wantsHowMany(tradeable: Tradeable): Int {
-        return wantsCounter[tradeable]
     }
 
     override fun summarizeContracts(): String {
@@ -132,15 +142,15 @@ data class NationalTradeEntity(val cityMap: CityMap): HasContracts, HasInventory
     }
 
     override fun addInventory(tradeable: Tradeable, quantity: Int): Int {
-        return wantsCounter.increment(tradeable, quantity)
+        return inventory.add(tradeable, quantity)
     }
 
     override fun setInventory(tradeable: Tradeable, quantity: Int): Int {
-        return wantsCounter.set(tradeable, quantity)
+        return inventory.put(tradeable, quantity)
     }
 
     override fun subtractInventory(tradeable: Tradeable, quantity: Int): Int {
-        return wantsCounter.decrement(tradeable, quantity)
+        return inventory.subtract(tradeable, quantity)
     }
 
     override fun summarizeInventory(): String {
@@ -152,12 +162,14 @@ data class NationalTradeEntity(val cityMap: CityMap): HasContracts, HasInventory
     }
 
     override fun quantityOnHand(tradeable: Tradeable): Int {
-        return providesCounter[tradeable]
+        return inventory.quantity(tradeable)
     }
 
     override fun transferInventory(to: TradeEntity, tradeable: Tradeable, quantity: Int): Int {
-        if (providesCounter[tradeable] >= quantity) {
-            providesCounter.decrement(tradeable, quantity)
+        if (inventory.quantity(tradeable) >= quantity) {
+            println("Nation is sending $quantity $tradeable to ${to.description()}")
+            inventory.subtract(tradeable, quantity)
+            println("Nation has ${inventory.quantity(tradeable)} $tradeable left.")
             to.building()?.addInventory(tradeable, quantity)
             return quantity
         }

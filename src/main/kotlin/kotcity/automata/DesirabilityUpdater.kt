@@ -56,6 +56,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
     }
 
     private fun updateIndustrial(desirabilityLayer: DesirabilityLayer) {
+        // TODO: augment with demand for goods...
 
         // ok... we just gotta find each block with an industrial zone...
         val industryZones = zoneCoordinates(ZoneType.INDUSTRIAL)

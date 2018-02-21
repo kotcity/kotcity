@@ -64,7 +64,6 @@ interface HasContracts {
     fun totalProvided(tradeable: Tradeable): Int
     fun supplyCount(tradeable: Tradeable): Int
     fun productList(): List<Tradeable>
-    fun wantsHowMany(tradeable: Tradeable): Int
 }
 
 interface HasConcreteContacts : HasContracts {
@@ -153,9 +152,6 @@ interface HasConcreteContacts : HasContracts {
         return produces.keys.distinct()
     }
 
-    override fun wantsHowMany(tradeable: Tradeable): Int {
-        return needs(tradeable)
-    }
 }
 
 

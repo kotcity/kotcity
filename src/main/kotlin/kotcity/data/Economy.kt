@@ -18,7 +18,7 @@ interface TradeEntity {
     fun voidContractsWith(otherTradeEntity: TradeEntity)
 
     fun quantityForSale(tradeable: Tradeable): Int
-    fun wantsHowMany(tradeable: Tradeable): Int
+    fun quantityWanted(tradeable: Tradeable): Int
 }
 
 data class CityTradeEntity(override val coordinate: BlockCoordinate, val building: Building) : TradeEntity {
@@ -47,8 +47,8 @@ data class CityTradeEntity(override val coordinate: BlockCoordinate, val buildin
         return building.quantityForSale(tradeable)
     }
 
-    override fun wantsHowMany(tradeable: Tradeable): Int {
-        return building.wantsHowMany(tradeable)
+    override fun quantityWanted(tradeable: Tradeable): Int {
+        return building.quantityWanted(tradeable)
     }
 }
 

@@ -153,8 +153,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         shipper.debug = false
         contractFulfiller.debug = false
         manufacturer.debug = false
-        taxCollector.debug = true
+        taxCollector.debug = false
         liquidator.debug = true
+        censusTaker.tick()
+        nationalTradeEntity.resetCounts()
     }
 
     fun elevations(): Pair<Double, Double> {

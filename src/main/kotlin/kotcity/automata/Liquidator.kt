@@ -9,15 +9,15 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = false
 
     fun tick() {
+        val buildingsToRaze = mutableListOf<BlockCoordinate>()
         cityMap.buildingLayer.forEach { coordinate, building ->
-            val buildingsToRaze = mutableListOf<BlockCoordinate>()
             if (building.quantityOnHand(Tradeable.MONEY) <= 0) {
                 debug("Building ${building.description} is bankrupt! Blowing it up!")
                 buildingsToRaze.add(coordinate)
             }
-            buildingsToRaze.forEach { coordinate ->
-                cityMap.bulldoze(coordinate, coordinate)
-            }
+        }
+        buildingsToRaze.forEach { coordinate ->
+            cityMap.bulldoze(coordinate, coordinate)
         }
     }
 }

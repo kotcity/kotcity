@@ -40,7 +40,7 @@ class Shipper(val cityMap: CityMap): Debuggable {
                 // let's get the FROM contracts and rig up export...
                 if (contract.from.building() == building && contract.to is OutsideTradeEntity) {
                     // how many can we push down?
-                    val customerWantsQuantity: Int = contract.to.wantsHowMany(contract.tradeable)
+                    val customerWantsQuantity: Int = contract.to.quantityWanted(contract.tradeable)
                     if (customerWantsQuantity >= contract.quantity) {
                         if (contract.tradeable == Tradeable.LABOR) {
                             // don't actually SEND anything... we just get $$$

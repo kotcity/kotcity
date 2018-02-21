@@ -49,7 +49,7 @@ class ContactFulfiller(val cityMap: CityMap): Debuggable {
                         debug("")
                         debug("${building.name}: Signed contract with ${sourceTradeEntity.description()} to sell 1 $tradeable")
                         debug("${building.name} now has ${building.supplyCount(tradeable)} $tradeable left to provide.")
-                        debug("${sourceTradeEntity.description()} still wants to buy ${sourceTradeEntity.wantsHowMany(tradeable)} $tradeable")
+                        debug("${sourceTradeEntity.description()} still wants to buy ${sourceTradeEntity.quantityWanted(tradeable)} $tradeable")
                         // debug("New setup: ${building.summarizeContracts()}")
 
                         val newContract = Contract(sourceTradeEntity, buildingTradeEntity, tradeable, 1)
