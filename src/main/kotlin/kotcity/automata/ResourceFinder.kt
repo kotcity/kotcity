@@ -36,7 +36,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         return pathsAndQuantity.toList()
     }
 
-    fun findSource(sourceBlocks: List<BlockCoordinate> , tradeable: Tradeable, quantity: Int): TradeEntity? {
+    fun findSource(sourceBlocks: List<BlockCoordinate>, tradeable: Tradeable, quantity: Int): TradeEntity? {
         val buildings = sourceBlocks.flatMap { cityMap.nearestBuildings(it, kotcity.pathfinding.MAX_DISTANCE) }.distinct()
         // now we gotta make sure they got the resource...
         val buildingsWithResource = buildings.filter { it.building.quantityForSale(tradeable) >= quantity }
@@ -67,7 +67,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
             // let's try and get a path to the outside...
             val destinationBlock = pathfinder.cachedPathToOutside(sourceBlocks)?.blockList()?.last()
             if (destinationBlock != null) {
-                preferredTradeEntity = OutsideTradeEntity(destinationBlock, cityMap)
+                preferredTradeEntity = cityMap.nationalTradeEntity.outsideEntity(destinationBlock)
             }
         }
 

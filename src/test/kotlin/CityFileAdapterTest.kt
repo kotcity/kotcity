@@ -1,6 +1,5 @@
 
 import kotcity.automata.ContactFulfiller
-import kotcity.automata.ResourceFinder
 import kotcity.data.*
 import kotcity.data.assets.AssetManager
 import org.junit.jupiter.api.Test

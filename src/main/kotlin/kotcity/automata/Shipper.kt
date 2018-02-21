@@ -9,7 +9,7 @@ class Shipper(val cityMap: CityMap): Debuggable {
 
     override var debug = false
 
-    fun priceForGoods(tradeable: Tradeable, quantity: Int): Int {
+    private fun priceForGoods(tradeable: Tradeable, quantity: Int): Int {
         return when (tradeable) {
             Tradeable.MONEY -> quantity * 1
             Tradeable.GOODS -> quantity * 3
@@ -21,7 +21,7 @@ class Shipper(val cityMap: CityMap): Debuggable {
 
     fun tick() {
         // what we want to do here is find all industrial zones with WHOLESALE GOODS and ship them to commercial zones
-        cityMap.buildingLayer.forEach { coordinate, building ->
+        cityMap.buildingLayer.forEach { _, building ->
             building.contracts.forEach { contract ->
                 // we only want to deal with "to" and not to ourself...
                 // we also don't SEND labor

@@ -1,7 +1,6 @@
 import javafx.application.Application
 import javafx.stage.Stage
 import kotcity.data.BlockCoordinate
-import kotcity.data.Building
 import kotcity.data.BuildingType
 import kotcity.data.CityMap
 import kotcity.data.assets.AssetManager

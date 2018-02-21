@@ -43,7 +43,7 @@ class ContactFulfiller(val cityMap: CityMap): Debuggable {
                             CityTradeEntity(sourceBlock, sourceBuilding.building)
                         } else {
                             // it must be outside the city...
-                            OutsideTradeEntity(coordinate, cityMap)
+                            cityMap.nationalTradeEntity.outsideEntity(coordinate)
                         }
                         debug("${building.name}: Signed contract with ${sourceTradeEntity.description()} for 1 $tradeable")
                         debug("${building.name} now sends ${building.needs(tradeable)} $tradeable")

@@ -2,6 +2,7 @@ package kotcity.pathfinding
 
 import kotcity.data.*
 import kotcity.memoization.cache
+import kotcity.util.Debuggable
 import kotcity.util.pmap
 import kotlinx.coroutines.experimental.runBlocking
 
@@ -49,14 +50,15 @@ data class NavigationNode(
     }
 }
 
-class Pathfinder(val cityMap: CityMap) {
+class Pathfinder(val cityMap: CityMap) : Debuggable {
+    override var debug: Boolean = false
 
     private val cachedHeuristicPair = ::heuristic.cache()
     private val heuristicCache = cachedHeuristicPair.first
     private val cachedHeuristic = cachedHeuristicPair.second
 
     private val cachedPathToOutsidePair = ::pathToOutside.cache()
-    private val pathToOutsideCache = cachedPathToOutsidePair.first
+    // private val pathToOutsideCache = cachedPathToOutsidePair.first
     val cachedPathToOutside = cachedPathToOutsidePair.second
 
     private val mapBorders: List<BlockCoordinate> by lazy {
@@ -125,7 +127,6 @@ class Pathfinder(val cityMap: CityMap) {
         return tripTo(start, nearest)
     }
 
-    // TODO: maybe cache this???
     private fun heuristic(current: BlockCoordinate, destinations: List<BlockCoordinate>): Double {
         // calculate manhattan distance to each...
         return runBlocking {
@@ -229,19 +230,19 @@ class Pathfinder(val cityMap: CityMap) {
 
             // ok figure out the dang neighbors...
             val north = BlockCoordinate(activeNode.coordinate.x, activeNode.coordinate.y-1)
-            val northNode = NavigationNode(cityMap, north, activeNode, cachedHeuristic(north, destinations), TransitType.ROAD, Direction.NORTH)
+            val northNode = NavigationNode(cityMap, north, activeNode, activeNode.score + cachedHeuristic(north, destinations), TransitType.ROAD, Direction.NORTH)
             maybeAppendNode(northNode)
 
             val south = BlockCoordinate(activeNode.coordinate.x, activeNode.coordinate.y+1)
-            val southNode = NavigationNode(cityMap, south, activeNode, cachedHeuristic(south, destinations), TransitType.ROAD, Direction.SOUTH)
+            val southNode = NavigationNode(cityMap, south, activeNode, activeNode.score + cachedHeuristic(south, destinations), TransitType.ROAD, Direction.SOUTH)
             maybeAppendNode(southNode)
 
             val east = BlockCoordinate(activeNode.coordinate.x+1, activeNode.coordinate.y)
-            val eastNode = NavigationNode(cityMap, east, activeNode, cachedHeuristic(east, destinations), TransitType.ROAD, Direction.EAST)
+            val eastNode = NavigationNode(cityMap, east, activeNode, activeNode.score + cachedHeuristic(east, destinations), TransitType.ROAD, Direction.EAST)
             maybeAppendNode(eastNode)
 
             val west = BlockCoordinate(activeNode.coordinate.x-1, activeNode.coordinate.y)
-            val westNode = NavigationNode(cityMap, west, activeNode, cachedHeuristic(west, destinations), TransitType.ROAD, Direction.WEST)
+            val westNode = NavigationNode(cityMap, west, activeNode, activeNode.score + cachedHeuristic(west, destinations), TransitType.ROAD, Direction.WEST)
             maybeAppendNode(westNode)
 
         }

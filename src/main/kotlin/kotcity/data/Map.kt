@@ -120,6 +120,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private val taxCollector = TaxCollector(this)
     private val liquidator = Liquidator(this)
 
+    val nationalTradeEntity = NationalTradeEntity(this)
+
     private var doingHourly: Boolean = false
 
     private fun initializeDesirabilityLayers(): List<DesirabilityLayer> {
