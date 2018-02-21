@@ -38,17 +38,22 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
             if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
-                val availableGoods = resourceFinder.nearbyAvailableTradeable(Tradeable.WHOLESALE_GOODS, listOf(coordinate), maxDistance)
+                val availableGoods = resourceFinder.nearbyBuyingTradeable(Tradeable.GOODS, listOf(coordinate), maxDistance)
                 val availableLabor = resourceFinder.nearbyAvailableTradeable(Tradeable.LABOR, listOf(coordinate), maxDistance)
 
                 val score = if (availableGoods.count() == 0) {
                     0.0
                 } else {
-                    listOf(*availableGoods.toTypedArray(), *availableLabor.toTypedArray()).map {
+                    listOf(*availableGoods.toTypedArray()).map {
                         it.second.toDouble() / (it.first.distance() * 0.1)
                     }.sum()
                 }
-                desirabilityLayer[coordinate] = score
+                if (availableLabor.count() == 0) {
+                    desirabilityLayer[coordinate] = 0.0
+                } else {
+                    desirabilityLayer[coordinate] = score
+                }
+
             }
         }
 
@@ -66,16 +71,22 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
             if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
+                val availableBuyingWholesaleGoods = resourceFinder.nearbyBuyingTradeable(Tradeable.WHOLESALE_GOODS, listOf(coordinate), maxDistance)
                 val availableLabor = resourceFinder.nearbyAvailableTradeable(Tradeable.LABOR, listOf(coordinate), maxDistance)
 
-                val score = if (availableLabor.count() == 0) {
+                val score = if (availableBuyingWholesaleGoods.count() == 0) {
                     0.0
                 } else {
-                    availableLabor.map {
+                    availableBuyingWholesaleGoods.map {
                         it.second.toDouble() / (it.first.distance() / 0.1)
                     }.sum()
                 }
-                desirabilityLayer[coordinate] = score * 10
+                if (availableLabor.count() == 0) {
+                    desirabilityLayer[coordinate] = 0.0
+                } else {
+                    desirabilityLayer[coordinate] = score * 10
+                }
+
             }
         }
 
