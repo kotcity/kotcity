@@ -60,11 +60,9 @@ interface HasContacts {
     fun summarizeContracts(): String
     fun quantityForSale(tradeable: Tradeable): Int
     fun quantityWanted(tradeable: Tradeable): Int
-    fun addContract(contract: Contract)
     fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int)
     fun voidContractsWith(otherEntity: TradeEntity)
     fun needs(tradeable: Tradeable): Int
-    fun voidRandomContract()
     fun totalProvided(tradeable: Tradeable): Int
     fun supplyCount(tradeable: Tradeable): Int
     fun productList(): List<Tradeable>
@@ -120,7 +118,7 @@ interface HasConcreteContacts : HasContacts {
         return inventoryCount - contractCount
     }
 
-    override fun addContract(contract: Contract) {
+    fun addContract(contract: Contract) {
         this.contracts.add(contract)
     }
 
@@ -136,7 +134,7 @@ interface HasConcreteContacts : HasContacts {
         return requiredCount - contractCount
     }
 
-    override fun voidRandomContract() {
+    fun voidRandomContract() {
         if (contracts.count() > 0) {
             val contractToKill = contracts.getRandomElement()
             val otherBuilding = contractToKill.to

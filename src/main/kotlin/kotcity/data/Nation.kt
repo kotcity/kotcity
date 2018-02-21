@@ -3,7 +3,7 @@ package kotcity.data
 val outsideContracts: MutableList<Contract> = mutableListOf()
 
 // all the outside shares one contract list...
-data class OutsideTradeEntity(private val nationalTradeEntity: NationalTradeEntity, override val coordinate: BlockCoordinate, val cityMap: CityMap) : TradeEntity, HasContacts by nationalTradeEntity, HasInventory by nationalTradeEntity {
+data class OutsideTradeEntity(private val nationalTradeEntity: NationalTradeEntity, override val coordinate: BlockCoordinate, val cityMap: CityMap) : TradeEntity by nationalTradeEntity, HasContacts by nationalTradeEntity, HasInventory by nationalTradeEntity {
 
     override fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int) {
         val newContract = Contract(this, otherTradeEntity, tradeable, quantity)
@@ -25,9 +25,36 @@ data class OutsideTradeEntity(private val nationalTradeEntity: NationalTradeEnti
 
 }
 
-data class NationalTradeEntity(override val cityMap: CityMap): HasConcreteContacts, HasInventory {
-    override fun balance(): Int {
+data class NationalTradeEntity(override val cityMap: CityMap): HasConcreteContacts, HasInventory, TradeEntity {
+    override fun description(): String? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun building(): Building? {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override val coordinate: BlockCoordinate
+        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+
+    override fun addContract(contract: Contract) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun voidContractsWith(otherTradeEntity: TradeEntity) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun quantityForSale(tradeable: Tradeable): Int {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun wantsHowMany(tradeable: Tradeable): Int {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun balance(): Int {
+        return 10000
     }
 
     override fun addInventory(tradeable: Tradeable, quantity: Int): Int {
