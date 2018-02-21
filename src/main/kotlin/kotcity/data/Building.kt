@@ -56,12 +56,10 @@ interface HasConcreteInventory : HasInventory {
     }
 }
 
-interface HasContacts {
+interface HasContracts {
     fun summarizeContracts(): String
     fun quantityForSale(tradeable: Tradeable): Int
     fun quantityWanted(tradeable: Tradeable): Int
-    fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int)
-    fun voidContractsWith(otherEntity: TradeEntity)
     fun needs(tradeable: Tradeable): Int
     fun totalProvided(tradeable: Tradeable): Int
     fun supplyCount(tradeable: Tradeable): Int
@@ -69,7 +67,7 @@ interface HasContacts {
     fun wantsHowMany(tradeable: Tradeable): Int
 }
 
-interface HasConcreteContacts : HasContacts {
+interface HasConcreteContacts : HasContracts {
 
     val contracts: MutableList<Contract>
     val consumes: MutableMap<Tradeable, Int>
@@ -122,7 +120,7 @@ interface HasConcreteContacts : HasContacts {
         this.contracts.add(contract)
     }
 
-    override fun voidContractsWith(otherEntity: TradeEntity) {
+    fun voidContractsWith(otherEntity: TradeEntity) {
         contracts.removeAll {
             it.to == otherEntity || it.from == otherEntity
         }
@@ -183,7 +181,7 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
         addInventory(Tradeable.MONEY, DEFAULT_MONEY)
     }
 
-    override fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int) {
+    fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int) {
         val ourBlocks = cityMap.coordinatesForBuilding(this)
         if (ourBlocks == null) {
             println("Sorry, we couldn't find one of the buildings!")

@@ -21,9 +21,10 @@ class ContactFulfiller(val cityMap: CityMap): Debuggable {
                     if (nearby != null) {
                         building.createContract(nearby, tradeable, 1)
                         debug("")
-                        debug("${building.name}: Signed contract with ${nearby.description()} for 1 $tradeable")
+                        debug("${building.name}: Signed contract with ${nearby.description()} to buy 1 $tradeable")
                         debug("${building.name} now requires ${building.needs(tradeable)} $tradeable")
-                        debug("New setup: ${building.summarizeContracts()}")
+                        debug("${nearby.description()} has ${nearby.quantityForSale(tradeable)} left.")
+                        // debug("New setup: ${building.summarizeContracts()}")
                     } else {
                         debug("Could not find $needsCount $tradeable for ${building.name} at $coordinate")
                     }
@@ -45,9 +46,11 @@ class ContactFulfiller(val cityMap: CityMap): Debuggable {
                             // it must be outside the city...
                             cityMap.nationalTradeEntity.outsideEntity(coordinate)
                         }
-                        debug("${building.name}: Signed contract with ${sourceTradeEntity.description()} for 1 $tradeable")
-                        debug("${building.name} now sends ${building.needs(tradeable)} $tradeable")
-                        debug("New setup: ${building.summarizeContracts()}")
+                        debug("")
+                        debug("${building.name}: Signed contract with ${sourceTradeEntity.description()} to sell 1 $tradeable")
+                        debug("${building.name} now has ${building.supplyCount(tradeable)} $tradeable left to provide.")
+                        debug("${sourceTradeEntity.description()} still wants to buy ${sourceTradeEntity.wantsHowMany(tradeable)} $tradeable")
+                        // debug("New setup: ${building.summarizeContracts()}")
 
                         val newContract = Contract(sourceTradeEntity, buildingTradeEntity, tradeable, 1)
                         sourceTradeEntity.addContract(newContract)

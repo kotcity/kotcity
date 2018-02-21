@@ -238,8 +238,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun hourlyTick(hour: Int) {
         try {
             doingHourly = true
-            debug("Top of the hour stuff...")
-            debug("Hour is: $hour")
+            debug("Processing tick for: $hour:00")
 
             if (hour % 3 == 0) {
                 timeFunction("Calculating Desirability") { desirabilityUpdater.update() }
@@ -252,15 +251,20 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
 
             if (hour == 0) {
-                debug("Top of the day stuff...")
-                timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(this) }
-                timeFunction("Collect Taxes") { taxCollector.tick() }
-                timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
+                debug("Processing tick for end of day...")
+                dailyTick()
             }
 
         } finally {
             doingHourly = false
         }
+    }
+
+    private fun dailyTick() {
+        timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(this) }
+        timeFunction("Collect Taxes") { taxCollector.tick() }
+        timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
+        timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
     }
 
     private fun timeFunction(desc: String, timedFunction: () -> Unit) {
