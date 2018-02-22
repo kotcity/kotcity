@@ -106,6 +106,7 @@ class GameFrame : View() {
     private var gameTickTimer: Timer = Timer()
     private var gameTickTask: TimerTask? = null
     private lateinit var assetManager: AssetManager
+    private var lastMapRender = System.currentTimeMillis()
 
     var activeTool: Tool = Tool.QUERY
         set(value) {
@@ -297,8 +298,13 @@ class GameFrame : View() {
             override fun handle(now: Long) {
                 if (ticks == TICK_DELAY) {
                     cityRenderer?.render()
-                    cityMapCanvas.render()
                     ticks = 0
+                }
+                // only render map each while...
+                val delta = System.currentTimeMillis() - lastMapRender
+                if (delta > 10000) {
+                    cityMapCanvas.render()
+                    lastMapRender = System.currentTimeMillis()
                 }
                 ticks++
             }
@@ -367,6 +373,7 @@ class GameFrame : View() {
             canvas.width = newValue.toDouble()
             setCanvasSize()
             setScrollbarSizes()
+            cityMapCanvas.render()
         }
 
         canvas.setOnMouseMoved { evt ->
@@ -378,6 +385,7 @@ class GameFrame : View() {
         }
 
         canvas.setOnMouseReleased { evt ->
+            cityMapCanvas.render()
             cityRenderer?.let {
                 it.onMouseReleased(evt)
                 val (firstBlock, lastBlock) = it.blockRange()
@@ -477,6 +485,7 @@ class GameFrame : View() {
                     println("Zoom in!")
                     zoomIn()
                 }
+                cityMapCanvas.render()
             }
         }
     }

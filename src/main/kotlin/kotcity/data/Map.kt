@@ -6,6 +6,7 @@ import com.github.davidmoten.rtree.geometry.Rectangle
 import com.github.debop.javatimes.plus
 import com.github.debop.javatimes.toDateTime
 import kotcity.automata.*
+import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotlinx.coroutines.experimental.async
 import java.text.SimpleDateFormat
 import java.util.*
@@ -444,7 +445,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun buildingsIn(block: BlockCoordinate): List<Location> {
-        val nearestBuildings = nearestBuildings(block, 10)
+        val nearestBuildings = nearestBuildings(block, MAX_BUILDING_SIZE+1)
         val filteredBuildings = nearestBuildings.filter {
             val coordinate = it.coordinate
             val building = it.building

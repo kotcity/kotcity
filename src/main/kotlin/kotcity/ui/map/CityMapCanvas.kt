@@ -1,9 +1,11 @@
 package kotcity.ui.map
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import javafx.scene.paint.Color
 import kotcity.data.*
 import kotcity.ui.Algorithms
 import kotcity.ui.ResizableCanvas
+import java.util.concurrent.TimeUnit
 
 // this is for iterating through ranges of doubles...
 // used it before but not now apparently...
@@ -19,18 +21,23 @@ infix fun ClosedRange<Double>.step(step: Double): Iterable<Double> {
     return sequence.asIterable()
 }
 
-class CityMapCanvas: ResizableCanvas() {
+class CityMapCanvas : ResizableCanvas() {
     var map: CityMap? = null
-    set(value) {
-        field = value
-        value?.elevations()?.let {
-            colorAdjuster = ColorAdjuster(it.first, it.second)
+        set(value) {
+            field = value
+            value?.elevations()?.let {
+                colorAdjuster = ColorAdjuster(it.first, it.second)
+            }
         }
-    }
 
     var mode: MapMode = MapMode.NORMAL
     var colorAdjuster: ColorAdjuster? = null
     var visibleBlockRange: Pair<BlockCoordinate, BlockCoordinate>? = null
+
+    val buildingCache = Caffeine.newBuilder()
+            .expireAfterWrite(3, TimeUnit.MINUTES)
+            .refreshAfterWrite(2, TimeUnit.MINUTES)
+            .softValues().build({ key: BlockCoordinate -> map?.buildingsIn(key) })
 
     fun render() {
 
@@ -49,8 +56,6 @@ class CityMapCanvas: ResizableCanvas() {
             val xRange = 0..smallerDimension.toInt()
             val yRange = 0..smallerDimension.toInt()
 
-            // println("Map is rendering from 0 to $yRange")
-
             for (canvasX in xRange) {
                 for (canvasY in yRange) {
 
@@ -61,8 +66,10 @@ class CityMapCanvas: ResizableCanvas() {
                     val translatedBlock = BlockCoordinate(nx.toInt(), ny.toInt())
 
                     // TODO: this is a BUG!!!! we are getting the canvas XY coordinates but we care about the building ones...
-                    val buildings = map.buildingsIn(translatedBlock)
-                    if (buildings.count() > 0) {
+                    val buildings = buildingCache.get(translatedBlock, { translatedBlock ->
+                        map.buildingsIn(translatedBlock)
+                    })
+                    if (buildings?.count() ?: 0 > 0) {
                         gc.fill = Color.BLACK
                         gc.fillRect(canvasX.toDouble(), canvasY.toDouble(), 1.0, 1.0)
                     } else {
@@ -94,26 +101,20 @@ class CityMapCanvas: ResizableCanvas() {
                 var width = ex - sx
                 var height = ey - sy
 
-//                if (sx + width > this.width) {
-//                    width = this.width - sx
-//                }
-//
-//                if (sy + height > this.height) {
-//                    height = this.height - sy
-//                }
-
                 val seeThruPink = Color(Color.HOTPINK.red, Color.HOTPINK.green, Color.HOTPINK.blue, 0.8)
                 gc.fill = seeThruPink
                 // println("Minimap rendering starting at $sx, $sy ending at $ex, $ey")
                 gc.fillRect(sx, sy, width, height)
             }
         }
+
+
     }
 
     private fun renderResources() {
         this.map?.let { map ->
             this.mode.let { mode ->
-                val layer = when(mode) {
+                val layer = when (mode) {
                     MapMode.COAL -> map.resourceLayers["coal"]
                     MapMode.OIL -> map.resourceLayers["oil"]
                     MapMode.GOLD -> map.resourceLayers["gold"]
