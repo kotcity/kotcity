@@ -191,7 +191,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun nearestBuildings(coordinate: BlockCoordinate, distance: Int = 10): List<Location> {
         val point = Geometries.rectangle(coordinate.x.toFloat(), coordinate.y.toFloat(),coordinate.x.toFloat()+1, coordinate.y.toFloat()+1)
         return buildingIndex.search(point, distance.toDouble())
-                .toBlocking().toIterable().mapNotNull { entry ->
+                .filter( {t -> t != null } ).map { entry ->
             val geometry = entry.geometry()
             val building = entry.value()
             if (geometry != null && building != null) {
@@ -199,12 +199,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             } else {
                 null
             }
-        }
+        }.toBlocking().toIterable().filterNotNull()
     }
 
     // TODO: get smarter about index... we don't want to be rebuilding this all the time...
     fun updateBuildingIndex() {
-        var newIndex = RTree.create<Building, Rectangle>()
+        var newIndex = RTree.star().create<Building, Rectangle>()
         buildingLayer.forEach { coordinate, building ->
             newIndex = newIndex.add(building, Geometries.rectangle(
                     coordinate.x.toFloat(),

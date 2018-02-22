@@ -12,7 +12,7 @@ class Shipper(val cityMap: CityMap): Debuggable {
     private fun priceForGoods(tradeable: Tradeable, quantity: Int): Int {
         return when (tradeable) {
             Tradeable.MONEY -> quantity * 1
-            Tradeable.GOODS -> quantity * 3
+            Tradeable.GOODS -> quantity * 2
             Tradeable.LABOR -> quantity * 1
             Tradeable.RAW_MATERIALS -> quantity * 1
             Tradeable.WHOLESALE_GOODS -> quantity * 2

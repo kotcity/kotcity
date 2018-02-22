@@ -23,6 +23,8 @@ class LaunchScreen : View() {
     init {
         title = GAME_STRING
         titleLabel.text = GAME_STRING
+        currentStage?.isAlwaysOnTop = true
+        currentStage?.toFront()
     }
 
     fun newCityPressed() {
