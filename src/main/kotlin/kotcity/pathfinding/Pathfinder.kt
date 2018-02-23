@@ -16,7 +16,7 @@ enum class TransitType {
     ROAD
 }
 
-data class Path (
+public data class Path (
         val nodes: List<NavigationNode> = emptyList()
 ) {
     fun distance(): Int {

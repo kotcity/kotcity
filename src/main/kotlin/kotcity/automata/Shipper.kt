@@ -19,6 +19,8 @@ class Shipper(val cityMap: CityMap): Debuggable {
         }
     }
 
+    //
+
     fun tick() {
         // what we want to do here is find all industrial zones with WHOLESALE GOODS and ship them to commercial zones
         cityMap.buildingLayer.forEach { _, building ->

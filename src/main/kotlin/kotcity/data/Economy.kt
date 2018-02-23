@@ -1,5 +1,7 @@
 package kotcity.data
 
+import kotcity.pathfinding.Pathfinder
+
 enum class Tradeable {
     MONEY,
     GOODS,
@@ -57,6 +59,8 @@ data class Contract(
         val from: TradeEntity,
         val tradeable: Tradeable,
         val quantity: Int
+        // TODO: add path to contract...
+        // val path: kotcity.pathfinding.Path
 
 ) {
     override fun toString(): String {

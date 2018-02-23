@@ -1,6 +1,7 @@
 package kotcity.automata
 
 import kotcity.data.*
+import kotcity.pathfinding.Pathfinder
 import kotcity.util.Debuggable
 import kotcity.util.getRandomElements
 
@@ -8,6 +9,7 @@ class ContactFulfiller(val cityMap: CityMap): Debuggable {
 
     override var debug = false
     val resourceFinder = ResourceFinder(cityMap)
+    val pathfinder = Pathfinder(cityMap)
 
     fun signContracts() {
         cityMap.buildingLayer.forEach { coordinate, building ->
