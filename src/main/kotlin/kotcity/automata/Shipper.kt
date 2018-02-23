@@ -46,12 +46,10 @@ class Shipper(val cityMap: CityMap): Debuggable {
                             // don't actually SEND anything... we just get $$$
                             building.addInventory(Tradeable.MONEY, contract.quantity)
                             debug("${building.description} sent some ${contract.tradeable} to ${contract.to.description()}")
-
                         } else if (contract.tradeable != Tradeable.MONEY) {
                             val howManyTransferred = building.transferInventory(contract.to, contract.tradeable, contract.quantity)
                             building.addInventory(Tradeable.MONEY, priceForGoods(contract.tradeable, howManyTransferred))
                             debug("${building.description}: We sent ${contract.quantity} ${contract.tradeable} to ${contract.to.description()}")
-
                         }
                     }
 
