@@ -1,14 +1,12 @@
 package kotcity.ui
 
+import javafx.scene.control.Alert
+import javafx.scene.control.Alert.AlertType
 import javafx.stage.FileChooser
-import javafx.stage.Stage
 import kotcity.data.CityFileAdapter
+import tornadofx.View
 import tornadofx.find
 import tornadofx.runLater
-import java.io.File
-import javafx.scene.control.Alert.AlertType
-import javafx.scene.control.Alert
-import tornadofx.View
 
 
 object CityLoader {
