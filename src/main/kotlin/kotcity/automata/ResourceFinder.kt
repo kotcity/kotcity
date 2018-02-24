@@ -11,6 +11,8 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
 
     private val pathfinder = Pathfinder(cityMap)
 
+    // TODO: refactor this... basically we need "paths to resources" as well as just like how
+    // many in the neighborhood...
     fun nearbyAvailableTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int): List<Pair<Path, Int>> {
         // OK... we need to find nearby buildings...
         val buildings = sourceBlocks.flatMap { cityMap.nearestBuildings(it, maxDistance) }.distinct()

@@ -52,7 +52,7 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
     private fun calculatePopulation() {
         // loop over each residential building and count the labor...
         var tempPop = 0
-        cityMap.buildingLayer.forEach { coordinate, building ->
+        cityMap.buildingLayer.forEach { _, building ->
             if (building.type == BuildingType.RESIDENTIAL) {
                 // see how many labor is provided...
                 tempPop += building.totalProvided(Tradeable.LABOR)

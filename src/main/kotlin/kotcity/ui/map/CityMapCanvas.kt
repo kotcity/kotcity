@@ -66,8 +66,8 @@ class CityMapCanvas : ResizableCanvas() {
                     val translatedBlock = BlockCoordinate(nx.toInt(), ny.toInt())
 
                     // TODO: this is a BUG!!!! we are getting the canvas XY coordinates but we care about the building ones...
-                    val buildings = buildingCache.get(translatedBlock, { translatedBlock ->
-                        map.buildingsIn(translatedBlock)
+                    val buildings = buildingCache.get(translatedBlock, { buildingBlock ->
+                        map.buildingsIn(buildingBlock)
                     })
                     if (buildings?.count() ?: 0 > 0) {
                         gc.fill = Color.BLACK

@@ -9,10 +9,7 @@ object SpriteLoader {
 
     private fun uncachedSpriteForBuildingType(building: Building, width: Double, height: Double): Image? {
         var filename = filename(building)
-        if (filename != null) {
-            return Image(filename, width, height, true, false)
-        }
-        throw RuntimeException("Could not find a sprite for: $building")
+        return Image(filename, width, height, true, false)
     }
 
     fun filename(building: Building): String {

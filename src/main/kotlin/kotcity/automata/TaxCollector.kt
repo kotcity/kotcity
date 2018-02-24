@@ -10,7 +10,7 @@ class TaxCollector(val cityMap: CityMap): Debuggable {
     override var debug = false
 
     fun tick() {
-        cityMap.buildingLayer.forEach { coordinate, building ->
+        cityMap.buildingLayer.forEach { _, building ->
             if (listOf(BuildingType.RESIDENTIAL, BuildingType.INDUSTRIAL, BuildingType.COMMERCIAL).contains(building.type)) {
                 // figure out how much money this building has...
                 val money = building.quantityOnHand(Tradeable.MONEY)
