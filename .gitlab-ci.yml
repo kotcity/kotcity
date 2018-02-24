@@ -1,0 +1,6 @@
+image: java
+stages:
+  - build
+gradle-assemble:
+  stage: build
+  script: "./gradlew -g /cache assemble"
