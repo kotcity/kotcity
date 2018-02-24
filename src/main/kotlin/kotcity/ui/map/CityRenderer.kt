@@ -11,7 +11,7 @@ const val MAX_BUILDING_SIZE = 4
 const val DESIRABILITY_CAP: Double = 300.0
 // the coal power plant is the biggest...
 
-class CityRenderer(private val gameFrame: GameFrame, private val canvas: ResizableCanvas, private val map: CityMap) {
+class CityRenderer(private val gameFrame: GameFrame, private val canvas: ResizableCanvas, private val cityMap: CityMap) {
 
     var zoom = 1.0
         set(value) {
@@ -32,13 +32,15 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     var mapMode: MapMode = MapMode.NORMAL
 
+    var showRoutesFor: BlockCoordinate? = null
+
     init {
-        mapMinElevation = map.groundLayer.values.mapNotNull { it.elevation }.min() ?: 0.0
-        mapMaxElevation = map.groundLayer.values.mapNotNull { it.elevation }.max() ?: 0.0
+        mapMinElevation = cityMap.groundLayer.values.mapNotNull { it.elevation }.min() ?: 0.0
+        mapMaxElevation = cityMap.groundLayer.values.mapNotNull { it.elevation }.max() ?: 0.0
         colorAdjuster = ColorAdjuster(mapMinElevation, mapMaxElevation)
 
         println("Map min: $mapMinElevation Map max: $mapMaxElevation")
-        println("Map has been set to: $map. Size is ${canvas.width}x${canvas.height}")
+        println("Map has been set to: $cityMap. Size is ${canvas.width}x${canvas.height}")
     }
 
     private fun canvasBlockHeight() = (canvas.height / blockSize()).toInt()
@@ -52,12 +54,12 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         var endBlockX = startBlockX + canvasBlockWidth() + padding
         var endBlockY = startBlockY + canvasBlockHeight() + padding
 
-        if (endBlockX > map.width) {
-            endBlockX = map.width
+        if (endBlockX > cityMap.width) {
+            endBlockX = cityMap.width
         }
 
-        if (endBlockY > map.height) {
-            endBlockY = map.height
+        if (endBlockY > cityMap.height) {
+            endBlockY = cityMap.height
         }
 
         val startCoordinate = BlockCoordinate(startBlockX, startBlockY)
@@ -91,7 +93,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         }
     }
 
-    fun centerBlock(): BlockCoordinate {
+    private fun centerBlock(): BlockCoordinate {
         val centerX = blockOffsetX + (canvasBlockWidth() / 2)
         val centerY = blockOffsetY + (canvasBlockHeight() / 2)
         return BlockCoordinate(centerX.toInt(), centerY.toInt())
@@ -162,7 +164,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         // this handles the offset...
         xRange.toList().forEachIndexed { xi, x ->
             yRange.toList().forEachIndexed { yi, y ->
-                val tile = map.groundLayer[BlockCoordinate(x, y)]
+                val tile = cityMap.groundLayer[BlockCoordinate(x, y)]
                 if (tile != null) {
                     val adjustedColor = colorAdjuster.colorForTile(tile)
                     gc.fill = adjustedColor
@@ -201,6 +203,12 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         drawMap(canvas.graphicsContext2D)
         drawZones()
         drawBuildings(canvas.graphicsContext2D)
+        showRoutesFor?.let {
+            if (gameFrame.activeTool == Tool.ROUTES) {
+                drawRoutes(canvas.graphicsContext2D, it)
+            }
+        }
+
         if (mapMode == MapMode.SOIL || mapMode == MapMode.COAL || mapMode == MapMode.GOLD || mapMode == MapMode.OIL) {
             drawResources()
         } else if (mapMode == MapMode.DESIRABILITY) {
@@ -209,11 +217,33 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         drawHighlights()
     }
 
+    private fun drawRoutes(graphicsContext: GraphicsContext, showRoutesFor: BlockCoordinate) {
+        // ok... we know the coordinate we are interested in... so let's find ALL contracts that involve it...
+        // this is going to be super gross...
+        val contracts = cityMap.locations().map { contractsWithPathThrough(it.building, showRoutesFor) }.flatten()
+        // ok now we know which ones to draw...
+        val blocksWithPath = contracts.flatMap { it.path?.blockList()?.asSequence() ?: emptySequence() }.distinct().toSet()
+        // now get only ones on screen...
+
+        val (startBlock, endBlock) = visibleBlockRange()
+        BlockCoordinate.iterate(startBlock, endBlock) { blockCoordinate ->
+            if (blocksWithPath.contains(blockCoordinate)) {
+                highlightBlock(graphicsContext, blockCoordinate.x, blockCoordinate.y)
+            }
+        }
+
+    }
+
+    // TODO: this is probably brutally slow...
+    private fun contractsWithPathThrough(building: Building, coordinate: BlockCoordinate): List<Contract> {
+        return building.contracts.filter { it.path?.blockList()?.contains(coordinate) ?: false }
+    }
+
     private fun drawDesirability() {
         val (startBlock, endBlock) = visibleBlockRange()
 
         BlockCoordinate.iterate(startBlock, endBlock) { coord ->
-            val desirabilityScores = map.desirabilityLayers.map {
+            val desirabilityScores = cityMap.desirabilityLayers.map {
                 it[coord]
             }
 
@@ -276,10 +306,10 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     private fun resourceLayer(mode: MapMode): QuantizedMap<Double>? {
         return when(mode) {
-            MapMode.COAL -> map.resourceLayers["coal"]
-            MapMode.OIL -> map.resourceLayers["oil"]
-            MapMode.GOLD -> map.resourceLayers["gold"]
-            MapMode.SOIL -> map.resourceLayers["soil"]
+            MapMode.COAL -> cityMap.resourceLayers["coal"]
+            MapMode.OIL -> cityMap.resourceLayers["oil"]
+            MapMode.GOLD -> cityMap.resourceLayers["gold"]
+            MapMode.SOIL -> cityMap.resourceLayers["soil"]
             else -> null
         }
     }
@@ -404,7 +434,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     private fun visibleBuildings(): List<Pair<BlockCoordinate, Building>> {
         // TODO: we can just cityMap over the two different layers... clean up later...
         val buildings = visibleBlocks(padding = MAX_BUILDING_SIZE).mapNotNull {
-            val building = map.buildingLayer[it]
+            val building = cityMap.buildingLayer[it]
             if (building != null) {
                 Pair(it, building)
             } else {
@@ -412,7 +442,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
             }
         }
         val powerLines = visibleBlocks(padding = MAX_BUILDING_SIZE).mapNotNull {
-            val building = map.powerLineLayer[it]
+            val building = cityMap.powerLineLayer[it]
             if (building != null) {
                 Pair(it, building)
             } else {
@@ -500,7 +530,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         val blockSize = blockSize()
         val graphics = canvas.graphicsContext2D
         visibleBlocks().forEach { coordinate ->
-            map.zoneLayer[coordinate]?.let { zone ->
+            cityMap.zoneLayer[coordinate]?.let { zone ->
                 // figure out fill color...
                 val tx = coordinate.x - blockOffsetX
                 val ty = coordinate.y - blockOffsetY

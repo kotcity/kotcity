@@ -50,7 +50,8 @@ enum class Tool {
     DEZONE,
     POWER_LINES,
     JOB_CENTER,
-    TOWN_WAREHOUSE
+    TOWN_WAREHOUSE,
+    ROUTES
 }
 
 enum class GameSpeed { SLOW, MEDIUM, FAST }
@@ -80,6 +81,7 @@ class GameFrame : View() {
     private val powerLinesButton: ToggleButton by fxid()
     private val jobCenterButton: ToggleButton by fxid()
     private val townWarehouseButton: ToggleButton by fxid()
+    private val routesButton: ToggleButton by fxid()
 
     // cityMap modes...
     private val normalMapMode: RadioMenuItem by fxid()
@@ -129,15 +131,15 @@ class GameFrame : View() {
         cityNameLabel.text = cityMap.cityName
         this.cityRenderer = CityRenderer(this, canvas, cityMap)
         this.cityRenderer?.addPanListener { visibleBlockRange ->
-            println("We have moved the cityMap around. Telling the minimal to highlight: $visibleBlockRange")
+            // println("We have moved the cityMap around. Telling the minimal to highlight: $visibleBlockRange")
             this.cityMapCanvas.visibleBlockRange = visibleBlockRange
         }
         this.cityMapCanvas.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
     }
 
     private fun setCanvasSize() {
-        println("cityMap size is: ${this.map.width},${this.map.height}")
-        println("Canvas pane size is: ${canvasPane.width},${canvasPane.height}")
+        // println("cityMap size is: ${this.map.width},${this.map.height}")
+        // println("Canvas pane size is: ${canvasPane.width},${canvasPane.height}")
         canvas.prefHeight(canvasPane.height - 20)
         canvas.prefWidth(canvasPane.width - 20)
         AnchorPane.setTopAnchor(canvas, 0.0)
@@ -243,7 +245,8 @@ class GameFrame : View() {
         powerLinesButton.setOnAction { activeTool = Tool.POWER_LINES }
         nuclearPowerButton.setOnAction { activeTool = Tool.NUCLEAR_POWER_PLANT }
         townWarehouseButton.setOnAction { activeTool = Tool.TOWN_WAREHOUSE }
-        jobCenterButton.setOnAction { activeTool= Tool.JOB_CENTER }
+        jobCenterButton.setOnAction { activeTool = Tool.JOB_CENTER }
+        routesButton.setOnAction { activeTool = Tool.ROUTES }
     }
 
     fun bindMapModes() {
@@ -391,27 +394,27 @@ class GameFrame : View() {
                 val (firstBlock, lastBlock) = it.blockRange()
                 if (firstBlock != null && lastBlock != null) {
                     if (evt.button == MouseButton.PRIMARY) {
-                        if (activeTool == Tool.ROAD) {
-                            println("Want to build road from: $firstBlock, $lastBlock")
-                            map.buildRoad(firstBlock, lastBlock)
-                        } else if (activeTool == Tool.POWER_LINES) {
-                            map.buildPowerline(firstBlock, lastBlock)
-                        } else if (activeTool == Tool.BULLDOZE) {
-                            map.bulldoze(firstBlock, lastBlock)
-                        } else if (activeTool == Tool.RESIDENTIAL_ZONE) {
-                            map.zone(ZoneType.RESIDENTIAL, firstBlock, lastBlock)
-                        } else if (activeTool == Tool.COMMERCIAL_ZONE) {
-                            map.zone(ZoneType.COMMERCIAL, firstBlock, lastBlock)
-                        } else if (activeTool == Tool.INDUSTRIAL_ZONE) {
-                            map.zone(ZoneType.INDUSTRIAL, firstBlock, lastBlock)
-                        } else if (activeTool == Tool.DEZONE) {
-                            map.dezone(firstBlock, lastBlock)
-                        } else if (activeTool == Tool.QUERY) {
-                            // let's do that query...
-                            val queryWindow = find(QueryWindow::class)
-                            // get building under the active block...
-                            queryWindow.mapAndCoordinate = Pair(map, firstBlock)
-                            queryWindow.openModal()
+                        when (activeTool) {
+                            Tool.ROAD -> {
+                                println("Want to build road from: $firstBlock, $lastBlock")
+                                map.buildRoad(firstBlock, lastBlock)
+                            }
+                            Tool.POWER_LINES -> map.buildPowerline(firstBlock, lastBlock)
+                            Tool.BULLDOZE -> map.bulldoze(firstBlock, lastBlock)
+                            Tool.RESIDENTIAL_ZONE -> map.zone(ZoneType.RESIDENTIAL, firstBlock, lastBlock)
+                            Tool.COMMERCIAL_ZONE -> map.zone(ZoneType.COMMERCIAL, firstBlock, lastBlock)
+                            Tool.INDUSTRIAL_ZONE -> map.zone(ZoneType.INDUSTRIAL, firstBlock, lastBlock)
+                            Tool.DEZONE -> map.dezone(firstBlock, lastBlock)
+                            Tool.QUERY -> {
+                                // let's do that query...
+                                val queryWindow = find(QueryWindow::class)
+                                // get building under the active block...
+                                queryWindow.mapAndCoordinate = Pair(map, firstBlock)
+                                queryWindow.openModal()
+                            }
+                            Tool.ROUTES -> {
+                                it.showRoutesFor = firstBlock
+                            }
                         }
                     }
                 }

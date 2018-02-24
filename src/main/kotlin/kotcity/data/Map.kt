@@ -8,6 +8,7 @@ import com.github.debop.javatimes.toDateTime
 import kotcity.automata.*
 import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -230,7 +231,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         if (time.toDateTime().minuteOfHour == 0) {
 
             val hour = time.toDateTime().hourOfDay
-            async {
+            launch {
                 if (!doingHourly) {
                     hourlyTick(hour)
                 } else {
@@ -249,7 +250,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
             if (hour % 3 == 0) {
                 timeFunction("Calculating Desirability") { desirabilityUpdater.update() }
-                timeFunction("Constructing Buildings") {constructor.tick() }
+                timeFunction("Constructing Buildings") { constructor.tick() }
                 timeFunction("Signing Contracts") { contractFulfiller.signContracts() }
                 timeFunction("Terminating Random Contracts") { contractFulfiller.terminateRandomContracts() }
                 timeFunction("Doing Manufacturing") { manufacturer.tick() }
@@ -261,7 +262,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 debug("Processing tick for end of day...")
                 dailyTick()
             }
-
+        } catch(e: Exception ) {
+            println("WARNING! Error during hourly: ${e.message}")
+            e.printStackTrace()
         } finally {
             doingHourly = false
         }
@@ -465,6 +468,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     fun desirabilityLayer(type: ZoneType, level: Int): DesirabilityLayer? {
         return desirabilityLayers.find { it.level == level && it.zoneType == type }
+    }
+
+    fun locations(): Sequence<Location> {
+        return buildingLayer.entries.asSequence().map { Location(it.key, it.value) }
     }
 
 }

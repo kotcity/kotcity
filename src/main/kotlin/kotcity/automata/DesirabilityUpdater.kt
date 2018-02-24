@@ -108,6 +108,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
         return cityMap.zoneLayer.toList().filter { it.second == Zone(zoneType) }.map { it.first }
     }
 
+    // TODO: waaay too slow...
     private fun updateResidential(desirabilityLayer: DesirabilityLayer) {
         // we like being near places that NEED labor
         // we like being near places that PROVIDE goods

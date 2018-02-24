@@ -95,6 +95,7 @@
                                     </ToggleButton>
                                     <ToggleButton fx:id="dezoneButton" mnemonicParsing="false" text="Dezone" toggleGroup="$buildTools" />
                                     <ToggleButton fx:id="queryButton" mnemonicParsing="false" text="Query" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="routesButton" mnemonicParsing="false" text="Routes" toggleGroup="$buildTools" />
                                     <Region layoutX="21.0" layoutY="93.0" prefHeight="5.0" prefWidth="200.0" />
                                     <ToggleButton fx:id="residentialButton" mnemonicParsing="false" text="Residential" toggleGroup="$buildTools" />
                                     <ToggleButton fx:id="commercialButton" mnemonicParsing="false" text="Commercial" toggleGroup="$buildTools" />

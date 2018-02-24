@@ -1,7 +1,6 @@
 package kotcity.data
 
 import kotcity.pathfinding.Path
-import kotcity.pathfinding.Pathfinder
 
 enum class Tradeable {
     MONEY,

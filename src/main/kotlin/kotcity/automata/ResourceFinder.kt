@@ -90,6 +90,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         // now we gotta make sure they got the resource...
         val buildingsWithResource = buildings.filter { it.building.quantityWanted(tradeable) > 0 }
 
+        // TODO: sort by distance... pathfind to the first one...
         val pathsAndQuantity = buildingsWithResource.mapNotNull { location ->
             val buildingBlocks = cityMap.buildingBlocks(location.coordinate, location.building)
             val path = pathfinder.tripTo(sourceBlocks, buildingBlocks)
