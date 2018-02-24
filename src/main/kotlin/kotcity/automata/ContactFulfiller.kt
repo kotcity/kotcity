@@ -8,24 +8,26 @@ import kotcity.util.getRandomElements
 class ContactFulfiller(val cityMap: CityMap): Debuggable {
 
     override var debug = false
-    val resourceFinder = ResourceFinder(cityMap)
-    val pathfinder = Pathfinder(cityMap)
+    private val resourceFinder = ResourceFinder(cityMap)
 
     fun signContracts() {
         cityMap.buildingLayer.forEach { coordinate, building ->
 
             val buildingTradeEntity = CityTradeEntity(coordinate, building)
 
+            val buildingBlocks = cityMap.buildingBlocks(coordinate, building)
             building.consumes.forEach { tradeable, _ ->
                 val needsCount = building.needs(tradeable)
                 if (needsCount > 0) {
-                    val nearby = resourceFinder.findSource(cityMap.buildingBlocks(coordinate, building),tradeable, 1)
+                    val nearby = resourceFinder.findSource(buildingBlocks,tradeable, 1)
                     if (nearby != null) {
-                        building.createContract(nearby, tradeable, 1)
+                        val entity = nearby.first
+                        val path = nearby.second
+                        building.createContract(entity, tradeable, 1, path)
                         debug("")
-                        debug("${building.name}: Signed contract with ${nearby.description()} to buy 1 $tradeable")
+                        debug("${building.name}: Signed contract with ${entity.description()} to buy 1 $tradeable")
                         debug("${building.name} now requires ${building.needs(tradeable)} $tradeable")
-                        debug("${nearby.description()} has ${nearby.quantityForSale(tradeable)} left.")
+                        debug("${entity.description()} has ${entity.quantityForSale(tradeable)} left.")
                         // debug("New setup: ${building.summarizeContracts()}")
                     } else {
                         debug("Could not find $needsCount $tradeable for ${building.name} at $coordinate")
@@ -36,7 +38,7 @@ class ContactFulfiller(val cityMap: CityMap): Debuggable {
             building.produces.forEach { tradeable, _ ->
                 val producesCount = building.quantityForSale(tradeable)
                 if (producesCount > 0) {
-                    val nearbyBuying = resourceFinder.nearbyBuyingTradeable(tradeable, cityMap.buildingBlocks(coordinate, building))
+                    val nearbyBuying = resourceFinder.nearbyBuyingTradeable(tradeable, buildingBlocks)
                     val nearest = nearbyBuying.minBy { it.first.distance() }
                     if (nearest != null) {
                         val sourceBlock = nearest.first.blockList().last()
@@ -48,13 +50,14 @@ class ContactFulfiller(val cityMap: CityMap): Debuggable {
                             // it must be outside the city...
                             cityMap.nationalTradeEntity.outsideEntity(coordinate)
                         }
+
                         debug("")
                         debug("${building.name}: Signed contract with ${sourceTradeEntity.description()} to sell 1 $tradeable")
                         debug("${building.name} now has ${building.supplyCount(tradeable)} $tradeable left to provide.")
                         debug("${sourceTradeEntity.description()} still wants to buy ${sourceTradeEntity.quantityWanted(tradeable)} $tradeable")
                         // debug("New setup: ${building.summarizeContracts()}")
 
-                        val newContract = Contract(sourceTradeEntity, buildingTradeEntity, tradeable, 1)
+                        val newContract = Contract(sourceTradeEntity, buildingTradeEntity, tradeable, 1, nearest.first)
                         sourceTradeEntity.addContract(newContract)
                         buildingTradeEntity.addContract(newContract)
                     }

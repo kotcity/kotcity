@@ -1,5 +1,6 @@
 import kotcity.data.*
 import kotcity.data.assets.AssetManager
+import kotcity.pathfinding.Pathfinder
 import org.junit.jupiter.api.Test
 
 class EconomyTest {
@@ -11,7 +12,7 @@ class EconomyTest {
         assert(jobCenter.quantityForSale(Tradeable.LABOR) >= 2)
         val industrialBuilding = assetManager.buildingFor(BuildingType.INDUSTRIAL, "small_factory")
         val industrialTrader = CityTradeEntity(BlockCoordinate(0, 0), industrialBuilding)
-        jobCenter.createContract(industrialTrader, Tradeable.LABOR, 2)
+        jobCenter.createContract(industrialTrader, Tradeable.LABOR, 2, null)
         println("Jobcenter: ${jobCenter.quantityForSale(Tradeable.LABOR) }")
         assert(jobCenter.quantityForSale(Tradeable.LABOR) == 2)
         // now void the contracts...

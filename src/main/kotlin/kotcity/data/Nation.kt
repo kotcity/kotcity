@@ -1,5 +1,7 @@
 package kotcity.data
 
+import kotcity.pathfinding.Path
+
 // all the outside shares one contract list...
 data class OutsideTradeEntity(private val nationalTradeEntity: NationalTradeEntity, override val coordinate: BlockCoordinate, val cityMap: CityMap) : TradeEntity, HasContracts by nationalTradeEntity, HasInventory by nationalTradeEntity {
     override fun voidContractsWith(otherTradeEntity: TradeEntity) {
@@ -14,8 +16,8 @@ data class OutsideTradeEntity(private val nationalTradeEntity: NationalTradeEnti
         return nationalTradeEntity.transferInventory(to, tradeable, quantity)
     }
 
-    override fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int) {
-        val newContract = Contract(this, otherTradeEntity, tradeable, quantity)
+    override fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path) {
+        val newContract = Contract(this, otherTradeEntity, tradeable, quantity, path)
         if (otherTradeEntity.quantityForSale(tradeable) >= newContract.quantity) {
             addContract(newContract)
             otherTradeEntity.addContract(newContract)

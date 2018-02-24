@@ -1,5 +1,6 @@
 package kotcity.data
 
+import kotcity.pathfinding.Path
 import kotcity.pathfinding.Pathfinder
 
 enum class Tradeable {
@@ -16,7 +17,7 @@ interface TradeEntity {
     val coordinate: BlockCoordinate
 
     fun addContract(contract: Contract)
-    fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int)
+    fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path)
     fun voidContractsWith(otherTradeEntity: TradeEntity)
 
     fun quantityForSale(tradeable: Tradeable): Int
@@ -25,8 +26,8 @@ interface TradeEntity {
 
 data class CityTradeEntity(override val coordinate: BlockCoordinate, val building: Building) : TradeEntity {
 
-    override fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int) {
-        building.createContract(otherTradeEntity, tradeable, quantity)
+    override fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path) {
+        building.createContract(otherTradeEntity, tradeable, quantity, path)
     }
 
     override fun voidContractsWith(otherTradeEntity: TradeEntity) {
@@ -58,9 +59,8 @@ data class Contract(
         val to: TradeEntity,
         val from: TradeEntity,
         val tradeable: Tradeable,
-        val quantity: Int
-        // TODO: add path to contract...
-        // val path: kotcity.pathfinding.Path
+        val quantity: Int,
+        val path: kotcity.pathfinding.Path?
 
 ) {
     override fun toString(): String {

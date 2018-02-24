@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kotcity.data.assets.AssetManager
+import kotcity.pathfinding.Pathfinder
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -197,6 +198,7 @@ private fun writePowerlineLayer(data: JsonObject, it: SerializerArg<CityMap>) {
 }
 
 fun readContracts(data: JsonObject, cityMap: CityMap) {
+    val pathfinder = Pathfinder(cityMap)
     val contractData = data["contracts"].asJsonArray
     contractData.forEach { contractElement ->
         val contractObj = contractElement.asJsonObject
@@ -208,7 +210,14 @@ fun readContracts(data: JsonObject, cityMap: CityMap) {
         val tradeable = Tradeable.valueOf(contractObj["tradeable"].asString)
         val quantity = contractObj["quantity"].asInt
         // val newContract = Contract(fromBuilding, toBuilding, tradeable, quantity)
-        toBuilding.building.createContract(CityTradeEntity(fromBuilding.coordinate, fromBuilding.building), tradeable, quantity)
+
+        val path = pathfinder.tripTo(listOf(from), listOf(to))
+        if (path != null) {
+            toBuilding.building.createContract(CityTradeEntity(fromBuilding.coordinate, fromBuilding.building), tradeable, quantity, path)
+        } else {
+            println("Error during contract loading! Can't find path!")
+        }
+
     }
 }
 

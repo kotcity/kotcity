@@ -9,9 +9,8 @@ import kotcity.util.Debuggable
 class ResourceFinder(val cityMap: CityMap): Debuggable {
     override var debug = false
 
-    val pathfinder = Pathfinder(cityMap)
+    private val pathfinder = Pathfinder(cityMap)
 
-    // TODO: let's be able to get paths from outside the city...
     fun nearbyAvailableTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int): List<Pair<Path, Int>> {
         // OK... we need to find nearby buildings...
         val buildings = sourceBlocks.flatMap { cityMap.nearestBuildings(it, maxDistance) }.distinct()
@@ -36,7 +35,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         return pathsAndQuantity.toList()
     }
 
-    fun findSource(sourceBlocks: List<BlockCoordinate>, tradeable: Tradeable, quantity: Int): TradeEntity? {
+    fun findSource(sourceBlocks: List<BlockCoordinate>, tradeable: Tradeable, quantity: Int): Pair<TradeEntity, Path>? {
         // TODO: we can just do this once for the "center" of the building... (i think)
         val buildings = sourceBlocks.flatMap { cityMap.nearestBuildings(it, kotcity.pathfinding.MAX_DISTANCE) }.distinct()
         // now we gotta make sure they got the resource...
@@ -54,6 +53,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         // we have to find the nearest one now...
 
         var preferredTradeEntity: TradeEntity? = null
+        var preferredPath: Path? = null
 
         if (buildingsWithPath.count() > 0) {
             // ok so the last link in the path is the actual location...
@@ -61,6 +61,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
             if (nearestBuildingAndPath != null) {
                 val buildingCoordinate = nearestBuildingAndPath.first.blockList().last()
                 preferredTradeEntity = CityTradeEntity(buildingCoordinate, nearestBuildingAndPath.second)
+                preferredPath = nearestBuildingAndPath.first
             }
         }
 
@@ -75,7 +76,12 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
             }
         }
 
-        return preferredTradeEntity
+        return if (preferredPath != null && preferredTradeEntity != null) {
+            Pair(preferredTradeEntity, preferredPath)
+        } else {
+            null
+        }
+
     }
 
     fun nearbyBuyingTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int = MAX_DISTANCE): List<Pair<Path, Int>> {

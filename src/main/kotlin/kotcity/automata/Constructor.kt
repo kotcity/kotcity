@@ -10,8 +10,8 @@ import java.util.*
 class Constructor(val cityMap: CityMap) : Debuggable {
 
     val assetManager = AssetManager(cityMap)
-    val random = Random()
-    val maxTries = 30
+    private val random = Random()
+    private val maxTries = 30
     override var debug = false
 
     private fun isEmpty(entry: MutableMap.MutableEntry<BlockCoordinate, Double>): Boolean {
@@ -85,7 +85,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
         return random.nextInt(to - from) + from
     }
 
-    fun zoneTypeToBuildingType(zoneType: ZoneType): BuildingType {
+    private fun zoneTypeToBuildingType(zoneType: ZoneType): BuildingType {
         return when (zoneType) {
             ZoneType.INDUSTRIAL -> BuildingType.INDUSTRIAL
             ZoneType.RESIDENTIAL -> BuildingType.RESIDENTIAL

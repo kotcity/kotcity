@@ -56,6 +56,5 @@ class Manufacturer(val cityMap: CityMap): Debuggable {
         } else {
             debug("Wanted to make products but we didn't have any labor!")
         }
-        // TODO: Pay whoever gives us labor now...
     }
 }

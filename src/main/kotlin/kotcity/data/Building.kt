@@ -1,5 +1,6 @@
 package kotcity.data
 
+import kotcity.pathfinding.Path
 import kotcity.util.getRandomElement
 
 interface HasInventory {
@@ -177,14 +178,14 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
         addInventory(Tradeable.MONEY, DEFAULT_MONEY)
     }
 
-    fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int) {
+    fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path?) {
         val ourBlocks = cityMap.coordinatesForBuilding(this)
         if (ourBlocks == null) {
             println("Sorry, we couldn't find one of the buildings!")
             return
         }
         val ourLocation = CityTradeEntity(ourBlocks, this)
-        val newContract = Contract(ourLocation, otherTradeEntity, tradeable, quantity)
+        val newContract = Contract(ourLocation, otherTradeEntity, tradeable, quantity, path)
         if (otherTradeEntity.quantityForSale(tradeable) >= newContract.quantity) {
             contracts.add(newContract)
             otherTradeEntity.addContract(newContract)
