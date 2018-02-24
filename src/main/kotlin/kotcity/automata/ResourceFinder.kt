@@ -11,6 +11,18 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
 
     private val pathfinder = Pathfinder(cityMap)
 
+    fun quantityForSaleNearby(tradeable: Tradeable, sourceBlock: BlockCoordinate, maxDistance: Int = 30): Int {
+        val locations = cityMap.nearestBuildings(sourceBlock, maxDistance)
+        val quantityNearby = locations.sumBy {  location -> location.building.quantityForSale(tradeable) }
+        return quantityNearby + cityMap.nationalTradeEntity.quantityForSale(tradeable)
+    }
+
+    fun quantityWantedNearby(tradeable: Tradeable, sourceBlock: BlockCoordinate, maxDistance: Int = 30): Int {
+        val locations = cityMap.nearestBuildings(sourceBlock, maxDistance)
+        val quantityNearby = locations.sumBy {  location -> location.building.quantityWanted(tradeable) }
+        return quantityNearby + cityMap.nationalTradeEntity.quantityWanted(tradeable)
+    }
+
     // TODO: refactor this... basically we need "paths to resources" as well as just like how
     // many in the neighborhood...
     fun nearbyAvailableTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int): List<Pair<Path, Int>> {

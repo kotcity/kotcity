@@ -6,7 +6,12 @@ import java.util.Random
  * Extension function on any list that will return a random element from index 0
  * to the last index
  */
-fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
+fun <E> List<E>.getRandomElement(): E? {
+    if (this.isEmpty()) {
+        return null
+    }
+    return this[Random().nextInt(this.size)]
+}
 
 /**
  * Extension function on any list that will return a list of unique random picks

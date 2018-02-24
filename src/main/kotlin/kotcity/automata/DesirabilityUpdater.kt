@@ -38,20 +38,13 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
             if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
-                val availableGoods = resourceFinder.nearbyBuyingTradeable(Tradeable.GOODS, listOf(coordinate), maxDistance)
-                val availableLabor = resourceFinder.nearbyAvailableTradeable(Tradeable.LABOR, listOf(coordinate), maxDistance)
+                val availableGoods = resourceFinder.quantityForSaleNearby(Tradeable.GOODS, coordinate, maxDistance)
+                val availableLabor = resourceFinder.quantityForSaleNearby(Tradeable.LABOR, coordinate, maxDistance)
 
-                val score = if (availableGoods.count() == 0) {
+                desirabilityLayer[coordinate] = if (availableGoods == 0 || availableLabor == 0) {
                     0.0
                 } else {
-                    listOf(*availableGoods.toTypedArray()).map {
-                        it.second.toDouble() / (it.first.distance() * 0.1)
-                    }.sum()
-                }
-                if (availableLabor.count() == 0) {
-                    desirabilityLayer[coordinate] = 0.0
-                } else {
-                    desirabilityLayer[coordinate] = score
+                    (availableGoods + availableLabor).toDouble()
                 }
 
             }
@@ -70,20 +63,13 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
             if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
-                val availableBuyingWholesaleGoods = resourceFinder.nearbyBuyingTradeable(Tradeable.WHOLESALE_GOODS, listOf(coordinate), maxDistance)
-                val availableLabor = resourceFinder.nearbyAvailableTradeable(Tradeable.LABOR, listOf(coordinate), maxDistance)
+                val availableBuyingWholesaleGoods = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, maxDistance)
+                val availableLabor = resourceFinder.quantityForSaleNearby(Tradeable.LABOR, coordinate, maxDistance)
 
-                val score = if (availableBuyingWholesaleGoods.count() == 0) {
+                desirabilityLayer[coordinate] = if (availableBuyingWholesaleGoods == 0 || availableLabor == 0) {
                     0.0
                 } else {
-                    availableBuyingWholesaleGoods.map {
-                        it.second.toDouble() / (it.first.distance() / 0.1)
-                    }.sum()
-                }
-                if (availableLabor.count() == 0) {
-                    desirabilityLayer[coordinate] = 0.0
-                } else {
-                    desirabilityLayer[coordinate] = score * 10
+                    (availableBuyingWholesaleGoods + availableLabor).toDouble()
                 }
 
             }
@@ -118,16 +104,8 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
             if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
-                val availableJobs = resourceFinder.nearbyBuyingTradeable(Tradeable.LABOR, listOf(coordinate), maxDistance)
-
-                val score = if (availableJobs.count() == 0) {
-                    0.0
-                } else {
-                    availableJobs.map {
-                        it.second.toDouble() / ( it.first.distance() / 0.1 )
-                    }.sum()
-                }
-                desirabilityLayer[coordinate] = score * 10
+                val availableJobs = resourceFinder.quantityWantedNearby(Tradeable.LABOR, coordinate, maxDistance)
+                desirabilityLayer[coordinate] = availableJobs.toDouble()
             }
         }
 

@@ -135,8 +135,11 @@ interface HasConcreteContacts : HasContracts {
     fun voidRandomContract() {
         if (contracts.count() > 0) {
             val contractToKill = contracts.getRandomElement()
-            val otherBuilding = contractToKill.to
-            voidContractsWith(otherBuilding)
+            if (contractToKill != null) {
+                val otherBuilding = contractToKill.to
+                voidContractsWith(otherBuilding)
+            }
+
         }
     }
 

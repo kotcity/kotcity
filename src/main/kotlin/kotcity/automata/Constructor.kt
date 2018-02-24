@@ -4,6 +4,7 @@ import kotcity.data.*
 import kotcity.data.assets.AssetManager
 import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotcity.util.Debuggable
+import kotcity.util.getRandomElement
 import kotcity.util.getRandomElements
 import java.util.*
 
@@ -24,7 +25,8 @@ class Constructor(val cityMap: CityMap) : Debuggable {
             zoneTypes.forEach { zoneType ->
                 val layer = cityMap.desirabilityLayer(zoneType, 1) ?: return
 
-                val blockAndScore = layer.entries().filter { isEmpty(it) }.filter { it.value > 0}.maxBy { it.value }
+                // get the 10 best places... pick one randomly ....
+                val blockAndScore = layer.entries().filter { isEmpty(it) }.filter { it.value > 0}.sortedBy { it.value }.take(10).getRandomElement()
                 if (blockAndScore == null) {
                     if (debug) {
                         println("Could not find most desirable $zoneType zone!")

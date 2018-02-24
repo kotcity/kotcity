@@ -470,8 +470,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return desirabilityLayers.find { it.level == level && it.zoneType == type }
     }
 
-    fun locations(): Sequence<Location> {
-        return buildingLayer.entries.asSequence().map { Location(it.key, it.value) }
+    fun locations(): List<Location> {
+        return buildingLayer.entries.map { Location(it.key, it.value) }.toList()
     }
 
 }
