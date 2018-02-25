@@ -70,7 +70,7 @@ class DesirabilityTest {
             assertTrue(nonDefaultFound, "Error setting desirability for $zt")
         }
 
-        assertTrue(slum.quantityForSale(Tradeable.LABOR) == 2, "Has no labor...")
+        assertTrue(slum.quantityForSale(Tradeable.LABOR) >= 2, "Has no labor...")
         val cf = ContactFulfiller(map)
         cf.debug = true
         cf.signContracts()
@@ -78,8 +78,8 @@ class DesirabilityTest {
         // ok now let's make sure the desirability is actually kosher...
         desirabilityUpdater.update()
 
-        assertTrue(slum.quantityForSale(Tradeable.LABOR) == 0, "Expected 0 labor but has: ${slum.quantityForSale(Tradeable.LABOR)} labor...")
-        assertTrue(slum2.quantityForSale(Tradeable.LABOR) == 2, "Expected 0 labor but has: ${slum2.quantityForSale(Tradeable.LABOR)} labor...")
+        assertTrue(slum.quantityForSale(Tradeable.LABOR) == 3, "Expected 3 labor but has: ${slum.quantityForSale(Tradeable.LABOR)} labor...")
+        assertTrue(slum2.quantityForSale(Tradeable.LABOR) == 6, "Expected 6 labor but has: ${slum2.quantityForSale(Tradeable.LABOR)} labor...")
 
         assertTrue(factory.supplyCount(Tradeable.LABOR) > 0, "Expected factory to have labor but has none...")
 
