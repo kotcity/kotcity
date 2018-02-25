@@ -213,8 +213,25 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
             drawResources()
         } else if (mapMode == MapMode.DESIRABILITY) {
             drawDesirability()
+        } else if (mapMode == MapMode.TRAFFIC) {
+            drawTraffic()
         }
         drawHighlights()
+    }
+
+    private fun drawTraffic() {
+        val (startBlock, endBlock) = visibleBlockRange()
+
+        BlockCoordinate.iterate(startBlock, endBlock) { coord ->
+
+            val traffic = cityMap.trafficLayer[coord] ?: 0.0
+
+            val tx = coord.x - blockOffsetX
+            val ty = coord.y - blockOffsetY
+            val blockSize = blockSize()
+            canvas.graphicsContext2D.fill = desirabilityColor(traffic)
+            canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
+        }
     }
 
     private fun drawRoutes(graphicsContext: GraphicsContext, showRoutesFor: BlockCoordinate) {
@@ -233,6 +250,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                 }
             }
         }
+
+
     }
 
     // TODO: this is probably brutally slow...

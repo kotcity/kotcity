@@ -43,6 +43,7 @@
                      </toggleGroup>
                   </RadioMenuItem>
                   <RadioMenuItem fx:id="desirabilityMapMode" mnemonicParsing="false" text="Desirability" toggleGroup="$mapMode" />
+                  <RadioMenuItem fx:id="trafficMapMode" mnemonicParsing="false" text="Traffic" toggleGroup="$mapMode" />
                   <Menu mnemonicParsing="false" text="Resources">
                     <items>
                         <RadioMenuItem fx:id="goldMapMode" mnemonicParsing="false" text="Gold" toggleGroup="$mapMode" />

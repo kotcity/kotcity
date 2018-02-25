@@ -112,6 +112,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val powerLineLayer = mutableMapOf<BlockCoordinate, Building>()
     val resourceLayers = mutableMapOf<String, QuantizedMap<Double>>()
     val desirabilityLayers = initializeDesirabilityLayers()
+    var trafficLayer = mutableMapOf<BlockCoordinate, Double>().withDefault { 0.0 }
 
     private val constructor = Constructor(this)
     private val contractFulfiller = ContactFulfiller(this)
@@ -121,6 +122,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val censusTaker = CensusTaker(this)
     private val taxCollector = TaxCollector(this)
     private val liquidator = Liquidator(this)
+    private val trafficCalculator = TrafficCalculator(this)
 
     val nationalTradeEntity = NationalTradeEntity(this)
 
@@ -249,13 +251,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             debug("Processing tick for: $hour:00")
 
             if (hour % 3 == 0) {
-                timeFunction("Calculating Desirability") { desirabilityUpdater.update() }
-                timeFunction("Constructing Buildings") { constructor.tick() }
-                timeFunction("Signing Contracts") { contractFulfiller.signContracts() }
-                timeFunction("Terminating Random Contracts") { contractFulfiller.terminateRandomContracts() }
-                timeFunction("Doing Manufacturing") { manufacturer.tick() }
+                timeFunction("Calculating desirability") { desirabilityUpdater.update() }
+                timeFunction("Constructing buildings") { constructor.tick() }
+                timeFunction("Signing contracts") { contractFulfiller.signContracts() }
+                timeFunction("Terminating random contracts") { contractFulfiller.terminateRandomContracts() }
+                timeFunction("Doing manufacturing") { manufacturer.tick() }
                 timeFunction("Shipping products") { shipper.tick() }
-                timeFunction("Taking Census") { censusTaker.tick() }
+                timeFunction("Generating traffic") { trafficCalculator.tick() }
+                timeFunction("Taking census") { censusTaker.tick() }
             }
 
             if (hour == 0) {

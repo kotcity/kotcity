@@ -6,5 +6,6 @@ enum class MapMode {
     OIL,
     GOLD,
     SOIL,
-    DESIRABILITY
+    DESIRABILITY,
+    TRAFFIC
 }

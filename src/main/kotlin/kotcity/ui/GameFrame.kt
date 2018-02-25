@@ -90,6 +90,7 @@ class GameFrame : View() {
     private val goldMapMode: RadioMenuItem by fxid()
     private val soilMapMode: RadioMenuItem by fxid()
     private val desirabilityMapMode: RadioMenuItem by fxid()
+    private val trafficMapMode: RadioMenuItem by fxid()
 
     private val selectedToolLabel: Label by fxid()
     private val cityNameLabel: Label by fxid()
@@ -249,30 +250,32 @@ class GameFrame : View() {
         routesButton.setOnAction { activeTool = Tool.ROUTES }
     }
 
+    fun setMapModes(mapMode: MapMode) {
+        cityRenderer?.mapMode = mapMode
+        cityMapCanvas.mode = mapMode
+    }
+
     fun bindMapModes() {
         normalMapMode.setOnAction {
-            cityRenderer?.mapMode = MapMode.NORMAL
-            cityMapCanvas.mode = MapMode.NORMAL
+            setMapModes(MapMode.NORMAL)
         }
         oilMapMode.setOnAction {
-            cityRenderer?.mapMode = MapMode.OIL
-            cityMapCanvas.mode = MapMode.OIL
+           setMapModes(MapMode.OIL)
         }
         goldMapMode.setOnAction {
-            cityRenderer?.mapMode = MapMode.GOLD
-            cityMapCanvas.mode = MapMode.GOLD
+            setMapModes(MapMode.GOLD)
         }
         coalMapMode.setOnAction {
-            cityRenderer?.mapMode = MapMode.COAL
-            cityMapCanvas.mode = MapMode.COAL
+            setMapModes(MapMode.COAL)
         }
         soilMapMode.setOnAction {
-            cityRenderer?.mapMode = MapMode.SOIL
-            cityMapCanvas.mode = MapMode.SOIL
+            setMapModes(MapMode.SOIL)
         }
         desirabilityMapMode.setOnAction {
-            cityRenderer?.mapMode = MapMode.DESIRABILITY
-            cityMapCanvas.mode = MapMode.SOIL
+            setMapModes(MapMode.DESIRABILITY)
+        }
+        trafficMapMode.setOnAction {
+            setMapModes(MapMode.TRAFFIC)
         }
     }
 
