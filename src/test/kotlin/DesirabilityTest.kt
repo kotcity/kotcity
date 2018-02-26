@@ -78,7 +78,7 @@ class DesirabilityTest {
         // ok now let's make sure the desirability is actually kosher...
         desirabilityUpdater.update()
 
-        assertTrue(slum.quantityForSale(Tradeable.LABOR) == 5, "Expected 5 labor but has: ${slum.quantityForSale(Tradeable.LABOR)} labor...")
+        assertTrue(slum.quantityForSale(Tradeable.LABOR) == 3, "Expected 3 labor but has: ${slum.quantityForSale(Tradeable.LABOR)} labor...")
         assertTrue(slum2.quantityForSale(Tradeable.LABOR) == 10, "Expected 10 labor but has: ${slum2.quantityForSale(Tradeable.LABOR)} labor...")
 
         assertTrue(factory.supplyCount(Tradeable.LABOR) > 0, "Expected factory to have labor but has none...")
