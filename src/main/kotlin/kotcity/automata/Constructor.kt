@@ -20,7 +20,15 @@ class Constructor(val cityMap: CityMap) : Debuggable {
     }
 
     fun tick() {
-        repeat(3, {
+
+        // how many empty zones??
+        val emptyZoneCount = cityMap.zoneLayer.keys.count { cityMap.buildingsIn(it).count() == 0 }
+        debug("We have this many empty zones: $emptyZoneCount")
+
+        // TODO: should probably look at a % of DESIRABLE zones...
+
+        val howManyTimes = (emptyZoneCount * 0.01).coerceAtLeast(1.0).toInt()
+        repeat(howManyTimes, {
             val zoneTypes = listOf(ZoneType.INDUSTRIAL, ZoneType.COMMERCIAL, ZoneType.RESIDENTIAL)
             zoneTypes.forEach { zoneType ->
                 val layer = cityMap.desirabilityLayer(zoneType, 1) ?: return
@@ -29,7 +37,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
                 val blockAndScore = layer.entries().filter { isEmpty(it) }.filter { it.value > 0}.sortedBy { it.value }.take(10).getRandomElement()
                 if (blockAndScore == null) {
                     if (debug) {
-                        println("Could not find most desirable $zoneType zone!")
+                        debug("Could not find most desirable $zoneType zone!")
                     }
                 } else {
                     debug("We will be trying to build at ${blockAndScore.key} with desirability ${blockAndScore.value}")

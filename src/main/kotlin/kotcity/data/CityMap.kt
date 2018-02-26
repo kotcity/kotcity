@@ -155,10 +155,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     init {
         shipper.debug = false
-        contractFulfiller.debug = false
+        contractFulfiller.debug = true
         manufacturer.debug = false
+        constructor.debug = true
         taxCollector.debug = false
-        liquidator.debug = true
+        liquidator.debug = false
         censusTaker.tick()
         nationalTradeEntity.resetCounts()
     }
@@ -253,8 +254,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             if (hour % 3 == 0) {
                 timeFunction("Calculating desirability") { desirabilityUpdater.update() }
                 timeFunction("Constructing buildings") { constructor.tick() }
-                timeFunction("Signing contracts") { contractFulfiller.signContracts() }
                 timeFunction("Terminating random contracts") { contractFulfiller.terminateRandomContracts() }
+                timeFunction("Signing contracts") { contractFulfiller.signContracts() }
                 timeFunction("Doing manufacturing") { manufacturer.tick() }
                 timeFunction("Shipping products") { shipper.tick() }
                 timeFunction("Generating traffic") { trafficCalculator.tick() }
@@ -474,7 +475,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun locations(): List<Location> {
-        return buildingLayer.entries.map { Location(it.key, it.value) }.toList()
+        synchronized(buildingLayer) {
+            return buildingLayer.entries.map { Location(it.key, it.value) }.toList()
+        }
     }
 
 }

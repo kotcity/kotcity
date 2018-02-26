@@ -133,9 +133,12 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             val scores = destinations.pmap(this.coroutineContext) {coordinate ->
                 var score = manhattanDistance(current, coordinate)
                 // see if this is road and lower score by a tiny bit...
-                if (cityMap.buildingLayer[current]?.type == BuildingType.ROAD) {
-                    score -= 5
-                }
+//                if (cityMap.buildingLayer[current]?.type == BuildingType.ROAD) {
+//                    score -= 50
+//                }
+
+                score += cityMap.trafficLayer[current] ?: 0.0
+
                 score
             }
             scores.min() ?: 100.0

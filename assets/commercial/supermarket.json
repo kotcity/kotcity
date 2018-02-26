@@ -1,0 +1,19 @@
+{
+  "type": "commercial",
+  "width": 2,
+  "height": 2,
+  "name": "supermarket",
+  "sprite": "supermarket.png",
+  "description": "Supermarket",
+  "level": 1,
+  "power_required": 3,
+  "production": {
+    "consumes": {
+      "labor": 4,
+      "wholesale_goods": 10
+    },
+    "produces": {
+      "goods": 10
+    }
+  }
+}

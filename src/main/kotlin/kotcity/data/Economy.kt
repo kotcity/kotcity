@@ -18,12 +18,16 @@ interface TradeEntity {
     fun addContract(contract: Contract)
     fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path)
     fun voidContractsWith(otherTradeEntity: TradeEntity)
+    fun hasAnyContracts(): Boolean
 
     fun quantityForSale(tradeable: Tradeable): Int
     fun quantityWanted(tradeable: Tradeable): Int
 }
 
 data class CityTradeEntity(override val coordinate: BlockCoordinate, val building: Building) : TradeEntity {
+    override fun hasAnyContracts(): Boolean {
+        return building.hasAnyContracts()
+    }
 
     override fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path) {
         building.createContract(otherTradeEntity, tradeable, quantity, path)

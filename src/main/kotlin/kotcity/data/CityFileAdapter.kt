@@ -198,26 +198,39 @@ private fun writePowerlineLayer(data: JsonObject, it: SerializerArg<CityMap>) {
 }
 
 fun readContracts(data: JsonObject, cityMap: CityMap) {
-    val pathfinder = Pathfinder(cityMap)
-    val contractData = data["contracts"].asJsonArray
-    contractData.forEach { contractElement ->
-        val contractObj = contractElement.asJsonObject
-        // the first building MAY not be correct but let's try...
-        val from = BlockCoordinate(contractObj["from_x"].asInt, contractObj["from_y"].asInt)
-        val to = BlockCoordinate(contractObj["to_x"].asInt, contractObj["to_y"].asInt)
-        val fromBuilding = cityMap.buildingsIn(from).first()
-        val toBuilding = cityMap.buildingsIn(to).first()
-        val tradeable = Tradeable.valueOf(contractObj["tradeable"].asString)
-        val quantity = contractObj["quantity"].asInt
-        // val newContract = Contract(fromBuilding, toBuilding, tradeable, quantity)
+    if (data.has("contracts")) {
+        val pathfinder = Pathfinder(cityMap)
+        val contractData = data["contracts"].asJsonArray
+        contractData.forEach { contractElement ->
+            val contractObj = contractElement.asJsonObject
+            // the first building MAY not be correct but let's try...
+            val from = BlockCoordinate(contractObj["from_x"].asInt, contractObj["from_y"].asInt)
+            val to = BlockCoordinate(contractObj["to_x"].asInt, contractObj["to_y"].asInt)
+            val fromBuildings = cityMap.buildingsIn(from)
+            val toBuildings = cityMap.buildingsIn(to)
 
-        val path = pathfinder.tripTo(listOf(from), listOf(to))
-        if (path != null) {
-            toBuilding.building.createContract(CityTradeEntity(fromBuilding.coordinate, fromBuilding.building), tradeable, quantity, path)
-        } else {
-            println("Error during contract loading! Can't find path!")
+            if (fromBuildings.count() == 0) {
+                println("Error during contact loading! Cannot find source building at $from")
+            } else if (toBuildings.count() == 0) {
+                println("Error during contact loading! Cannot find source building at $to")
+            } else {
+                val fromBuilding = fromBuildings.first()
+                val toBuilding = toBuildings.first()
+                val tradeable = Tradeable.valueOf(contractObj["tradeable"].asString)
+                val quantity = contractObj["quantity"].asInt
+                // val newContract = Contract(fromBuilding, toBuilding, tradeable, quantity)
+
+                val path = pathfinder.tripTo(listOf(from), listOf(to))
+                if (path != null) {
+                    toBuilding.building.createContract(CityTradeEntity(fromBuilding.coordinate, fromBuilding.building), tradeable, quantity, path)
+                } else {
+                    println("Error during contract loading! Can't find path!")
+                }
+            }
+
+
+
         }
-
     }
 }
 

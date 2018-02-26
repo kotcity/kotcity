@@ -237,20 +237,18 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     private fun drawRoutes(graphicsContext: GraphicsContext, showRoutesFor: BlockCoordinate) {
         // ok... we know the coordinate we are interested in... so let's find ALL contracts that involve it...
         // this is going to be super gross...
-        synchronized(cityMap) {
-            val contracts = cityMap.locations().map { contractsWithPathThrough(it.building, showRoutesFor) }.flatten()
-            // ok now we know which ones to draw...
-            val blocksWithPath = contracts.flatMap { it.path?.blockList() ?: emptyList() }.distinct().toSet()
-            // now get only ones on screen...
 
-            val (startBlock, endBlock) = visibleBlockRange()
-            BlockCoordinate.iterate(startBlock, endBlock) { blockCoordinate ->
-                if (blocksWithPath.contains(blockCoordinate)) {
-                    highlightBlock(graphicsContext, blockCoordinate.x, blockCoordinate.y)
-                }
+        val contracts = cityMap.locations().map { contractsWithPathThrough(it.building, showRoutesFor) }.flatten()
+        // ok now we know which ones to draw...
+        val blocksWithPath = contracts.flatMap { it.path?.blockList() ?: emptyList() }.distinct().toSet()
+        // now get only ones on screen...
+
+        val (startBlock, endBlock) = visibleBlockRange()
+        BlockCoordinate.iterate(startBlock, endBlock) { blockCoordinate ->
+            if (blocksWithPath.contains(blockCoordinate)) {
+                highlightBlock(graphicsContext, blockCoordinate.x, blockCoordinate.y)
             }
         }
-
 
     }
 

@@ -6,6 +6,7 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
 import kotcity.data.BlockCoordinate
+import kotcity.data.BuildingType
 import kotcity.data.CityMap
 import tornadofx.View
 
@@ -46,6 +47,10 @@ class QueryWindow(): View() {
                     val inventorySummary = building.summarizeInventory()
                     if (inventorySummary != "") {
                         buffer.append(inventorySummary)
+                    }
+
+                    if (buildings.any { it.building.type == BuildingType.ROAD }) {
+                        buffer.append("Traffic: ${city.trafficLayer[coordinate]}\n")
                     }
                 } else {
                     this.title = "Inspecting Terrain"

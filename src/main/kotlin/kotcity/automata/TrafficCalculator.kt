@@ -8,9 +8,11 @@ class TrafficCalculator(val cityMap: CityMap) {
         val newTrafficLayer = mutableMapOf<BlockCoordinate, Double>().withDefault { 0.0 }
         cityMap.locations().forEach { location ->
             location.building.contracts.flatMap {
-                it.path?.blockList() ?: emptyList()
-            }.forEach { coordinate ->
-                newTrafficLayer[coordinate] = (newTrafficLayer[coordinate] ?: 0.0) + 1
+                it.path?.blockList()?.map { blockCoordinate -> Pair(blockCoordinate, it.quantity) } ?: emptyList()
+            }.forEach {
+                        val coordinate = it.first
+                        val volume = it.second
+                newTrafficLayer[coordinate] = (newTrafficLayer[coordinate] ?: 0.0) + volume
             }
         }
         cityMap.trafficLayer = newTrafficLayer

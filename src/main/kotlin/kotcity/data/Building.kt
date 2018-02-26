@@ -65,6 +65,15 @@ interface HasContracts {
     fun totalProvided(tradeable: Tradeable): Int
     fun supplyCount(tradeable: Tradeable): Int
     fun productList(): List<Tradeable>
+    fun needsAnyContracts(): Boolean {
+
+        Tradeable.values().forEach { tradeable ->
+            if (quantityWanted(tradeable) > 0) {
+                return true
+            }
+        }
+        return false
+    }
 }
 
 interface HasConcreteContacts : HasContracts {
@@ -154,6 +163,10 @@ interface HasConcreteContacts : HasContracts {
 
     override fun productList(): List<Tradeable> {
         return produces.keys.distinct()
+    }
+
+    fun hasAnyContracts(): Boolean {
+        return contracts.count() > 0
     }
 
 }
