@@ -101,8 +101,8 @@ private fun readZoneLayer(data: JsonObject, cityMap: CityMap) {
         var zoneObj = it.asJsonObject
         val x = zoneObj["x"].asInt
         val y = zoneObj["y"].asInt
-        val type = ZoneType.valueOf(zoneObj["type"].asString)
-        cityMap.zoneLayer[BlockCoordinate(x, y)] = Zone(type)
+        val type = Zone.valueOf(zoneObj["type"].asString)
+        cityMap.zoneLayer[BlockCoordinate(x, y)] = type
     }
 }
 
@@ -133,7 +133,7 @@ fun writeDesirabilityLayers(data: JsonObject, it: SerializerArg<CityMap>) {
 private fun readDesirabilityLayers(data: JsonObject, cityMap: CityMap) {
     data["desirabilityLayers"].asJsonArray.forEach {
         val layerObj = it.asJsonObject
-        val type = ZoneType.valueOf(layerObj["type"].asString)
+        val type = Zone.valueOf(layerObj["type"].asString)
         val level = layerObj["level"].asInt
         cityMap.desirabilityLayer(type, level)?.let { desirabilityLayer ->
             layerObj["values"].asJsonArray.forEach {
@@ -335,7 +335,7 @@ private fun writeZoneLayer(data: JsonObject, it: SerializerArg<CityMap>) {
         val y = entry.key.y
         val zone = entry.value
         jsonObject(
-                "type" to zone.type.toString(),
+                "type" to zone.toString(),
                 "x" to x,
                 "y" to y
         )

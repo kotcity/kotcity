@@ -58,8 +58,10 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     private val cachedHeuristic = cachedHeuristicPair.second
 
     private val cachedPathToOutsidePair = ::pathToOutside.cache()
-    // private val pathToOutsideCache = cachedPathToOutsidePair.first
     val cachedPathToOutside = cachedPathToOutsidePair.second
+
+    private val cachedTripToPair = ::tripTo.cache()
+    val cachedTripTo = cachedTripToPair.second
 
     private val mapBorders: List<BlockCoordinate> by lazy {
         // OK... what the fuck...
@@ -133,11 +135,10 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             val scores = destinations.pmap(this.coroutineContext) {coordinate ->
                 var score = manhattanDistance(current, coordinate)
                 // see if this is road and lower score by a tiny bit...
-//                if (cityMap.buildingLayer[current]?.type == BuildingType.ROAD) {
-//                    score -= 50
-//                }
-
-                score += cityMap.trafficLayer[current] ?: 0.0
+                if (cityMap.buildingLayer[current]?.type == BuildingType.ROAD) {
+                    score -= 3
+                    score += cityMap.trafficLayer[current] ?: 0.0
+                }
 
                 score
             }
@@ -198,7 +199,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             openList.remove(activeNode)
             closedList.add(activeNode)
 
-            // look within 3 nodes of here... (we can jump 3 nodes...
+            // look within 3 nodes of here... (we can jump 3 nodes...)
             // TODO: if we are within 3 blocks we can disregard drivable nodes...
             val distanceToGoal = destinations.map { activeNode.coordinate.distanceTo(it) }.min() ?: 999.0
             val distanceFromStart = source.map { activeNode.coordinate.distanceTo(it) }.min() ?: 999.0
@@ -213,7 +214,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                 if (!closedList.contains(node) && !openList.contains(node)) {
 
                     // if we are within 3 we can just skip around...
-                    if (distanceToGoal <= 3 || distanceFromStart <= 3) {
+                    if (distanceToGoal <= 2 || distanceFromStart <= 2) {
                         if (isGround(node) || destinations.contains(node.coordinate)) {
                             openList.add(node)
                         } else {

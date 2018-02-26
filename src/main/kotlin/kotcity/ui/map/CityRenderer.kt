@@ -552,10 +552,10 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                 // figure out fill color...
                 val tx = coordinate.x - blockOffsetX
                 val ty = coordinate.y - blockOffsetY
-                val zoneColor = when (zone.type) {
-                    ZoneType.RESIDENTIAL -> Color.DARKGREEN
-                    ZoneType.COMMERCIAL -> Color.DARKBLUE
-                    ZoneType.INDUSTRIAL -> Color.LIGHTGOLDENRODYELLOW
+                val zoneColor = when (zone) {
+                    Zone.RESIDENTIAL -> Color.DARKGREEN
+                    Zone.COMMERCIAL -> Color.DARKBLUE
+                    Zone.INDUSTRIAL -> Color.LIGHTGOLDENRODYELLOW
                 }
                 val shadyColor = Color(zoneColor.red, zoneColor.green, zoneColor.blue, 0.3)
                 graphics.fill = shadyColor

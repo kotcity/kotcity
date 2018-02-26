@@ -60,7 +60,7 @@ class QueryWindow(): View() {
                 }
                 // let's see if we are zoned...
                 city.zoneLayer[coordinate]?.let {
-                    buffer.append("Zone: ${it.type}\n")
+                    buffer.append("Zone: $it\n")
                 }
 
                 // let's get that desirability...

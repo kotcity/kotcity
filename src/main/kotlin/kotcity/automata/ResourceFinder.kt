@@ -107,7 +107,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         // TODO: sort by distance... pathfind to the first one...
         val pathsAndQuantity = buildingsWithResource.mapNotNull { location ->
             val buildingBlocks = cityMap.buildingBlocks(location.coordinate, location.building)
-            val path = pathfinder.tripTo(sourceBlocks, buildingBlocks)
+            val path = pathfinder.cachedTripTo(sourceBlocks, buildingBlocks)
             if (path == null) {
                 null
             } else {

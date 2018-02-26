@@ -28,9 +28,9 @@ class DesirabilityTest {
         // now let's drop a road...
         map.buildRoad(BlockCoordinate(2,0), BlockCoordinate(2, 30))
         // now we gotta make some industrial zone...
-        map.zone(ZoneType.INDUSTRIAL, BlockCoordinate(3, 0), BlockCoordinate(5, 30))
-        map.zone(ZoneType.RESIDENTIAL, BlockCoordinate(0, 10), BlockCoordinate(2, 12))
-        map.zone(ZoneType.COMMERCIAL, BlockCoordinate(0, 20), BlockCoordinate(1, 25))
+        map.zone(Zone.INDUSTRIAL, BlockCoordinate(3, 0), BlockCoordinate(5, 30))
+        map.zone(Zone.RESIDENTIAL, BlockCoordinate(0, 10), BlockCoordinate(2, 12))
+        map.zone(Zone.COMMERCIAL, BlockCoordinate(0, 20), BlockCoordinate(1, 25))
 
         // let's plop a small house down...
         val slum = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
@@ -60,7 +60,7 @@ class DesirabilityTest {
         // ok now let's make sure the desirability is actually kosher...
         desirabilityUpdater.update()
 
-        listOf(ZoneType.INDUSTRIAL, ZoneType.RESIDENTIAL, ZoneType.COMMERCIAL).forEach { zt ->
+        listOf(Zone.INDUSTRIAL, Zone.RESIDENTIAL, Zone.COMMERCIAL).forEach { zt ->
             var nonDefaultFound = false
             map.desirabilityLayer(zt, 1)?.forEach { _, d ->
                 if (d != DEFAULT_DESIRABILITY) {

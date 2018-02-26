@@ -22,9 +22,9 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
             // TODO: worry about other levels later...
             if (desirabilityLayer.level == 1) {
                 when (desirabilityLayer.zoneType) {
-                    ZoneType.RESIDENTIAL -> updateResidential(desirabilityLayer)
-                    ZoneType.INDUSTRIAL -> updateIndustrial(desirabilityLayer)
-                    ZoneType.COMMERCIAL -> updateCommercial(desirabilityLayer)
+                    Zone.RESIDENTIAL -> updateResidential(desirabilityLayer)
+                    Zone.INDUSTRIAL -> updateIndustrial(desirabilityLayer)
+                    Zone.COMMERCIAL -> updateCommercial(desirabilityLayer)
                 }
             }
 
@@ -34,7 +34,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
     private fun updateCommercial(desirabilityLayer: DesirabilityLayer) {
 
         // ok... we just gotta find each block with an industrial zone...
-        val commercialZones = zoneCoordinates(ZoneType.COMMERCIAL)
+        val commercialZones = zoneCoordinates(Zone.COMMERCIAL)
 
         commercialZones.forEach { coordinate ->
 
@@ -61,7 +61,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
     private fun updateIndustrial(desirabilityLayer: DesirabilityLayer) {
 
         // ok... we just gotta find each block with an industrial zone...
-        val industryZones = zoneCoordinates(ZoneType.INDUSTRIAL)
+        val industryZones = zoneCoordinates(Zone.INDUSTRIAL)
 
         industryZones.forEach { coordinate ->
 
@@ -97,8 +97,8 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
         keysToTrim.forEach { desirabilityLayer.remove(it) }
     }
 
-    private fun zoneCoordinates(zoneType: ZoneType): List<BlockCoordinate> {
-        return cityMap.zoneLayer.toList().filter { it.second == Zone(zoneType) }.map { it.first }
+    private fun zoneCoordinates(zoneType: Zone): List<BlockCoordinate> {
+        return cityMap.zoneLayer.toList().filter { it.second == zoneType }.map { it.first }
     }
 
     // TODO: waaay too slow...
@@ -106,7 +106,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
         // we like being near places that NEED labor
         // we like being near places that PROVIDE goods
 
-        val residentialZones = zoneCoordinates(ZoneType.RESIDENTIAL)
+        val residentialZones = zoneCoordinates(Zone.RESIDENTIAL)
         residentialZones.forEach { coordinate ->
             if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0

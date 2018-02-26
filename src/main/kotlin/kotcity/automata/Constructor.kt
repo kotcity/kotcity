@@ -22,15 +22,17 @@ class Constructor(val cityMap: CityMap) : Debuggable {
     fun tick() {
 
         // how many empty zones??
-        val emptyZoneCount = cityMap.zoneLayer.keys.count { cityMap.buildingsIn(it).count() == 0 }
-        debug("We have this many empty zones: $emptyZoneCount")
+        // val emptyZoneCount = cityMap.zoneLayer.keys.count { cityMap.buildingsIn(it).count() == 0 }
+        // debug("We have this many empty zones: $emptyZoneCount")
 
         // TODO: should probably look at a % of DESIRABLE zones...
 
-        val howManyTimes = (emptyZoneCount * 0.01).coerceAtLeast(1.0).toInt()
-        repeat(howManyTimes, {
-            val zoneTypes = listOf(ZoneType.INDUSTRIAL, ZoneType.COMMERCIAL, ZoneType.RESIDENTIAL)
-            zoneTypes.forEach { zoneType ->
+        val zoneTypes = listOf(Zone.INDUSTRIAL, Zone.COMMERCIAL, Zone.RESIDENTIAL)
+        zoneTypes.forEach { zoneType ->
+            val howManyTimes: Int = (desirableZoneCount(zoneType).toDouble() * 0.5).div(3).coerceAtLeast(1.0).toInt()
+            println("We will be trying to construct $howManyTimes")
+            repeat(howManyTimes, {
+
                 val layer = cityMap.desirabilityLayer(zoneType, 1) ?: return
 
                 // get the 10 best places... pick one randomly ....
@@ -54,8 +56,14 @@ class Constructor(val cityMap: CityMap) : Debuggable {
 
                 }
 
-            }
-        })
+            })
+        }
+    }
+
+    private fun desirableZoneCount(zone: Zone): Int {
+        return cityMap.zoneLayer.keys.filter { cityMap.zoneLayer[it] == zone && cityMap.buildingsIn(it).count() == 0 }.map {coordinate ->
+            cityMap.desirabilityLayers.map { it[coordinate] ?: 0.0 }.max()
+        }.filterNotNull().filter { it > 0 }.count()
     }
 
     private fun tryToBuild(coordinate: BlockCoordinate, newBuilding: Building, layer: DesirabilityLayer) {
@@ -95,16 +103,16 @@ class Constructor(val cityMap: CityMap) : Debuggable {
         return random.nextInt(to - from) + from
     }
 
-    private fun zoneTypeToBuildingType(zoneType: ZoneType): BuildingType {
+    private fun zoneTypeToBuildingType(zoneType: Zone): BuildingType {
         return when (zoneType) {
-            ZoneType.INDUSTRIAL -> BuildingType.INDUSTRIAL
-            ZoneType.RESIDENTIAL -> BuildingType.RESIDENTIAL
-            ZoneType.COMMERCIAL -> BuildingType.COMMERCIAL
+            Zone.INDUSTRIAL -> BuildingType.INDUSTRIAL
+            Zone.RESIDENTIAL -> BuildingType.RESIDENTIAL
+            Zone.COMMERCIAL -> BuildingType.COMMERCIAL
         }
     }
 
     // TODO: use desirability later...
-    private fun findBuilding(zoneType: ZoneType): Building? {
+    private fun findBuilding(zoneType: Zone): Building? {
         return assetManager.all().filter { it.type == zoneTypeToBuildingType(zoneType) }.getRandomElements(1)?.first()
     }
 }

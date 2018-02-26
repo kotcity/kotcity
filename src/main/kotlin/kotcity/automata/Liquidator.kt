@@ -2,6 +2,7 @@ package kotcity.automata
 
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
+import kotcity.data.Location
 import kotcity.data.Tradeable
 import kotcity.util.Debuggable
 
@@ -9,15 +10,22 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = false
 
     fun tick() {
-        val buildingsToRaze = mutableListOf<BlockCoordinate>()
-        cityMap.buildingLayer.forEach { coordinate, building ->
-            if (building.quantityOnHand(Tradeable.MONEY) <= 0) {
-                debug("Building ${building.description} is bankrupt! Blowing it up!")
-                buildingsToRaze.add(coordinate)
-            }
+
+        // we will only kill half of what needs to go...
+        val bankruptLocations = bankruptLocations()
+
+        val howManyNeedDestruction : Int = Math.floor(bankruptLocations.count() * 0.5).toInt()
+        debug("Blowing up $howManyNeedDestruction buildings...")
+
+        bankruptLocations.shuffled().take(howManyNeedDestruction).forEach { location ->
+            debug("Building ${location.building.description} is bankrupt! Blowing it up!")
+            cityMap.bulldoze(location.coordinate, location.coordinate)
         }
-        buildingsToRaze.forEach { coordinate ->
-            cityMap.bulldoze(coordinate, coordinate)
+    }
+
+    private fun bankruptLocations(): List<Location> {
+        return cityMap.locations().toList().filter { location ->
+            location.building.quantityOnHand(Tradeable.MONEY) <= 0
         }
     }
 }

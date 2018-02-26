@@ -82,7 +82,7 @@ fun defaultTime(): Date {
     return simpleDateFormat.parse("2000-01-01 12:00:00")
 }
 
-data class DesirabilityLayer(val zoneType: ZoneType, val level: Int): QuantizedMap<Double>(1) {
+data class DesirabilityLayer(val zoneType: Zone, val level: Int): QuantizedMap<Double>(1) {
     init {
         map = map.withDefault { 0.0 }
     }
@@ -131,9 +131,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private fun initializeDesirabilityLayers(): List<DesirabilityLayer> {
 
         return listOf(
-                DesirabilityLayer(ZoneType.RESIDENTIAL, 1),
-                DesirabilityLayer(ZoneType.COMMERCIAL, 1),
-                DesirabilityLayer(ZoneType.INDUSTRIAL, 1)
+                DesirabilityLayer(Zone.RESIDENTIAL, 1),
+                DesirabilityLayer(Zone.COMMERCIAL, 1),
+                DesirabilityLayer(Zone.INDUSTRIAL, 1)
         )
     }
 
@@ -362,11 +362,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         updateBuildingIndex()
     }
 
-    fun zone(type: ZoneType, from: BlockCoordinate, to: BlockCoordinate) {
+    fun zone(type: Zone, from: BlockCoordinate, to: BlockCoordinate) {
         BlockCoordinate.iterate(from, to) {
             if (!waterFound(it, it)) {
                 if (buildingsIn(it).count() == 0) {
-                    zoneLayer[it] = Zone(type)
+                    zoneLayer[it] = type
                 }
             }
         }
@@ -386,7 +386,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun bulldoze(from: BlockCoordinate, to: BlockCoordinate) {
-        debug("Want to bulldoze from $from to $to")
         BlockCoordinate.iterate(from, to) { coordinate ->
             powerLineLayer.remove(coordinate)
             val buildings = buildingsIn(coordinate)
@@ -470,14 +469,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return filteredBuildings
     }
 
-    fun desirabilityLayer(type: ZoneType, level: Int): DesirabilityLayer? {
+    fun desirabilityLayer(type: Zone, level: Int): DesirabilityLayer? {
         return desirabilityLayers.find { it.level == level && it.zoneType == type }
     }
 
     fun locations(): List<Location> {
-        synchronized(buildingLayer) {
-            return buildingLayer.entries.map { Location(it.key, it.value) }.toList()
-        }
+        return buildingLayer.entries.toList().map { Location(it.key, it.value) }.toList()
     }
 
 }

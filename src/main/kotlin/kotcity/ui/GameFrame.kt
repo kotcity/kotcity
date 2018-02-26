@@ -404,9 +404,9 @@ class GameFrame : View() {
                             }
                             Tool.POWER_LINES -> map.buildPowerline(firstBlock, lastBlock)
                             Tool.BULLDOZE -> map.bulldoze(firstBlock, lastBlock)
-                            Tool.RESIDENTIAL_ZONE -> map.zone(ZoneType.RESIDENTIAL, firstBlock, lastBlock)
-                            Tool.COMMERCIAL_ZONE -> map.zone(ZoneType.COMMERCIAL, firstBlock, lastBlock)
-                            Tool.INDUSTRIAL_ZONE -> map.zone(ZoneType.INDUSTRIAL, firstBlock, lastBlock)
+                            Tool.RESIDENTIAL_ZONE -> map.zone(Zone.RESIDENTIAL, firstBlock, lastBlock)
+                            Tool.COMMERCIAL_ZONE -> map.zone(Zone.COMMERCIAL, firstBlock, lastBlock)
+                            Tool.INDUSTRIAL_ZONE -> map.zone(Zone.INDUSTRIAL, firstBlock, lastBlock)
                             Tool.DEZONE -> map.dezone(firstBlock, lastBlock)
                             Tool.QUERY -> {
                                 // let's do that query...
