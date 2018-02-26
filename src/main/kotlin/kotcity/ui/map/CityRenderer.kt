@@ -254,7 +254,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     // TODO: this is probably brutally slow...
     private fun contractsWithPathThrough(building: Building, coordinate: BlockCoordinate): List<Contract> {
-        return building.contracts.filter { it.path?.blockList()?.contains(coordinate) ?: false }
+        return building.contracts.toList().filter { it.path?.blockList()?.contains(coordinate) ?: false }
     }
 
     private fun drawDesirability() {

@@ -121,8 +121,10 @@ interface HasConcreteContacts : HasContracts {
 
     private fun calculateAvailable(hash: MutableMap<Tradeable, Int>, tradeable: Tradeable, filter: (Contract) -> Building?): Int {
         val inventoryCount = hash[tradeable] ?: 0
-        val contractCount = contracts.filter { filter(it) == this && it.tradeable == tradeable }.map { it.quantity }.sum()
-        return inventoryCount - contractCount
+        synchronized(contracts) {
+            val contractCount = contracts.filter { filter(it) == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+            return inventoryCount - contractCount
+        }
     }
 
     fun addContract(contract: Contract) {
@@ -213,8 +215,11 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
     fun payWorkers() {
         val workContracts = contracts.filter { it.to.building() == this && it.tradeable == Tradeable.LABOR }
         workContracts.forEach { contract ->
-            if (inventory.has(Tradeable.MONEY, 1)) {
-                transferInventory(contract.from, Tradeable.MONEY, 1)
+            if (inventory.has(Tradeable.MONEY, contract.quantity)) {
+                transferInventory(contract.from, Tradeable.MONEY, contract.quantity)
+            } else {
+                // whoops... we are bankrupt!
+                inventory.put(Tradeable.MONEY, 0)
             }
         }
     }

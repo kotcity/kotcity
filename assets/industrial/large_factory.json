@@ -9,10 +9,10 @@
   "power_required": 3,
   "production": {
     "consumes": {
-      "labor": 6
+      "labor": 15
     },
     "produces": {
-      "wholesale_goods": 6
+      "wholesale_goods": 15
     }
   }
 }

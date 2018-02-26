@@ -9,10 +9,10 @@
   "power_required": 1,
   "production": {
     "consumes": {
-      "goods": 3
+      "goods": 10
     },
     "produces": {
-      "labor": 6
+      "labor": 10
     }
   }
 }

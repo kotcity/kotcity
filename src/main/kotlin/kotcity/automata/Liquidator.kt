@@ -1,9 +1,6 @@
 package kotcity.automata
 
-import kotcity.data.BlockCoordinate
-import kotcity.data.CityMap
-import kotcity.data.Location
-import kotcity.data.Tradeable
+import kotcity.data.*
 import kotcity.util.Debuggable
 
 class Liquidator(val cityMap: CityMap) : Debuggable {
@@ -17,15 +14,23 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
         val howManyNeedDestruction : Int = Math.floor(bankruptLocations.count() * 0.5).toInt()
         debug("Blowing up $howManyNeedDestruction buildings...")
 
+        val start = System.currentTimeMillis()
+
         bankruptLocations.shuffled().take(howManyNeedDestruction).forEach { location ->
-            debug("Building ${location.building.description} is bankrupt! Blowing it up!")
+            if (System.currentTimeMillis() - start > 5000) {
+                debug("Out of time during liquidation...")
+                return
+            }
+            debug("Building ${location.building.description} is bankrupt or has no goods! Blowing it up!")
             cityMap.bulldoze(location.coordinate, location.coordinate)
         }
     }
 
     private fun bankruptLocations(): List<Location> {
         return cityMap.locations().toList().filter { location ->
-            location.building.quantityOnHand(Tradeable.MONEY) <= 0
+            val noMoney = (location.building.quantityOnHand(Tradeable.MONEY) <= 0)
+            val isResidentialWithNoGoods = (location.building.type == BuildingType.RESIDENTIAL && location.building.quantityOnHand(Tradeable.GOODS) <= 0)
+            noMoney || isResidentialWithNoGoods
         }
     }
 }

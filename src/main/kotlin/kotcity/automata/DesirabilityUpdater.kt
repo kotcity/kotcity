@@ -34,7 +34,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
     private fun updateCommercial(desirabilityLayer: DesirabilityLayer) {
 
         // ok... we just gotta find each block with an industrial zone...
-        val commercialZones = zoneCoordinates(Zone.COMMERCIAL)
+        val commercialZones = zoneCoordinates(Zone.COMMERCIAL).filter { cityMap.isEmpty(it) }
 
         commercialZones.forEach { coordinate ->
 
@@ -53,6 +53,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
                 }
 
             }
+
         }
 
         trimDesirabilityLayer(desirabilityLayer, commercialZones)
@@ -61,25 +62,26 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
     private fun updateIndustrial(desirabilityLayer: DesirabilityLayer) {
 
         // ok... we just gotta find each block with an industrial zone...
-        val industryZones = zoneCoordinates(Zone.INDUSTRIAL)
+        val industryZones = zoneCoordinates(Zone.INDUSTRIAL).filter { cityMap.isEmpty(it) }
 
         industryZones.forEach { coordinate ->
 
-            if (!pathFinder.nearbyRoad(listOf(coordinate))) {
-                desirabilityLayer[coordinate] = 0.0
-            } else {
-                val availableBuyingWholesaleGoodsShortDistance = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, shortDistance)
-                val availableBuyingWholesaleGoodsMediumDistance = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, mediumDistance)
-                val availableBuyingWholesaleGoodsLongDistance = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, longDistance)
-                val availableLabor = resourceFinder.quantityForSaleNearby(Tradeable.LABOR, coordinate, maxDistance)
-
-                desirabilityLayer[coordinate] = if (availableBuyingWholesaleGoodsLongDistance == 0 && availableLabor == 0) {
-                    0.0
+                if (!pathFinder.nearbyRoad(listOf(coordinate))) {
+                    desirabilityLayer[coordinate] = 0.0
                 } else {
-                    (availableBuyingWholesaleGoodsShortDistance + availableBuyingWholesaleGoodsMediumDistance + availableBuyingWholesaleGoodsLongDistance + availableLabor).toDouble()
+                    val availableBuyingWholesaleGoodsShortDistance = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, shortDistance)
+                    val availableBuyingWholesaleGoodsMediumDistance = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, mediumDistance)
+                    val availableBuyingWholesaleGoodsLongDistance = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, longDistance)
+                    val availableLabor = resourceFinder.quantityForSaleNearby(Tradeable.LABOR, coordinate, maxDistance)
+
+                    desirabilityLayer[coordinate] = if (availableBuyingWholesaleGoodsLongDistance == 0 && availableLabor == 0) {
+                        0.0
+                    } else {
+                        (availableBuyingWholesaleGoodsShortDistance + availableBuyingWholesaleGoodsMediumDistance + availableBuyingWholesaleGoodsLongDistance + availableLabor).toDouble()
+                    }
+
                 }
 
-            }
         }
 
         trimDesirabilityLayer(desirabilityLayer, industryZones)
@@ -106,8 +108,9 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
         // we like being near places that NEED labor
         // we like being near places that PROVIDE goods
 
-        val residentialZones = zoneCoordinates(Zone.RESIDENTIAL)
+        val residentialZones = zoneCoordinates(Zone.RESIDENTIAL).filter { cityMap.isEmpty(it) }
         residentialZones.forEach { coordinate ->
+
             if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
@@ -116,6 +119,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
                 val availableJobsLongDistance = resourceFinder.quantityWantedNearby(Tradeable.LABOR, coordinate, longDistance)
                 desirabilityLayer[coordinate] = (availableJobsShortDistance + availableJobsMediumDistance + availableJobsLongDistance).toDouble()
             }
+
         }
 
         trimDesirabilityLayer(desirabilityLayer, residentialZones)

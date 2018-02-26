@@ -11,6 +11,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.streams.toList
 
 const val DEFAULT_DESIRABILITY = 0.0
 
@@ -123,6 +124,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private val taxCollector = TaxCollector(this)
     private val liquidator = Liquidator(this)
     private val trafficCalculator = TrafficCalculator(this)
+    private val goodsConsumer = GoodsConsumer(this)
 
     val nationalTradeEntity = NationalTradeEntity(this)
 
@@ -155,9 +157,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     init {
         shipper.debug = false
-        contractFulfiller.debug = true
+        contractFulfiller.debug = false
         manufacturer.debug = false
-        constructor.debug = true
+        constructor.debug = false
         taxCollector.debug = false
         liquidator.debug = false
         censusTaker.tick()
@@ -258,6 +260,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 timeFunction("Signing contracts") { contractFulfiller.signContracts() }
                 timeFunction("Doing manufacturing") { manufacturer.tick() }
                 timeFunction("Shipping products") { shipper.tick() }
+                timeFunction("Consuming goods") { goodsConsumer.tick() }
                 timeFunction("Generating traffic") { trafficCalculator.tick() }
                 timeFunction("Taking census") { censusTaker.tick() }
             }
@@ -386,24 +389,28 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun bulldoze(from: BlockCoordinate, to: BlockCoordinate) {
-        BlockCoordinate.iterate(from, to) { coordinate ->
-            powerLineLayer.remove(coordinate)
-            val buildings = buildingsIn(coordinate)
-            // now kill all those contracts...
-            buildings.forEach {
-                buildingLayer.values.forEach { otherBuilding ->
-                    val otherCoords = coordinatesForBuilding(otherBuilding)
-                    if (otherCoords != null) {
-                        val otherEntity = CityTradeEntity(otherCoords, otherBuilding)
-                        otherBuilding.voidContractsWith(otherEntity)
-                    }
-
+        synchronized(buildingLayer) {
+            BlockCoordinate.iterate(from, to) { coordinate ->
+                synchronized(powerLineLayer) {
+                    powerLineLayer.remove(coordinate)
                 }
-                // gotta remove building from the list...
-                val iterator = buildingLayer.iterator()
-                iterator.forEach { mutableEntry ->
-                    if (mutableEntry.value == it.building) {
-                       iterator.remove()
+                val buildings = buildingsIn(coordinate)
+                // now kill all those contracts...
+                buildings.forEach {
+                    buildingLayer.values.forEach { otherBuilding ->
+                        val otherCoords = coordinatesForBuilding(otherBuilding)
+                        if (otherCoords != null) {
+                            val otherEntity = CityTradeEntity(otherCoords, otherBuilding)
+                            otherBuilding.voidContractsWith(otherEntity)
+                        }
+
+                    }
+                    // gotta remove building from the list...
+                    val iterator = buildingLayer.iterator()
+                    iterator.forEach { mutableEntry ->
+                        if (mutableEntry.value == it.building) {
+                            iterator.remove()
+                        }
                     }
                 }
             }
@@ -474,7 +481,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun locations(): List<Location> {
-        return buildingLayer.entries.toList().map { Location(it.key, it.value) }.toList()
+        synchronized(buildingLayer) {
+            val sequence = buildingLayer.entries.iterator().asSequence()
+            return sequence.map { Location(it.key, it.value) }.toList()
+        }
+    }
+
+    fun isEmpty(coordinate: BlockCoordinate): Boolean {
+        return this.buildingsIn(coordinate).count() == 0
     }
 
 }

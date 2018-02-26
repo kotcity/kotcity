@@ -97,7 +97,6 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return start.flatMap { coordinate ->
             val buildings = cityMap.nearestBuildings(coordinate, MAX_DISTANCE)
 
-            // OK now we want only ones with labor...
             buildings.filter {
                 val building = it.building
                 buildingFilter(building, quantity)
@@ -131,20 +130,16 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
     private fun heuristic(current: BlockCoordinate, destinations: List<BlockCoordinate>): Double {
         // calculate manhattan distance to each...
-        return runBlocking {
-            val scores = destinations.pmap(this.coroutineContext) {coordinate ->
-                var score = manhattanDistance(current, coordinate)
-                // see if this is road and lower score by a tiny bit...
-                if (cityMap.buildingLayer[current]?.type == BuildingType.ROAD) {
-                    score -= 3
-                    score += cityMap.trafficLayer[current] ?: 0.0
-                }
-
-                score
+        return destinations.map { coordinate ->
+            var score = manhattanDistance(current, coordinate)
+            // see if this is road and lower score by a tiny bit...
+            if (cityMap.buildingLayer[current]?.type == BuildingType.ROAD) {
+                score -= 3
+                score += cityMap.trafficLayer[current] ?: 0.0
             }
-            scores.min() ?: 100.0
-        }
 
+            score
+        }.min() ?: 100.0
     }
 
     private fun manhattanDistance(start: BlockCoordinate, destination: BlockCoordinate): Double {

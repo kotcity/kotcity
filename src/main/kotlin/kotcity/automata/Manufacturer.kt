@@ -37,6 +37,7 @@ class Manufacturer(val cityMap: CityMap): Debuggable {
             if (building.supplyCount(Tradeable.WHOLESALE_GOODS) > 0) {
                 building.subtractInventory(Tradeable.WHOLESALE_GOODS, 1)
                 building.addInventory(Tradeable.GOODS, 1)
+                building.payWorkers()
                 debug("${building.description}: Converted 1 wholesale goods to goods...")
             }
         }
