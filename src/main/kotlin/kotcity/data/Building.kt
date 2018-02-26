@@ -47,6 +47,7 @@ interface HasConcreteInventory : HasInventory {
         return inventory.quantity(tradeable)
     }
 
+    // TODO: implement partial fulfillment...
     override fun transferInventory(to: TradeEntity, tradeable: Tradeable, quantity: Int): Int {
         if (inventory.has(tradeable, quantity)) {
             inventory.subtract(tradeable, quantity)
@@ -64,6 +65,7 @@ interface HasContracts {
     fun needs(tradeable: Tradeable): Int
     fun totalProvided(tradeable: Tradeable): Int
     fun supplyCount(tradeable: Tradeable): Int
+    fun consumesQuantity(tradeable: Tradeable): Int
     fun productList(): List<Tradeable>
     fun needsAnyContracts(): Boolean {
 
@@ -82,6 +84,10 @@ interface HasConcreteContacts : HasContracts {
     val consumes: MutableMap<Tradeable, Int>
     val produces: MutableMap<Tradeable, Int>
     val cityMap: CityMap
+
+    override fun consumesQuantity(tradeable: Tradeable): Int {
+        return consumes[tradeable] ?: 0
+    }
 
     override fun summarizeContracts(): String {
         val summaryBuffer = StringBuffer()
@@ -115,15 +121,19 @@ interface HasConcreteContacts : HasContracts {
 
     override fun quantityWanted(tradeable: Tradeable): Int {
         val inventoryCount = consumes[tradeable] ?: 0
-        val contractCount = contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
-        return inventoryCount - contractCount
+        synchronized(contracts) {
+            val contractCount = contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+            return inventoryCount - contractCount
+        }
     }
 
     private fun calculateAvailable(hash: MutableMap<Tradeable, Int>, tradeable: Tradeable, filter: (Contract) -> Building?): Int {
-        val inventoryCount = hash[tradeable] ?: 0
-        synchronized(contracts) {
-            val contractCount = contracts.filter { filter(it) == this && it.tradeable == tradeable }.map { it.quantity }.sum()
-            return inventoryCount - contractCount
+        synchronized(hash) {
+            val inventoryCount = hash[tradeable] ?: 0
+            synchronized(contracts) {
+                val contractCount = contracts.toList().filter { filter(it) == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+                return inventoryCount - contractCount
+            }
         }
     }
 
@@ -168,7 +178,9 @@ interface HasConcreteContacts : HasContracts {
     }
 
     fun hasAnyContracts(): Boolean {
-        return contracts.count() > 0
+        synchronized(contracts) {
+            return contracts.count() > 0
+        }
     }
 
 }

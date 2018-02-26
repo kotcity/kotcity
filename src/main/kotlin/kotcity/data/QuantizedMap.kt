@@ -11,6 +11,10 @@ open class QuantizedMap<T>(val quantize: Int = 4) {
         map[quantizeBlockCoordinate(blockCoordinate)] = value
     }
 
+    fun clear() {
+        map.clear()
+    }
+
     fun count(): Int {
         return map.count()
     }

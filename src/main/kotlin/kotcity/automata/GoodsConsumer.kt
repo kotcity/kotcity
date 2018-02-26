@@ -10,7 +10,8 @@ class GoodsConsumer(val cityMap: CityMap) {
             val building = location.building
             if (building.type == BuildingType.RESIDENTIAL) {
                 // eat up a good for every worker we have on board...
-                building.subtractInventory(Tradeable.GOODS, building.quantityOnHand(Tradeable.LABOR))
+                val howManyToConsume = (building.quantityOnHand(Tradeable.LABOR) * 0.8).toInt().coerceAtLeast(1)
+                building.subtractInventory(Tradeable.GOODS, howManyToConsume)
             }
         }
     }

@@ -130,6 +130,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     private var doingHourly: Boolean = false
 
+    var bulldozedCounts = mutableMapOf<BuildingType, Int>().withDefault { 0 }
+
     private fun initializeDesirabilityLayers(): List<DesirabilityLayer> {
 
         return listOf(
@@ -161,7 +163,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         manufacturer.debug = false
         constructor.debug = false
         taxCollector.debug = false
-        liquidator.debug = false
+        desirabilityUpdater.debug = true
+        liquidator.debug = true
         censusTaker.tick()
         nationalTradeEntity.resetCounts()
     }
@@ -265,6 +268,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 timeFunction("Taking census") { censusTaker.tick() }
             }
 
+            if (hour % 6 == 0) {
+                timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
+            }
+
             if (hour == 0) {
                 debug("Processing tick for end of day...")
                 dailyTick()
@@ -280,7 +287,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private fun dailyTick() {
         timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(this) }
         timeFunction("Collect Taxes") { taxCollector.tick() }
-        timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
         timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
     }
 
@@ -456,9 +462,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     // TODO: this kind of sucks...
     fun coordinatesForBuilding(building: Building): BlockCoordinate? {
-        return buildingLayer.toList().find {
-            it.second === building
-        }?.first
+        synchronized(buildingLayer) {
+            return buildingLayer.toList().find {
+                it.second === building
+            }?.first
+        }
     }
 
     fun buildingsIn(block: BlockCoordinate): List<Location> {

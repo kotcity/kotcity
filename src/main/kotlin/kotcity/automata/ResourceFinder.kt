@@ -51,7 +51,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
 
     fun findSource(sourceBlocks: List<BlockCoordinate>, tradeable: Tradeable, quantity: Int): Pair<TradeEntity, Path>? {
         // TODO: we can just do this once for the "center" of the building... (i think)
-        val buildings = sourceBlocks.flatMap { cityMap.nearestBuildings(it, kotcity.pathfinding.MAX_DISTANCE) }.distinct()
+        val buildings = sourceBlocks.flatMap { cityMap.nearestBuildings(it, kotcity.pathfinding.MAX_DISTANCE) }.distinct().toList()
         // now we gotta make sure they got the resource...
         val buildingsWithResource = buildings.filter { it.building.quantityForSale(tradeable) >= quantity }
 
