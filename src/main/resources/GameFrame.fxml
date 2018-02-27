@@ -72,6 +72,11 @@
                   <MenuItem mnemonicParsing="false" text="City Information..." />
                </items>
             </Menu>
+            <Menu mnemonicParsing="false" text="Charts">
+              <items>
+                  <MenuItem fx:id="supplyDemandMenuItem" mnemonicParsing="false" text="Supply / Demand" />
+              </items>
+            </Menu>
             <Menu mnemonicParsing="false" text="Help">
                <items>
                   <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" text="About" />

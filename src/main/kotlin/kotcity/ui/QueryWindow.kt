@@ -10,7 +10,7 @@ import kotcity.data.BuildingType
 import kotcity.data.CityMap
 import tornadofx.View
 
-class QueryWindow(): View() {
+class QueryWindow : View() {
     override val root: BorderPane by fxml("/QueryWindow.fxml")
 
     val buildingNameLabel: Label by fxid()
