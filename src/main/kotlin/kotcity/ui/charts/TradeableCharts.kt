@@ -22,15 +22,23 @@ class SupplyDemandChart : View() {
     private val xAxis = CategoryAxis()
     private val yAxis = NumberAxis()
     private val barChart = BarChart(xAxis, yAxis)
+    val supplySeries = XYChart.Series<String, Number>()
+    val demandSeries = XYChart.Series<String, Number>()
 
     init {
         title = "Supply and Demand"
 
         barChart.title = "Supply and Demand"
+        barChart.animated = false
         xAxis.label = "Tradeable"
         yAxis.label = "Quantity"
         root.center = barChart
         xAxis.tickLabelRotation = 45.0
+
+        supplySeries.name = "Supply"
+        demandSeries.name = "Demand"
+
+        barChart.data.addAll(supplySeries, demandSeries)
 
         updateChart()
 
@@ -39,23 +47,19 @@ class SupplyDemandChart : View() {
     private fun updateChart() {
         census?.let {
 
-            barChart.data.clear()
-
-            val supplySeries = XYChart.Series<String, Number>()
-            supplySeries.name = "Supply"
-
-            val demandSeries = XYChart.Series<String, Number>()
-            demandSeries.name = "Demand"
+            supplySeries.data.clear()
+            demandSeries.data.clear()
 
             it.resourceCounts.totals().forEach { economyReport ->
 
-                if (economyReport.tradeable != Tradeable.MONEY) {
+                if (economyReport.tradeable != Tradeable.MONEY && economyReport.tradeable != Tradeable.RAW_MATERIALS) {
+
                     supplySeries.data.add(XYChart.Data(economyReport.tradeable.name, economyReport.supply))
                     demandSeries.data.add(XYChart.Data(economyReport.tradeable.name, economyReport.demand))
                 }
 
             }
-            barChart.data.addAll(supplySeries, demandSeries)
+
         }
     }
 

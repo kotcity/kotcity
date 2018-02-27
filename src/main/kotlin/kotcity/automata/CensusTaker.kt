@@ -4,6 +4,7 @@ import kotcity.data.BuildingType
 import kotcity.data.CityMap
 import kotcity.data.Tradeable
 import kotcity.util.Debuggable
+import tornadofx.runLater
 
 enum class CountType {
     SUPPLY,
@@ -59,7 +60,10 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
             }
         }
         population = tempPop
-        listeners.forEach { it() }
+        runLater {
+            listeners.forEach { it() }
+        }
+
     }
 
     private fun supplyAndDemand() {
