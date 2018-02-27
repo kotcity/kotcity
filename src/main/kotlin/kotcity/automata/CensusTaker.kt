@@ -60,9 +60,12 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
             }
         }
         population = tempPop
-        runLater {
-            listeners.forEach { it() }
+        if (listeners.count() > 0) {
+            runLater {
+                listeners.forEach { it() }
+            }
         }
+
 
     }
 
