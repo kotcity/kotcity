@@ -136,7 +136,10 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             if (cityMap.buildingLayer[current]?.type == BuildingType.ROAD) {
                 score -= 3
                 score += cityMap.trafficLayer[current] ?: 0.0
+            } else {
+                score += 100
             }
+
 
             score
         }.min() ?: 100.0

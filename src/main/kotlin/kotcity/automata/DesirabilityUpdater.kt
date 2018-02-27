@@ -36,13 +36,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
 
     private fun updateCommercial(desirabilityLayer: DesirabilityLayer) {
 
-        val commercialZones =
-                if (cityMap.bulldozedCounts[BuildingType.COMMERCIAL] ?: 0 > 0) {
-                    debug("Bulldozed commercial last time... so we don't want any more...")
-                    emptyList()
-                } else {
-                    zoneCoordinates(Zone.COMMERCIAL).filter { cityMap.isEmpty(it) }
-                }
+        val commercialZones = zoneCoordinates(Zone.COMMERCIAL).filter { cityMap.isEmpty(it) }
 
         commercialZones.forEach { coordinate ->
 
@@ -70,13 +64,8 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
     private fun updateIndustrial(desirabilityLayer: DesirabilityLayer) {
 
         // ok... we just gotta find each block with an industrial zone...
-        val industryZones =
-                if (cityMap.bulldozedCounts[BuildingType.INDUSTRIAL] ?: 0 > 0) {
-                    debug("Bulldozed industrial last time... so we don't want any more...")
-                    emptyList()
-                } else {
-                    zoneCoordinates(Zone.INDUSTRIAL).filter { cityMap.isEmpty(it) }
-                }
+        val industryZones = zoneCoordinates(Zone.INDUSTRIAL).filter { cityMap.isEmpty(it) }
+
         industryZones.forEach { coordinate ->
 
                 if (!pathFinder.nearbyRoad(listOf(coordinate))) {
@@ -121,13 +110,8 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
         // we like being near places that NEED labor
         // we like being near places that PROVIDE goods
 
-        val residentialZones =
-                if (cityMap.bulldozedCounts[BuildingType.RESIDENTIAL] ?: 0 > 0) {
-                    debug("Bulldozed residential last time... so we don't want any more...")
-                    emptyList()
-                } else {
-                    zoneCoordinates(Zone.RESIDENTIAL).filter { cityMap.isEmpty(it) }
-                }
+        val residentialZones = zoneCoordinates(Zone.RESIDENTIAL).filter { cityMap.isEmpty(it) }
+
 
         residentialZones.forEach { coordinate ->
 
@@ -137,7 +121,9 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
                 val availableJobsShortDistance = resourceFinder.quantityWantedNearby(Tradeable.LABOR, coordinate, shortDistance)
                 val availableJobsMediumDistance = resourceFinder.quantityWantedNearby(Tradeable.LABOR, coordinate, mediumDistance)
                 val availableJobsLongDistance = resourceFinder.quantityWantedNearby(Tradeable.LABOR, coordinate, longDistance)
-                desirabilityLayer[coordinate] = (availableJobsShortDistance + availableJobsMediumDistance + availableJobsLongDistance).toDouble()
+                val availableGoodsShortDistance = resourceFinder.quantityForSaleNearby(Tradeable.GOODS, coordinate, shortDistance)
+                val availableGoodsMediumDistance = resourceFinder.quantityForSaleNearby(Tradeable.GOODS, coordinate, mediumDistance)
+                desirabilityLayer[coordinate] = (availableJobsShortDistance + availableJobsMediumDistance + availableJobsLongDistance + availableGoodsShortDistance + availableGoodsMediumDistance).toDouble()
             }
 
         }

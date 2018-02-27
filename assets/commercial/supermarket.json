@@ -10,10 +10,10 @@
   "production": {
     "consumes": {
       "labor": 10,
-      "wholesale_goods": 50
+      "wholesale_goods": 25
     },
     "produces": {
-      "goods": 50
+      "goods": 25
     }
   }
 }
