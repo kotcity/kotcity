@@ -240,7 +240,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
         val contracts = cityMap.locations().map { contractsWithPathThrough(it.building, showRoutesFor) }.flatten()
         // ok now we know which ones to draw...
-        val blocksWithPath = contracts.flatMap { it.path?.blockList() ?: emptyList() }.distinct().toSet()
+        val blocksWithPath = contracts.flatMap { it.path?.blocks() ?: emptyList() }.distinct().toSet()
         // now get only ones on screen...
 
         val (startBlock, endBlock) = visibleBlockRange()
@@ -254,7 +254,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     // TODO: this is probably brutally slow...
     private fun contractsWithPathThrough(building: Building, coordinate: BlockCoordinate): List<Contract> {
-        return building.contracts.toList().filter { it.path?.blockList()?.contains(coordinate) ?: false }
+        return building.contracts.toList().filter { it.path?.blocks()?.contains(coordinate) ?: false }
     }
 
     private fun drawDesirability() {

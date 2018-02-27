@@ -62,7 +62,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         var preferredTradeEntity: TradeEntity? = null
         var preferredPath: Path? = null
         // OK! now if we got a path we want to find the building in the last block...
-        shortestPath?.blockList()?.last()?.let {
+        shortestPath?.blocks()?.last()?.let {
             val location = cityMap.buildingsIn(it).firstOrNull()
             if (location != null) {
                 preferredPath = shortestPath
@@ -75,7 +75,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
             // let's try and get a path to the outside...
             // make sure the outside city has a resource before we get too excited and make a path...
             if (cityMap.nationalTradeEntity.quantityForSale(tradeable) >= quantity) {
-                val destinationBlock = pathfinder.cachedPathToOutside(sourceBlocks)?.blockList()?.last()
+                val destinationBlock = pathfinder.cachedPathToOutside(sourceBlocks)?.blocks()?.last()
                 if (destinationBlock != null) {
                     preferredTradeEntity = cityMap.nationalTradeEntity.outsideEntity(destinationBlock)
                 }
@@ -102,7 +102,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         val shortestPath = pathfinder.tripTo(sourceBlocks, allBuildingBlocks)
 
         // OK! now if we got a path we want to find the building in the last block...
-        shortestPath?.blockList()?.last()?.let {
+        shortestPath?.blocks()?.last()?.let {
             val location = cityMap.buildingsIn(it).firstOrNull()
             if (location != null) {
                 return Pair(CityTradeEntity(it, location.building), shortestPath)
@@ -112,7 +112,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         if (cityMap.nationalTradeEntity.quantityWanted(tradeable) >= 1) {
             val outsidePath = pathfinder.cachedPathToOutside(sourceBlocks)
             outsidePath?.let {
-                return Pair(cityMap.nationalTradeEntity.outsideEntity(it.blockList().last()), it)
+                return Pair(cityMap.nationalTradeEntity.outsideEntity(it.blocks().last()), it)
             }
         }
 

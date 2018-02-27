@@ -16,18 +16,6 @@ enum class TransitType {
     ROAD
 }
 
-public data class Path (
-        val nodes: List<NavigationNode> = emptyList()
-) {
-    fun distance(): Int {
-        return nodes.count()
-    }
-
-    fun blockList(): List<BlockCoordinate> {
-        return nodes.map { it.coordinate }
-    }
-}
-
 data class NavigationNode(
         val cityMap: CityMap,
         val coordinate: BlockCoordinate,
@@ -47,6 +35,20 @@ data class NavigationNode(
 
     override fun hashCode(): Int {
         return this.coordinate.hashCode()
+    }
+}
+
+
+data class Path (
+        val nodes: List<NavigationNode> = emptyList()
+) {
+    // takes traffic and etc into consideration...
+    fun length(): Int {
+        return nodes.sumBy { it.score.toInt() }
+    }
+
+    fun blocks(): List<BlockCoordinate> {
+        return nodes.map { it.coordinate }.toList()
     }
 }
 
@@ -137,7 +139,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                 score -= 3
                 score += cityMap.trafficLayer[current] ?: 0.0
             } else {
-                score += 100
+                score += 10
             }
 
 
