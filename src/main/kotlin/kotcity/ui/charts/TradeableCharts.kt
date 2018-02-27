@@ -14,6 +14,7 @@ class SupplyDemandChart : View() {
     var census: CensusTaker? = null
         set(value) {
             field = value
+            value?.addUpdateListener { updateChart() }
             updateChart()
         }
 

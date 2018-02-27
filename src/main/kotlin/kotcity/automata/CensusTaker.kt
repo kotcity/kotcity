@@ -59,6 +59,7 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
             }
         }
         population = tempPop
+        listeners.forEach { it() }
     }
 
     private fun supplyAndDemand() {
@@ -72,5 +73,11 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
             }
         }
         this.resourceCounts = resourceCounts
+    }
+
+    private val listeners = mutableListOf<() -> Unit>()
+
+    fun addUpdateListener(listener: () -> Unit) {
+        this.listeners.add(listener)
     }
 }
