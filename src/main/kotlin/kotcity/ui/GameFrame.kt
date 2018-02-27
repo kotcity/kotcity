@@ -19,6 +19,7 @@ import javafx.scene.control.ButtonType
 import javafx.scene.control.ButtonBar.ButtonData
 import javafx.scene.layout.BorderPane
 import kotcity.data.assets.AssetManager
+import kotcity.ui.charts.SupplyDemandChart
 import kotcity.ui.map.CityMapCanvas
 import kotcity.ui.map.CityRenderer
 import tornadofx.runLater
@@ -95,6 +96,8 @@ class GameFrame : View() {
     private val selectedToolLabel: Label by fxid()
     private val cityNameLabel: Label by fxid()
     private val clockLabel: Label by fxid()
+
+    private val supplyDemandMenuItem: MenuItem by fxid()
 
     private val pauseMenuItem: CheckMenuItem by fxid()
 
@@ -248,6 +251,11 @@ class GameFrame : View() {
         townWarehouseButton.setOnAction { activeTool = Tool.TOWN_WAREHOUSE }
         jobCenterButton.setOnAction { activeTool = Tool.JOB_CENTER }
         routesButton.setOnAction { activeTool = Tool.ROUTES }
+        supplyDemandMenuItem.setOnAction {
+            val supplyDemandChart = find(SupplyDemandChart::class)
+            supplyDemandChart.census = cityMapCanvas.map?.censusTaker
+            supplyDemandChart.openWindow()
+        }
     }
 
     fun setMapModes(mapMode: MapMode) {

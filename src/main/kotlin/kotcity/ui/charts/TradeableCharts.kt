@@ -1,67 +1,61 @@
 package kotcity.ui.charts
 
-import javafx.application.Application
-import javafx.scene.Parent
-import javafx.scene.Scene
 import javafx.scene.chart.BarChart
 import javafx.scene.chart.CategoryAxis
 import javafx.scene.chart.NumberAxis
 import javafx.scene.chart.XYChart
-import javafx.scene.chart.XYChart.Series
 import javafx.scene.layout.BorderPane
-import javafx.stage.Stage
-import tornadofx.App
+import kotcity.automata.CensusTaker
+import kotcity.data.Tradeable
 import tornadofx.View
 
-class BarChartSample : View() {
+class SupplyDemandChart : View() {
 
-    override val root: BorderPane by fxml("/QueryWindow.fxml")
+    var census: CensusTaker? = null
+        set(value) {
+            field = value
+            updateChart()
+        }
+
+    override val root: BorderPane by fxml("/TradeableChart.fxml")
+    private val xAxis = CategoryAxis()
+    private val yAxis = NumberAxis()
+    private val barChart = BarChart(xAxis, yAxis)
 
     init {
-        val stage = primaryStage
-        stage.title = "Bar Chart Sample"
-        val xAxis = CategoryAxis()
-        val yAxis = NumberAxis()
-        val bc = BarChart(xAxis, yAxis)
-        bc.title = "Country Summary"
-        xAxis.label = "Country"
-        yAxis.label = "Value"
+        title = "Supply and Demand"
 
-        val series1 = Series<String, Number>()
-        series1.setName("2003")
-        series1.getData().add(XYChart.Data(austria, 25601.34))
-        series1.getData().add(XYChart.Data(brazil, 20148.82))
-        series1.getData().add(XYChart.Data(france, 10000))
-        series1.getData().add(XYChart.Data(italy, 35407.15))
-        series1.getData().add(XYChart.Data(usa, 12000))
+        barChart.title = "Supply and Demand"
+        xAxis.label = "Tradeable"
+        yAxis.label = "Quantity"
+        root.center = barChart
+        xAxis.tickLabelRotation = 45.0
 
-        val series2 = Series<String, Number>()
-        series2.setName("2004")
-        series2.getData().add(XYChart.Data(austria, 57401.85))
-        series2.getData().add(XYChart.Data(brazil, 41941.19))
-        series2.getData().add(XYChart.Data(france, 45263.37))
-        series2.getData().add(XYChart.Data(italy, 117320.16))
-        series2.getData().add(XYChart.Data(usa, 14845.27))
+        updateChart()
 
-        val series3 = Series<String, Number>()
-        series3.setName("2005")
-        series3.getData().add(XYChart.Data(austria, 45000.65))
-        series3.getData().add(XYChart.Data(brazil, 44835.76))
-        series3.getData().add(XYChart.Data(france, 18722.18))
-        series3.getData().add(XYChart.Data(italy, 17557.31))
-        series3.getData().add(XYChart.Data(usa, 92633.68))
-
-        val scene = Scene(bc, 800.0, 600.0)
-        bc.data.addAll(series1, series2, series3)
-        stage.scene = scene
-        stage.show()
     }
 
-    companion object {
-        internal val austria = "Austria"
-        internal val brazil = "Brazil"
-        internal val france = "France"
-        internal val italy = "Italy"
-        internal val usa = "USA"
+    private fun updateChart() {
+        census?.let {
+
+            barChart.data.clear()
+
+            val supplySeries = XYChart.Series<String, Number>()
+            supplySeries.name = "Supply"
+
+            val demandSeries = XYChart.Series<String, Number>()
+            demandSeries.name = "Demand"
+
+            it.resourceCounts.totals().forEach { economyReport ->
+
+                if (economyReport.tradeable != Tradeable.MONEY) {
+                    supplySeries.data.add(XYChart.Data(economyReport.tradeable.name, economyReport.supply))
+                    demandSeries.data.add(XYChart.Data(economyReport.tradeable.name, economyReport.demand))
+                }
+
+            }
+            barChart.data.addAll(supplySeries, demandSeries)
+        }
     }
+
 }
