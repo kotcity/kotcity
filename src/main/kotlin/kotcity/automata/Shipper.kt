@@ -21,7 +21,8 @@ class Shipper(val cityMap: CityMap): Debuggable {
 
     fun tick() {
         // what we want to do here is find all industrial zones with WHOLESALE GOODS and ship them to commercial zones
-        cityMap.buildingLayer.forEach { _, building ->
+        cityMap.locations().forEach { location ->
+            val building = location.building
             building.contracts.forEach { contract ->
                 // we only want to deal with "to" and not to ourself...
                 // we also don't SEND labor

@@ -134,7 +134,7 @@ class ContactFulfiller(val cityMap: CityMap): Debuggable {
 
     fun terminateRandomContracts() {
 
-        val totalBuildings = cityMap.buildingLayer.keys.count()
+        val totalBuildings = cityMap.locations().count()
 
         if (totalBuildings == 0) {
             return
@@ -143,8 +143,8 @@ class ContactFulfiller(val cityMap: CityMap): Debuggable {
         val howMany = (entitiesWithContracts().count() * 0.01).toInt()
         debug("Terminating $howMany contracts...")
 
-        cityMap.buildingLayer.keys.toList().getRandomElements(howMany)?.forEach { block ->
-            val buildings = cityMap.buildingsIn(block)
+        cityMap.locations().getRandomElements(howMany)?.forEach { location ->
+            val buildings = cityMap.buildingsIn(location.coordinate)
             val blockAndBuilding = buildings.toList().getRandomElements(1)?.first()
             if (blockAndBuilding != null) {
                 val building = blockAndBuilding.building

@@ -108,7 +108,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     // various layers
     val groundLayer = mutableMapOf<BlockCoordinate, MapTile>()
-    val buildingLayer = mutableMapOf<BlockCoordinate, Building>()
+    private val buildingLayer = mutableMapOf<BlockCoordinate, Building>()
     val zoneLayer = mutableMapOf<BlockCoordinate, Zone>()
     val powerLineLayer = mutableMapOf<BlockCoordinate, Building>()
     val resourceLayers = mutableMapOf<String, QuantizedMap<Double>>()

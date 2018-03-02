@@ -170,7 +170,9 @@ interface HasConcreteContacts : HasContracts {
     }
 
     override fun supplyCount(tradeable: Tradeable): Int {
-        return contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+        synchronized(contracts) {
+            return contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+        }
     }
 
     override fun productList(): List<Tradeable> {

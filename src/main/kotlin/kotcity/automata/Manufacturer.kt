@@ -12,7 +12,8 @@ class Manufacturer(val cityMap: CityMap): Debuggable {
 
     fun tick() {
         // for each industrial zone we want to see if we have at least one labor...
-        cityMap.buildingLayer.values.forEach { building ->
+        cityMap.locations().forEach { location ->
+            val building = location.building
             // let's see if it's industrial...
             if (building.type == BuildingType.INDUSTRIAL) {
                 handleIndustrial(building)

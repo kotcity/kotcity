@@ -452,9 +452,10 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     private fun visibleBuildings(): List<Pair<BlockCoordinate, Building>> {
         // TODO: we can just cityMap over the two different layers... clean up later...
         val buildings = visibleBlocks(padding = MAX_BUILDING_SIZE).mapNotNull {
-            val building = cityMap.buildingLayer[it]
-            if (building != null) {
-                Pair(it, building)
+            val locations = cityMap.buildingsIn(it)
+            if (locations.count() > 0) {
+                val location = locations.first()
+                Pair(it, location.building)
             } else {
                 null
             }

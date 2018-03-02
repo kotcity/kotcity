@@ -20,6 +20,6 @@ class CollisionTest {
         map.build(slum3, BlockCoordinate(0, 4))
         // try to do an overlap
         map.build(slum4, BlockCoordinate(0, 0))
-        assertTrue(map.buildingLayer.count() == 3)
+        assertTrue(map.locations().count() == 3)
     }
 }

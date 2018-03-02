@@ -135,12 +135,17 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return destinations.map { coordinate ->
             var score = manhattanDistance(current, coordinate)
             // see if this is road and lower score by a tiny bit...
-            if (cityMap.buildingLayer[current]?.type == BuildingType.ROAD) {
-                score -= 3
-                score += cityMap.trafficLayer[current] ?: 0.0
-            } else {
-                score += 10
+            val locations = cityMap.buildingsIn(current)
+            if (locations.count() > 0) {
+                val building = locations.first().building
+                if (building.type == BuildingType.ROAD) {
+                    score -= 3
+                    score += cityMap.trafficLayer[current] ?: 0.0
+                } else {
+                    score += 10
+                }
             }
+
 
 
             score
@@ -163,7 +168,12 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
     private fun drivable(node: NavigationNode): Boolean {
         // make sure we got a road under it...
-        return cityMap.buildingLayer[node.coordinate]?.type == BuildingType.ROAD
+        val locations = cityMap.buildingsIn(node.coordinate)
+        if (locations.count() > 0) {
+            val building = locations.first().building
+            return building.type == BuildingType.ROAD
+        }
+        return false
     }
 
     private fun isGround(node: NavigationNode): Boolean {

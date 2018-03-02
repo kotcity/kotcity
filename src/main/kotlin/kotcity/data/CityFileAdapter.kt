@@ -163,7 +163,7 @@ private fun readBuildingLayer(data: JsonObject, cityMap: CityMap) {
                 BuildingType.CIVIC -> assetManager.buildingFor(type, name)
                 else -> throw RuntimeException("Unknown named building: $name")
             }
-            cityMap.buildingLayer[BlockCoordinate(x, y)] = building
+            cityMap.build(building, BlockCoordinate(x, y))
         } else {
             val building = when (type) {
                 BuildingType.ROAD -> Road(cityMap)
@@ -171,7 +171,7 @@ private fun readBuildingLayer(data: JsonObject, cityMap: CityMap) {
 
                 else -> throw RuntimeException("Unknown building: $it")
             }
-            cityMap.buildingLayer[BlockCoordinate(x, y)] = building
+            cityMap.build(building, BlockCoordinate(x, y))
         }
 
     }
@@ -235,9 +235,9 @@ fun readContracts(data: JsonObject, cityMap: CityMap) {
 }
 
 fun writeContracts(data: JsonObject, it: SerializerArg<CityMap>) {
-    if (it.src.buildingLayer.keys.count() > 0) {
-        data["contracts"] = it.src.buildingLayer.mapNotNull { entry->
-            val building = entry.value
+    if (it.src.locations().count() > 0) {
+        data["contracts"] = it.src.locations().mapNotNull { location->
+            val building = location.building
             if (building.contracts.count() == 0) {
                 null
             } else {
@@ -263,10 +263,10 @@ fun writeContracts(data: JsonObject, it: SerializerArg<CityMap>) {
 }
 
 private fun writeBuildingLayer(data: JsonObject, it: SerializerArg<CityMap>) {
-    data["buildingLayer"] = it.src.buildingLayer.map { entry ->
-        val x = entry.key.x
-        val y = entry.key.y
-        val building = entry.value
+    data["buildingLayer"] = it.src.locations().map { location ->
+        val x = location.coordinate.x
+        val y = location.coordinate.y
+        val building = location.building
         val type = building.type.toString()
 
         val buildingObj = mutableMapOf(

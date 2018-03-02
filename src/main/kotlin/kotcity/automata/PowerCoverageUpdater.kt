@@ -6,8 +6,8 @@ object PowerCoverageUpdater {
     fun update(map: CityMap) {
 
         // OK we gotta find all the power plants on the cityMap...
-        val powerPlants = map.buildingLayer.filter { entry: Map.Entry<BlockCoordinate, Building> ->
-            entry.value.type == BuildingType.POWER_PLANT
+        val powerPlants = map.locations().filter { location ->
+            location.building.type == BuildingType.POWER_PLANT
         }
 
         val gridmap = mutableMapOf<BlockCoordinate, PowerCoverageAutomata>()
@@ -17,7 +17,7 @@ object PowerCoverageUpdater {
 
         val automatas = powerPlants.map {
             autoMataIndex += 1
-            PowerCoverageAutomata(it.key, it.value as PowerPlant, gridmap, map)
+            PowerCoverageAutomata(it.coordinate, it.building as PowerPlant, gridmap, map)
         }.toMutableSet()
         while (automatas.any { !it.done() }) {
             automatas.forEach {
@@ -28,8 +28,8 @@ object PowerCoverageUpdater {
         }
 
         // ok now let's set all buildings to powered that were in teh grid list...
-        map.buildingLayer.forEach { t, u ->
-            u.powered = gridmap.containsKey(t)
+        map.locations().forEach { location ->
+            location.building.powered = gridmap.containsKey(location.coordinate)
         }
 
     }
