@@ -383,12 +383,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     fun build(building: Building, block: BlockCoordinate) {
         if (canBuildBuildingAt(building, block)) {
-            this.buildingLayer[block] = building
-            if (building.type != BuildingType.COMMERCIAL && building.type != BuildingType.RESIDENTIAL && building.type != BuildingType.INDUSTRIAL) {
-                val buildingBlocks = buildingBlocks(block, building)
-                buildingBlocks.forEach { zoneLayer.remove(it) }
+            synchronized(this.buildingLayer) {
+                this.buildingLayer[block] = building
+                if (building.type != BuildingType.COMMERCIAL && building.type != BuildingType.RESIDENTIAL && building.type != BuildingType.INDUSTRIAL) {
+                    val buildingBlocks = buildingBlocks(block, building)
+                    buildingBlocks.forEach { zoneLayer.remove(it) }
+                }
+                updateBuildingIndex()
             }
-            updateBuildingIndex()
         } else {
             // debug("We have an overlap! not building!")
         }

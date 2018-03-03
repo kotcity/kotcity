@@ -426,6 +426,9 @@ class GameFrame : View() {
                             Tool.ROUTES -> {
                                 it.showRoutesFor = firstBlock
                             }
+                            else -> {
+                                println("Warning: tool $activeTool not handled...")
+                            }
                         }
                     }
                 }
