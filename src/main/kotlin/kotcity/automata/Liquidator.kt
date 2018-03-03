@@ -10,10 +10,10 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
 
     fun tick() {
 
-        // we will only kill half of what needs to go...
+        // we will only kill some of what needs to go...
         val bankruptLocations = bankruptLocations()
 
-        val howManyNeedDestruction : Int = Math.floor(bankruptLocations.count() * 0.1).toInt()
+        val howManyNeedDestruction : Int = Math.floor(bankruptLocations.count() * 0.01).toInt()
         debug("Blowing up $howManyNeedDestruction buildings...")
 
         val start = System.currentTimeMillis()

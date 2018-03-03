@@ -143,13 +143,17 @@ data class NationalTradeEntity(val cityMap: CityMap): HasContracts, HasInventory
         val iterator = contracts.iterator()
         iterator.forEach { contract ->
             if (contract.to == otherTradeEntity || contract.from == otherTradeEntity) {
-                contracts.remove(contract)
+                synchronized(contracts) {
+                    contracts.remove(contract)
+                }
             }
         }
     }
 
     fun addContract(contract: Contract) {
-        contracts.add(contract)
+        synchronized(contracts) {
+            contracts.add(contract)
+        }
     }
 
     override fun addInventory(tradeable: Tradeable, quantity: Int): Int {

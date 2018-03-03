@@ -98,7 +98,7 @@ interface HasConcreteContacts : HasContracts {
             summaryBuffer.append("Consumes: ${consumes[it]} $it\n")
         }
 
-        produces.keys.distinct().forEach {
+        produces.keys.distinct().toList().forEach {
             summaryBuffer.append("Produces: ${produces[it]} $it\n")
         }
 
@@ -116,7 +116,7 @@ interface HasConcreteContacts : HasContracts {
 
     override fun quantityForSale(tradeable: Tradeable): Int {
         val filter = {contract: Contract -> contract.from.building() }
-        val hash = produces
+        val hash = produces.toMap()
         return calculateAvailable(hash, tradeable, filter)
     }
 
@@ -128,23 +128,26 @@ interface HasConcreteContacts : HasContracts {
         }
     }
 
-    private fun calculateAvailable(hash: MutableMap<Tradeable, Int>, tradeable: Tradeable, filter: (Contract) -> Building?): Int {
-        synchronized(hash) {
-            val inventoryCount = hash[tradeable] ?: 0
-            synchronized(contracts) {
-                val contractCount = contracts.toList().filter { filter(it) == this && it.tradeable == tradeable }.map { it.quantity }.sum()
-                return inventoryCount - contractCount
-            }
+    private fun calculateAvailable(hash: Map<Tradeable, Int>, tradeable: Tradeable, filter: (Contract) -> Building?): Int {
+        val inventoryCount = hash[tradeable] ?: 0
+        synchronized(contracts) {
+            val contractCount = contracts.toList().filter { filter(it) == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+            return inventoryCount - contractCount
         }
     }
 
+
     fun addContract(contract: Contract) {
-        this.contracts.add(contract)
+        synchronized(contracts) {
+            this.contracts.add(contract)
+        }
     }
 
     fun voidContractsWith(otherEntity: TradeEntity) {
-        contracts.removeAll {
-            it.to == otherEntity || it.from == otherEntity
+        synchronized(contracts) {
+            contracts.removeAll {
+                it.to == otherEntity || it.from == otherEntity
+            }
         }
     }
 
@@ -234,16 +237,18 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
         }
         val ourLocation = CityTradeEntity(ourBlocks, this)
         val newContract = Contract(ourLocation, otherTradeEntity, tradeable, quantity, path)
-        if (otherTradeEntity.quantityForSale(tradeable) >= newContract.quantity) {
-            contracts.add(newContract)
-            otherTradeEntity.addContract(newContract)
-        } else {
-            println("Tried to make an invalid contract: $newContract but failed because ${otherTradeEntity.description()} doesn't have enough $tradeable (it has ${otherTradeEntity.quantityForSale(tradeable)})")
+        synchronized(contracts) {
+            if (otherTradeEntity.quantityForSale(tradeable) >= newContract.quantity) {
+                contracts.add(newContract)
+                otherTradeEntity.addContract(newContract)
+            } else {
+                println("Tried to make an invalid contract: $newContract but failed because ${otherTradeEntity.description()} doesn't have enough $tradeable (it has ${otherTradeEntity.quantityForSale(tradeable)})")
+            }
         }
     }
 
     fun payWorkers() {
-        val workContracts = contracts.filter { it.to.building() == this && it.tradeable == Tradeable.LABOR }
+        val workContracts = contracts.filter { it.to.building() == this && it.tradeable == Tradeable.LABOR }.toList()
         workContracts.forEach { contract ->
             if (inventory.has(Tradeable.MONEY, contract.quantity)) {
                 transferInventory(contract.from, Tradeable.MONEY, contract.quantity)
