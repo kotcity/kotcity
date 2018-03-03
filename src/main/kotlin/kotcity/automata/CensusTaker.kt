@@ -2,6 +2,7 @@ package kotcity.automata
 
 import kotcity.data.BuildingType
 import kotcity.data.CityMap
+import kotcity.data.Residential
 import kotcity.data.Tradeable
 import kotcity.util.Debuggable
 import tornadofx.runLater
@@ -55,7 +56,7 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
         var tempPop = 0
         cityMap.locations().forEach { location ->
             val building = location.building
-            if (building.type == BuildingType.RESIDENTIAL) {
+            if (building is Residential) {
                 // see how many labor is provided...
                 tempPop += building.totalProvided(Tradeable.LABOR)
             }

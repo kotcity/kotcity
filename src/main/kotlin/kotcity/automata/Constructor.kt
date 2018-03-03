@@ -1,12 +1,18 @@
 package kotcity.automata
 
 import kotcity.data.*
+import kotlin.jvm.javaClass
 import kotcity.data.assets.AssetManager
 import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotcity.util.Debuggable
 import kotcity.util.getRandomElement
 import kotcity.util.getRandomElements
 import java.util.*
+import kotlin.reflect.KClass
+
+fun<T: Any> T.getClass(): KClass<T> {
+    return javaClass.kotlin
+}
 
 class Constructor(val cityMap: CityMap) : Debuggable {
 
@@ -103,16 +109,18 @@ class Constructor(val cityMap: CityMap) : Debuggable {
         return random.nextInt(to - from) + from
     }
 
-    private fun zoneTypeToBuildingType(zoneType: Zone): BuildingType {
-        return when (zoneType) {
-            Zone.INDUSTRIAL -> BuildingType.INDUSTRIAL
-            Zone.RESIDENTIAL -> BuildingType.RESIDENTIAL
-            Zone.COMMERCIAL -> BuildingType.COMMERCIAL
-        }
-    }
+
 
     // TODO: use desirability later...
     private fun findBuilding(zoneType: Zone): Building? {
-        return assetManager.all().filter { it.type == zoneTypeToBuildingType(zoneType) }.getRandomElements(1)?.first()
+        return assetManager.all().filterIsInstance(zoneTypeToClass(zoneType)).getRandomElement()
+    }
+
+    private fun zoneTypeToClass(zoneType: Zone): Class<out Building> {
+        return when (zoneType) {
+            Zone.RESIDENTIAL -> Residential::class.java
+            Zone.COMMERCIAL -> Commercial::class.java
+            Zone.INDUSTRIAL -> Industrial::class.java
+        }
     }
 }

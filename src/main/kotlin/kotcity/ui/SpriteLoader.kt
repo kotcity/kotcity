@@ -2,8 +2,7 @@ package kotcity.ui
 
 import aballano.kotlinmemoization.memoize
 import javafx.scene.image.Image
-import kotcity.data.Building
-import kotcity.data.BuildingType
+import kotcity.data.*
 
 object SpriteLoader {
 
@@ -13,14 +12,14 @@ object SpriteLoader {
     }
 
     fun filename(building: Building): String {
-        return when (building.type) {
-            BuildingType.POWER_PLANT -> powerPlantSprite(building)
-            BuildingType.COMMERCIAL -> "file:./assets/commercial/${building.sprite}"
-            BuildingType.RESIDENTIAL -> "file:./assets/residential/${building.sprite}"
-            BuildingType.INDUSTRIAL -> "file:./assets/industrial/${building.sprite}"
-            BuildingType.POWER_LINE -> "file:./assets/utility/power_line.png"
-            BuildingType.CIVIC -> "file:./assets/civic/${building.sprite}"
-            else -> throw RuntimeException("Unknown sprite for ${building.type}")
+        return when (building::class) {
+            PowerPlant::class -> powerPlantSprite(building)
+            Commercial::class -> "file:./assets/commercial/${building.sprite}"
+            Residential::class -> "file:./assets/residential/${building.sprite}"
+            Industrial::class -> "file:./assets/industrial/${building.sprite}"
+            PowerLine::class -> "file:./assets/utility/power_line.png"
+            Civic::class -> "file:./assets/civic/${building.sprite}"
+            else -> throw RuntimeException("Unknown sprite for ${building::class}")
         }
     }
 

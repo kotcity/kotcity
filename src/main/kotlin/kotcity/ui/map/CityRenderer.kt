@@ -514,7 +514,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     private fun drawBuildingBorder(building: Building, tx: Double, ty: Double, width: Double, height: Double, blockSize: Double) {
 
-        if (building.type == BuildingType.ROAD) {
+        if (building is Road) {
             return
         }
 
@@ -531,14 +531,17 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         canvas.graphicsContext2D.fill = Color.WHITE
         canvas.graphicsContext2D.fillRoundRect(sx, sy, ex, ey, arcSize, arcSize)
 
-        val borderColor = when (building.type) {
-            BuildingType.ROAD -> Color.BLACK
-            BuildingType.RESIDENTIAL -> Color.GREEN
-            BuildingType.COMMERCIAL -> Color.BLUE
-            BuildingType.INDUSTRIAL -> Color.GOLD
-            BuildingType.POWER_LINE -> Color.BLACK
-            BuildingType.POWER_PLANT -> Color.DARKGRAY
-            BuildingType.CIVIC -> Color.DARKGRAY
+        val borderColor = when (building::class) {
+            Road::class -> Color.BLACK
+            Residential::class -> Color.GREEN
+            Commercial::class -> Color.BLUE
+            Industrial::class -> Color.GOLD
+            PowerLine::class -> Color.BLACK
+            PowerPlant::class -> Color.DARKGRAY
+            Civic::class -> Color.DARKGRAY
+            else -> {
+                Color.PINK
+            }
         }
 
         canvas.graphicsContext2D.stroke = borderColor

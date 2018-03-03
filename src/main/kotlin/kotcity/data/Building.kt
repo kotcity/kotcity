@@ -2,6 +2,7 @@ package kotcity.data
 
 import kotcity.pathfinding.Path
 import kotcity.util.getRandomElement
+import kotlin.reflect.KClass
 
 interface HasInventory {
     fun balance(): Int
@@ -189,9 +190,24 @@ interface HasConcreteContacts : HasContracts {
 
 
 abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, HasConcreteContacts {
+
+    companion object {
+        fun classByString(name: String?): KClass<out Building> {
+            return when(name) {
+                "Residential" -> Residential::class
+                "Commercial" -> Commercial::class
+                "Industrial" -> Industrial::class
+                "Road" -> Road::class
+                "Civic" -> Civic::class
+                else -> {
+                    throw RuntimeException("We don't know how to lookup \"$name\"")
+                }
+            }
+        }
+    }
+
     abstract var width: Int
     abstract var height: Int
-    abstract var type: BuildingType
     open val variety: String? = null
     open var name: String? = null
     open var sprite: String? = null
@@ -240,6 +256,15 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
 
 }
 
+class Residential(override val cityMap: CityMap) : LoadableBuilding(cityMap)
+
+class Commercial(override val cityMap: CityMap) : LoadableBuilding(cityMap)
+
+class Industrial(override val cityMap: CityMap) : LoadableBuilding(cityMap)
+
+class Civic(override val cityMap: CityMap) : LoadableBuilding(cityMap)
+
+
 const val DEFAULT_MONEY = 10
 val POWER_PLANT_TYPES = listOf("coal", "nuclear")
 
@@ -257,10 +282,8 @@ class PowerPlant : Building {
             "coal" -> { this.powerGenerated = 2000; this.description = "Coal Power Plant" }
             "nuclear" -> { this.powerGenerated = 5000; this.description = "Nuclear Power Plant" }
         }
-        this.type = BuildingType.POWER_PLANT
     }
 
-    override var type: BuildingType
     override var width = 4
     override var height = 4
 }
@@ -268,21 +291,18 @@ class PowerPlant : Building {
 class Road(cityMap: CityMap) : Building(cityMap) {
     override var width = 1
     override var height = 1
-    override var type = BuildingType.ROAD
     override var description: String? = "Road"
 }
 
 class PowerLine(cityMap: CityMap) : Building(cityMap) {
-    override var type: BuildingType = BuildingType.POWER_LINE
     override var width = 1
     override var height = 1
     override val powerRequired = 1
     override var description: String? = "Power Line"
 }
 
-class LoadableBuilding(cityMap: CityMap) : Building(cityMap) {
+open class LoadableBuilding(cityMap: CityMap) : Building(cityMap) {
     var level: Int = 1
     override var height: Int = 1
     override var width: Int = 1
-    override lateinit var type: BuildingType
 }

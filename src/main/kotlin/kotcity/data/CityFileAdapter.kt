@@ -152,22 +152,16 @@ private fun readBuildingLayer(data: JsonObject, cityMap: CityMap) {
         val buildingObj = it.asJsonObject
         var x = it["x"].asInt
         var y = it["y"].asInt
-        val type = BuildingType.valueOf(buildingObj["type"].asString)
+        val type = Building.classByString(buildingObj["type"].nullString)
         val name = buildingObj["name"]?.asString
 
         if (name != null) {
-            val building = when (type) {
-                BuildingType.RESIDENTIAL -> assetManager.buildingFor(type, name)
-                BuildingType.COMMERCIAL -> assetManager.buildingFor(type, name)
-                BuildingType.INDUSTRIAL -> assetManager.buildingFor(type, name)
-                BuildingType.CIVIC -> assetManager.buildingFor(type, name)
-                else -> throw RuntimeException("Unknown named building: $name")
-            }
+            val building = assetManager.buildingFor(type, name)
             cityMap.build(building, BlockCoordinate(x, y))
         } else {
             val building = when (type) {
-                BuildingType.ROAD -> Road(cityMap)
-                BuildingType.POWER_PLANT -> PowerPlant(it["variety"].asString, cityMap)
+                Road::class -> Road(cityMap)
+                PowerPlant::class -> PowerPlant(it["variety"].asString, cityMap)
 
                 else -> throw RuntimeException("Unknown building: $it")
             }
@@ -267,7 +261,7 @@ private fun writeBuildingLayer(data: JsonObject, it: SerializerArg<CityMap>) {
         val x = location.coordinate.x
         val y = location.coordinate.y
         val building = location.building
-        val type = building.type.toString()
+        val type = building::class.simpleName
 
         val buildingObj = mutableMapOf(
                 "x" to x,

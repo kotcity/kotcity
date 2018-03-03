@@ -8,6 +8,7 @@ import javafx.scene.layout.BorderPane
 import kotcity.data.BlockCoordinate
 import kotcity.data.BuildingType
 import kotcity.data.CityMap
+import kotcity.data.Road
 import tornadofx.View
 
 class QueryWindow : View() {
@@ -49,9 +50,10 @@ class QueryWindow : View() {
                         buffer.append(inventorySummary)
                     }
 
-                    if (buildings.any { it.building.type == BuildingType.ROAD }) {
+                    if (buildings.any { it.building is Road }) {
                         buffer.append("Traffic: ${city.trafficLayer[coordinate]}\n")
                     }
+
                 } else {
                     this.title = "Inspecting Terrain"
                     buildingNameLabel.text = "Inspecting Terrain"

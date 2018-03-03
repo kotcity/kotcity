@@ -1,9 +1,6 @@
 package kotcity.automata
 
-import kotcity.data.Building
-import kotcity.data.BuildingType
-import kotcity.data.CityMap
-import kotcity.data.Tradeable
+import kotcity.data.*
 import kotcity.util.Debuggable
 
 class Manufacturer(val cityMap: CityMap): Debuggable {
@@ -15,10 +12,10 @@ class Manufacturer(val cityMap: CityMap): Debuggable {
         cityMap.locations().forEach { location ->
             val building = location.building
             // let's see if it's industrial...
-            if (building.type == BuildingType.INDUSTRIAL) {
+            if (building is Industrial) {
                 handleIndustrial(building)
             }
-            if (building.type == BuildingType.COMMERCIAL) {
+            if (building is Commercial) {
                 handleCommercial(building)
             }
         }

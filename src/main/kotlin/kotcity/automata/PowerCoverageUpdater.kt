@@ -7,7 +7,7 @@ object PowerCoverageUpdater {
 
         // OK we gotta find all the power plants on the cityMap...
         val powerPlants = map.locations().filter { location ->
-            location.building.type == BuildingType.POWER_PLANT
+            location.building is PowerPlant
         }
 
         val gridmap = mutableMapOf<BlockCoordinate, PowerCoverageAutomata>()

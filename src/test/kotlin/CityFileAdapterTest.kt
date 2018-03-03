@@ -33,11 +33,11 @@ class CityFileAdapterTest {
 
         val contractFulfiller = ContactFulfiller(map)
 
-        val jobCenter = assetManager.buildingFor(BuildingType.CIVIC, "job_center")
+        val jobCenter = assetManager.buildingFor(Civic::class, "job_center")
         map.build(jobCenter, BlockCoordinate(0,0))
 
         // let's drop some kind of industrial building now...
-        val factory = assetManager.buildingFor(BuildingType.INDUSTRIAL, "small_factory")
+        val factory = assetManager.buildingFor(Industrial::class, "small_factory")
         map.build(factory, BlockCoordinate(3, 1))
 
         map.buildRoad(BlockCoordinate(0, 2), BlockCoordinate(10, 2))

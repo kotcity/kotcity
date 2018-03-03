@@ -138,7 +138,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             val locations = cityMap.buildingsIn(current)
             if (locations.count() > 0) {
                 val building = locations.first().building
-                if (building.type == BuildingType.ROAD) {
+                if (building is Road) {
                     score -= 3
                     score += cityMap.trafficLayer[current] ?: 0.0
                 } else {
@@ -158,7 +158,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
     fun nearbyRoad(sourceBlocks: List<BlockCoordinate>, distance: Int = 3): Boolean {
         sourceBlocks.forEach {
-            val nearbyRoads = cityMap.nearestBuildings(it, distance).filter { it.building.type == BuildingType.ROAD}
+            val nearbyRoads = cityMap.nearestBuildings(it, distance).filter { it.building is Road }
             if (nearbyRoads.count() > 0) {
                 return true
             }
@@ -171,7 +171,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         val locations = cityMap.buildingsIn(node.coordinate)
         if (locations.count() > 0) {
             val building = locations.first().building
-            return building.type == BuildingType.ROAD
+            return building is Road
         }
         return false
     }

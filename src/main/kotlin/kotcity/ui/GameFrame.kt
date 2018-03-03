@@ -462,14 +462,14 @@ class GameFrame : View() {
                     cityRenderer?.getHoveredBlock()?.let {
                         val newX = it.x - 1
                         val newY = it.y - 1
-                        val jobCenter = assetManager.buildingFor(BuildingType.CIVIC, "job_center")
+                        val jobCenter = assetManager.buildingFor(Civic::class, "job_center")
                         map.build(jobCenter, BlockCoordinate(newX, newY))
                     }
                 } else if (activeTool == Tool.TOWN_WAREHOUSE) {
                     cityRenderer?.getHoveredBlock()?.let {
                         val newX = it.x - 1
                         val newY = it.y - 1
-                        val townWarehouse = assetManager.buildingFor(BuildingType.CIVIC, "town_warehouse")
+                        val townWarehouse = assetManager.buildingFor(Civic::class, "town_warehouse")
                         map.build(townWarehouse, BlockCoordinate(newX, newY))
                     }
                 }

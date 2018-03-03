@@ -19,10 +19,10 @@ class DesirabilityTest {
 
         val assetManager = AssetManager(map)
         // ok what we want to do here is drop a job center at 0,0
-        val jobCenter = assetManager.buildingFor(BuildingType.CIVIC, "job_center")
+        val jobCenter = assetManager.buildingFor(Civic::class, "job_center")
         map.build(jobCenter, BlockCoordinate(3,0))
 
-        val warehouse = assetManager.buildingFor(BuildingType.CIVIC, "town_warehouse")
+        val warehouse = assetManager.buildingFor(Civic::class, "town_warehouse")
         map.build(warehouse, BlockCoordinate(3, 2))
 
         // now let's drop a road...
@@ -33,16 +33,16 @@ class DesirabilityTest {
         map.zone(Zone.COMMERCIAL, BlockCoordinate(0, 20), BlockCoordinate(1, 25))
 
         // let's plop a small house down...
-        val slum = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
+        val slum = assetManager.buildingFor(Residential::class, "slum1")
         map.build(slum, BlockCoordinate(0, 5))
 
-        val slum2 = assetManager.buildingFor(BuildingType.RESIDENTIAL, "slum1")
+        val slum2 = assetManager.buildingFor(Residential::class, "slum1")
         map.build(slum, BlockCoordinate(0, 7))
 
-        val factory = assetManager.buildingFor(BuildingType.INDUSTRIAL, "small_factory")
+        val factory = assetManager.buildingFor(Industrial::class, "small_factory")
         map.build(factory, BlockCoordinate(1, 15))
 
-        val cornerStore = assetManager.buildingFor(BuildingType.COMMERCIAL, "corner_store")
+        val cornerStore = assetManager.buildingFor(Commercial::class, "corner_store")
         map.build(cornerStore, BlockCoordinate(3, 5))
 
         val path = pathfinder.pathToNearestLabor(listOf(BlockCoordinate(3, 10)))

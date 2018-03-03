@@ -11,6 +11,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.reflect.KClass
 import kotlin.streams.toList
 
 const val DEFAULT_DESIRABILITY = 0.0
@@ -130,7 +131,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     private var doingHourly: Boolean = false
 
-    var bulldozedCounts = mutableMapOf<BuildingType, Int>().withDefault { 0 }
+    var bulldozedCounts = mutableMapOf<KClass<out Building>, Int>().withDefault { 0 }
 
     private fun initializeDesirabilityLayers(): List<DesirabilityLayer> {
 
@@ -385,7 +386,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         if (canBuildBuildingAt(building, block)) {
             synchronized(this.buildingLayer) {
                 this.buildingLayer[block] = building
-                if (building.type != BuildingType.COMMERCIAL && building.type != BuildingType.RESIDENTIAL && building.type != BuildingType.INDUSTRIAL) {
+                if ( building !is Commercial &&  building !is Residential && building !is Industrial) {
                     val buildingBlocks = buildingBlocks(block, building)
                     buildingBlocks.forEach { zoneLayer.remove(it) }
                 }
@@ -443,7 +444,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun buildPowerline(firstBlock: BlockCoordinate, lastBlock: BlockCoordinate) {
         roadBlocks(firstBlock, lastBlock).forEach { block ->
             val newPowerLine = PowerLine(this)
-            if (buildingLayer[block]?.type == BuildingType.ROAD || canBuildBuildingAt(newPowerLine, block, waterCheck = false)) {
+            if (buildingLayer[block] is Road || canBuildBuildingAt(newPowerLine, block, waterCheck = false)) {
                 powerLineLayer[block] = newPowerLine
                 // println("Dropping a powerline at: $block")
             } else {

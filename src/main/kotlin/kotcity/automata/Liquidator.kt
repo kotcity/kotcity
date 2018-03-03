@@ -2,6 +2,8 @@ package kotcity.automata
 
 import kotcity.data.*
 import kotcity.util.Debuggable
+import kotlin.reflect.KClass
+import kotlin.reflect.jvm.internal.impl.load.java.structure.JavaClass
 
 class Liquidator(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = false
@@ -16,10 +18,10 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
 
         val start = System.currentTimeMillis()
 
-        var bulldozedCounts = mutableMapOf<BuildingType, Int>().withDefault { 0 }
-        bulldozedCounts[BuildingType.RESIDENTIAL] = 0
-        bulldozedCounts[BuildingType.INDUSTRIAL] = 0
-        bulldozedCounts[BuildingType.COMMERCIAL] = 0
+        var bulldozedCounts = mutableMapOf<KClass<out Building>, Int>().withDefault { 0 }
+        bulldozedCounts[Residential::class] = 0
+        bulldozedCounts[Commercial::class] = 0
+        bulldozedCounts[Industrial::class] = 0
 
         bankruptLocations.shuffled().take(howManyNeedDestruction).forEach { location ->
             if (System.currentTimeMillis() - start > 5000) {
@@ -29,12 +31,12 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
             }
             debug("Building ${location.building.description} is bankrupt or has no goods! Blowing it up!")
             cityMap.bulldoze(location.coordinate, location.coordinate)
-            bulldozedCounts[location.building.type] = (bulldozedCounts[location.building.type] ?: 0) + 1
+            bulldozedCounts[location.building::class] = (bulldozedCounts[location.building::class] ?: 0) + 1
         }
         updateBulldozedCount(bulldozedCounts)
     }
 
-    private fun updateBulldozedCount(bulldozeCounts: MutableMap<BuildingType, Int>) {
+    private fun updateBulldozedCount(bulldozeCounts: MutableMap<KClass<out Building>, Int>) {
         debug("After all that blowing up, the count is: $bulldozeCounts")
         cityMap.bulldozedCounts = bulldozeCounts
     }
@@ -42,7 +44,7 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
     private fun bankruptLocations(): List<Location> {
         return cityMap.locations().toList().filter { location ->
             val noMoney = (location.building.quantityOnHand(Tradeable.MONEY) <= 0)
-            val isResidentialWithNoGoods = (location.building.type == BuildingType.RESIDENTIAL && location.building.quantityOnHand(Tradeable.GOODS) <= 0)
+            val isResidentialWithNoGoods = (location.building is Residential && location.building.quantityOnHand(Tradeable.GOODS) <= 0)
             noMoney || isResidentialWithNoGoods
         }
     }

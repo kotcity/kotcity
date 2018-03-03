@@ -12,6 +12,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.stream.Collectors.toList
+import kotlin.reflect.KClass
 
 class AssetManager(val cityMap: CityMap) {
 
@@ -37,52 +38,66 @@ class AssetManager(val cityMap: CityMap) {
                 .map({ it.toAbsolutePath().toString() })
     }
 
-    fun all(): List<Building> {
+    fun all(): List<LoadableBuilding> {
         return directories.map { dir ->
-            assetsInDir(dir).map { assetFile ->
+            assetsInDir(dir).mapNotNull { assetFile ->
                 val buildingJson = gson.fromJson<JsonElement>(FileReader(assetFile)).asJsonObject
-                val lb = LoadableBuilding(cityMap)
-                lb.name = buildingJson["name"].asString
-                buildingJson["type"].asString.let {
-                    lb.type = when(it) {
-                        "commercial" -> COMMERCIAL
-                        "residential" -> RESIDENTIAL
-                        "industrial" -> INDUSTRIAL
-                        "civic" -> CIVIC
-                        else -> throw RuntimeException("Unknown building type: $it")
-                    }
-                }
 
-                // OK let's populate the rest...
-                populateBuildingData(lb, buildingJson)
+                val buildingType = buildingJson["type"].nullString
+
+                val lb = if (buildingType != null) {
+                    val lb = when(buildingType) {
+                        "commercial" -> Commercial(cityMap)
+                        "residential" -> Residential(cityMap)
+                        "industrial" -> Industrial(cityMap)
+                        "civic" -> Civic(cityMap)
+                        else -> {
+                            throw RuntimeException("Unknown type: $buildingType")
+                        }
+                    }
+                    lb.name = buildingJson["name"].asString
+                    // OK let's populate the rest...
+                    populateBuildingData(lb, buildingJson)
+                    lb
+                } else {
+                    null
+                }
                 lb
             }
 
         }.flatten()
     }
 
-    fun buildingFor(buildingType: BuildingType, name: String): Building {
+    fun buildingFor(klass: KClass<out Building>, name: String): Building {
 
         // ok we need to find the matching JSON file for this crap...
-        val assetFile = findAsset(buildingType, name)
+        val assetFile = findAsset(klass, name)
 
         val buildingJson = gson.fromJson<JsonObject>(FileReader(assetFile))
 
-        val lb = LoadableBuilding(cityMap)
+        val lb : LoadableBuilding = when (klass) {
+            Residential::class -> Residential(cityMap)
+            Commercial::class -> Commercial(cityMap)
+            Industrial::class -> Industrial(cityMap)
+            Civic::class -> Civic(cityMap)
+            else -> {
+                throw RuntimeException("I don't know how to instantiate $klass")
+            }
+        }
+
         lb.name = name
-        lb.type = buildingType
         // OK let's populate the rest...
         populateBuildingData(lb, buildingJson)
         return lb
     }
 
-    private fun findAsset(type: BuildingType, name: String): String {
-        return when (type) {
-            RESIDENTIAL -> "./assets/residential/$name.json"
-            COMMERCIAL -> "./assets/commercial/$name.json"
-            INDUSTRIAL -> "./assets/industrial/$name.json"
-            CIVIC -> "./assets/civic/$name.json"
-            else -> throw RuntimeException("I don't know how to handle asset $type/$name")
+    private fun findAsset(klass: KClass<out Building>, name: String): String {
+        return when (klass) {
+            Residential::class -> "./assets/residential/$name.json"
+            Commercial::class -> "./assets/commercial/$name.json"
+            Industrial::class -> "./assets/industrial/$name.json"
+            Civic::class -> "./assets/civic/$name.json"
+            else -> throw RuntimeException("I don't know how to handle asset $klass/$name")
         }
     }
 

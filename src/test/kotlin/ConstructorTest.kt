@@ -9,7 +9,7 @@ class ConstructorTest {
         val assetManager = AssetManager(flatMap)
         val all = assetManager.all()
         assert(all.count() > 0)
-        val industrial = all.filter { it.type == BuildingType.INDUSTRIAL }
+        val industrial = all.filter { it is Industrial }
         assert(industrial.count() > 0)
         industrial.forEach { assert(it.sprite != null && it.sprite != "") }
     }

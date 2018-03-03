@@ -1,8 +1,6 @@
 package kotcity.automata
 
-import kotcity.data.BuildingType
-import kotcity.data.CityMap
-import kotcity.data.Tradeable
+import kotcity.data.*
 import kotcity.util.Debuggable
 
 class TaxCollector(val cityMap: CityMap): Debuggable {
@@ -12,7 +10,7 @@ class TaxCollector(val cityMap: CityMap): Debuggable {
     fun tick() {
         cityMap.locations().forEach { location ->
             val building = location.building
-            if (listOf(BuildingType.RESIDENTIAL, BuildingType.INDUSTRIAL, BuildingType.COMMERCIAL).contains(building.type)) {
+            if (listOf(Residential::class, Commercial::class, Industrial::class).contains(building::class)) {
                 // figure out how much money this building has...
                 val money = building.quantityOnHand(Tradeable.MONEY)
                 var taxAmount = money * 0.20
