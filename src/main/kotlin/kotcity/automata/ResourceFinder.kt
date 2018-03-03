@@ -51,7 +51,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
 
     fun findSource(sourceBlocks: List<BlockCoordinate>, tradeable: Tradeable, quantity: Int): Pair<TradeEntity, Path>? {
         // TODO: we can just do this once for the "center" of the building... (i think)
-        val buildings = sourceBlocks.flatMap { cityMap.nearestBuildings(it, kotcity.pathfinding.MAX_DISTANCE) }.distinct().toList()
+        val buildings = sourceBlocks.flatMap { cityMap.cachedBuildingsIn(it) }.distinct().toList()
         // now we gotta make sure they got the resource...
         val buildingsWithResource = buildings.filter { it.building.quantityForSale(tradeable) >= quantity }
 
@@ -63,7 +63,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         var preferredPath: Path? = null
         // OK! now if we got a path we want to find the building in the last block...
         shortestPath?.blocks()?.last()?.let {
-            val location = cityMap.buildingsIn(it).firstOrNull()
+            val location = cityMap.cachedBuildingsIn(it).firstOrNull()
             if (location != null) {
                 preferredPath = shortestPath
                 preferredTradeEntity = CityTradeEntity(it, location.building)
@@ -103,7 +103,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
 
         // OK! now if we got a path we want to find the building in the last block...
         shortestPath?.blocks()?.last()?.let {
-            val location = cityMap.buildingsIn(it).firstOrNull()
+            val location = cityMap.cachedBuildingsIn(it).firstOrNull()
             if (location != null) {
                 return Pair(CityTradeEntity(it, location.building), shortestPath)
             }

@@ -37,7 +37,7 @@ class CityMapCanvas : ResizableCanvas() {
     val buildingCache = Caffeine.newBuilder()
             .expireAfterWrite(3, TimeUnit.MINUTES)
             .refreshAfterWrite(2, TimeUnit.MINUTES)
-            .softValues().build({ key: BlockCoordinate -> map?.buildingsIn(key) })
+            .softValues().build({ key: BlockCoordinate -> map?.cachedBuildingsIn?.let { it(key) } })
 
     fun render() {
 
@@ -67,7 +67,7 @@ class CityMapCanvas : ResizableCanvas() {
 
                     // TODO: this is a BUG!!!! we are getting the canvas XY coordinates but we care about the building ones...
                     val buildings = buildingCache.get(translatedBlock, { buildingBlock ->
-                        map.buildingsIn(buildingBlock)
+                        map.cachedBuildingsIn(buildingBlock)
                     })
                     if (buildings?.count() ?: 0 > 0) {
                         gc.fill = Color.BLACK

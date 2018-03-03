@@ -49,7 +49,7 @@ class CityFileAdapterTest {
 
         val loadedCity = CityFileAdapter.load(tmpFile)
 
-        val loadedJobCenter = loadedCity.buildingsIn(BlockCoordinate(0,0)).first().building
+        val loadedJobCenter = loadedCity.cachedBuildingsIn(BlockCoordinate(0,0)).first().building
         println("Job center: ${loadedJobCenter.summarizeContracts()}")
         println("How much labor: ${loadedJobCenter.quantityForSale(Tradeable.LABOR)}")
 

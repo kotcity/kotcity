@@ -6,6 +6,7 @@ import com.github.davidmoten.rtree.geometry.Rectangle
 import com.github.debop.javatimes.plus
 import com.github.debop.javatimes.toDateTime
 import kotcity.automata.*
+import kotcity.memoization.cache
 import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
@@ -152,6 +153,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     var cityName: String? = null
     private var buildingIndex = RTree.create<Building, Rectangle>()!!
 
+    val buildingsInCachePair = ::buildingsIn.cache()
+    val buildingsInCache = buildingsInCachePair.first
+    val cachedBuildingsIn = buildingsInCachePair.second
+
     fun debug(message: String) {
         if (debug) {
             println("Map: $message")
@@ -229,6 +234,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             )
         }
         buildingIndex = newIndex
+        buildingsInCache.invalidateAll()
     }
 
     fun suggestedFilename(): String {
@@ -472,7 +478,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
-    fun buildingsIn(block: BlockCoordinate): List<Location> {
+    private fun buildingsIn(block: BlockCoordinate): List<Location> {
         val nearestBuildings = nearestBuildings(block, MAX_BUILDING_SIZE+1)
         val filteredBuildings = nearestBuildings.filter {
             val coordinate = it.coordinate

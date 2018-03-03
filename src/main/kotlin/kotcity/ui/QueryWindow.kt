@@ -23,7 +23,7 @@ class QueryWindow : View() {
             value?.let { pair ->
                 val city = pair.first
                 val coordinate = pair.second
-                val buildings = city.buildingsIn(coordinate)
+                val buildings = city.cachedBuildingsIn(coordinate)
                 val buffer = StringBuffer()
                 if (buildings.count() > 0) {
                     val building = buildings.first().building

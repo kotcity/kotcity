@@ -14,12 +14,12 @@ class ContactFulfiller(val cityMap: CityMap): Debuggable {
 
         val locationsNeedingContracts: List<Location> = locationsNeedingContracts()
 
-        val maxMs = 10000
+        val maxMs = 5000
         val startAt = System.currentTimeMillis()
 
         var totalSigned = 0
 
-        locationsNeedingContracts.shuffled().parallelStream().forEach { entry ->
+        locationsNeedingContracts.shuffled().forEach { entry ->
 
             synchronized(entry) {
                 val delta = System.currentTimeMillis() - startAt
@@ -144,7 +144,7 @@ class ContactFulfiller(val cityMap: CityMap): Debuggable {
         debug("Terminating $howMany contracts...")
 
         cityMap.locations().getRandomElements(howMany)?.forEach { location ->
-            val buildings = cityMap.buildingsIn(location.coordinate)
+            val buildings = cityMap.cachedBuildingsIn(location.coordinate)
             val blockAndBuilding = buildings.toList().getRandomElements(1)?.first()
             if (blockAndBuilding != null) {
                 val building = blockAndBuilding.building

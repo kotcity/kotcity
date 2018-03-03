@@ -22,7 +22,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
     override var debug = false
 
     private fun isEmpty(entry: MutableMap.MutableEntry<BlockCoordinate, Double>): Boolean {
-        return cityMap.buildingsIn(entry.key).count() == 0
+        return cityMap.cachedBuildingsIn(entry.key).count() == 0
     }
 
     fun tick() {
@@ -67,7 +67,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
     }
 
     private fun desirableZoneCount(zone: Zone): Int {
-        return cityMap.zoneLayer.keys.filter { cityMap.zoneLayer[it] == zone && cityMap.buildingsIn(it).count() == 0 }.map {coordinate ->
+        return cityMap.zoneLayer.keys.filter { cityMap.zoneLayer[it] == zone && cityMap.cachedBuildingsIn(it).count() == 0 }.map {coordinate ->
             cityMap.desirabilityLayers.map { it[coordinate] ?: 0.0 }.max()
         }.filterNotNull().filter { it > 0 }.count()
     }

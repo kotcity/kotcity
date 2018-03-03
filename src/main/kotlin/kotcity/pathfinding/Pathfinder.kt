@@ -135,7 +135,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return destinations.map { coordinate ->
             var score = manhattanDistance(current, coordinate)
             // see if this is road and lower score by a tiny bit...
-            val locations = cityMap.buildingsIn(current)
+            val locations = cityMap.cachedBuildingsIn(current)
             if (locations.count() > 0) {
                 val building = locations.first().building
                 if (building is Road) {
@@ -168,7 +168,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
     private fun drivable(node: NavigationNode): Boolean {
         // make sure we got a road under it...
-        val locations = cityMap.buildingsIn(node.coordinate)
+        val locations = cityMap.cachedBuildingsIn(node.coordinate)
         if (locations.count() > 0) {
             val building = locations.first().building
             return building is Road
