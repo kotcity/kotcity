@@ -157,7 +157,7 @@ private fun readBuildingLayer(data: JsonObject, cityMap: CityMap) {
 
         if (name != null) {
             val building = assetManager.buildingFor(type, name)
-            cityMap.build(building, BlockCoordinate(x, y))
+            cityMap.build(building, BlockCoordinate(x, y), updateBuildingIndex = false)
         } else {
             val building = when (type) {
                 Road::class -> Road(cityMap)

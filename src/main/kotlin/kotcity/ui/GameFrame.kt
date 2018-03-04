@@ -21,6 +21,7 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.StackPane
 import kotcity.data.assets.AssetManager
 import kotcity.ui.charts.SupplyDemandChart
+import kotcity.ui.layers.TrafficRenderer
 import kotcity.ui.map.CityMapCanvas
 import kotcity.ui.map.CityRenderer
 import tornadofx.runLater
@@ -61,7 +62,6 @@ enum class GameSpeed { SLOW, MEDIUM, FAST }
 class GameFrame : View() {
     override val root: VBox by fxml("/GameFrame.fxml")
     private val cityCanvas = ResizableCanvas()
-
     private val trafficCanvas = ResizableCanvas()
 
     private val canvasPane: StackPane by fxid("canvasStackPane")
@@ -126,6 +126,7 @@ class GameFrame : View() {
 
     private lateinit var map: CityMap
     private var cityRenderer: CityRenderer? = null
+    private var trafficRenderer: TrafficRenderer? = null
 
     fun setMap(cityMap: CityMap) {
         this.map = cityMap
@@ -137,12 +138,20 @@ class GameFrame : View() {
         initComponents()
         title = "$GAME_STRING - ${cityMap.cityName}"
         cityNameLabel.text = cityMap.cityName
-        this.cityRenderer = CityRenderer(this, cityCanvas, cityMap)
-        this.cityRenderer?.addPanListener { visibleBlockRange ->
+        val cityRenderer = CityRenderer(this, cityCanvas, cityMap)
+        val trafficRenderer = TrafficRenderer(cityMap, cityRenderer, trafficCanvas)
+
+        this.cityRenderer = cityRenderer
+        this.trafficRenderer = trafficRenderer
+
+        cityRenderer.addPanListener { visibleBlockRange ->
             // println("We have moved the cityMap around. Telling the minimal to highlight: $visibleBlockRange")
             this.cityMapCanvas.visibleBlockRange = visibleBlockRange
+            trafficRenderer.visibleBlockRange = visibleBlockRange
         }
         this.cityMapCanvas.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
+        trafficRenderer.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
+        // TODO: OK... cityRenderer also has to tell the traffic canvas what the blocksize is and shit...
     }
 
     private fun setCanvasSize() {
@@ -315,6 +324,7 @@ class GameFrame : View() {
         renderTimer = object : AnimationTimer() {
             override fun handle(now: Long) {
                 if (ticks == TICK_DELAY) {
+                    trafficRenderer?.render()
                     cityRenderer?.render()
                     ticks = 0
                 }
@@ -381,14 +391,20 @@ class GameFrame : View() {
 
     private fun bindCanvas() {
 
-        trafficCanvas.isMouseTransparent = true
-
         // TODO: we are handling scrolling ourself... so we have to figure out what's
         //       visible and what's not...
         cityCanvas.prefHeight(canvasPane.height - 20)
         cityCanvas.prefWidth(canvasPane.width - 20)
+
         canvasPane.add(cityCanvas)
-        canvasPane.add(trafficCanvas)
+
+        trafficCanvas.let {
+            it.isMouseTransparent = true
+            canvasPane.add(it)
+            it.prefHeight(canvasPane.height - 20)
+            it.prefWidth(canvasPane.width - 20)
+            println("Traffic canvas was added!")
+        }
 
         canvasPane.widthProperty().addListener { _, _, newValue ->
             println("resizing cityCanvas width to: $newValue")

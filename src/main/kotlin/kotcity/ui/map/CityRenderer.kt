@@ -20,8 +20,9 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
             panMap(oldCenter)
         }
 
-    var blockOffsetX = 0.0
-    var blockOffsetY = 0.0
+    var blockOffsetX: Double = 0.0
+    var blockOffsetY: Double = 0.0
+
     private var mapMinElevation = 0.0
     private var mapMaxElevation = 1.0
     private var colorAdjuster: ColorAdjuster = ColorAdjuster(mapMinElevation, mapMaxElevation)
@@ -81,14 +82,14 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         firePanChanged()
     }
 
-    private val listeners: MutableList<(Pair<BlockCoordinate, BlockCoordinate>) -> Unit> = mutableListOf()
+    private val panListeners: MutableList<(Pair<BlockCoordinate, BlockCoordinate>) -> Unit> = mutableListOf()
 
     fun addPanListener(listener: (Pair<BlockCoordinate, BlockCoordinate>) -> Unit) {
-        this.listeners.add(listener)
+        this.panListeners.add(listener)
     }
 
     private fun firePanChanged() {
-        this.listeners.forEach {
+        this.panListeners.forEach {
             it(this.visibleBlockRange())
         }
     }
@@ -606,7 +607,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     // each block should = 10 meters, square...
     // 64 pixels = 10 meters
-    private fun blockSize(): Double {
+    fun blockSize(): Double {
         // return (this.zoom * 64)
         return when (zoom) {
             1.0 -> 4.0

@@ -388,7 +388,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
-    fun build(building: Building, block: BlockCoordinate) {
+    fun build(building: Building, block: BlockCoordinate, updateBuildingIndex: Boolean = true) {
         if (canBuildBuildingAt(building, block)) {
             synchronized(this.buildingLayer) {
                 this.buildingLayer[block] = building
@@ -396,7 +396,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                     val buildingBlocks = buildingBlocks(block, building)
                     buildingBlocks.forEach { zoneLayer.remove(it) }
                 }
-                updateBuildingIndex()
+                if (updateBuildingIndex) {
+                    updateBuildingIndex()
+                }
             }
         } else {
             // debug("We have an overlap! not building!")
