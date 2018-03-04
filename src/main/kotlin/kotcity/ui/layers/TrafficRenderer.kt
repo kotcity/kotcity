@@ -24,13 +24,23 @@ class TrafficRenderer(private val cityMap: CityMap, private val cityRenderer: Ci
     private val horizontalFilenames = listOf(
             "file:./assets/animations/light_traffic_1.png",
             "file:./assets/animations/light_traffic_2.png",
-            "file:./assets/animations/light_traffic_3.png"
+            "file:./assets/animations/light_traffic_3.png",
+            "file:./assets/animations/light_traffic_4.png",
+            "file:./assets/animations/light_traffic_5.png",
+            "file:./assets/animations/light_traffic_6.png",
+            "file:./assets/animations/light_traffic_7.png",
+            "file:./assets/animations/light_traffic_8.png"
         )
 
     private val verticalFilenames = listOf(
             "file:./assets/animations/light_traffic_1_vertical.png",
             "file:./assets/animations/light_traffic_2_vertical.png",
-            "file:./assets/animations/light_traffic_3_vertical.png"
+            "file:./assets/animations/light_traffic_3_vertical.png",
+            "file:./assets/animations/light_traffic_4_vertical.png",
+            "file:./assets/animations/light_traffic_5_vertical.png",
+            "file:./assets/animations/light_traffic_6_vertical.png",
+            "file:./assets/animations/light_traffic_7_vertical.png",
+            "file:./assets/animations/light_traffic_8_vertical.png"
     )
 
     private fun scaledImages(filenames: List<String>, blockSize: Double): List<Image> {
