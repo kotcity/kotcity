@@ -75,15 +75,21 @@ class DesirabilityTest {
         val oldSlumValue = slum.quantityForSale(Tradeable.LABOR)
         val oldSlum2Value = slum.quantityForSale(Tradeable.LABOR)
 
+        // OK... the factory OR corner shore should get some workers...
+        val oldFactoryValue = factory.supplyCount(Tradeable.LABOR)
+        val oldCornerStoreValue = factory.supplyCount(Tradeable.LABOR)
+
         val cf = ContactFulfiller(map)
         cf.debug = true
-        cf.signContracts()
+        cf.signContracts(shuffled = false)
 
         // ok now let's make sure the desirability is actually kosher...
         desirabilityUpdater.update()
 
+
+
         assertTrue(slum.quantityForSale(Tradeable.LABOR) != oldSlumValue || slum2.quantityForSale(Tradeable.LABOR) != oldSlum2Value, "Expected labor available to change...")
-        assertTrue(factory.supplyCount(Tradeable.LABOR) > 0, "Expected factory to have labor but has none...")
+        assertTrue(factory.supplyCount(Tradeable.LABOR) != oldFactoryValue || cornerStore.supplyCount(Tradeable.LABOR) != oldCornerStoreValue, "Expected consumed labor to change...")
 
         val manufacturer = Manufacturer(map)
         manufacturer.debug = true

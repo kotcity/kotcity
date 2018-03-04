@@ -10,16 +10,20 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
     override var debug = false
     private val resourceFinder = ResourceFinder(cityMap)
 
-    fun signContracts() {
-
-        val locationsNeedingContracts: List<Location> = locationsNeedingContracts()
+    fun signContracts(shuffled: Boolean = true) {
 
         val maxMs = 5000
         val startAt = System.currentTimeMillis()
 
         var totalSigned = 0
 
-        locationsNeedingContracts.shuffled().parallelStream().forEach { entry ->
+        val contractCollection = if (shuffled) {
+            locationsNeedingContracts().shuffled()
+        } else {
+            locationsNeedingContracts()
+        }
+
+        contractCollection.shuffled().parallelStream().forEach { entry ->
 
 
             val delta = System.currentTimeMillis() - startAt
