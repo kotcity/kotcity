@@ -20,13 +20,13 @@ class DesirabilityTest {
         val assetManager = AssetManager(map)
         // ok what we want to do here is drop a job center at 0,0
         val jobCenter = assetManager.buildingFor(Civic::class, "job_center")
-        map.build(jobCenter, BlockCoordinate(3,0))
+        map.build(jobCenter, BlockCoordinate(3, 0))
 
         val warehouse = assetManager.buildingFor(Civic::class, "town_warehouse")
         map.build(warehouse, BlockCoordinate(3, 2))
 
         // now let's drop a road...
-        map.buildRoad(BlockCoordinate(2,0), BlockCoordinate(2, 30))
+        map.buildRoad(BlockCoordinate(2, 0), BlockCoordinate(2, 30))
         // now we gotta make some industrial zone...
         map.zone(Zone.INDUSTRIAL, BlockCoordinate(3, 0), BlockCoordinate(5, 30))
         map.zone(Zone.RESIDENTIAL, BlockCoordinate(0, 10), BlockCoordinate(2, 12))
@@ -85,8 +85,6 @@ class DesirabilityTest {
 
         // ok now let's make sure the desirability is actually kosher...
         desirabilityUpdater.update()
-
-
 
         assertTrue(slum.quantityForSale(Tradeable.LABOR) != oldSlumValue || slum2.quantityForSale(Tradeable.LABOR) != oldSlum2Value, "Expected labor available to change...")
         assertTrue(factory.supplyCount(Tradeable.LABOR) != oldFactoryValue || cornerStore.supplyCount(Tradeable.LABOR) != oldCornerStoreValue, "Expected consumed labor to change...")

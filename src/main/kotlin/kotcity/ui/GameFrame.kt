@@ -18,6 +18,7 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.ButtonBar.ButtonData
 import javafx.scene.layout.BorderPane
+import javafx.scene.layout.StackPane
 import kotcity.data.assets.AssetManager
 import kotcity.ui.charts.SupplyDemandChart
 import kotcity.ui.map.CityMapCanvas
@@ -59,8 +60,11 @@ enum class GameSpeed { SLOW, MEDIUM, FAST }
 
 class GameFrame : View() {
     override val root: VBox by fxml("/GameFrame.fxml")
-    private val canvas = ResizableCanvas()
-    private val canvasPane: AnchorPane by fxid("canvasPane")
+    private val cityCanvas = ResizableCanvas()
+
+    private val trafficCanvas = ResizableCanvas()
+
+    private val canvasPane: StackPane by fxid("canvasStackPane")
     private val accordion: Accordion by fxid()
     private val basicPane: TitledPane by fxid()
     private val verticalScroll: ScrollBar by fxid()
@@ -133,7 +137,7 @@ class GameFrame : View() {
         initComponents()
         title = "$GAME_STRING - ${cityMap.cityName}"
         cityNameLabel.text = cityMap.cityName
-        this.cityRenderer = CityRenderer(this, canvas, cityMap)
+        this.cityRenderer = CityRenderer(this, cityCanvas, cityMap)
         this.cityRenderer?.addPanListener { visibleBlockRange ->
             // println("We have moved the cityMap around. Telling the minimal to highlight: $visibleBlockRange")
             this.cityMapCanvas.visibleBlockRange = visibleBlockRange
@@ -144,12 +148,12 @@ class GameFrame : View() {
     private fun setCanvasSize() {
         // println("cityMap size is: ${this.map.width},${this.map.height}")
         // println("Canvas pane size is: ${canvasPane.width},${canvasPane.height}")
-        canvas.prefHeight(canvasPane.height - 20)
-        canvas.prefWidth(canvasPane.width - 20)
-        AnchorPane.setTopAnchor(canvas, 0.0)
-        AnchorPane.setBottomAnchor(canvas, 20.0)
-        AnchorPane.setLeftAnchor(canvas, 0.0)
-        AnchorPane.setRightAnchor(canvas, 20.0)
+        cityCanvas.prefHeight(canvasPane.height - 20)
+        cityCanvas.prefWidth(canvasPane.width - 20)
+        AnchorPane.setTopAnchor(cityCanvas, 0.0)
+        AnchorPane.setBottomAnchor(cityCanvas, 20.0)
+        AnchorPane.setLeftAnchor(cityCanvas, 0.0)
+        AnchorPane.setRightAnchor(cityCanvas, 20.0)
     }
 
     private fun setScrollbarSizes() {
@@ -376,29 +380,33 @@ class GameFrame : View() {
     }
 
     private fun bindCanvas() {
+
+        trafficCanvas.isMouseTransparent = true
+
         // TODO: we are handling scrolling ourself... so we have to figure out what's
         //       visible and what's not...
-        canvas.prefHeight(canvasPane.height - 20)
-        canvas.prefWidth(canvasPane.width - 20)
-        canvasPane.add(canvas)
+        cityCanvas.prefHeight(canvasPane.height - 20)
+        cityCanvas.prefWidth(canvasPane.width - 20)
+        canvasPane.add(cityCanvas)
+        canvasPane.add(trafficCanvas)
 
         canvasPane.widthProperty().addListener { _, _, newValue ->
-            println("resizing canvas width to: $newValue")
-            canvas.width = newValue.toDouble()
+            println("resizing cityCanvas width to: $newValue")
+            cityCanvas.width = newValue.toDouble()
             setCanvasSize()
             setScrollbarSizes()
             cityMapCanvas.render()
         }
 
-        canvas.setOnMouseMoved { evt ->
+        cityCanvas.setOnMouseMoved { evt ->
             cityRenderer?.onMouseMoved(evt)
         }
 
-        canvas.setOnMousePressed { evt ->
+        cityCanvas.setOnMousePressed { evt ->
             cityRenderer?.onMousePressed(evt)
         }
 
-        canvas.setOnMouseReleased { evt ->
+        cityCanvas.setOnMouseReleased { evt ->
             cityMapCanvas.render()
             cityRenderer?.let {
                 it.onMouseReleased(evt)
@@ -436,11 +444,11 @@ class GameFrame : View() {
 
         }
 
-        canvas.setOnMouseDragged { evt ->
+        cityCanvas.setOnMouseDragged { evt ->
             cityRenderer?.onMouseDragged(evt)
         }
 
-        canvas.setOnMouseClicked { evt ->
+        cityCanvas.setOnMouseClicked { evt ->
             cityRenderer?.onMouseClicked(evt)
             // now let's handle some tools...
             if (evt.button == MouseButton.PRIMARY) {
@@ -478,8 +486,8 @@ class GameFrame : View() {
         }
 
         canvasPane.heightProperty().addListener { _, _, newValue ->
-            println("resizing canvas height to: $newValue")
-            canvas.height = newValue.toDouble()
+            println("resizing cityCanvas height to: $newValue")
+            cityCanvas.height = newValue.toDouble()
             setCanvasSize()
             setScrollbarSizes()
         }
@@ -492,7 +500,7 @@ class GameFrame : View() {
             cityRenderer?.blockOffsetY = newValue.toDouble()
         }
 
-        with(canvas) {
+        with(cityCanvas) {
             this.setOnScroll { scrollEvent ->
                 // println("We are scrolling: $scrollEvent")
                 if (scrollEvent.deltaY < 0) {

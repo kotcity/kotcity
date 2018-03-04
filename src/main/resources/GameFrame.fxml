@@ -19,6 +19,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="744.0" prefWidth="1034.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
@@ -173,6 +174,7 @@
                <children>
                   <AnchorPane fx:id="canvasPane" minHeight="580.0" minWidth="580.0" style="-fx-background-color: #cccccc;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
+                        <StackPane fx:id="canvasStackPane" alignment="TOP_LEFT" prefHeight="674.0" prefWidth="781.0" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0" />
                         <ScrollBar fx:id="horizontalScroll" layoutY="561.0" prefHeight="17.0" prefWidth="567.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="20.0" />
                         <ScrollBar fx:id="verticalScroll" layoutX="570.0" orientation="VERTICAL" prefHeight="559.0" prefWidth="17.0" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>

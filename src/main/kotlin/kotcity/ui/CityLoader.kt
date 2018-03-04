@@ -7,6 +7,8 @@ import kotcity.data.CityFileAdapter
 import tornadofx.View
 import tornadofx.find
 import tornadofx.runLater
+import java.io.File
+import java.util.function.ToIntFunction
 
 
 object CityLoader {
@@ -20,19 +22,33 @@ object CityLoader {
         runLater {
             val file = fileChooser.showOpenDialog(view.currentStage)
             if (file != null) {
-                val launchScreen = find(LaunchScreen::class)
-                launchScreen.close()
-                view.close()
-                view.currentStage?.close()
-                view.primaryStage.close()
 
-                val map = CityFileAdapter.load(file)
-                val gameFrame = tornadofx.find(GameFrame::class)
-                gameFrame.setMap(map)
-                gameFrame.currentStage?.isMaximized = true
-                gameFrame.openWindow()
-                println("Gameframe should be open at this point...")
-                gameFrame.currentStage?.isMaximized = true
+                // let's use the dialog... :)
+                view.currentWindow?.let { window ->
+                    val workDialog = WorkIndicatorDialog<File>(window, "Loading City...")
+
+                    val launchScreen = find(LaunchScreen::class)
+                    launchScreen.close()
+                    view.close()
+                    view.currentStage?.close()
+                    view.primaryStage.close()
+
+                    workDialog.exec(file, func = ToIntFunction<File> {
+                        val map = CityFileAdapter.load(file)
+                        runLater {
+                            val gameFrame = tornadofx.find(GameFrame::class)
+                            gameFrame.setMap(map)
+                            gameFrame.currentStage?.isMaximized = true
+                            gameFrame.openWindow()
+                            println("Gameframe should be open at this point...")
+                            gameFrame.currentStage?.isMaximized = true
+                        }
+                        1
+                    })
+
+                }
+
+
             } else {
                 val alert = Alert(AlertType.ERROR)
                 alert.title = "Error during load"
