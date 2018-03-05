@@ -51,7 +51,7 @@ class TrafficRenderer(private val cityMap: CityMap, private val cityRenderer: Ci
 
     init {
 
-        val timelineX = Timeline(KeyFrame(Duration.millis(500.0), EventHandler {
+        val timelineX = Timeline(KeyFrame(Duration.millis(250.0), EventHandler {
             currentImage += 1
             if (currentImage >= horizontalFilenames.count()) {
                 currentImage = 0
