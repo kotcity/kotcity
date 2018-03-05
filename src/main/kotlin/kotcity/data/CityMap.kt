@@ -176,7 +176,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun eachLocation(callback: (Location) -> Unit) {
-        buildingLayer.forEach { t, u -> callback(Location(t, u)) }
+        buildingLayer.toList().forEach { entry ->
+            callback(Location(entry.first, entry.second))
+        }
     }
 
     fun elevations(): Pair<Double, Double> {

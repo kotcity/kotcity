@@ -191,6 +191,14 @@ interface HasConcreteContacts : HasContracts {
 
 }
 
+enum class Zot {
+    TOO_MUCH_TRAFFIC,
+    UNHAPPY_NEIGHBORS,
+    NO_GOODS,
+    NO_WORKERS,
+    NO_DEMAND,
+    NO_POWER
+}
 
 abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, HasConcreteContacts {
 
@@ -218,6 +226,8 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
     var powered = false
     open val powerRequired = 0
     open var upkeep: Int = 0
+
+    var zots = listOf<Zot>()
 
     override val consumes: MutableMap<Tradeable, Int> = mutableMapOf()
     override val produces: MutableMap<Tradeable, Int> = mutableMapOf()
