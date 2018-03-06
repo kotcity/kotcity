@@ -35,7 +35,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
 
         val zoneTypes = listOf(Zone.INDUSTRIAL, Zone.COMMERCIAL, Zone.RESIDENTIAL)
         zoneTypes.forEach { zoneType ->
-            val howManyTimes: Int = (desirableZoneCount(zoneType).toDouble() * 0.01).toInt().coerceIn(0..15)
+            val howManyTimes: Int = (desirableZoneCount(zoneType).toDouble() * 0.01).coerceIn(1.0..5.0).toInt()
             println("We will be trying to construct $howManyTimes")
             repeat(howManyTimes, {
 

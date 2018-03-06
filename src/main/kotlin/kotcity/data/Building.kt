@@ -297,6 +297,8 @@ class PowerPlant : Building {
             "coal" -> { this.powerGenerated = 2000; this.description = "Coal Power Plant" }
             "nuclear" -> { this.powerGenerated = 5000; this.description = "Nuclear Power Plant" }
         }
+        // let's make it consume workers...
+        this.consumes[Tradeable.LABOR] = 10
     }
 
     override var width = 4

@@ -112,6 +112,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
 
         val residentialZones = zoneCoordinates(Zone.RESIDENTIAL).filter { cityMap.isEmpty(it) }
 
+        val population = cityMap.censusTaker.population
 
         residentialZones.forEach { coordinate ->
 
@@ -123,7 +124,12 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
                 val availableJobsLongDistance = resourceFinder.quantityWantedNearby(Tradeable.LABOR, coordinate, longDistance)
                 val availableGoodsShortDistance = resourceFinder.quantityForSaleNearby(Tradeable.GOODS, coordinate, shortDistance)
                 val availableGoodsMediumDistance = resourceFinder.quantityForSaleNearby(Tradeable.GOODS, coordinate, mediumDistance)
-                desirabilityLayer[coordinate] = (availableJobsShortDistance + availableJobsMediumDistance + availableJobsLongDistance + availableGoodsShortDistance + availableGoodsMediumDistance).toDouble()
+                if (population == 0) {
+                    desirabilityLayer[coordinate] = 0.1
+                } else {
+                    desirabilityLayer[coordinate] = (availableJobsShortDistance + availableJobsMediumDistance + availableJobsLongDistance + availableGoodsShortDistance + availableGoodsMediumDistance).toDouble()
+                }
+
             }
 
         }

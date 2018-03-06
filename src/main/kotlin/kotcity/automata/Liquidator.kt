@@ -13,7 +13,7 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
         // we will only kill some of what needs to go...
         val bankruptLocations = bankruptLocations()
 
-        val howManyNeedDestruction : Int = Math.floor(bankruptLocations.count() * 0.01).toInt()
+        val howManyNeedDestruction : Int = Math.floor(bankruptLocations.count() * 0.01).toInt().coerceAtMost(15)
         debug("Blowing up $howManyNeedDestruction buildings...")
 
         val start = System.currentTimeMillis()

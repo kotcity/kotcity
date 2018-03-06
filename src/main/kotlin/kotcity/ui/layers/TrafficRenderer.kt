@@ -115,9 +115,6 @@ class TrafficRenderer(private val cityMap: CityMap, private val cityRenderer: Ci
 
         trafficCanvas.graphicsContext2D.clearRect(0.0, 0.0, trafficCanvas.width, trafficCanvas.height)
 
-        trafficCanvas.graphicsContext2D.fill = Color.HOTPINK
-        trafficCanvas.graphicsContext2D.fillText("Traffic!", 10.0, 10.0)
-
         visibleBlockRange?.let {visibleBlockRange ->
 
             BlockCoordinate.iterate(visibleBlockRange.first, visibleBlockRange.second) {
