@@ -210,6 +210,7 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
                 "Industrial" -> Industrial::class
                 "Road" -> Road::class
                 "Civic" -> Civic::class
+                "PowerPlant" -> PowerPlant::class
                 else -> {
                     throw RuntimeException("We don't know how to lookup \"$name\"")
                 }
