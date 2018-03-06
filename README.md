@@ -8,7 +8,7 @@ to be used by whomever. Disagree with the project? Fork it :)
 
 ## Obligatory Screenshot
 
-![KotCity Screenshot](screenshot.jpg?raw=true "Optional Title")
+![KotCity Screenshot](screenshot.jpg?raw=true "Screenshot of the game's UI and an example city")
 
 
 ## What is KotCity? 
