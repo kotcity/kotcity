@@ -14,7 +14,7 @@ to be used by whomever. Disagree with the project? Fork it :)
 ## What is KotCity? 
 
 KotCity is a city simulator inspired by the statistical city simulators of old.
-This game aims to achieve a mark somewhere between SimCity(1989) and SC2000. Hopefully this mark will be hit and we can set our sights higher.
+This game aims to achieve a mark somewhere between SimCity(1989) and SC2000. Hopefully this mark will be hit and we can set our sights higher. The game will be fully supported on Windows, MacOS, and Linux.
 
 ## How do I run it?
 
