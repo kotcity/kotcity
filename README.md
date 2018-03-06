@@ -16,6 +16,22 @@ to be used by whomever. Disagree with the project? Fork it :)
 KotCity is a city simulator inspired by the statistical city simulators of old.
 This game aims to achieve a mark somewhere between SimCity(1989) and SC2000. Hopefully this mark will be hit and we can set our sights higher.
 
+## How do I run it?
+
+Be on the lookout for super easy to install package soon... until then...
+* install JDK 1.8+
+* Clone the project
+* ./gradlew run
+
+## How can I work on the project?
+
+Easy... 
+* grab the free version of Intellij from here... https://www.jetbrains.com/idea/
+* Import this as Gradle project... 
+* done! 
+
+The UI is done with FXML created with Gluon's SceneBuilder http://gluonhq.com/products/scene-builder/
+
 ## Long Term Goal
 
 To make a game that "takes over" from SimCity 4. We have a loooooong way to go.

@@ -11,11 +11,14 @@ buildscript {
     }
 }
 
-group 'com.statewidesoftware'
+group 'com.kotcity'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'kotlin'
 apply plugin: 'org.junit.platform.gradle.plugin'
+apply plugin: 'application'
+
+mainClassName = "kotcity.ui.LaunchScreenKt"
 
 repositories {
     mavenCentral()
