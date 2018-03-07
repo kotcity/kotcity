@@ -90,10 +90,14 @@ class MapGeneratorScreen : View() {
                     val workDialog = WorkIndicatorDialog<File>(window, "Importing map...")
 
                     workDialog.exec(file, func = ToIntFunction<File> {
-                        runLater {
-                            val bmpImporter = BMPImporter()
-                            val map = bmpImporter.load(it.absolutePath)
+                        val bmpImporter = BMPImporter()
+                        val map = bmpImporter.load(it.absolutePath)
+                        map?.let {
                             cityMapCanvas.map = map
+                            sizeField.text = it.width.toString()
+                            newMap = map
+                        }
+                        runLater {
                             fitMap()
                         }
                         1
@@ -121,8 +125,8 @@ class MapGeneratorScreen : View() {
     private fun fitMap() {
         cityMapCanvas.prefWidth(newMap.width.toDouble())
         cityMapCanvas.prefHeight(newMap.height.toDouble())
-        cityMapCanvas.width = newMap.width.toDouble()
-        cityMapCanvas.height = newMap.height.toDouble()
+        cityMapCanvas.width = newMap.width.toDouble().coerceAtMost(1024.0)
+        cityMapCanvas.height = newMap.height.toDouble().coerceAtMost(1024.0)
     }
 
     fun mapModeSelected() {
