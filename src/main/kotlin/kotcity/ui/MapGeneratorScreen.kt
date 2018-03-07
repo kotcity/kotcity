@@ -3,12 +3,14 @@ package kotcity.ui
 import javafx.animation.AnimationTimer
 import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
-import kotcity.data.CityMap
-import kotcity.data.MapGenerator
-import kotcity.data.MapMode
+import javafx.stage.FileChooser
+import kotcity.data.*
 import kotcity.ui.map.CityMapCanvas
 import tornadofx.View
+import tornadofx.runLater
 import tornadofx.selectedItem
+import java.io.File
+import java.util.function.ToIntFunction
 
 
 class MapGeneratorScreen : View() {
@@ -70,6 +72,44 @@ class MapGeneratorScreen : View() {
         println("Generating with $f1, $f2, $f3, $exp")
         mapGenerator.seaLevel = seaLevelSlider.value
         return mapGenerator.generateMap(width, height, f1, f2, f3, exp)
+    }
+
+    fun importPressed() {
+        val fileChooser = FileChooser()
+        fileChooser.title = "Import BMP"
+        // fileChooser.initialDirectory = File(System.getProperty("user.home"))
+        fileChooser.extensionFilters.addAll(
+                FileChooser.ExtensionFilter("SC4 Map", "*.bmp")
+        )
+        runLater {
+            val file = fileChooser.showOpenDialog(currentStage)
+            if (file != null) {
+
+                // let's use the dialog... :)
+                currentWindow?.let { window ->
+                    val workDialog = WorkIndicatorDialog<File>(window, "Importing map...")
+
+                    workDialog.exec(file, func = ToIntFunction<File> {
+                        runLater {
+                            val bmpImporter = BMPImporter()
+                            val map = bmpImporter.load(it.absolutePath)
+                            cityMapCanvas.map = map
+                            fitMap()
+                        }
+                        1
+                    })
+                }
+
+
+            } else {
+                val alert = Alert(Alert.AlertType.ERROR)
+                alert.title = "Error during load"
+                alert.headerText = "Could not import your map!"
+                alert.contentText = "Why not? Totally unknown?"
+
+                alert.showAndWait()
+            }
+        }
     }
 
     fun generatePressed() {
