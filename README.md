@@ -6,6 +6,11 @@ This is _pre alpha_ software with super obvious bugs, rough edges etc. In the sp
 I am posting the code. This project is far from done but I prefer to get the code out there
 to be used by whomever. Disagree with the project? Fork it :) 
 
+## Gimme the software!
+
+A build for Windows is here: https://github.com/kotcity/kotcity/releases/tag/0.4
+Mac and Linux available upon request (or build it yourself!)
+
 ## Obligatory Screenshot
 
 ![KotCity Screenshot](screenshot.jpg?raw=true "Screenshot of the game's UI and an example city")
