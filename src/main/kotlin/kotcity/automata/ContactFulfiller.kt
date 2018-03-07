@@ -23,8 +23,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
             locationsNeedingContracts()
         }
 
-        contractCollection.shuffled().parallelStream().forEach { entry ->
-
+        contractCollection.toList().shuffled().parallelStream().forEach { entry ->
 
             val delta = System.currentTimeMillis() - startAt
             if (delta > maxMs) {
