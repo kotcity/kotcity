@@ -1,11 +1,13 @@
 package kotcity.data
 
-import io.nayuki.bmpio.BmpImage
-import io.nayuki.bmpio.BmpReader
-import net.sf.image4j.codec.bmp.BMPDecoder
+import java.awt.Toolkit
 import java.awt.image.BufferedImage
 import java.io.File
 import java.util.*
+import java.awt.image.MemoryImageSource
+
+
+
 
 data class Pixel(val r: Int, val g: Int, val b: Int, val a: Int)
 class BMPImporter {
@@ -18,13 +20,13 @@ class BMPImporter {
         return Pixel(red, blue, green, alpha)
     }
 
-    private fun eachPixel(image: BmpImage, callback: (BlockCoordinate, Pixel) -> Unit) {
-        val w = image.image.width
-        val h = image.image.height
+    private fun eachPixel(image: BufferedImage, callback: (BlockCoordinate, Pixel) -> Unit) {
+        val w = image.width
+        val h = image.height
 
         for (x in 0 until w) {
             for (y in 0 until h) {
-                val pixel = image.image.getRgb888Pixel(x, y)
+                val pixel = image.getRGB(x, y)
                 callback(BlockCoordinate(x, y), extractRGB(pixel))
             }
         }
@@ -34,12 +36,20 @@ class BMPImporter {
     fun load(s: String): CityMap? {
         val file = File(s)
         // val img = BMPDecoder.read(file)
-        val img = BmpReader.read(file.inputStream())
+        // val img = BmpReader.read(file.inputStream())
+        val decoder = BMPDecoder()
+        decoder.read(file.inputStream())
+        val mis = decoder.makeImageSource()
+        val image = Toolkit.getDefaultToolkit().createImage(mis)
+        val finalimg = BufferedImage(decoder.width, decoder.height, BufferedImage.TYPE_INT_RGB)
+        val piximg = Toolkit.getDefaultToolkit().createImage(mis)
+        finalimg.getGraphics().drawImage(piximg, 0, 0, null)
 
-        if (img != null) {
-            val size = Collections.min(listOf(img.image.width, img.image.height)) ?: 512
-            val newMap = CityMap(size)
-            eachPixel(img) { coordinate: BlockCoordinate, pixel: Pixel ->
+        if (image != null) {
+            val size = Collections.min(listOf(finalimg.width, finalimg.height)) ?: 512
+            println("Loaded map with size: $size")
+            val newMap = CityMap(size, size)
+            eachPixel(finalimg) { coordinate: BlockCoordinate, pixel: Pixel ->
                 val elevation = pixel.r.toDouble()
                 if (elevation < 83) {
                     newMap.groundLayer[coordinate] = MapTile(TileType.WATER, elevation)
