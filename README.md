@@ -8,7 +8,7 @@ to be used by whomever. Disagree with the project? Fork it :)
 
 ## Gimme the software!
 
-A build for Windows is here: https://github.com/kotcity/kotcity/releases/tag/0.4
+A build for Windows is here: https://github.com/kotcity/kotcity/releases/tag/0.41
 
 Mac and Linux available upon request (or build it yourself!)
 
