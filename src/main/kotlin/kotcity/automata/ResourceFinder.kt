@@ -93,7 +93,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         // OK what we want to do here is don't try and get a trip to the outside all the time...
         // if we fail we won't even bother for 10 more seconds....
         if (System.currentTimeMillis() - 10000 < lastOutsidePathFailAt) {
-            System.out.println("Failed to find a path to outside lately! Bailing out!")
+            debug("Failed to find a path to outside lately! Bailing out!")
             return null
         }
         var preferredTradeEntity1 = preferredTradeEntity
