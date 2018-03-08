@@ -6,6 +6,7 @@ import com.github.davidmoten.rtree.geometry.Rectangle
 import com.github.debop.javatimes.plus
 import com.github.debop.javatimes.toDateTime
 import kotcity.automata.*
+import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotlinx.coroutines.experimental.async
@@ -153,8 +154,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     var cityName: String? = null
     private var buildingIndex = RTree.create<Building, Rectangle>()!!
 
-    val buildingsInCachePair = ::buildingsIn.cache()
-    val buildingsInCache = buildingsInCachePair.first
+    // OK! we will require one key per map cell
+    private val numberOfCells = this.height.toLong() * this.width.toLong() + 100
+    private val buildingsInCachePair = ::buildingsIn.cache(CacheOptions(maximumSize = numberOfCells))
+    private val buildingsInCache = buildingsInCachePair.first
     val cachedBuildingsIn = buildingsInCachePair.second
 
     fun debug(message: String) {
@@ -178,6 +181,13 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun eachLocation(callback: (Location) -> Unit) {
         buildingLayer.toList().forEach { entry ->
             callback(Location(entry.first, entry.second))
+        }
+    }
+
+    fun purgeRTree() {
+        val idx = this.buildingIndex.entries().toBlocking().iterator
+        idx.forEach {
+            this.buildingIndex.delete(it)
         }
     }
 
@@ -461,6 +471,17 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 // debug("We have an overlap... not building!")
             }
         }
+    }
+
+    fun locationsIn(topLeft: BlockCoordinate, bottomRight: BlockCoordinate): List<Location> {
+        val buildings = buildingIndex.search(Geometries.rectangle(topLeft.x.toDouble(), topLeft.y.toDouble(), bottomRight.x.toDouble(), bottomRight.y.toDouble()))
+        return buildings.map { it ->
+            it.value()?.let { building ->
+                val x = it.geometry().x1()
+                val y = it.geometry().y1()
+                Location(BlockCoordinate(x.toInt(), y.toInt()), building)
+            }
+        }.toBlocking().toIterable().filterNotNull()
     }
 
     private fun buildingCorners(building: Building, block: BlockCoordinate): Corners {

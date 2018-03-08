@@ -450,37 +450,29 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         return blockList
     }
 
-    private fun visibleBuildings(): List<Pair<BlockCoordinate, Building>> {
+    private fun visibleLocations(): List<Location> {
         // TODO: we can just cityMap over the two different layers... clean up later...
-        val buildings = visibleBlocks(padding = MAX_BUILDING_SIZE).mapNotNull {
-            val locations = cityMap.cachedBuildingsIn(it)
-            if (locations.count() > 0) {
-                val location = locations.first()
-                if (location.coordinate == it) {
-                    Pair(it, location.building)
-                } else {
-                    null
-                }
+        val (from, to) = visibleBlockRange(padding = MAX_BUILDING_SIZE)
 
-            } else {
-                null
-            }
-        }
+        val locations = cityMap.locationsIn(from, to)
+
         val powerLines = visibleBlocks(padding = MAX_BUILDING_SIZE).mapNotNull {
             val building = cityMap.powerLineLayer[it]
             if (building != null) {
-                Pair(it, building)
+                Location(it, building)
             } else {
                 null
             }
         }
-        return buildings.plus(powerLines)
+        return locations.plus(powerLines)
     }
 
     private fun drawBuildings(context: GraphicsContext) {
-        visibleBuildings().forEach { it ->
-            val coordinate = it.first
-            val building = it.second
+        // can we cache this shit at all???
+
+        visibleLocations().forEach { location ->
+            val coordinate = location.coordinate
+            val building = location.building
             val tx = coordinate.x - blockOffsetX
             val ty = coordinate.y - blockOffsetY
             val blockSize = blockSize()
@@ -652,6 +644,10 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
         }
 
+    }
+
+    fun removePanListeners() {
+        this.panListeners.clear()
     }
 
 }

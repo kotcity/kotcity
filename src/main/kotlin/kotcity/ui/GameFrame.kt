@@ -129,6 +129,7 @@ class GameFrame : View() {
     private var trafficRenderer: TrafficRenderer? = null
 
     fun setMap(cityMap: CityMap) {
+
         this.map = cityMap
         cityMapCanvas.map = cityMap
         this.assetManager = AssetManager(cityMap)
@@ -136,8 +137,12 @@ class GameFrame : View() {
         setScrollbarSizes()
         setCanvasSize()
         initComponents()
+
         title = "$GAME_STRING - ${cityMap.cityName}"
         cityNameLabel.text = cityMap.cityName
+        this.cityRenderer?.removePanListeners()
+        this.trafficRenderer?.halt()
+
         val cityRenderer = CityRenderer(this, cityCanvas, cityMap)
         val trafficRenderer = TrafficRenderer(cityMap, cityRenderer, trafficCanvas)
 
@@ -301,7 +306,12 @@ class GameFrame : View() {
     }
 
     fun loadCityPressed() {
+        // TODO: wrap this with a dialog...
+        // we will just be loading...
+        this.map.purgeRTree()
         this.currentStage?.close()
+        renderTimer?.stop()
+        gameTickTask?.cancel()
         CityLoader.loadCity(this)
         title = "$GAME_STRING - ${map.cityName}"
     }
@@ -318,9 +328,9 @@ class GameFrame : View() {
         bindMapModes()
 
         mapPane.center = cityMapCanvas
-
         accordion.expandedPane = basicPane
 
+        renderTimer?.stop()
         renderTimer = object : AnimationTimer() {
             override fun handle(now: Long) {
                 if (ticks == TICK_DELAY) {
@@ -520,10 +530,8 @@ class GameFrame : View() {
             this.setOnScroll { scrollEvent ->
                 // println("We are scrolling: $scrollEvent")
                 if (scrollEvent.deltaY < 0) {
-                    println("Zoom out!")
                     zoomOut()
                 } else if (scrollEvent.deltaY > 0) {
-                    println("Zoom in!")
                     zoomIn()
                 }
                 cityMapCanvas.render()

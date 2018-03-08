@@ -1,8 +1,9 @@
 package kotcity.ui
 
-import aballano.kotlinmemoization.memoize
 import javafx.scene.image.Image
 import kotcity.data.*
+import kotcity.memoization.CacheOptions
+import kotcity.memoization.cache
 
 object SpriteLoader {
 
@@ -32,5 +33,6 @@ object SpriteLoader {
 
     }
 
-    val spriteForBuildingType = ::uncachedSpriteForBuildingType.memoize()
+    val spriteForBuildingTypePair  = ::uncachedSpriteForBuildingType.cache(CacheOptions(weakKeys = true, weakValues = false, maximumSize = 4096))
+    val spriteForBuildingType = spriteForBuildingTypePair.second
 }
