@@ -14,7 +14,7 @@ import java.util.Collections.addAll
 import java.io.File
 
 
-const val GAME_STRING = "KotCity 0.4"
+const val GAME_STRING = "KotCity 0.41"
 
 class LaunchScreen : View() {
     override val root: VBox by fxml("/LaunchScreen.fxml")

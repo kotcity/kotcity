@@ -42,6 +42,8 @@ object CityLoader {
                             gameFrame.openWindow()
                             println("Gameframe should be open at this point...")
                             gameFrame.currentStage?.isMaximized = true
+                            // clean up orphaned objects....
+                            System.gc()
                         }
                         1
                     })

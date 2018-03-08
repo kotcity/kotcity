@@ -10,6 +10,7 @@ import javafx.util.Duration
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
 import kotcity.data.Road
+import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotcity.ui.ResizableCanvas
 import kotcity.ui.map.CityRenderer
@@ -49,9 +50,15 @@ class TrafficRenderer(private val cityMap: CityMap, private val cityRenderer: Ci
         }
     }
 
+    fun halt() {
+        timelineX.stop()
+    }
+
+    private var timelineX: Timeline
+
     init {
 
-        val timelineX = Timeline(KeyFrame(Duration.millis(250.0), EventHandler {
+        this.timelineX = Timeline(KeyFrame(Duration.millis(250.0), EventHandler {
             currentImage += 1
             if (currentImage >= horizontalFilenames.count()) {
                 currentImage = 0
@@ -62,7 +69,8 @@ class TrafficRenderer(private val cityMap: CityMap, private val cityRenderer: Ci
         timelineX.play()
     }
 
-    var scaledTrafficCachePair = ::scaledImages.cache()
+    // don't want to use weak cache here so we can hang on to the images...
+    var scaledTrafficCachePair = ::scaledImages.cache(CacheOptions(false, false))
     val cachedScaledTrafficImages = scaledTrafficCachePair.second
 
     private fun drawTrafficImage(g2d: GraphicsContext, coordinate: BlockCoordinate) {
@@ -115,14 +123,16 @@ class TrafficRenderer(private val cityMap: CityMap, private val cityRenderer: Ci
 
         trafficCanvas.graphicsContext2D.clearRect(0.0, 0.0, trafficCanvas.width, trafficCanvas.height)
 
-        visibleBlockRange?.let {visibleBlockRange ->
+        visibleBlockRange?.let { visibleBlockRange ->
 
-            BlockCoordinate.iterate(visibleBlockRange.first, visibleBlockRange.second) {
-                // see if we got a road under here... AND we got some traffic...
-                if (cityMap.cachedBuildingsIn(it).any{it.building is Road} && cityMap.trafficLayer[it] ?: 0.0 > 30.0) {
-                    drawTrafficImage(trafficCanvas.graphicsContext2D, it)
+            val visibleRoads = cityMap.locationsIn(visibleBlockRange.first, visibleBlockRange.second).filter { it.building is Road }
+
+            visibleRoads.forEach {
+                if (cityMap.trafficLayer[it.coordinate] ?: 0.0 > 30) {
+                    drawTrafficImage(trafficCanvas.graphicsContext2D, it.coordinate)
                 }
             }
+
         }
     }
 
