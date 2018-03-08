@@ -74,12 +74,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         if (preferredTradeEntity == null) {
             // let's try and get a path to the outside...
             // make sure the outside city has a resource before we get too excited and make a path...
-            if (cityMap.nationalTradeEntity.quantityForSale(tradeable) >= quantity) {
-                val destinationBlock = pathfinder.cachedPathToOutside(sourceBlocks)?.blocks()?.last()
-                if (destinationBlock != null) {
-                    preferredTradeEntity = cityMap.nationalTradeEntity.outsideEntity(destinationBlock)
-                }
-            }
+            preferredTradeEntity = possiblePathToOutside(tradeable, quantity, sourceBlocks, preferredTradeEntity)
         }
 
         preferredPath?.let {path ->
@@ -89,6 +84,29 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         }
 
         return null
+    }
+
+    private var lastOutsidePathFailAt: Long = System.currentTimeMillis()
+
+
+    private fun possiblePathToOutside(tradeable: Tradeable, quantity: Int, sourceBlocks: List<BlockCoordinate>, preferredTradeEntity: TradeEntity?): TradeEntity? {
+        // OK what we want to do here is don't try and get a trip to the outside all the time...
+        // if we fail we won't even bother for 10 more seconds....
+        if (System.currentTimeMillis() - 10000 < lastOutsidePathFailAt) {
+            System.out.println("Failed to find a path to outside lately! Bailing out!")
+            return null
+        }
+        var preferredTradeEntity1 = preferredTradeEntity
+        if (cityMap.nationalTradeEntity.quantityForSale(tradeable) >= quantity) {
+            val destinationBlock = pathfinder.cachedPathToOutside(sourceBlocks)?.blocks()?.last()
+            if (destinationBlock != null) {
+                preferredTradeEntity1 = cityMap.nationalTradeEntity.outsideEntity(destinationBlock)
+            } else {
+                // we failed!
+                this.lastOutsidePathFailAt = System.currentTimeMillis()
+            }
+        }
+        return preferredTradeEntity1
     }
 
     fun nearestBuyingTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int = MAX_DISTANCE): Pair<TradeEntity, Path>? {

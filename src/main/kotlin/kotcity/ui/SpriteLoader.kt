@@ -7,10 +7,15 @@ import kotcity.memoization.cache
 
 object SpriteLoader {
 
-    private fun uncachedSpriteForBuildingType(building: Building, width: Double, height: Double): Image? {
+    fun spriteForBuildingType(building: Building, width: Double, height: Double): Image? {
         var filename = filename(building)
-        return Image(filename, width, height, true, false)
+        return imageForFile(filename, width, height)
     }
+
+    private fun uncachedImageForFile(filename: String, width: Double, height: Double): Image {
+        return Image(filename, width, height, true, true)
+    }
+
 
     fun filename(building: Building): String {
         return when (building::class) {
@@ -33,6 +38,6 @@ object SpriteLoader {
 
     }
 
-    val spriteForBuildingTypePair  = ::uncachedSpriteForBuildingType.cache(CacheOptions(weakKeys = true, weakValues = false, maximumSize = 4096))
-    val spriteForBuildingType = spriteForBuildingTypePair.second
+    val imageForFileCachePair = ::uncachedImageForFile.cache(CacheOptions(weakKeys = false, weakValues = false, maximumSize = 4096))
+    val imageForFile = imageForFileCachePair.second
 }

@@ -1,4 +1,5 @@
 import kotcity.data.*
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.jupiter.api.Test
 
 class AutomataTest {
@@ -27,7 +28,9 @@ class AutomataTest {
 
         map.buildPowerline(powerlineStart, powerlineEnd)
 
-        map.hourlyTick(0)
+        runBlocking {
+            map.hourlyTick(0)
+        }
 
     }
 }

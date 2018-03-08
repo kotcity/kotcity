@@ -17,17 +17,17 @@ import java.io.Serializable
  * @property third Third value.
  * @property fourth Fourth value.
  */
-public data class Quadruple<out A, out B, out C, out D>(
-        public val first: A,
-        public val second: B,
-        public val third: C,
-        public val fourth: D
+data class Quadruple<out A, out B, out C, out D>(
+        val first: A,
+        val second: B,
+        val third: C,
+        val fourth: D
 ) : Serializable {
 
     /**
      * Returns string representation of the [Quadruple] including its [first], [second], [third] and [fourth] values.
      */
-    public override fun toString(): String = "($first, $second, $third, $fourth)"
+    override fun toString(): String = "($first, $second, $third, $fourth)"
 }
 
 /**

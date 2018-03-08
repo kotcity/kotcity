@@ -69,7 +69,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         return Pair(startCoordinate, endCoordinate)
     }
 
-    private fun panMap(coordinate: BlockCoordinate) {
+    fun panMap(coordinate: BlockCoordinate) {
         // OK, we want to figure out the CENTER block now...
         val centerBlock = centerBlock()
         // println("The center block is: $centerX,$centerY")
@@ -239,7 +239,10 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         // ok... we know the coordinate we are interested in... so let's find ALL contracts that involve it...
         // this is going to be super gross...
 
-        val contracts = cityMap.locations().map { contractsWithPathThrough(it.building, showRoutesFor) }.flatten()
+        // we might be working with a big building here...
+        val buildingBlocks = cityMap.locationsAt(showRoutesFor)
+
+        val contracts = (cityMap.locations()).plus(buildingBlocks).distinct().map { contractsWithPathThrough(it.building, showRoutesFor) }.flatten()
         // ok now we know which ones to draw...
         val blocksWithPath = contracts.flatMap { it.path?.blocks() ?: emptyList() }.distinct().toSet()
         // now get only ones on screen...
@@ -390,7 +393,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
             } else {
                 if (gameFrame.activeTool == Tool.COAL_POWER_PLANT || gameFrame.activeTool == Tool.NUCLEAR_POWER_PLANT) {
                     highlightCenteredBlocks(it, 4, 4)
-                } else if (gameFrame.activeTool == Tool.ROAD || gameFrame.activeTool == Tool.POWER_LINES || gameFrame.activeTool == Tool.QUERY) {
+                } else if (gameFrame.activeTool == Tool.ROAD || gameFrame.activeTool == Tool.POWER_LINES || gameFrame.activeTool == Tool.QUERY || gameFrame.activeTool == Tool.RECENTER || gameFrame.activeTool == Tool.ROUTES) {
                     mouseBlock?.let {
                         highlightBlocks(it, it)
                     }
