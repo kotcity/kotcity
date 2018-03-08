@@ -11,8 +11,10 @@ import kotcity.memoization.cache
 import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withTimeout
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 import kotlin.streams.toList
 
@@ -156,7 +158,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     // OK! we will require one key per map cell
     private val numberOfCells = this.height.toLong() * this.width.toLong() + 100
-    private val buildingsInCachePair = ::buildingsIn.cache(CacheOptions(maximumSize = numberOfCells))
+    private val buildingsInCachePair = ::buildingsIn.cache(CacheOptions(weakKeys = false, weakValues = true, maximumSize = numberOfCells))
     private val buildingsInCache = buildingsInCachePair.first
     val cachedBuildingsIn = buildingsInCachePair.second
 
@@ -270,7 +272,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     }
 
-    fun hourlyTick(hour: Int) {
+    suspend fun hourlyTick(hour: Int) {
         try {
             doingHourly = true
             debug("Processing tick for: $hour:00")
@@ -279,16 +281,18 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 timeFunction("Calculating desirability") { desirabilityUpdater.update() }
                 timeFunction("Constructing buildings") { constructor.tick() }
                 timeFunction("Terminating random contracts") { contractFulfiller.terminateRandomContracts() }
-                timeFunction("Signing contracts") { contractFulfiller.signContracts() }
+                withTimeout(5000, TimeUnit.MILLISECONDS) {
+                    timeFunction("Signing contracts") { contractFulfiller.signContracts() }
+                }
                 timeFunction("Doing manufacturing") { manufacturer.tick() }
                 timeFunction("Shipping products") { shipper.tick() }
                 timeFunction("Consuming goods") { goodsConsumer.tick() }
                 timeFunction("Generating traffic") { trafficCalculator.tick() }
-                timeFunction("Taking census") { censusTaker.tick() }
+                async { timeFunction("Taking census") { censusTaker.tick() } }
             }
 
             if (hour % 6 == 0) {
-                timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
+                async { timeFunction("Liquidating bankrupt properties") { liquidator.tick() } }
             }
 
             if (hour == 0) {
@@ -304,12 +308,15 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     private fun dailyTick() {
-        timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(this) }
-        timeFunction("Collect Taxes") { taxCollector.tick() }
-        timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
+        val self = this
+        async {
+            timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(self) }
+            timeFunction("Collect Taxes") { taxCollector.tick() }
+            timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
+        }
     }
 
-    private fun timeFunction(desc: String, timedFunction: () -> Unit) {
+    suspend private fun timeFunction(desc: String, timedFunction: () -> Unit) {
         val startMillis = System.currentTimeMillis()
         timedFunction()
         val endMillis = System.currentTimeMillis()
@@ -481,6 +488,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 val y = it.geometry().y1()
                 Location(BlockCoordinate(x.toInt(), y.toInt()), building)
             }
+        }.toBlocking().toIterable().filterNotNull()
+    }
+
+    fun locationsAt(coordinate: BlockCoordinate): List<Location> {
+        val point = Geometries.point(coordinate.x.toDouble(), coordinate.y.toDouble())
+        val buildings = buildingIndex.search(point)
+        return buildings.map {
+            Location(BlockCoordinate(coordinate.x, coordinate.y), it.value())
         }.toBlocking().toIterable().filterNotNull()
     }
 

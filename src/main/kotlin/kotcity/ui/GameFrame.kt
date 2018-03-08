@@ -54,7 +54,7 @@ enum class Tool {
     POWER_LINES,
     JOB_CENTER,
     TOWN_WAREHOUSE,
-    ROUTES
+    ROUTES, RECENTER
 }
 
 enum class GameSpeed { SLOW, MEDIUM, FAST }
@@ -87,6 +87,7 @@ class GameFrame : View() {
     private val jobCenterButton: ToggleButton by fxid()
     private val townWarehouseButton: ToggleButton by fxid()
     private val routesButton: ToggleButton by fxid()
+    private val recenterButton: ToggleButton by fxid()
 
     // cityMap modes...
     private val normalMapMode: RadioMenuItem by fxid()
@@ -259,6 +260,7 @@ class GameFrame : View() {
         roadButton.setOnAction { activeTool = Tool.ROAD }
         queryButton.setOnAction { activeTool = Tool.QUERY }
         bulldozeButton.setOnAction { activeTool = Tool.BULLDOZE }
+        recenterButton.setOnAction { activeTool = Tool.RECENTER }
         residentialButton.setOnAction { activeTool = Tool.RESIDENTIAL_ZONE }
         commercialButton.setOnAction { activeTool = Tool.COMMERCIAL_ZONE }
         industrialButton.setOnAction { activeTool = Tool.INDUSTRIAL_ZONE }
@@ -356,9 +358,9 @@ class GameFrame : View() {
         val delay = 0L // delay for 0 sec.
 
         val period = when (gameSpeed) {
-            GameSpeed.SLOW -> 200L
-            GameSpeed.MEDIUM -> 100L
-            GameSpeed.FAST -> 30L
+            GameSpeed.SLOW -> 500L
+            GameSpeed.MEDIUM -> 250L
+            GameSpeed.FAST -> 100L
         }
         gameTickTask?.cancel()
         gameTickTask = object : TimerTask() {
@@ -449,6 +451,7 @@ class GameFrame : View() {
                             Tool.RESIDENTIAL_ZONE -> map.zone(Zone.RESIDENTIAL, firstBlock, lastBlock)
                             Tool.COMMERCIAL_ZONE -> map.zone(Zone.COMMERCIAL, firstBlock, lastBlock)
                             Tool.INDUSTRIAL_ZONE -> map.zone(Zone.INDUSTRIAL, firstBlock, lastBlock)
+                            Tool.RECENTER -> it.panMap(firstBlock)
                             Tool.DEZONE -> map.dezone(firstBlock, lastBlock)
                             Tool.QUERY -> {
                                 // let's do that query...
