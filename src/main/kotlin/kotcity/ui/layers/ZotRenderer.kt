@@ -1,5 +1,7 @@
 package kotcity.ui.layers
 
+import com.github.benmanes.caffeine.cache.Caffeine
+import com.github.benmanes.caffeine.cache.LoadingCache
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.event.EventHandler
@@ -7,12 +9,13 @@ import javafx.scene.canvas.GraphicsContext
 import javafx.scene.image.Image
 import javafx.scene.paint.Color
 import javafx.util.Duration
-import kotcity.data.BlockCoordinate
-import kotcity.data.CityMap
+import kotcity.data.*
 import kotcity.ui.ResizableCanvas
 import kotcity.ui.map.CityRenderer
 import kotcity.ui.sprites.ZotSpriteLoader
 import kotcity.util.Debuggable
+import kotcity.util.getRandomElement
+import java.util.concurrent.TimeUnit
 
 class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRenderer, private val zotCanvas: ResizableCanvas): Debuggable {
 
@@ -60,10 +63,10 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
         visibleBlockRange?.let { visibleBlockRange ->
             val locationsWithZots = cityMap.locationsIn(visibleBlockRange.first, visibleBlockRange.second).filter { it.building.zots.isNotEmpty() }
             locationsWithZots.forEach { location ->
-                // pick first zot...
-                val firstZot = location.building.zots.firstOrNull()
-                if (firstZot != null) {
-                    val image = ZotSpriteLoader.spriteForZot(firstZot, cityRenderer.blockSize(), cityRenderer.blockSize())
+                // TODO: we gotta get different zots every once in a while...
+                val randomZot: Zot? = randomZot(location)
+                if (randomZot != null) {
+                    val image = ZotSpriteLoader.spriteForZot(randomZot, cityRenderer.blockSize(), cityRenderer.blockSize())
                     if (image != null) {
                         drawZot(image, gc, location.coordinate)
                     }
@@ -71,6 +74,15 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
             }
         }
 
+    }
+
+    var zotForBuildingCache: LoadingCache<Location, Zot?> =  Caffeine.newBuilder()
+            .maximumSize(10000)
+            .expireAfterWrite(1, TimeUnit.MINUTES)
+            .build<Location, Zot?> { key -> key.building.zots.getRandomElement() }
+
+    private fun randomZot(location: Location): Zot? {
+        return zotForBuildingCache[location]
     }
 
     override var debug: Boolean = true

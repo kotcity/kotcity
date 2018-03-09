@@ -372,9 +372,9 @@ class GameFrame : View(), Debuggable {
         val delay = 0L // delay for 0 sec.
 
         val period = when (gameSpeed) {
-            GameSpeed.SLOW -> 500L
-            GameSpeed.MEDIUM -> 250L
-            GameSpeed.FAST -> 100L
+            GameSpeed.SLOW -> 250L
+            GameSpeed.MEDIUM -> 125L
+            GameSpeed.FAST -> 50L
         }
         gameTickTask?.cancel()
         gameTickTask = object : TimerTask() {

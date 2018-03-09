@@ -19,8 +19,9 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
                         mutableListOf()
                     }
                 }
-
-                location.building.zots = newZots.plus(genericZots(location))
+                val finalZots = newZots.plus(genericZots(location))
+                debug("Final zots for ${location.building} are ${finalZots}")
+                location.building.zots = finalZots
             }
 
         }
