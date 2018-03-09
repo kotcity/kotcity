@@ -414,6 +414,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         if (canBuildBuildingAt(building, block)) {
             synchronized(this.buildingLayer) {
                 this.buildingLayer[block] = building
+                building.powered = true
                 if ( building !is Commercial &&  building !is Residential && building !is Industrial) {
                     val buildingBlocks = buildingBlocks(block, building)
                     buildingBlocks.forEach { zoneLayer.remove(it) }
@@ -476,9 +477,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             val newPowerLine = PowerLine(this)
             if (buildingLayer[block] is Road || canBuildBuildingAt(newPowerLine, block, waterCheck = false)) {
                 powerLineLayer[block] = newPowerLine
-                // println("Dropping a powerline at: $block")
-            } else {
-                // debug("We have an overlap... not building!")
             }
         }
     }

@@ -16,6 +16,9 @@ object BuildingSpriteLoader {
         return Image(filename, width, height, true, true)
     }
 
+    val imageForFileCachePair = BuildingSpriteLoader::uncachedImageForFile.cache(CacheOptions(weakKeys = false, weakValues = false, maximumSize = 4096))
+    val imageForFile = imageForFileCachePair.second
+
     fun filename(building: Building): String {
         return when (building::class) {
             PowerPlant::class -> powerPlantSprite(building)
@@ -36,7 +39,4 @@ object BuildingSpriteLoader {
         }
 
     }
-
-    val imageForFileCachePair = BuildingSpriteLoader::uncachedImageForFile.cache(CacheOptions(weakKeys = false, weakValues = false, maximumSize = 4096))
-    val imageForFile = imageForFileCachePair.second
 }

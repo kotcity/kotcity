@@ -149,12 +149,13 @@ class GameFrame : View(), Debuggable {
 
         // clean up the old renderers here...
         this.cityRenderer?.removePanListeners()
-        this.trafficRenderer?.halt()
+        this.trafficRenderer?.stop()
+        this.zotRenderer?.stop()
 
         // allocate new ones...
         val cityRenderer = CityRenderer(this, cityCanvas, cityMap)
         val trafficRenderer = TrafficRenderer(cityMap, cityRenderer, trafficCanvas)
-        val zotRenderer = ZotRenderer(cityMap, zotCanvas)
+        val zotRenderer = ZotRenderer(cityMap, cityRenderer, zotCanvas)
 
         // now stand em up...
         this.cityRenderer = cityRenderer

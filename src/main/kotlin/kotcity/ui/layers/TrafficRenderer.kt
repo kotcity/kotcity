@@ -50,7 +50,7 @@ class TrafficRenderer(private val cityMap: CityMap, private val cityRenderer: Ci
         }
     }
 
-    fun halt() {
+    fun stop() {
         timelineX.stop()
     }
 

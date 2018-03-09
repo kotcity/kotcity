@@ -11,7 +11,7 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
 
             // we gotta SKIP roads...
             if (location.building !is Road) {
-                val newZots = when(location.building.javaClass) {
+                val newZots = when(location.building::class) {
                     Residential::class -> updateResidential(location)
                     Commercial::class -> updateCommercial(location)
                     Industrial::class -> updateIndustrial(location)
@@ -82,11 +82,12 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
     }
 
     private fun hasNearbyTraffic(location: Location): Boolean {
-        val neighboringBlocks = location.coordinate.neighbors(3)
+        val neighboringBlocks = location.coordinate.neighbors(5)
         val nearbyRoads = neighboringBlocks.flatMap { cityMap.cachedBuildingsIn(it) }
                                                        .filter { it.building is Road }
 
         val trafficCount = nearbyRoads.sumBy { cityMap.trafficLayer[it.coordinate]?.toInt() ?: 0}
-        return trafficCount > 50
+        debug("The building ${location.building} has $trafficCount nearby")
+        return trafficCount > 100
     }
 }

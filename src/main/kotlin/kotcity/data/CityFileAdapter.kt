@@ -5,6 +5,8 @@ import com.github.salomonbrys.kotson.*
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import kotcity.automata.PowerCoverageAutomata
+import kotcity.automata.PowerCoverageUpdater
 import kotcity.data.assets.AssetManager
 import kotcity.pathfinding.Pathfinder
 import java.io.File
@@ -71,6 +73,9 @@ val gson = GsonBuilder()
                 readContracts(data, cityMap)
 
                 cityMap.updateBuildingIndex()
+
+                // now let's force update power...
+                PowerCoverageUpdater.update(cityMap)
 
                 cityMap
             }
