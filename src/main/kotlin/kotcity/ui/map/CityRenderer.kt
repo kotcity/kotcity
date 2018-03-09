@@ -6,6 +6,7 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import kotcity.data.*
 import kotcity.ui.*
+import kotcity.ui.sprites.BuildingSpriteLoader
 
 const val MAX_BUILDING_SIZE = 4
 const val DESIRABILITY_CAP: Double = 300.0
@@ -505,7 +506,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         val imgWidth = (building.width * blockSize) - (shrink * 2)
         val imgHeight =  (building.height * blockSize) - (shrink * 2)
 
-        SpriteLoader.spriteForBuildingType(building, imgWidth, imgHeight)?.let { img ->
+        BuildingSpriteLoader.spriteForBuildingType(building, imgWidth, imgHeight)?.let { img ->
             val ix = (tx * blockSize) + shrink
             val iy = (ty * blockSize) + shrink
             canvas.graphicsContext2D.drawImage(img, ix, iy)

@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import javafx.scene.paint.Color
 import kotcity.data.*
 import kotcity.ui.Algorithms
+import kotcity.ui.ColorAdjuster
 import kotcity.ui.ResizableCanvas
 import java.util.concurrent.TimeUnit
 
@@ -31,10 +32,10 @@ class CityMapCanvas : ResizableCanvas() {
         }
 
     var mode: MapMode = MapMode.NORMAL
-    var colorAdjuster: ColorAdjuster? = null
+    private var colorAdjuster: ColorAdjuster? = null
     var visibleBlockRange: Pair<BlockCoordinate, BlockCoordinate>? = null
 
-    val buildingCache = Caffeine.newBuilder()
+    private val buildingCache = Caffeine.newBuilder()
             .expireAfterWrite(3, TimeUnit.MINUTES)
             .refreshAfterWrite(2, TimeUnit.MINUTES)
             .softValues().build({ key: BlockCoordinate -> map?.cachedBuildingsIn?.let { it(key) } })

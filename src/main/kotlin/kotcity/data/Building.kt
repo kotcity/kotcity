@@ -197,7 +197,8 @@ enum class Zot {
     NO_GOODS,
     NO_WORKERS,
     NO_DEMAND,
-    NO_POWER
+    NO_POWER,
+    NOT_ENOUGH_CUSTOMERS
 }
 
 abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, HasConcreteContacts {

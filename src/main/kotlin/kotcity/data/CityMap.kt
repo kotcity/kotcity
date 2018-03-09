@@ -130,6 +130,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private val liquidator = Liquidator(this)
     private val trafficCalculator = TrafficCalculator(this)
     private val goodsConsumer = GoodsConsumer(this)
+    private val zotPopulator = ZotPopulator(this)
 
     val nationalTradeEntity = NationalTradeEntity(this)
 
@@ -176,6 +177,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         taxCollector.debug = false
         desirabilityUpdater.debug = true
         liquidator.debug = true
+        zotPopulator.debug = true
         censusTaker.tick()
         nationalTradeEntity.resetCounts()
     }
@@ -289,6 +291,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 timeFunction("Consuming goods") { goodsConsumer.tick() }
                 timeFunction("Generating traffic") { trafficCalculator.tick() }
                 async { timeFunction("Taking census") { censusTaker.tick() } }
+                async { timeFunction("Populating Zots") { zotPopulator.tick() } }
             }
 
             if (hour % 6 == 0) {

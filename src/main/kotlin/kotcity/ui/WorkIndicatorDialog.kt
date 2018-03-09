@@ -94,7 +94,7 @@ class WorkIndicatorDialog<in P>
 
         dialog.setOnHiding { /* Gets notified when task ended, but BEFORE
              result value is attributed. Using the observable list above is
-             recommended. */ event ->
+             recommended. */ _ ->
         }
 
         dialog.show()
@@ -118,9 +118,9 @@ class WorkIndicatorDialog<in P>
         animationWorker?.let {
             progressIndicator.progressProperty().bind(it.progressProperty())
 
-            it.messageProperty().addListener({ observable, oldValue, newValue ->
-                // Do something when the animation value ticker has changed
-            })
+//            it.messageProperty().addListener({ observable, oldValue, newValue ->
+//                // Do something when the animation value ticker has changed
+//            })
 
             Thread(animationWorker).start()
         }

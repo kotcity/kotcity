@@ -1,11 +1,11 @@
-package kotcity.ui
+package kotcity.ui.sprites
 
 import javafx.scene.image.Image
 import kotcity.data.*
 import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 
-object SpriteLoader {
+object BuildingSpriteLoader {
 
     fun spriteForBuildingType(building: Building, width: Double, height: Double): Image? {
         var filename = filename(building)
@@ -15,7 +15,6 @@ object SpriteLoader {
     private fun uncachedImageForFile(filename: String, width: Double, height: Double): Image {
         return Image(filename, width, height, true, true)
     }
-
 
     fun filename(building: Building): String {
         return when (building::class) {
@@ -38,6 +37,6 @@ object SpriteLoader {
 
     }
 
-    val imageForFileCachePair = ::uncachedImageForFile.cache(CacheOptions(weakKeys = false, weakValues = false, maximumSize = 4096))
+    val imageForFileCachePair = BuildingSpriteLoader::uncachedImageForFile.cache(CacheOptions(weakKeys = false, weakValues = false, maximumSize = 4096))
     val imageForFile = imageForFileCachePair.second
 }

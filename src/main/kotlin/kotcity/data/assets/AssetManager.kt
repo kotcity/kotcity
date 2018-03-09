@@ -4,8 +4,7 @@ import com.github.salomonbrys.kotson.*
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import kotcity.data.*
-import kotcity.data.BuildingType.*
-import kotcity.ui.SpriteLoader
+import kotcity.ui.sprites.BuildingSpriteLoader
 import java.io.FileReader
 import java.nio.file.FileSystems
 import java.nio.file.Files
@@ -118,7 +117,7 @@ class AssetManager(val cityMap: CityMap) {
         if (loadableBuilding.sprite == null || loadableBuilding.sprite == "") {
             throw RuntimeException("Could not load sprite for $loadableBuilding")
         }
-        SpriteLoader.filename(loadableBuilding)
+        BuildingSpriteLoader.filename(loadableBuilding)
     }
 
     private fun populateProduction(lb: LoadableBuilding, buildingJson: JsonObject) {

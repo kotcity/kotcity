@@ -22,8 +22,10 @@ import javafx.scene.layout.StackPane
 import kotcity.data.assets.AssetManager
 import kotcity.ui.charts.SupplyDemandChart
 import kotcity.ui.layers.TrafficRenderer
+import kotcity.ui.layers.ZotRenderer
 import kotcity.ui.map.CityMapCanvas
 import kotcity.ui.map.CityRenderer
+import kotcity.util.Debuggable
 import tornadofx.runLater
 import java.text.SimpleDateFormat
 import java.util.*
@@ -59,10 +61,12 @@ enum class Tool {
 
 enum class GameSpeed { SLOW, MEDIUM, FAST }
 
-class GameFrame : View() {
+class GameFrame : View(), Debuggable {
+    override var debug: Boolean = false
     override val root: VBox by fxml("/GameFrame.fxml")
     private val cityCanvas = ResizableCanvas()
     private val trafficCanvas = ResizableCanvas()
+    private val zotCanvas = ResizableCanvas()
 
     private val canvasPane: StackPane by fxid("canvasStackPane")
     private val accordion: Accordion by fxid()
@@ -128,6 +132,7 @@ class GameFrame : View() {
     private lateinit var map: CityMap
     private var cityRenderer: CityRenderer? = null
     private var trafficRenderer: TrafficRenderer? = null
+    private var zotRenderer: ZotRenderer? = null
 
     fun setMap(cityMap: CityMap) {
 
@@ -141,23 +146,30 @@ class GameFrame : View() {
 
         title = "$GAME_STRING - ${cityMap.cityName}"
         cityNameLabel.text = cityMap.cityName
+
+        // clean up the old renderers here...
         this.cityRenderer?.removePanListeners()
         this.trafficRenderer?.halt()
 
+        // allocate new ones...
         val cityRenderer = CityRenderer(this, cityCanvas, cityMap)
         val trafficRenderer = TrafficRenderer(cityMap, cityRenderer, trafficCanvas)
+        val zotRenderer = ZotRenderer(cityMap, zotCanvas)
 
+        // now stand em up...
         this.cityRenderer = cityRenderer
         this.trafficRenderer = trafficRenderer
+        this.zotRenderer = zotRenderer
 
         cityRenderer.addPanListener { visibleBlockRange ->
             // println("We have moved the cityMap around. Telling the minimal to highlight: $visibleBlockRange")
             this.cityMapCanvas.visibleBlockRange = visibleBlockRange
             trafficRenderer.visibleBlockRange = visibleBlockRange
+            zotRenderer.visibleBlockRange = visibleBlockRange
         }
         this.cityMapCanvas.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
         trafficRenderer.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
-        // TODO: OK... cityRenderer also has to tell the traffic canvas what the blocksize is and shit...
+        zotRenderer.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
     }
 
     private fun setCanvasSize() {
@@ -278,12 +290,12 @@ class GameFrame : View() {
         }
     }
 
-    fun setMapModes(mapMode: MapMode) {
+    private fun setMapModes(mapMode: MapMode) {
         cityRenderer?.mapMode = mapMode
         cityMapCanvas.mode = mapMode
     }
 
-    fun bindMapModes() {
+    private fun bindMapModes() {
         normalMapMode.setOnAction {
             setMapModes(MapMode.NORMAL)
         }
@@ -338,6 +350,7 @@ class GameFrame : View() {
                 if (ticks == TICK_DELAY) {
                     trafficRenderer?.render()
                     cityRenderer?.render()
+                    zotRenderer?.render()
                     ticks = 0
                 }
                 // only render map each while...
@@ -415,7 +428,15 @@ class GameFrame : View() {
             canvasPane.add(it)
             it.prefHeight(canvasPane.height - 20)
             it.prefWidth(canvasPane.width - 20)
-            println("Traffic canvas was added!")
+            debug("Traffic canvas was added!")
+        }
+
+        zotCanvas.let {
+            it.isMouseTransparent = true
+            canvasPane.add(it)
+            it.prefHeight(canvasPane.height - 20)
+            it.prefWidth(canvasPane.width - 20)
+            debug("Zot canvas was added!")
         }
 
         canvasPane.widthProperty().addListener { _, _, newValue ->

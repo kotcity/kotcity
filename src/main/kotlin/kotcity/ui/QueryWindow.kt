@@ -6,9 +6,9 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
 import kotcity.data.BlockCoordinate
-import kotcity.data.BuildingType
 import kotcity.data.CityMap
 import kotcity.data.Road
+import kotcity.ui.sprites.BuildingSpriteLoader
 import tornadofx.View
 
 class QueryWindow : View() {
@@ -35,7 +35,7 @@ class QueryWindow : View() {
                     buffer.append("Powered: ${building.powered}\n")
                     buffer.append("Money: $${building.balance()}\n")
                     if (building.sprite != null && building.sprite != "") {
-                        buildingImageView.image = SpriteLoader.spriteForBuildingType(building, 64.0, 64.0)
+                        buildingImageView.image = BuildingSpriteLoader.spriteForBuildingType(building, 64.0, 64.0)
                     } else {
                         val filename = "file:./assets/misc/unknown.png"
                         buildingImageView.image = Image(filename, 64.0, 64.0, true, false)

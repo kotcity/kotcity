@@ -1,9 +1,8 @@
-package kotcity.ui.map
+package kotcity.ui
 
 import javafx.scene.paint.Color
 import kotcity.data.MapTile
 import kotcity.data.TileType
-import kotcity.ui.Algorithms
 
 class ColorAdjuster(val mapMinElevation: Double, val mapMaxElevation: Double) {
     fun colorForTile(tile: MapTile): Color {

@@ -9,6 +9,9 @@ import tornadofx.find
 import tornadofx.runLater
 import java.io.File
 import java.util.function.ToIntFunction
+import javafx.stage.Stage
+
+
 
 
 object CityLoader {
@@ -56,6 +59,9 @@ object CityLoader {
                 alert.title = "Error during load"
                 alert.headerText = "Could not load your city!"
                 alert.contentText = "Why not? Totally unknown?"
+                val stage = alert.dialogPane.scene.window as Stage
+                stage.isAlwaysOnTop = true
+                stage.toFront() // not sure if necessary
 
                 alert.showAndWait()
             }
