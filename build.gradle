@@ -9,7 +9,7 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
-        classpath 'edu.sc.seis.gradle:launch4j:2.4.3'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
     }
 }
 
@@ -19,6 +19,7 @@ version '1.0-SNAPSHOT'
 apply plugin: 'kotlin'
 apply plugin: 'org.junit.platform.gradle.plugin'
 apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 mainClassName = "kotcity.ui.LaunchScreenKt"
 targetCompatibility = 1.8
@@ -91,4 +92,17 @@ task copyAssets(type: Copy) {
     into 'build/launch4j/assets'
 }
 
+
+task copyDistZipAssets(type: Copy) {
+    from 'assets'
+    into 'build/libs/assets'
+}
+
+task copyShell(type: Copy) {
+    from 'shell'
+    into 'build/libs/'
+}
+
 createExe.dependsOn copyAssets
+shadowDistZip.dependsOn copyDistZipAssets
+shadowDistZip.dependsOn copyShell
