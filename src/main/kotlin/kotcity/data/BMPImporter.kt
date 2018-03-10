@@ -16,6 +16,13 @@ class BMPImporter {
         }
     }
 
+    /**
+     * Generates a map by loading the bitmap image file at the provided path and using the color value of each pixel
+     * for determining the terrain elevation.
+     *
+     * @param imagePath the path to the source image file
+     * @return the generated map or null if the image could not be loaded
+     */
     fun load(imagePath: String): CityMap? {
         val file = File(imagePath)
         val image = ImageIO.read(file) ?: return null
