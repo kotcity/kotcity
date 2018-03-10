@@ -3,8 +3,6 @@ package kotcity.pathfinding
 import kotcity.data.*
 import kotcity.memoization.cache
 import kotcity.util.Debuggable
-import kotcity.util.pmap
-import kotlinx.coroutines.experimental.runBlocking
 
 const val MAX_DISTANCE = 50
 

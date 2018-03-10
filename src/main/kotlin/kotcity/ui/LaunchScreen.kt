@@ -6,12 +6,7 @@ import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import tornadofx.App
 import tornadofx.View
-import javafx.stage.FileChooser
-import kotcity.data.CityFileAdapter
-import kotcity.data.MapGenerator
 import tornadofx.runLater
-import java.util.Collections.addAll
-import java.io.File
 
 
 const val GAME_STRING = "KotCity 0.41"

@@ -1,11 +1,10 @@
 package kotcity.ui
 
-import javafx.collections.ListChangeListener
-import java.util.function.Consumer
+
 import javafx.collections.FXCollections
+import javafx.collections.ListChangeListener
 import javafx.concurrent.Task
 import javafx.concurrent.WorkerStateEvent
-
 import javafx.geometry.Pos
 import javafx.scene.Group
 import javafx.scene.Scene
@@ -19,9 +18,7 @@ import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.stage.Window
-import tornadofx.runLater
-
-
+import java.util.function.Consumer
 import java.util.function.ToIntFunction
 
 /**

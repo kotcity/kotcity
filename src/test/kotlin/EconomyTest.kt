@@ -1,6 +1,5 @@
 import kotcity.data.*
 import kotcity.data.assets.AssetManager
-import kotcity.pathfinding.Pathfinder
 import org.junit.jupiter.api.Test
 
 class EconomyTest {

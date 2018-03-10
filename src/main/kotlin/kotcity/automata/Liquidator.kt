@@ -3,7 +3,6 @@ package kotcity.automata
 import kotcity.data.*
 import kotcity.util.Debuggable
 import kotlin.reflect.KClass
-import kotlin.reflect.jvm.internal.impl.load.java.structure.JavaClass
 
 class Liquidator(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = false

@@ -4,9 +4,6 @@ import kotcity.data.*
 import kotcity.pathfinding.Path
 import kotcity.util.Debuggable
 import kotcity.util.getRandomElements
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
-import kotlinx.coroutines.experimental.withTimeout
 
 class ContactFulfiller(val cityMap: CityMap) : Debuggable {
 

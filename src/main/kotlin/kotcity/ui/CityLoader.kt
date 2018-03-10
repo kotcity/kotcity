@@ -3,15 +3,13 @@ package kotcity.ui
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
 import javafx.stage.FileChooser
+import javafx.stage.Stage
 import kotcity.data.CityFileAdapter
 import tornadofx.View
 import tornadofx.find
 import tornadofx.runLater
 import java.io.File
 import java.util.function.ToIntFunction
-import javafx.stage.Stage
-
-
 
 
 object CityLoader {

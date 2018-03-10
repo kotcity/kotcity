@@ -4,9 +4,6 @@ import java.awt.Toolkit
 import java.awt.image.BufferedImage
 import java.io.File
 import java.util.*
-import java.awt.image.MemoryImageSource
-
-
 
 
 data class Pixel(val r: Int, val g: Int, val b: Int, val a: Int)
