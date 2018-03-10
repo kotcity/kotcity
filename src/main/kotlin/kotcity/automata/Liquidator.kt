@@ -17,7 +17,7 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
 
         val start = System.currentTimeMillis()
 
-        var bulldozedCounts = mutableMapOf<KClass<out Building>, Int>().withDefault { 0 }
+        val bulldozedCounts = mutableMapOf<KClass<out Building>, Int>().withDefault { 0 }
         bulldozedCounts[Residential::class] = 0
         bulldozedCounts[Commercial::class] = 0
         bulldozedCounts[Industrial::class] = 0

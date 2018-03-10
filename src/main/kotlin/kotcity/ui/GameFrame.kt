@@ -249,7 +249,7 @@ class GameFrame : View(), Debuggable {
         val fileChooser = FileChooser()
         fileChooser.title = "Save your city"
         fileChooser.extensionFilters.addAll(
-            FileChooser.ExtensionFilter("KotCity City", "*.kcity")
+                FileChooser.ExtensionFilter("KotCity City", "*.kcity")
         )
         fileChooser.initialFileName = map.suggestedFilename()
         val file = fileChooser.showSaveDialog(this.primaryStage)
@@ -299,7 +299,7 @@ class GameFrame : View(), Debuggable {
             setMapModes(MapMode.NORMAL)
         }
         oilMapMode.setOnAction {
-           setMapModes(MapMode.OIL)
+            setMapModes(MapMode.OIL)
         }
         goldMapMode.setOnAction {
             setMapModes(MapMode.GOLD)
@@ -380,7 +380,7 @@ class GameFrame : View(), Debuggable {
                 runLater {
                     if (!pauseMenuItem.isSelected) {
                         map.tick()
-                        clockLabel.text = "${serializeDate(map.time)}"
+                        clockLabel.text = serializeDate(map.time)
                     }
                 }
             }
@@ -501,29 +501,26 @@ class GameFrame : View(), Debuggable {
             cityRenderer?.onMouseClicked(evt)
             // now let's handle some tools...
             if (evt.button == MouseButton.PRIMARY) {
-                if (activeTool == Tool.COAL_POWER_PLANT) {
-                    // TODO: we have to figure out some kind of offset for this shit...
-                    // can't take place at hovered block...
-                    cityRenderer?.getHoveredBlock()?.let {
-                        val newX = it.x - 1
-                        val newY = it.y - 1
-                        map.build(PowerPlant("coal", map), BlockCoordinate(newX, newY))
-                    }
-                } else if (activeTool == Tool.NUCLEAR_POWER_PLANT) {
-                    cityRenderer?.getHoveredBlock()?.let {
+                when (activeTool) {
+                    Tool.COAL_POWER_PLANT -> // TODO: we have to figure out some kind of offset for this shit...
+                        // can't take place at hovered block...
+                        cityRenderer?.getHoveredBlock()?.let {
+                            val newX = it.x - 1
+                            val newY = it.y - 1
+                            map.build(PowerPlant("coal", map), BlockCoordinate(newX, newY))
+                        }
+                    Tool.NUCLEAR_POWER_PLANT -> cityRenderer?.getHoveredBlock()?.let {
                         val newX = it.x - 1
                         val newY = it.y - 1
                         map.build(PowerPlant("nuclear", map), BlockCoordinate(newX, newY))
                     }
-                } else if (activeTool == Tool.JOB_CENTER) {
-                    cityRenderer?.getHoveredBlock()?.let {
+                    Tool.JOB_CENTER -> cityRenderer?.getHoveredBlock()?.let {
                         val newX = it.x - 1
                         val newY = it.y - 1
                         val jobCenter = assetManager.buildingFor(Civic::class, "job_center")
                         map.build(jobCenter, BlockCoordinate(newX, newY))
                     }
-                } else if (activeTool == Tool.TOWN_WAREHOUSE) {
-                    cityRenderer?.getHoveredBlock()?.let {
+                    Tool.TOWN_WAREHOUSE -> cityRenderer?.getHoveredBlock()?.let {
                         val newX = it.x - 1
                         val newY = it.y - 1
                         val townWarehouse = assetManager.buildingFor(Civic::class, "town_warehouse")

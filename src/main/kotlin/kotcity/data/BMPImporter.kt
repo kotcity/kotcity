@@ -40,7 +40,7 @@ class BMPImporter {
         val image = Toolkit.getDefaultToolkit().createImage(mis)
         val finalimg = BufferedImage(decoder.width, decoder.height, BufferedImage.TYPE_INT_RGB)
         val piximg = Toolkit.getDefaultToolkit().createImage(mis)
-        finalimg.getGraphics().drawImage(piximg, 0, 0, null)
+        finalimg.graphics.drawImage(piximg, 0, 0, null)
 
         if (image != null) {
             val size = Collections.min(listOf(finalimg.width, finalimg.height)) ?: 512

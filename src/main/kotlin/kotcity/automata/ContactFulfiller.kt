@@ -15,7 +15,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         val maxMs = 5000
         val startAt = System.currentTimeMillis()
 
-        var totalSigned = 0
+        val totalSigned = 0
 
         val contractCollection = if (shuffled) {
             locationsNeedingContracts().shuffled()

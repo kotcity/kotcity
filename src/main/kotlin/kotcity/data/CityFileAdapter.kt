@@ -2,6 +2,7 @@ package kotcity.data
 
 import GzipUtil
 import com.github.salomonbrys.kotson.*
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
@@ -25,7 +26,7 @@ fun serializeDate(date: Date): String {
     return simpleDateFormat.format(date)
 }
 
-val gson = GsonBuilder()
+val gson: Gson = GsonBuilder()
         .registerTypeAdapter<CityMap> {
 
             serialize {
@@ -102,7 +103,7 @@ private fun readResourceLayers(data: JsonObject, cityMap: CityMap) {
 
 private fun readZoneLayer(data: JsonObject, cityMap: CityMap) {
     data["zoneLayer"]?.asJsonArray?.forEach {
-        var zoneObj = it.asJsonObject
+        val zoneObj = it.asJsonObject
         val x = zoneObj["x"].asInt
         val y = zoneObj["y"].asInt
         val type = Zone.valueOf(zoneObj["type"].asString)
@@ -112,8 +113,8 @@ private fun readZoneLayer(data: JsonObject, cityMap: CityMap) {
 
 private fun readPowerlineLayer(data: JsonObject, cityMap: CityMap) {
     data["powerLineLayer"].asJsonArray.forEach {
-        var x = it["x"].asInt
-        var y = it["y"].asInt
+        val x = it["x"].asInt
+        val y = it["y"].asInt
         cityMap.powerLineLayer[BlockCoordinate(x, y)] = PowerLine(cityMap)
     }
 }
@@ -154,8 +155,8 @@ private fun readBuildingLayer(data: JsonObject, cityMap: CityMap) {
     val assetManager = AssetManager(cityMap)
     data["buildingLayer"].asJsonArray.forEach {
         val buildingObj = it.asJsonObject
-        var x = it["x"].asInt
-        var y = it["y"].asInt
+        val x = it["x"].asInt
+        val y = it["y"].asInt
         val type = Building.classByString(buildingObj["type"].nullString)
         val name = buildingObj["name"]?.asString
 
