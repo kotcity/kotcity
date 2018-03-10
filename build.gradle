@@ -13,6 +13,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'edu.sc.seis.launch4j' version '2.4.3'
+}
+
 group 'com.kotcity'
 version '1.0-SNAPSHOT'
 
