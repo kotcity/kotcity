@@ -32,7 +32,6 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
-    maven { url 'https://mvnrepository.com' }
     jcenter()
 }
 
