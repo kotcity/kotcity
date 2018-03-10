@@ -11,6 +11,10 @@ object ZotSpriteLoader {
         var filename = when(zot) {
             Zot.TOO_MUCH_TRAFFIC -> "file:./assets/zots/too_much_traffic.png"
             Zot.NO_POWER -> "file:./assets/zots/no_power.png"
+            Zot.NO_CUSTOMERS -> "file:./assets/zots/no_customers.png"
+            Zot.NO_GOODS -> "file:./assets/zots/no_goods.png"
+            Zot.NO_WORKERS -> "file:./assets/zots/no_workers.png"
+            Zot.UNHAPPY_NEIGHBORS -> "file:./assets/zots/unhappy_neighbors.png"
             else -> return null
         }
         return imageForFile(filename, width, height)

@@ -7,5 +7,5 @@ enum class Zot {
     NO_WORKERS,
     NO_DEMAND,
     NO_POWER,
-    NOT_ENOUGH_CUSTOMERS
+    NO_CUSTOMERS
 }

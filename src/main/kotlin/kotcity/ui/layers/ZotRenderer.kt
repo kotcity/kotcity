@@ -46,12 +46,24 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
         val blockSize = cityRenderer.blockSize()
         // gotta fill that background too...
 
-        val y = (ty - 1) * blockSize + (Math.sin(Math.toRadians(degree)) * 10)
-        g2d.fill = Color.WHITE
-        g2d.fillOval(tx * blockSize, y, blockSize, blockSize)
-        g2d.stroke = Color.RED
-        g2d.strokeOval(tx * blockSize, y, blockSize, blockSize)
+        val y = (ty - 1) * blockSize + ((Math.sin(Math.toRadians(degree)) * (blockSize * 0.1)))
+        drawOutline(g2d, tx, blockSize, y)
+
         g2d.drawImage(image, tx * blockSize, y)
+    }
+
+    private fun drawOutline(g2d: GraphicsContext, tx: Double, blockSize: Double, y: Double) {
+        g2d.fill = Color.WHITE
+
+        val quarterBlock = blockSize * 0.25
+        val halfBlock = blockSize * 0.5
+
+        val x = (tx * blockSize) - quarterBlock
+        val y = y - quarterBlock
+        g2d.fillOval(x, y, blockSize + halfBlock, blockSize + halfBlock)
+
+        g2d.stroke = Color.RED
+        g2d.strokeOval(x, y, blockSize + halfBlock, blockSize + halfBlock)
     }
 
     fun render() {
@@ -76,9 +88,9 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
 
     }
 
-    var zotForBuildingCache: LoadingCache<Location, Zot?> =  Caffeine.newBuilder()
+    private var zotForBuildingCache: LoadingCache<Location, Zot?> =  Caffeine.newBuilder()
             .maximumSize(10000)
-            .expireAfterWrite(1, TimeUnit.MINUTES)
+            .expireAfterWrite(15, TimeUnit.SECONDS)
             .build<Location, Zot?> { key -> key.building.zots.getRandomElement() }
 
     private fun randomZot(location: Location): Zot? {

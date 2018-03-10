@@ -35,10 +35,6 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
             zotList.add(Zot.NO_WORKERS)
         }
 
-        if (!hasNearbyTraffic(location)) {
-            zotList.add(Zot.TOO_MUCH_TRAFFIC)
-        }
-
         return zotList
     }
 
@@ -50,8 +46,8 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
             zotList.add(Zot.NO_WORKERS)
         }
 
-        if (!hasNearbyTraffic(location)) {
-            zotList.add(Zot.NOT_ENOUGH_CUSTOMERS)
+        if (!hasTrafficNearby(location, 50)) {
+            zotList.add(Zot.NO_CUSTOMERS)
         }
 
         return zotList
@@ -75,20 +71,19 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
             zotList.add(Zot.NO_GOODS)
         }
 
-        if (hasNearbyTraffic(location)) {
+        if (hasTrafficNearby(location, 300)) {
             zotList.add(Zot.TOO_MUCH_TRAFFIC)
         }
 
         return zotList
     }
 
-    private fun hasNearbyTraffic(location: Location): Boolean {
+    private fun hasTrafficNearby(location: Location, quantity: Int): Boolean {
         val neighboringBlocks = location.coordinate.neighbors(5)
         val nearbyRoads = neighboringBlocks.flatMap { cityMap.cachedBuildingsIn(it) }
                                                        .filter { it.building is Road }
 
         val trafficCount = nearbyRoads.sumBy { cityMap.trafficLayer[it.coordinate]?.toInt() ?: 0}
-        debug("The building ${location.building} has $trafficCount nearby")
-        return trafficCount > 100
+        return trafficCount > quantity
     }
 }
