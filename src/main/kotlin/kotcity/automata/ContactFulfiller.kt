@@ -36,7 +36,6 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
             }
         }
 
-
     }
 
     private fun handleBuilding(entry: Location, maxMs: Int, delta: Long, totalSigned: Int) {
@@ -56,8 +55,6 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                 if (bestSource != null) {
                     val otherTradeEntity = bestSource.first
                     val pathToOther = bestSource.second
-
-
                     val quantity = building.quantityWanted(tradeable).coerceAtMost(otherTradeEntity.quantityForSale(tradeable))
 
                     if (quantity > 0) {
@@ -69,7 +66,6 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                         // debug("New setup: ${building.summarizeContracts()}")
                         debug("Still ${maxMs - delta} millis left to sign contracts...")
                     }
-
 
                 } else {
                     debug("Could not find $needsCount $tradeable for ${building.name} at $coordinate")
@@ -85,7 +81,6 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                     if (entityAndPath != null) {
                         val otherEntity = entityAndPath.first
                         val path = entityAndPath.second
-
 
                         val quantity = otherEntity.quantityWanted(tradeable).coerceAtMost(buildingTradeEntity.quantityForSale(tradeable))
 
