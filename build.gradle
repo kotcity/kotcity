@@ -13,6 +13,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'edu.sc.seis.launch4j' version '2.4.3'
+}
+
 group 'com.kotcity'
 version '1.0-SNAPSHOT'
 
@@ -28,7 +32,6 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
-    maven { url 'https://mvnrepository.com' }
     jcenter()
 }
 
@@ -36,22 +39,23 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile 'no.tornado:tornadofx:1.7.15'
     compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
-    compile group: 'com.github.davidmoten', name: 'rtree', version: '0.8.0.4'
+    compile 'com.github.davidmoten:rtree:0.8.0.4'
     compile 'com.github.kizitonwose.time:time:1.0.1'
-    compile group: 'javax.vecmath', name: 'vecmath', version: '1.5.2'
-    testCompile("org.junit.jupiter:junit-jupiter-api:5.0.0-M4")
-    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.0-M4")
-    compile "com.github.debop:koda-time:1.2.1"
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21"
+    compile 'javax.vecmath:vecmath:1.5.2'
 
-    // Enable use of the JUnitPlatform Runner within the IDE
-    testCompile("org.junit.platform:junit-platform-runner:1.0.0-M4")
+    compile 'com.github.debop:koda-time:1.2.1'
+    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21'
 
     compile 'com.github.ben-manes.caffeine:caffeine:2.6.1'
 
     // Optional extensions
     compile 'com.github.ben-manes.caffeine:guava:2.6.1'
     compile 'com.github.ben-manes.caffeine:jcache:2.6.1'
+
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.0-M4'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.0-M4'
+    // Enable use of the JUnitPlatform Runner within the IDE
+    testCompile 'org.junit.platform:junit-platform-runner:1.0.0-M4'
 }
 
 compileKotlin {
