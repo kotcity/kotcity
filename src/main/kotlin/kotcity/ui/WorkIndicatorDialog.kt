@@ -1,11 +1,11 @@
 package kotcity.ui
 
-import javafx.collections.ListChangeListener
-import java.util.function.Consumer
+
 import javafx.collections.FXCollections
+import javafx.collections.ListChangeListener
+import javafx.collections.ObservableList
 import javafx.concurrent.Task
 import javafx.concurrent.WorkerStateEvent
-
 import javafx.geometry.Pos
 import javafx.scene.Group
 import javafx.scene.Scene
@@ -19,9 +19,7 @@ import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.stage.Window
-import tornadofx.runLater
-
-
+import java.util.function.Consumer
 import java.util.function.ToIntFunction
 
 /**
@@ -47,7 +45,7 @@ class WorkIndicatorDialog<in P>
     private val vbox = VBox()
 
     /** Placing a listener on this list allows to get notified BY the result when the task has finished.  */
-    var resultNotificationList = FXCollections.observableArrayList<Int>()
+    var resultNotificationList: ObservableList<Int> = FXCollections.observableArrayList<Int>()
 
     /**
      * For those that like beans :)
@@ -57,8 +55,8 @@ class WorkIndicatorDialog<in P>
     init {
         dialog.initModality(Modality.WINDOW_MODAL)
         dialog.initOwner(owner)
-        dialog.setResizable(false)
-        this.label.setText(label)
+        dialog.isResizable = false
+        this.label.text = label
     }
 
     /**
@@ -84,13 +82,14 @@ class WorkIndicatorDialog<in P>
      *
      */
     private fun setupDialog() {
-        root.getChildren().add(mainPane)
-        vbox.setSpacing(5.0)
-        vbox.setAlignment(Pos.CENTER)
-        vbox.setMinSize(330.0, 120.0)
-        vbox.getChildren().addAll(label, progressIndicator)
-        mainPane.setTop(vbox)
-        dialog.setScene(scene)
+        root.children.add(mainPane)
+        vbox.spacing = 5.0
+        vbox.alignment = Pos.CENTER
+        vbox.minWidth = 330.0
+        vbox.minHeight = 120.0
+        vbox.children.addAll(label, progressIndicator)
+        mainPane.top = vbox
+        dialog.scene = scene
 
         dialog.setOnHiding { /* Gets notified when task ended, but BEFORE
              result value is attributed. Using the observable list above is

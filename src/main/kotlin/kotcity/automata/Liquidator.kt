@@ -3,7 +3,6 @@ package kotcity.automata
 import kotcity.data.*
 import kotcity.util.Debuggable
 import kotlin.reflect.KClass
-import kotlin.reflect.jvm.internal.impl.load.java.structure.JavaClass
 
 class Liquidator(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = false
@@ -18,7 +17,7 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
 
         val start = System.currentTimeMillis()
 
-        var bulldozedCounts = mutableMapOf<KClass<out Building>, Int>().withDefault { 0 }
+        val bulldozedCounts = mutableMapOf<KClass<out Building>, Int>().withDefault { 0 }
         bulldozedCounts[Residential::class] = 0
         bulldozedCounts[Commercial::class] = 0
         bulldozedCounts[Industrial::class] = 0

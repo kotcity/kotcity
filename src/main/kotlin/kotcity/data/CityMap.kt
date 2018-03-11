@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
-import kotlin.streams.toList
 
 const val DEFAULT_DESIRABILITY = 0.0
 
@@ -319,7 +318,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
-    suspend private fun timeFunction(desc: String, timedFunction: () -> Unit) {
+    private suspend fun timeFunction(desc: String, timedFunction: () -> Unit) {
         val startMillis = System.currentTimeMillis()
         timedFunction()
         val endMillis = System.currentTimeMillis()

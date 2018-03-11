@@ -1,6 +1,5 @@
 package kotcity.automata
 
-import kotcity.data.BuildingType
 import kotcity.data.CityMap
 import kotcity.data.Residential
 import kotcity.data.Tradeable

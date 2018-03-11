@@ -4,9 +4,6 @@ import kotcity.data.*
 import kotcity.pathfinding.Path
 import kotcity.util.Debuggable
 import kotcity.util.getRandomElements
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
-import kotlinx.coroutines.experimental.withTimeout
 
 class ContactFulfiller(val cityMap: CityMap) : Debuggable {
 
@@ -18,7 +15,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         val maxMs = 5000
         val startAt = System.currentTimeMillis()
 
-        var totalSigned = 0
+        val totalSigned = 0
 
         val contractCollection = if (shuffled) {
             locationsNeedingContracts().shuffled()

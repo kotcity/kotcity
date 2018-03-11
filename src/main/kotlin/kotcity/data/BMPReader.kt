@@ -174,7 +174,7 @@ class BMPDecoder {
                 mask = 0xff.toByte()
                 pixPerByte = 1
             }
-            else -> throw Exception("Unsupported bits-per-pixel value: " + bpp)
+            else -> throw Exception("Unsupported bits-per-pixel value: $bpp")
         }
 
         var i = 0

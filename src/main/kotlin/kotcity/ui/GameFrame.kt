@@ -3,22 +3,16 @@ package kotcity.ui
 import javafx.animation.AnimationTimer
 import javafx.application.Application
 import javafx.scene.control.*
+import javafx.scene.control.Alert.AlertType
+import javafx.scene.control.ButtonBar.ButtonData
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.AnchorPane
-import javafx.scene.layout.VBox
-import javafx.stage.Stage
-import kotcity.data.*
-import tornadofx.App
-import tornadofx.View
-import tornadofx.find
-import java.io.File
-import javafx.stage.FileChooser
-import javafx.scene.control.Alert.AlertType
-import javafx.scene.control.Alert
-import javafx.scene.control.ButtonType
-import javafx.scene.control.ButtonBar.ButtonData
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.StackPane
+import javafx.scene.layout.VBox
+import javafx.stage.FileChooser
+import javafx.stage.Stage
+import kotcity.data.*
 import kotcity.data.assets.AssetManager
 import kotcity.ui.charts.SupplyDemandChart
 import kotcity.ui.layers.TrafficRenderer
@@ -26,7 +20,11 @@ import kotcity.ui.layers.ZotRenderer
 import kotcity.ui.map.CityMapCanvas
 import kotcity.ui.map.CityRenderer
 import kotcity.util.Debuggable
+import tornadofx.App
+import tornadofx.View
+import tornadofx.find
 import tornadofx.runLater
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -251,7 +249,7 @@ class GameFrame : View(), Debuggable {
         val fileChooser = FileChooser()
         fileChooser.title = "Save your city"
         fileChooser.extensionFilters.addAll(
-            FileChooser.ExtensionFilter("KotCity City", "*.kcity")
+                FileChooser.ExtensionFilter("KotCity City", "*.kcity")
         )
         fileChooser.initialFileName = map.suggestedFilename()
         val file = fileChooser.showSaveDialog(this.primaryStage)
@@ -301,7 +299,7 @@ class GameFrame : View(), Debuggable {
             setMapModes(MapMode.NORMAL)
         }
         oilMapMode.setOnAction {
-           setMapModes(MapMode.OIL)
+            setMapModes(MapMode.OIL)
         }
         goldMapMode.setOnAction {
             setMapModes(MapMode.GOLD)
@@ -382,7 +380,7 @@ class GameFrame : View(), Debuggable {
                 runLater {
                     if (!pauseMenuItem.isSelected) {
                         map.tick()
-                        clockLabel.text = "${serializeDate(map.time)}"
+                        clockLabel.text = serializeDate(map.time)
                     }
                 }
             }
@@ -503,29 +501,26 @@ class GameFrame : View(), Debuggable {
             cityRenderer?.onMouseClicked(evt)
             // now let's handle some tools...
             if (evt.button == MouseButton.PRIMARY) {
-                if (activeTool == Tool.COAL_POWER_PLANT) {
-                    // TODO: we have to figure out some kind of offset for this shit...
-                    // can't take place at hovered block...
-                    cityRenderer?.getHoveredBlock()?.let {
-                        val newX = it.x - 1
-                        val newY = it.y - 1
-                        map.build(PowerPlant("coal", map), BlockCoordinate(newX, newY))
-                    }
-                } else if (activeTool == Tool.NUCLEAR_POWER_PLANT) {
-                    cityRenderer?.getHoveredBlock()?.let {
+                when (activeTool) {
+                    Tool.COAL_POWER_PLANT -> // TODO: we have to figure out some kind of offset for this shit...
+                        // can't take place at hovered block...
+                        cityRenderer?.getHoveredBlock()?.let {
+                            val newX = it.x - 1
+                            val newY = it.y - 1
+                            map.build(PowerPlant("coal", map), BlockCoordinate(newX, newY))
+                        }
+                    Tool.NUCLEAR_POWER_PLANT -> cityRenderer?.getHoveredBlock()?.let {
                         val newX = it.x - 1
                         val newY = it.y - 1
                         map.build(PowerPlant("nuclear", map), BlockCoordinate(newX, newY))
                     }
-                } else if (activeTool == Tool.JOB_CENTER) {
-                    cityRenderer?.getHoveredBlock()?.let {
+                    Tool.JOB_CENTER -> cityRenderer?.getHoveredBlock()?.let {
                         val newX = it.x - 1
                         val newY = it.y - 1
                         val jobCenter = assetManager.buildingFor(Civic::class, "job_center")
                         map.build(jobCenter, BlockCoordinate(newX, newY))
                     }
-                } else if (activeTool == Tool.TOWN_WAREHOUSE) {
-                    cityRenderer?.getHoveredBlock()?.let {
+                    Tool.TOWN_WAREHOUSE -> cityRenderer?.getHoveredBlock()?.let {
                         val newX = it.x - 1
                         val newY = it.y - 1
                         val townWarehouse = assetManager.buildingFor(Civic::class, "town_warehouse")

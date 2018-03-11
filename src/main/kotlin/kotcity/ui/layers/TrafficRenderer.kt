@@ -5,7 +5,6 @@ import javafx.animation.Timeline
 import javafx.event.EventHandler
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.image.Image
-import javafx.scene.paint.Color
 import javafx.util.Duration
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap

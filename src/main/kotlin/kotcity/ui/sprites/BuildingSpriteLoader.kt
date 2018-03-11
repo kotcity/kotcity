@@ -8,8 +8,7 @@ import kotcity.memoization.cache
 object BuildingSpriteLoader {
 
     fun spriteForBuildingType(building: Building, width: Double, height: Double): Image? {
-        var filename = filename(building)
-        return imageForFile(filename, width, height)
+        return imageForFile(filename(building), width, height)
     }
 
     private fun uncachedImageForFile(filename: String, width: Double, height: Double): Image {

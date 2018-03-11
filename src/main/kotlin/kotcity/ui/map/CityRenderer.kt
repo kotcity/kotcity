@@ -16,7 +16,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     var zoom = 1.0
         set(value) {
-            var oldCenter = centerBlock()
+            val oldCenter = centerBlock()
             field = value
             panMap(oldCenter)
         }
@@ -51,8 +51,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     // awkward... we need padding to get building off the screen...
     fun visibleBlockRange(padding : Int = 0): Pair<BlockCoordinate, BlockCoordinate> {
-        var startBlockX = blockOffsetX.toInt() - padding
-        var startBlockY = blockOffsetY.toInt() - padding
+        val startBlockX = blockOffsetX.toInt() - padding
+        val startBlockY = blockOffsetY.toInt() - padding
         var endBlockX = startBlockX + canvasBlockWidth() + padding
         var endBlockY = startBlockY + canvasBlockHeight() + padding
 
@@ -622,8 +622,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         val endBlock = mouseBlock ?: return
         val x = startBlock.x
         val y = startBlock.y
-        var x2 = endBlock.x
-        var y2 = endBlock.y
+        val x2 = endBlock.x
+        val y2 = endBlock.y
 
         if (Math.abs(x - x2) > Math.abs(y - y2)) {
             // building horizontally

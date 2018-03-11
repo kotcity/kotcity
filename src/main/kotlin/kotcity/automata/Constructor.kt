@@ -1,12 +1,10 @@
 package kotcity.automata
 
 import kotcity.data.*
-import kotlin.jvm.javaClass
 import kotcity.data.assets.AssetManager
 import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotcity.util.Debuggable
 import kotcity.util.getRandomElement
-import kotcity.util.getRandomElements
 import java.util.*
 import kotlin.reflect.KClass
 

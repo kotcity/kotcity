@@ -67,7 +67,7 @@ class MapGenerator {
 
         val baseLine = 0.0
 
-        listOf("oil", "coal", "gold", "soil").forEachIndexed() { n, resourceName ->
+        listOf("oil", "coal", "gold", "soil").forEachIndexed { n, resourceName ->
             val noiseGen = OpenSimplexNoise(1+seed+n)
             repeat(map.width) { x ->
                 repeat(map.height) { y ->

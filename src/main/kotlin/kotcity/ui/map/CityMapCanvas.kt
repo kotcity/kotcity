@@ -99,8 +99,8 @@ class CityMapCanvas : ResizableCanvas() {
                 val sy = Algorithms.scale(visibleBlockRange.first.y.toDouble(), 0.0, map.height.toDouble(), 0.0, smallerDimension)
                 val ex = Algorithms.scale(visibleBlockRange.second.x.toDouble(), 0.0, map.width.toDouble(), 0.0, smallerDimension)
                 val ey = Algorithms.scale(visibleBlockRange.second.y.toDouble(), 0.0, map.height.toDouble(), 0.0, smallerDimension)
-                var width = ex - sx
-                var height = ey - sy
+                val width = ex - sx
+                val height = ey - sy
 
                 val seeThruPink = Color(Color.HOTPINK.red, Color.HOTPINK.green, Color.HOTPINK.blue, 0.8)
                 gc.fill = seeThruPink

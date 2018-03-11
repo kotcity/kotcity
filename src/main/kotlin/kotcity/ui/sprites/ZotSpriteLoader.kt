@@ -8,7 +8,7 @@ import kotcity.memoization.cache
 object ZotSpriteLoader {
 
     fun spriteForZot(zot: Zot, width: Double, height: Double): Image? {
-        var filename = when(zot) {
+        val filename = when (zot) {
             Zot.TOO_MUCH_TRAFFIC -> "file:./assets/zots/too_much_traffic.png"
             Zot.NO_POWER -> "file:./assets/zots/no_power.png"
             Zot.NO_CUSTOMERS -> "file:./assets/zots/no_customers.png"
