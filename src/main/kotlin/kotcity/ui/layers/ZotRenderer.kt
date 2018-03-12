@@ -9,12 +9,16 @@ import javafx.scene.canvas.GraphicsContext
 import javafx.scene.image.Image
 import javafx.scene.paint.Color
 import javafx.util.Duration
-import kotcity.data.*
+import kotcity.data.BlockCoordinate
+import kotcity.data.CityMap
+import kotcity.data.Location
+import kotcity.data.Zot
 import kotcity.ui.ResizableCanvas
 import kotcity.ui.map.CityRenderer
 import kotcity.ui.sprites.ZotSpriteLoader
 import kotcity.util.Debuggable
 import kotcity.util.getRandomElement
+import kotcity.util.getRandomElements
 import java.util.concurrent.TimeUnit
 
 class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRenderer, private val zotCanvas: ResizableCanvas): Debuggable {
@@ -73,8 +77,8 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
 
         // ok let's get all buildings with zots now...
         visibleBlockRange?.let { visibleBlockRange ->
-            val locationsWithZots = cityMap.locationsIn(visibleBlockRange.first, visibleBlockRange.second).filter { it.building.zots.isNotEmpty() }
-            locationsWithZots.forEach { location ->
+            val locationsWithZots = visibleBuildingsCache[visibleBlockRange]
+            locationsWithZots?.forEach { location ->
                 // TODO: we gotta get different zots every once in a while...
                 val randomZot: Zot? = randomZot(location)
                 if (randomZot != null) {
@@ -87,6 +91,17 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
         }
 
     }
+
+    // OK we need a cache here so we only shoot back a few buildings
+    private fun randomBuildingsWithZots(visibleBlockRange: Pair<BlockCoordinate, BlockCoordinate>): List<Location> {
+        return cityMap.locationsIn(visibleBlockRange.first, visibleBlockRange.second).filter { it.building.zots.isNotEmpty() }
+    }
+
+    // this way we only flip around for a bit...
+    private var visibleBuildingsCache: LoadingCache<Pair<BlockCoordinate, BlockCoordinate>, List<Location>> = Caffeine.newBuilder()
+            .expireAfterWrite(10, TimeUnit.SECONDS)
+            .build<Pair<BlockCoordinate, BlockCoordinate>, List<Location>> { key -> randomBuildingsWithZots(key).getRandomElements(5) }
+
 
     private var zotForBuildingCache: LoadingCache<Location, Zot?> =  Caffeine.newBuilder()
             .maximumSize(10000)
