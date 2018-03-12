@@ -42,9 +42,13 @@ A: It has a lot of libraries (pick any random Java library...) It's pretty produ
 
 After many years of not seeing any new city builders descend that are satisfactory, I decided to take matters into my own hands. Why? SimCity 2013 was REALLY disappointing. Cities Skylines is fun... but it doesn't seem to scratch that itch that SimCity 4 does. Even though there are still patches and new content coming out for SimCity 4, it's definitely on life support. I looked around at a few of the city simulators available but it doesn't seem like anyone is really working on a modern version of SimCity.
 
+## Community
+
+If you get stuck or want to suggest suggestions, you can discuss it at https://community.simtropolis.com/forums/topic/74899-announcement-kotcity-an-open-source-city-simulator/. IRC currently unavailable.
+
 ## Contribution
 
-You can contribute buildings (see assets directory), ideas for the game, help with art and so on by creating issues or fork the repo and start to make pull requests.
+You can contribute buildings (see assets directory), ideas for the game, help with art and so on by creating issues or fork the repo and start to make pull requests. If you willing to, don't forget to add your name to CREDITS file.
 
 By submitting the work to the repository, you're agree that your work should be compatible with Apache License 2.0 and assets license (undecided for now).
 
