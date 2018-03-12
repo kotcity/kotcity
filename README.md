@@ -15,7 +15,7 @@ This game aims to achieve a mark somewhere between SimCity (1989) and SC2000. Ho
 
 A build for Windows is available at https://github.com/kotcity/kotcity/releases/tag/0.41.
 
-Mac and Linux available upon request (or build it yourself!)
+macOS and Linux build available upon request (or build it yourself!)
 
 ## Quick Start
 
