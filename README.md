@@ -48,7 +48,7 @@ If you get stuck or want to suggest suggestions, you can discuss it at https://c
 
 ## Contribution
 
-You can contribute buildings (see assets directory), ideas for the game, help with art and so on by creating issues or fork the repo and start to make pull requests. If you willing to, don't forget to add your name to CREDITS file.
+You can contribute buildings (see assets directory), ideas for the game, help with art and so on by creating issues or fork the repo and start to make pull requests.
 
 By submitting the work to the repository, you're agree that your work should be compatible with Apache License 2.0 and assets license (undecided for now).
 
@@ -83,4 +83,4 @@ To make a game that "takes over" from SimCity 4. We have a loooooong way to go:
 
 ## License
 
-This project is licensed with Apache License 2.0. Assets license currently undecided.
+This project is licensed with Apache License 2.0. Assets license currently undecided. This project includes icons by various graphic designers from the Noun Project.
