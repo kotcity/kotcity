@@ -26,7 +26,7 @@ class MapGeneratorScreen : View() {
     private val sizeField: TextField by fxid()
     private val seaLevelSlider: Slider by fxid()
 
-    private var timer : AnimationTimer? = null
+    private var timer: AnimationTimer? = null
 
     private val mapModeComboBox: ComboBox<String> by fxid()
 
@@ -79,7 +79,7 @@ class MapGeneratorScreen : View() {
         fileChooser.title = "Import BMP"
         // fileChooser.initialDirectory = File(System.getProperty("user.home"))
         fileChooser.extensionFilters.addAll(
-                FileChooser.ExtensionFilter("SC4 Map", "*.bmp")
+            FileChooser.ExtensionFilter("SC4 Map", "*.bmp")
         )
         runLater {
             val file = fileChooser.showOpenDialog(currentStage)
@@ -158,8 +158,12 @@ class MapGeneratorScreen : View() {
         val gameFrame = tornadofx.find(GameFrame::class)
         timer?.stop()
         gameFrame.setMap(newMap)
-        gameFrame.openWindow()
+        gameFrame.openWindow(escapeClosesWindow = false)
         println("Now maximizing...")
         gameFrame.currentStage?.isMaximized = true
+        gameFrame.currentStage?.setOnCloseRequest {
+            gameFrame.quitPressed()
+            it.consume()
+        }
     }
 }

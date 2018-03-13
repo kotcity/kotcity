@@ -12,7 +12,11 @@ const val MAX_BUILDING_SIZE = 4
 const val DESIRABILITY_CAP: Double = 300.0
 // the coal power plant is the biggest...
 
-class CityRenderer(private val gameFrame: GameFrame, private val canvas: ResizableCanvas, private val cityMap: CityMap) {
+class CityRenderer(
+    private val gameFrame: GameFrame,
+    private val canvas: ResizableCanvas,
+    private val cityMap: CityMap
+) {
 
     var zoom = 1.0
         set(value) {
@@ -50,7 +54,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     private fun canvasBlockWidth() = (canvas.width / blockSize()).toInt()
 
     // awkward... we need padding to get building off the screen...
-    fun visibleBlockRange(padding : Int = 0): Pair<BlockCoordinate, BlockCoordinate> {
+    fun visibleBlockRange(padding: Int = 0): Pair<BlockCoordinate, BlockCoordinate> {
         val startBlockX = blockOffsetX.toInt() - padding
         val startBlockY = blockOffsetY.toInt() - padding
         var endBlockX = startBlockX + canvasBlockWidth() + padding
@@ -172,9 +176,9 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
                     gc.fill = adjustedColor
 
                     gc.fillRect(
-                            xi * blockSize,
-                            yi * blockSize,
-                            blockSize, blockSize
+                        xi * blockSize,
+                        yi * blockSize,
+                        blockSize, blockSize
                     )
 
                     if (DRAW_GRID && zoom >= 3.0) {
@@ -243,7 +247,8 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         // we might be working with a big building here...
         val buildingBlocks = cityMap.locationsAt(showRoutesFor)
 
-        val contracts = (cityMap.locations()).plus(buildingBlocks).distinct().map { contractsWithPathThrough(it.building, showRoutesFor) }.flatten()
+        val contracts = (cityMap.locations()).plus(buildingBlocks).distinct()
+            .map { contractsWithPathThrough(it.building, showRoutesFor) }.flatten()
         // ok now we know which ones to draw...
         val blocksWithPath = contracts.flatMap { it.path?.blocks() ?: emptyList() }.distinct().toSet()
         // now get only ones on screen...
@@ -280,7 +285,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         }
     }
 
-    private fun interpolateColor(color1:  java.awt.Color, color2: java.awt.Color, fraction: Float): Color {
+    private fun interpolateColor(color1: java.awt.Color, color2: java.awt.Color, fraction: Float): Color {
         var colorFraction = fraction
         val intToFloatConst = 1f / 255f
         colorFraction = Math.min(colorFraction, 1f)
@@ -328,7 +333,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     }
 
     private fun resourceLayer(mode: MapMode): QuantizedMap<Double>? {
-        return when(mode) {
+        return when (mode) {
             MapMode.COAL -> cityMap.resourceLayers["coal"]
             MapMode.OIL -> cityMap.resourceLayers["oil"]
             MapMode.GOLD -> cityMap.resourceLayers["gold"]
@@ -343,7 +348,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
         val layer = resourceLayer(this.mapMode) ?: return
 
-        BlockCoordinate.iterate(startBlock, endBlock) {coord ->
+        BlockCoordinate.iterate(startBlock, endBlock) { coord ->
             val tile = layer[coord]
             tile?.let {
 
@@ -364,46 +369,40 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
     private fun drawHighlights() {
         mouseBlock?.let {
             if (mouseDown) {
-                if (gameFrame.activeTool == Tool.ROAD) {
-                    drawRoadBlueprint(canvas.graphicsContext2D)
-                } else if (gameFrame.activeTool == Tool.POWER_LINES) {
-                    drawRoadBlueprint(canvas.graphicsContext2D)
-                } else if (gameFrame.activeTool == Tool.BULLDOZE) {
-                    firstBlockPressed?.let { first ->
+                when (gameFrame.activeTool) {
+                    Tool.ROAD -> drawRoadBlueprint(canvas.graphicsContext2D)
+                    Tool.POWER_LINES -> drawRoadBlueprint(canvas.graphicsContext2D)
+                    Tool.RESIDENTIAL_ZONE,
+                    Tool.COMMERCIAL_ZONE,
+                    Tool.INDUSTRIAL_ZONE,
+                    Tool.DEZONE,
+                    Tool.BULLDOZE -> firstBlockPressed?.let { first ->
                         highlightBlocks(first, it)
                     }
-                } else if (gameFrame.activeTool == Tool.RESIDENTIAL_ZONE) {
-                    firstBlockPressed?.let { first ->
-                        highlightBlocks(first, it)
-                    }
-                } else if (gameFrame.activeTool == Tool.COMMERCIAL_ZONE) {
-                    firstBlockPressed?.let { first ->
-                        highlightBlocks(first, it)
-                    }
-                } else if (gameFrame.activeTool == Tool.INDUSTRIAL_ZONE) {
-                    firstBlockPressed?.let { first ->
-                        highlightBlocks(first, it)
-                    }
-                } else if (gameFrame.activeTool == Tool.DEZONE) {
-                    firstBlockPressed?.let { first ->
-                        highlightBlocks(first, it)
-                    }
-                } else {
-                    Unit
+                    else -> Unit
                 }
             } else {
-                if (gameFrame.activeTool == Tool.COAL_POWER_PLANT || gameFrame.activeTool == Tool.NUCLEAR_POWER_PLANT) {
-                    highlightCenteredBlocks(it, 4, 4)
-                } else if (gameFrame.activeTool == Tool.ROAD || gameFrame.activeTool == Tool.POWER_LINES || gameFrame.activeTool == Tool.QUERY || gameFrame.activeTool == Tool.RECENTER || gameFrame.activeTool == Tool.ROUTES) {
-                    mouseBlock?.let {
-                        highlightBlocks(it, it)
+                when (gameFrame.activeTool) {
+                    Tool.COAL_POWER_PLANT,
+                    Tool.NUCLEAR_POWER_PLANT -> {
+                        highlightCenteredBlocks(it, 4, 4)
                     }
-                } else if (gameFrame.activeTool == Tool.JOB_CENTER || gameFrame.activeTool == Tool.TOWN_WAREHOUSE) {
-                    mouseBlock?.let {
-                        highlightCenteredBlocks(it, 2, 2)
+                    Tool.ROAD,
+                    Tool.DEZONE,
+                    Tool.POWER_LINES,
+                    Tool.QUERY,
+                    Tool.RECENTER,
+                    Tool.BULLDOZE,
+                    Tool.COMMERCIAL_ZONE,
+                    Tool.INDUSTRIAL_ZONE,
+                    Tool.RESIDENTIAL_ZONE,
+                    Tool.ROUTES -> {
+                        mouseBlock?.let { highlightBlocks(it, it) }
                     }
-                } else {
-                    Unit
+                    Tool.JOB_CENTER,
+                    Tool.TOWN_WAREHOUSE -> {
+                        mouseBlock?.let { highlightCenteredBlocks(it, 2, 2) }
+                    }
                 }
             }
         }
@@ -504,7 +503,7 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
         // blocksize will be like 64...
 
         val imgWidth = (building.width * blockSize) - (shrink * 2)
-        val imgHeight =  (building.height * blockSize) - (shrink * 2)
+        val imgHeight = (building.height * blockSize) - (shrink * 2)
 
         BuildingSpriteLoader.spriteForBuildingType(building, imgWidth, imgHeight)?.let { img ->
             val ix = (tx * blockSize) + shrink
@@ -514,7 +513,14 @@ class CityRenderer(private val gameFrame: GameFrame, private val canvas: Resizab
 
     }
 
-    private fun drawBuildingBorder(building: Building, tx: Double, ty: Double, width: Double, height: Double, blockSize: Double) {
+    private fun drawBuildingBorder(
+        building: Building,
+        tx: Double,
+        ty: Double,
+        width: Double,
+        height: Double,
+        blockSize: Double
+    ) {
 
         if (building is Road) {
             return

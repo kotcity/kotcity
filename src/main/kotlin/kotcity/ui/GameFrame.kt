@@ -68,7 +68,7 @@ class GameFrame : View(), Debuggable {
 
     private val canvasPane: StackPane by fxid("canvasStackPane")
     private val accordion: Accordion by fxid()
-    private val basicPane: TitledPane by fxid()
+    private val toolsPane: TitledPane by fxid()
     private val verticalScroll: ScrollBar by fxid()
     private val horizontalScroll: ScrollBar by fxid()
 
@@ -249,7 +249,7 @@ class GameFrame : View(), Debuggable {
         val fileChooser = FileChooser()
         fileChooser.title = "Save your city"
         fileChooser.extensionFilters.addAll(
-                FileChooser.ExtensionFilter("KotCity City", "*.kcity")
+            FileChooser.ExtensionFilter("KotCity City", "*.kcity")
         )
         fileChooser.initialFileName = map.suggestedFilename()
         val file = fileChooser.showSaveDialog(this.primaryStage)
@@ -341,7 +341,7 @@ class GameFrame : View(), Debuggable {
         bindMapModes()
 
         mapPane.center = cityMapCanvas
-        accordion.expandedPane = basicPane
+        accordion.expandedPane = toolsPane
 
         renderTimer?.stop()
         renderTimer = object : AnimationTimer() {
