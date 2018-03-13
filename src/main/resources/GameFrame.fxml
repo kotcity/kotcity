@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="744.0" prefWidth="1034.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="744.0" prefWidth="1034.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar>
          <menus>
@@ -91,50 +91,57 @@
                <children>
                   <Accordion fx:id="accordion" maxWidth="223.0" minHeight="298.0" prefHeight="298.0" prefWidth="223.0" VBox.vgrow="ALWAYS">
                      <panes>
-                        <TitledPane fx:id="basicPane" animated="false" text="Basic">
+                        <TitledPane fx:id="toolsPane" animated="false" text="Tools">
                            <content>
-                              <FlowPane hgap="10.0" maxWidth="200.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
+                              <FlowPane alignment="TOP_CENTER" hgap="10.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
                                  <children>
-                                    <ToggleButton fx:id="bulldozeButton" mnemonicParsing="false" text="Bulldoze">
+                                    <ToggleButton fx:id="bulldozeButton" mnemonicParsing="false" prefWidth="200.0" text="Bulldoze">
                                        <toggleGroup>
                                           <ToggleGroup fx:id="buildTools" />
                                        </toggleGroup>
                                     </ToggleButton>
-                                    <ToggleButton fx:id="dezoneButton" mnemonicParsing="false" text="Dezone" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="queryButton" mnemonicParsing="false" text="Query" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="routesButton" mnemonicParsing="false" text="Routes" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="recenterButton" layoutX="89.0" layoutY="57.0" mnemonicParsing="false" text="Recenter" toggleGroup="$buildTools" />
-                                    <Region layoutX="21.0" layoutY="93.0" prefHeight="5.0" prefWidth="200.0" />
-                                    <ToggleButton fx:id="residentialButton" mnemonicParsing="false" text="Residential" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="commercialButton" mnemonicParsing="false" text="Commercial" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="industrialButton" mnemonicParsing="false" text="Industrial" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="dezoneButton" mnemonicParsing="false" prefWidth="200.0" text="Dezone" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="queryButton" mnemonicParsing="false" prefWidth="200.0" selected="true" text="Query" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="routesButton" mnemonicParsing="false" prefWidth="200.0" text="Routes" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="recenterButton" layoutX="89.0" layoutY="57.0" mnemonicParsing="false" prefWidth="200.0" text="Recenter" toggleGroup="$buildTools" />
                                     <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="5.0" prefWidth="200.0" />
-                                    <ToggleButton fx:id="roadButton" mnemonicParsing="false" text="Road" toggleGroup="$buildTools" />
-                                    <Region layoutX="21.0" layoutY="93.0" prefHeight="5.0" prefWidth="200.0" />
-                                    <Button mnemonicParsing="false" onAction="#zoomIn" text="Zoom In" />
-                                    <Button mnemonicParsing="false" onAction="#zoomOut" text="Zoom Out" />
+                                    <Button mnemonicParsing="false" onAction="#zoomIn" prefWidth="200.0" text="Zoom In" />
+                                    <Button mnemonicParsing="false" onAction="#zoomOut" prefWidth="200.0" text="Zoom Out" />
                                  </children>
                               </FlowPane>
                            </content>
                         </TitledPane>
-                        <TitledPane animated="false" text="Power">
+                        <TitledPane fx:id="basicPane" animated="false" expanded="false" text="Basic">
                            <content>
-                              <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
+                              <FlowPane alignment="TOP_CENTER" hgap="10.0" maxWidth="200.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
                                  <children>
-                                    <ToggleButton fx:id="coalPowerButton" mnemonicParsing="false" text="Coal Power Plant" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="nuclearPowerButton" layoutX="21.0" layoutY="21.0" mnemonicParsing="false" text="Nuclear Power Plant" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="powerLinesButton" mnemonicParsing="false" text="Power Lines" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="residentialButton" mnemonicParsing="false" prefWidth="200.0" text="Residential" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="commercialButton" mnemonicParsing="false" prefWidth="200.0" text="Commercial" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="industrialButton" mnemonicParsing="false" prefWidth="200.0" text="Industrial" toggleGroup="$buildTools" />
+                                    <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="5.0" prefWidth="200.0" />
+                                    <ToggleButton fx:id="roadButton" mnemonicParsing="false" prefWidth="200.0" text="Road" toggleGroup="$buildTools" />
                                  </children>
                               </FlowPane>
                            </content>
                         </TitledPane>
-                        <TitledPane animated="false" text="Other" />
-                        <TitledPane animated="false" text="Civic">
+                        <TitledPane animated="false" expanded="false" text="Power">
                            <content>
-                              <FlowPane hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
+                              <FlowPane alignment="TOP_CENTER" hgap="10.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
                                  <children>
-                                    <ToggleButton fx:id="jobCenterButton" mnemonicParsing="false" text="Job Center" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="townWarehouseButton" mnemonicParsing="false" text="Town Warehouse" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="coalPowerButton" mnemonicParsing="false" prefWidth="200.0" text="Coal Power Plant" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="nuclearPowerButton" layoutX="21.0" layoutY="21.0" mnemonicParsing="false" prefWidth="200.0" text="Nuclear Power Plant" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="powerLinesButton" mnemonicParsing="false" prefWidth="200.0" text="Power Lines" toggleGroup="$buildTools" />
+                                 </children>
+                              </FlowPane>
+                           </content>
+                        </TitledPane>
+                        <TitledPane animated="false" expanded="false" text="Other" />
+                        <TitledPane animated="false" expanded="false" text="Civic">
+                           <content>
+                              <FlowPane alignment="TOP_CENTER" hgap="10.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
+                                 <children>
+                                    <ToggleButton fx:id="jobCenterButton" mnemonicParsing="false" prefWidth="200.0" text="Job Center" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="townWarehouseButton" mnemonicParsing="false" prefWidth="200.0" text="Town Warehouse" toggleGroup="$buildTools" />
                                  </children>
                               </FlowPane>
                            </content>
