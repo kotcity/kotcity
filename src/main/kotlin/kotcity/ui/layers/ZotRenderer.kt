@@ -44,30 +44,38 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
         offsetTimeline.stop()
     }
 
-    private fun drawZot(image: Image, g2d: GraphicsContext, coordinate: BlockCoordinate) {
+    private fun drawZot(image: Image, g2d: GraphicsContext, location: Location) {
+        val coordinate = location.coordinate
         val tx = coordinate.x - cityRenderer.blockOffsetX
         val ty = coordinate.y - cityRenderer.blockOffsetY
         val blockSize = cityRenderer.blockSize()
         // gotta fill that background too...
 
-        val y = (ty - 1) * blockSize + ((Math.sin(Math.toRadians(degree)) * (blockSize * 0.1)))
-        drawOutline(g2d, tx, blockSize, y)
+        val halfBuildingWidth = if (location.building.width > 1) {
+            ((location.building.width * blockSize) / 2.0) / 2.0
+        } else {
+            0.0
+        }
 
-        g2d.drawImage(image, tx * blockSize, y)
+
+        val y = (ty - 1) * blockSize + ((Math.sin(Math.toRadians(degree)) * (blockSize * 0.1)))
+        drawOutline(g2d, tx, blockSize, y, halfBuildingWidth)
+
+        g2d.drawImage(image, (tx * blockSize) + halfBuildingWidth, y)
     }
 
-    private fun drawOutline(g2d: GraphicsContext, tx: Double, blockSize: Double, y: Double) {
+    private fun drawOutline(g2d: GraphicsContext, tx: Double, blockSize: Double, y: Double, halfBuildingWidth: Double) {
         g2d.fill = Color.WHITE
 
         val quarterBlock = blockSize * 0.25
         val halfBlock = blockSize * 0.5
 
         val x = (tx * blockSize) - quarterBlock
-        val y = y - quarterBlock
-        g2d.fillOval(x, y, blockSize + halfBlock, blockSize + halfBlock)
+        val py = y - quarterBlock
+        g2d.fillOval(x + halfBuildingWidth, py, blockSize + halfBlock, blockSize + halfBlock)
 
         g2d.stroke = Color.RED
-        g2d.strokeOval(x, y, blockSize + halfBlock, blockSize + halfBlock)
+        g2d.strokeOval(x + halfBuildingWidth, py, blockSize + halfBlock, blockSize + halfBlock)
     }
 
     fun render() {
@@ -84,12 +92,11 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
                 if (randomZot != null) {
                     val image = ZotSpriteLoader.spriteForZot(randomZot, cityRenderer.blockSize(), cityRenderer.blockSize())
                     if (image != null) {
-                        drawZot(image, gc, location.coordinate)
+                        drawZot(image, gc, location)
                     }
                 }
             }
         }
-
     }
 
     // OK we need a cache here so we only shoot back a few buildings
@@ -100,7 +107,9 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
     // this way we only flip around for a bit...
     private var visibleBuildingsCache: LoadingCache<Pair<BlockCoordinate, BlockCoordinate>, List<Location>> = Caffeine.newBuilder()
             .expireAfterWrite(10, TimeUnit.SECONDS)
-            .build<Pair<BlockCoordinate, BlockCoordinate>, List<Location>> { key -> randomBuildingsWithZots(key).getRandomElements(5) }
+            .build<Pair<BlockCoordinate, BlockCoordinate>, List<Location>> { key ->
+                randomBuildingsWithZots(key).getRandomElements(5)
+            }
 
 
     private var zotForBuildingCache: LoadingCache<Location, Zot?> =  Caffeine.newBuilder()
