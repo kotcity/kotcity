@@ -369,32 +369,17 @@ class CityRenderer(
     private fun drawHighlights() {
         mouseBlock?.let {
             if (mouseDown) {
-                if (gameFrame.activeTool == Tool.ROAD) {
-                    drawRoadBlueprint(canvas.graphicsContext2D)
-                } else if (gameFrame.activeTool == Tool.POWER_LINES) {
-                    drawRoadBlueprint(canvas.graphicsContext2D)
-                } else if (gameFrame.activeTool == Tool.BULLDOZE) {
-                    firstBlockPressed?.let { first ->
+                when (gameFrame.activeTool) {
+                    Tool.ROAD -> drawRoadBlueprint(canvas.graphicsContext2D)
+                    Tool.POWER_LINES -> drawRoadBlueprint(canvas.graphicsContext2D)
+                    Tool.RESIDENTIAL_ZONE,
+                    Tool.COMMERCIAL_ZONE,
+                    Tool.INDUSTRIAL_ZONE,
+                    Tool.DEZONE,
+                    Tool.BULLDOZE -> firstBlockPressed?.let { first ->
                         highlightBlocks(first, it)
                     }
-                } else if (gameFrame.activeTool == Tool.RESIDENTIAL_ZONE) {
-                    firstBlockPressed?.let { first ->
-                        highlightBlocks(first, it)
-                    }
-                } else if (gameFrame.activeTool == Tool.COMMERCIAL_ZONE) {
-                    firstBlockPressed?.let { first ->
-                        highlightBlocks(first, it)
-                    }
-                } else if (gameFrame.activeTool == Tool.INDUSTRIAL_ZONE) {
-                    firstBlockPressed?.let { first ->
-                        highlightBlocks(first, it)
-                    }
-                } else if (gameFrame.activeTool == Tool.DEZONE) {
-                    firstBlockPressed?.let { first ->
-                        highlightBlocks(first, it)
-                    }
-                } else {
-                    Unit
+                    else -> Unit
                 }
             } else {
                 when (gameFrame.activeTool) {
@@ -418,7 +403,6 @@ class CityRenderer(
                     Tool.TOWN_WAREHOUSE -> {
                         mouseBlock?.let { highlightCenteredBlocks(it, 2, 2) }
                     }
-                    else -> Unit
                 }
             }
         }
