@@ -41,7 +41,7 @@ After many years of not seeing any new city builders descend that are satisfacto
 
 ## Community
 
-If you get stuck or want to suggest suggestions, you can discuss it in [our topic on Simtropolis](https://community.simtropolis.com/forums/topic/74899-announcement-kotcity-an-open-source-city-simulator/ "Our topic on Simtropolis"). IRC available at https://gitter.im/kotcity/Lobby.
+If you get stuck or want to suggest suggestions, you can discuss it in [our topic on Simtropolis](https://community.simtropolis.com/forums/topic/74899-announcement-kotcity-an-open-source-city-simulator/ "Our topic on Simtropolis"). Chat with the developers at https://gitter.im/kotcity/Lobby.
 
 ## Contribution
 
