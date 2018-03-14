@@ -219,6 +219,7 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
     var powered = false
     open val powerRequired = 0
     open var upkeep: Int = 0
+    open var happiness: Int = 0
 
     var zots = listOf<Zot>()
 
