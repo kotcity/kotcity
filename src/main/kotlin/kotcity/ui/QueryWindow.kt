@@ -68,7 +68,9 @@ class QueryWindow : View() {
                 // let's get that desirability...
                 buffer.append("Desirability: ${desirability(city, coordinate)}\n")
                 buffer.append("Elevation: ${city.groundLayer[coordinate]?.elevation}\n")
-                buffer.append("Land Value: ???")
+                buffer.append("Land Value: ???\n")
+
+                buffer.append("Fire Coverage: ${city.fireCoverageLayer.readableValue(coordinate)}\n")
 
                 buildingDescriptionArea.text = buffer.toString()
             }

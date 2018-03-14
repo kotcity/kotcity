@@ -14,7 +14,7 @@ const val DESIRABILITY_CAP: Double = 300.0
 
 class CityRenderer(
     private val gameFrame: GameFrame,
-    private val canvas: ResizableCanvas,
+    internal val canvas: ResizableCanvas,
     private val cityMap: CityMap
 ) {
 
@@ -215,12 +215,11 @@ class CityRenderer(
             }
         }
 
-        if (mapMode == MapMode.SOIL || mapMode == MapMode.COAL || mapMode == MapMode.GOLD || mapMode == MapMode.OIL) {
-            drawResources()
-        } else if (mapMode == MapMode.DESIRABILITY) {
-            drawDesirability()
-        } else if (mapMode == MapMode.TRAFFIC) {
-            drawTraffic()
+        when (mapMode) {
+            MapMode.SOIL, MapMode.COAL, MapMode.GOLD, MapMode.OIL -> drawResources()
+            MapMode.FIRE_COVERAGE -> cityMap.fireCoverageLayer.draw(this)
+            MapMode.DESIRABILITY -> drawDesirability()
+            MapMode.TRAFFIC -> drawTraffic()
         }
         drawHighlights()
     }
@@ -285,7 +284,7 @@ class CityRenderer(
         }
     }
 
-    private fun interpolateColor(color1: java.awt.Color, color2: java.awt.Color, fraction: Float): Color {
+    internal fun interpolateColor(color1: java.awt.Color, color2: java.awt.Color, fraction: Float): Color {
         var colorFraction = fraction
         val intToFloatConst = 1f / 255f
         colorFraction = Math.min(colorFraction, 1f)
