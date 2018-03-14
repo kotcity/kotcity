@@ -2,14 +2,13 @@
 
 ## WARNING!
 
-This is _pre alpha_ software with super obvious bugs, rough edges etc. In the spirit of "release early and release often", I am posting the code. This project is far from done but I prefer to get the code out there to be used by whomever. Disagree with the project? Fork it :)
+This is _pre alpha_ software with super obvious bugs, rough edges etc. In the spirit of "release early and release often", I am posting the code. This project is far from done but I prefer to get the code out there to be used by whomever. Disagree with the project? Fork it :).
 
 ![KotCity Screenshot](screenshot.jpg?raw=true "Screenshot of the game's UI and an example city")
 
 ## What is KotCity?
 
-KotCity is a city simulator written in Kotlin inspired by the statistical city simulators of old.
-This game aims to achieve a mark somewhere between SimCity (1989) and SC2000. Hopefully this mark will be hit and we can set our sights higher. The game will be fully supported on Windows, macOS, and Linux.
+KotCity is a city simulator written in Kotlin inspired by the statistical city simulators of old. This game aims to achieve a mark somewhere between SimCity (1989) and SC2000. Hopefully this mark will be hit and we can set our sights higher. The game will be fully supported on Windows, macOS, and Linux.
 
 ## Gimme the Software!
 
@@ -30,12 +29,10 @@ The UI is done with FXML created with [Gluon's SceneBuilder](http://gluonhq.com/
 
 ## FAQ
 
-Q: Why 2D?
-
+Q: Why 2D?  
 A: This project is a lot of work already without having to worry about 3D modeling and so forth. One of my bottlenecks is art, so 2D is an easy way to sidestep that concern. Additionally, the actual "renderers" for the game are kept semi-separate from the simulation, so there's no reason why this couldn't turn into 3D later.
 
-Q: Why Kotlin?
-
+Q: Why Kotlin?  
 A: It has a lot of libraries (pick any random Java library...) It's pretty productive! Gee-whiz functional stuff baked in. Besides, if this project gets to a place where it's really awesome but just needs extra speed we can reach for that C++ or Rust book.
 
 ## Why Another City Simulator?
@@ -44,7 +41,7 @@ After many years of not seeing any new city builders descend that are satisfacto
 
 ## Community
 
-If you get stuck or want to suggest suggestions, you can discuss it in [our topic on Simtropolis](https://community.simtropolis.com/forums/topic/74899-announcement-kotcity-an-open-source-city-simulator/ "Our topic on Simtropolis"). IRC will be opened if the game played by lots of people.
+If you get stuck or want to suggest suggestions, you can discuss it in [our topic on Simtropolis](https://community.simtropolis.com/forums/topic/74899-announcement-kotcity-an-open-source-city-simulator/ "Our topic on Simtropolis"). IRC available at https://gitter.im/kotcity/Lobby.
 
 ## Contribution
 
@@ -65,6 +62,7 @@ By submitting the work to the repository, you're agree that your work should be 
 * As-you-want map size (Can your PC handle 100km^2? Go for it!).
 * Power plants and coverage.
 * Dynamic economy where goods, services and labor are exchanged.
+* Happiness (available in separate branch).
 
 ## Future Plans
 
