@@ -25,6 +25,9 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
 
     private var offsetTimeline: Timeline
     private var degree = 0.0
+    private var lastCalculatedTime = System.currentTimeMillis()
+    private var locationsWithZots = emptyList<Location>()
+    private val zotRecalcInterval = 15000
 
     init {
 
@@ -78,6 +81,20 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
         g2d.strokeOval(x + halfBuildingWidth, py, blockSize + halfBlock, blockSize + halfBlock)
     }
 
+    // OK, here is what we want to do...
+    // if delta < 5000msec... just return the list we already had...
+    // otherwise calculate it and then bring it back...
+    private fun cachedLocationsWithZots(visibleBlockRange: Pair<BlockCoordinate, BlockCoordinate>): List<Location> {
+        val delta = System.currentTimeMillis() - lastCalculatedTime
+        if (delta < zotRecalcInterval) {
+            return locationsWithZots
+        }
+
+        locationsWithZots = randomBuildingsWithZots(visibleBlockRange).getRandomElements(10) ?: emptyList()
+        lastCalculatedTime = System.currentTimeMillis()
+        return locationsWithZots
+    }
+
     fun render() {
         val gc = zotCanvas.graphicsContext2D
         gc.clearRect(0.0, 0.0, zotCanvas.width, zotCanvas.height)
@@ -85,7 +102,7 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
 
         // ok let's get all buildings with zots now...
         visibleBlockRange?.let { visibleBlockRange ->
-            val locationsWithZots = visibleBuildingsCache[visibleBlockRange]
+            val locationsWithZots = cachedLocationsWithZots(visibleBlockRange)
             locationsWithZots?.forEach { location ->
                 // TODO: we gotta get different zots every once in a while...
                 val randomZot: Zot? = randomZot(location)
@@ -103,13 +120,6 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
     private fun randomBuildingsWithZots(visibleBlockRange: Pair<BlockCoordinate, BlockCoordinate>): List<Location> {
         return cityMap.locationsIn(visibleBlockRange.first, visibleBlockRange.second).filter { it.building.zots.isNotEmpty() }
     }
-
-    // this way we only flip around for a bit...
-    private var visibleBuildingsCache: LoadingCache<Pair<BlockCoordinate, BlockCoordinate>, List<Location>> = Caffeine.newBuilder()
-            .expireAfterWrite(10, TimeUnit.SECONDS)
-            .build<Pair<BlockCoordinate, BlockCoordinate>, List<Location>> { key ->
-                randomBuildingsWithZots(key).getRandomElements(5)
-            }
 
 
     private var zotForBuildingCache: LoadingCache<Location, Zot?> =  Caffeine.newBuilder()
