@@ -5,6 +5,7 @@ import javafx.application.Application
 import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.ButtonBar.ButtonData
+import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.BorderPane
@@ -491,6 +492,16 @@ class GameFrame : View(), Debuggable {
                 }
             }
 
+        }
+
+        root.requestFocus()
+        root.setOnKeyPressed {
+            when (it.code) {
+                KeyCode.LEFT, KeyCode.A -> cityRenderer?.let { it.blockOffsetX -= 10 }
+                KeyCode.RIGHT, KeyCode.D -> cityRenderer?.let { it.blockOffsetX += 10 }
+                KeyCode.UP, KeyCode.W -> cityRenderer?.let { it.blockOffsetY -= 10 }
+                KeyCode.DOWN, KeyCode.S -> cityRenderer?.let { it.blockOffsetY += 10 }
+            }
         }
 
         cityCanvas.setOnMouseDragged { evt ->
