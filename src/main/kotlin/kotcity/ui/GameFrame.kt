@@ -132,6 +132,13 @@ class GameFrame : View(), Debuggable {
     private var trafficRenderer: TrafficRenderer? = null
     private var zotRenderer: ZotRenderer? = null
 
+    override fun onDock() {
+        currentStage?.setOnCloseRequest {
+            quitPressed()
+            it.consume()
+        }
+    }
+
     fun setMap(cityMap: CityMap) {
 
         this.map = cityMap
@@ -169,6 +176,7 @@ class GameFrame : View(), Debuggable {
         this.cityMapCanvas.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
         trafficRenderer.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
         zotRenderer.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
+
     }
 
     private fun setCanvasSize() {
@@ -255,7 +263,7 @@ class GameFrame : View(), Debuggable {
         val file = fileChooser.showSaveDialog(this.primaryStage)
         CityFileAdapter.save(map, file)
         map.fileName = file.absoluteFile.toString()
-        println("The new cityMap filename is: ${map.fileName}")
+
         saveMessageBox()
     }
 
@@ -439,7 +447,6 @@ class GameFrame : View(), Debuggable {
         }
 
         canvasPane.widthProperty().addListener { _, _, newValue ->
-            println("resizing cityCanvas width to: $newValue")
             cityCanvas.width = newValue.toDouble()
             setCanvasSize()
             setScrollbarSizes()
@@ -463,7 +470,6 @@ class GameFrame : View(), Debuggable {
                     if (evt.button == MouseButton.PRIMARY) {
                         when (activeTool) {
                             Tool.ROAD -> {
-                                println("Want to build road from: $firstBlock, $lastBlock")
                                 map.buildRoad(firstBlock, lastBlock)
                             }
                             Tool.POWER_LINES -> map.buildPowerline(firstBlock, lastBlock)
@@ -532,7 +538,6 @@ class GameFrame : View(), Debuggable {
         }
 
         canvasPane.heightProperty().addListener { _, _, newValue ->
-            println("resizing cityCanvas height to: $newValue")
             cityCanvas.height = newValue.toDouble()
             setCanvasSize()
             setScrollbarSizes()
@@ -548,7 +553,6 @@ class GameFrame : View(), Debuggable {
 
         with(cityCanvas) {
             this.setOnScroll { scrollEvent ->
-                // println("We are scrolling: $scrollEvent")
                 if (scrollEvent.deltaY < 0) {
                     zoomOut()
                 } else if (scrollEvent.deltaY > 0) {
