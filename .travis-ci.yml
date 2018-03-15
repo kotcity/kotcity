@@ -1,6 +1,6 @@
 sudo: required
 
-language: ruby
+language: java
 
 services:
   - docker
