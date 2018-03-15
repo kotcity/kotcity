@@ -29,13 +29,13 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                 debug("Out of time to sign contracts! Exceeded $maxMs milliseconds!")
                 return
             } else {
-                handleBuilding(entry, maxMs, delta, totalSigned)
+                handleBuilding(entry, maxMs, delta)
             }
         }
 
     }
 
-    private fun handleBuilding(entry: Location, maxMs: Int, delta: Long, totalSigned: Int) {
+    private fun handleBuilding(entry: Location, maxMs: Int, delta: Long) {
         val coordinate = entry.coordinate
         val building = entry.building
 

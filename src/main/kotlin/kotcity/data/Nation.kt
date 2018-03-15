@@ -115,6 +115,11 @@ data class NationalTradeEntity(val cityMap: CityMap): HasContracts, HasInventory
         return needs(tradeable)
     }
 
+    // we provide whatever the counter says...
+    override fun producesQuantity(tradeable: Tradeable): Int {
+        return providesCounter[tradeable] - existingSellQuantity(tradeable)
+    }
+
     override fun totalProvided(tradeable: Tradeable): Int {
         return providesCounter[tradeable]
     }

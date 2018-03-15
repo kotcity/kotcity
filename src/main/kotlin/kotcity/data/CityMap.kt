@@ -130,6 +130,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private val trafficCalculator = TrafficCalculator(this)
     private val goodsConsumer = GoodsConsumer(this)
     private val zotPopulator = ZotPopulator(this)
+    private val happinessUpdater = HappinessUpdater(this)
 
     val nationalTradeEntity = NationalTradeEntity(this)
 
@@ -313,6 +314,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val self = this
         async {
             timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(self) }
+            timeFunction("Updating happiness...") { happinessUpdater.tick() }
             timeFunction("Collect Taxes") { taxCollector.tick() }
             timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
         }

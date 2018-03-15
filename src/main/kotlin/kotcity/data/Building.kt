@@ -67,7 +67,9 @@ interface HasContracts {
     fun totalProvided(tradeable: Tradeable): Int
     fun supplyCount(tradeable: Tradeable): Int
     fun consumesQuantity(tradeable: Tradeable): Int
+    fun producesQuantity(tradeable: Tradeable): Int
     fun productList(): List<Tradeable>
+
     fun needsAnyContracts(): Boolean {
 
         Tradeable.values().forEach { tradeable ->
@@ -88,6 +90,10 @@ interface HasConcreteContacts : HasContracts {
 
     override fun consumesQuantity(tradeable: Tradeable): Int {
         return consumes[tradeable] ?: 0
+    }
+
+    override fun producesQuantity(tradeable: Tradeable): Int {
+        return produces[tradeable] ?: 0
     }
 
     override fun summarizeContracts(): String {
@@ -114,12 +120,14 @@ interface HasConcreteContacts : HasContracts {
         return summaryBuffer.toString()
     }
 
+    // TODO: these are confusing! document them!
     override fun quantityForSale(tradeable: Tradeable): Int {
         val filter = {contract: Contract -> contract.from.building() }
         val hash = produces.toMap()
         return calculateAvailable(hash, tradeable, filter)
     }
 
+    // TODO: these are confusing! document them!
     override fun quantityWanted(tradeable: Tradeable): Int {
         val inventoryCount = consumes[tradeable] ?: 0
         synchronized(contracts) {
@@ -135,7 +143,6 @@ interface HasConcreteContacts : HasContracts {
             return inventoryCount - contractCount
         }
     }
-
 
     fun addContract(contract: Contract) {
         synchronized(contracts) {
@@ -164,7 +171,6 @@ interface HasConcreteContacts : HasContracts {
                 val otherBuilding = contractToKill.to
                 voidContractsWith(otherBuilding)
             }
-
         }
     }
 
