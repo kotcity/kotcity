@@ -69,7 +69,6 @@ class MapGeneratorScreen : View() {
         val f2 = f2Field.text.toDouble()
         val f3 = f3Field.text.toDouble()
         val exp = expField.text.toDouble()
-        println("Generating with $f1, $f2, $f3, $exp")
         mapGenerator.seaLevel = seaLevelSlider.value
         return mapGenerator.generateMap(width, height, f1, f2, f3, exp)
     }
@@ -130,7 +129,6 @@ class MapGeneratorScreen : View() {
     }
 
     fun mapModeSelected() {
-        println("We selected this mode: ${mapModeComboBox.selectedItem}")
         cityMapCanvas.mode = when (mapModeComboBox.selectedItem) {
             "Coal" -> MapMode.COAL
             "Gold" -> MapMode.GOLD
@@ -159,11 +157,6 @@ class MapGeneratorScreen : View() {
         timer?.stop()
         gameFrame.setMap(newMap)
         gameFrame.openWindow(escapeClosesWindow = false)
-        println("Now maximizing...")
         gameFrame.currentStage?.isMaximized = true
-        gameFrame.currentStage?.setOnCloseRequest {
-            gameFrame.quitPressed()
-            it.consume()
-        }
     }
 }
