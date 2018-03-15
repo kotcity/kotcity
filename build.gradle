@@ -86,6 +86,7 @@ kotlin {
 apply plugin: 'edu.sc.seis.launch4j'
 
 launch4j {
+    outputDir = "kotcity-pre-alpha"
     mainClassName = 'kotcity.ui.LaunchScreenKt'
     icon = "${projectDir}/icons/kotcity.ico"
     jreMinVersion = 1.8
@@ -93,9 +94,8 @@ launch4j {
 
 task copyAssets(type: Copy) {
     from 'assets'
-    into 'build/launch4j/assets'
+    into 'build/kotcity-pre-alpha/assets'
 }
-
 
 task copyDistZipAssets(type: Copy) {
     from 'assets'
@@ -104,9 +104,21 @@ task copyDistZipAssets(type: Copy) {
 
 task copyShell(type: Copy) {
     from 'shell'
-    into 'build/libs/'
+    into 'build/kotcity-pre-alpha/'
 }
 
 createExe.dependsOn copyAssets
+createExe.dependsOn copyShell
+createExe.dependsOn shadowJar
+createExe.dependsOn build
 shadowDistZip.dependsOn copyDistZipAssets
 shadowDistZip.dependsOn copyShell
+
+task dist {
+    doLast {
+        createExe
+        println("Distribution in build/kotcity-pre-alpha!")
+    }
+}
+
+dist.dependsOn createExe

@@ -13,7 +13,7 @@ import tornadofx.find
 import tornadofx.runLater
 
 
-const val GAME_STRING = "KotCity 0.41"
+const val GAME_STRING = "KotCity 0.42"
 
 class LaunchScreen : View() {
     override val root: VBox by fxml("/LaunchScreen.fxml")
