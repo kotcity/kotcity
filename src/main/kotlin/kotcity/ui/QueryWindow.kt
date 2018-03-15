@@ -34,6 +34,7 @@ class QueryWindow : View() {
                     buffer.append(building.description + "\n")
                     buffer.append("Powered: ${building.powered}\n")
                     buffer.append("Money: $${building.balance()}\n")
+                    buffer.append("Happiness: ${building.happiness}\n")
                     if (building.sprite != null && building.sprite != "") {
                         buildingImageView.image = BuildingSpriteLoader.spriteForBuildingType(building, 64.0, 64.0)
                     } else {

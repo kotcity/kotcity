@@ -100,6 +100,7 @@ class GameFrame : View(), Debuggable {
     private val soilMapMode: RadioMenuItem by fxid()
     private val desirabilityMapMode: RadioMenuItem by fxid()
     private val trafficMapMode: RadioMenuItem by fxid()
+    private val happinessMapMode: RadioMenuItem by fxid()
 
     private val selectedToolLabel: Label by fxid()
     private val cityNameLabel: Label by fxid()
@@ -325,6 +326,9 @@ class GameFrame : View(), Debuggable {
         trafficMapMode.setOnAction {
             setMapModes(MapMode.TRAFFIC)
         }
+        happinessMapMode.setOnAction {
+            setMapModes(MapMode.HAPPINESS)
+        }
     }
 
     fun loadCityPressed() {
@@ -501,12 +505,17 @@ class GameFrame : View(), Debuggable {
         }
 
         root.requestFocus()
-        root.setOnKeyPressed {
-            when (it.code) {
-                KeyCode.LEFT, KeyCode.A -> cityRenderer?.let { it.blockOffsetX -= 10 }
-                KeyCode.RIGHT, KeyCode.D -> cityRenderer?.let { it.blockOffsetX += 10 }
-                KeyCode.UP, KeyCode.W -> cityRenderer?.let { it.blockOffsetY -= 10 }
-                KeyCode.DOWN, KeyCode.S -> cityRenderer?.let { it.blockOffsetY += 10 }
+        root.setOnKeyPressed {keyEvent ->
+            cityRenderer?.apply {
+                when (keyEvent.code) {
+                    KeyCode.LEFT, KeyCode.A -> blockOffsetX -= 10
+                    KeyCode.RIGHT, KeyCode.D -> blockOffsetX += 10
+                    KeyCode.UP, KeyCode.W -> blockOffsetY -= 10
+                    KeyCode.DOWN, KeyCode.S -> blockOffsetY += 10
+                    else -> {
+                        // noop...
+                    }
+                }
             }
         }
 

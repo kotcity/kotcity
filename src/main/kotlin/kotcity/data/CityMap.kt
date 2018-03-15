@@ -312,15 +312,22 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     private fun dailyTick() {
         val self = this
+
         async {
             timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(self) }
+        }
+
+        async {
             timeFunction("Updating happiness...") { happinessUpdater.tick() }
+        }
+
+        async {
             timeFunction("Collect Taxes") { taxCollector.tick() }
             timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
         }
     }
 
-    private suspend fun timeFunction(desc: String, timedFunction: () -> Unit) {
+    private fun timeFunction(desc: String, timedFunction: () -> Unit) {
         val startMillis = System.currentTimeMillis()
         timedFunction()
         val endMillis = System.currentTimeMillis()

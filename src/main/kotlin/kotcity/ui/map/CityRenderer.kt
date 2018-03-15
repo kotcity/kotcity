@@ -14,7 +14,7 @@ const val DESIRABILITY_CAP: Double = 300.0
 
 class CityRenderer(
     private val gameFrame: GameFrame,
-    private val canvas: ResizableCanvas,
+    val canvas: ResizableCanvas,
     private val cityMap: CityMap
 ) {
 
@@ -24,6 +24,8 @@ class CityRenderer(
             field = value
             panMap(oldCenter)
         }
+
+    private val happinessRenderer = HappinessRenderer(this, cityMap)
 
     var blockOffsetX: Double = 0.0
     var blockOffsetY: Double = 0.0
@@ -215,6 +217,10 @@ class CityRenderer(
             }
         }
 
+        if (mapMode == MapMode.HAPPINESS) {
+            happinessRenderer.render()
+        }
+
         if (mapMode == MapMode.SOIL || mapMode == MapMode.COAL || mapMode == MapMode.GOLD || mapMode == MapMode.OIL) {
             drawResources()
         } else if (mapMode == MapMode.DESIRABILITY) {
@@ -235,7 +241,7 @@ class CityRenderer(
             val tx = coord.x - blockOffsetX
             val ty = coord.y - blockOffsetY
             val blockSize = blockSize()
-            canvas.graphicsContext2D.fill = desirabilityColor(traffic)
+            canvas.graphicsContext2D.fill = colorValue(traffic, DESIRABILITY_CAP)
             canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
         }
     }
@@ -280,7 +286,7 @@ class CityRenderer(
             val tx = coord.x - blockOffsetX
             val ty = coord.y - blockOffsetY
             val blockSize = blockSize()
-            canvas.graphicsContext2D.fill = desirabilityColor(maxDesirability)
+            canvas.graphicsContext2D.fill = colorValue(maxDesirability, DESIRABILITY_CAP)
             canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
         }
     }
@@ -323,11 +329,11 @@ class CityRenderer(
         return Color(red.toDouble(), green.toDouble(), blue.toDouble(), alpha.toDouble())
     }
 
-    private fun desirabilityColor(desirability: Double): Color {
+    fun colorValue(value: Double, max: Double): Color {
         val color1 = java.awt.Color.RED
         val color2 = java.awt.Color.GREEN
-        // gotta clamp desirability between 0.0f and 1.0f
-        val fraction = Algorithms.scale(desirability.coerceAtMost(DESIRABILITY_CAP), 0.00, 100.0, 0.0, 1.0)
+        // gotta clamp value between 0.0f and max...
+        val fraction = Algorithms.scale(value.coerceAtMost(max), 0.00, max, 0.0, 1.0)
         val newColor = interpolateColor(color1, color2, fraction.toFloat())
         return Color(newColor.red, newColor.green, newColor.blue, 0.5)
     }
