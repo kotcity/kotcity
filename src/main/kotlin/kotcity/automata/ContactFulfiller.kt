@@ -10,6 +10,10 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
     override var debug = false
     private val resourceFinder = ResourceFinder(cityMap)
 
+    init {
+        resourceFinder.debug = true
+    }
+
     fun signContracts(shuffled: Boolean = true) {
 
         val maxMs = 5000
@@ -48,6 +52,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                 val bestSource: Pair<TradeEntity, Path>? = findNearbySource(buildingBlocks, tradeable, needsCount)
 
                 if (bestSource != null) {
+                    debug("Found best source for $tradeable... ${bestSource?.first?.description()}!")
                     val otherTradeEntity = bestSource.first
                     val pathToOther = bestSource.second
                     val quantity = building.quantityWanted(tradeable).coerceAtMost(otherTradeEntity.quantityForSale(tradeable))
@@ -102,6 +107,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         }
     }
 
+    // TODO: this is most likely bugged...
     private fun findNearbySource(buildingBlocks: List<BlockCoordinate>, tradeable: Tradeable, needsCount: Int): Pair<TradeEntity, Path>? {
         (1..needsCount).reversed().forEach {
             val source = resourceFinder.findSource(buildingBlocks, tradeable, it)

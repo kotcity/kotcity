@@ -171,7 +171,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     init {
         shipper.debug = false
-        contractFulfiller.debug = false
+        contractFulfiller.debug = true
         manufacturer.debug = false
         constructor.debug = false
         taxCollector.debug = false

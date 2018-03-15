@@ -51,6 +51,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         return pathsAndQuantity.toList()
     }
 
+    // TODO: find source is most likely bugged... it never seems to return true...
     fun findSource(sourceBlocks: List<BlockCoordinate>, tradeable: Tradeable, quantity: Int): Pair<TradeEntity, Path>? {
         // TODO: we can just do this once for the "center" of the building... (i think)
         val buildings = sourceBlocks.flatMap { cityMap.cachedBuildingsIn(it) }.distinct().toList()
