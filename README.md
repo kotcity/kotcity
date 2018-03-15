@@ -1,4 +1,4 @@
-# KotCity 0.41
+# KotCity 0.42
 
 ## WARNING!
 
@@ -12,7 +12,7 @@ KotCity is a city simulator written in Kotlin inspired by the statistical city s
 
 ## Gimme the Software!
 
-A build for Windows is available at https://github.com/kotcity/kotcity/releases/tag/0.41.
+A build for Windows is available at https://github.com/kotcity/kotcity/releases/tag/0.42.
 
 macOS and Linux build available upon request (or build it yourself!)
 
