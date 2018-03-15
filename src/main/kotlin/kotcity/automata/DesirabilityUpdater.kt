@@ -36,7 +36,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
 
     private fun updateCommercial(desirabilityLayer: DesirabilityLayer) {
 
-        val commercialZones = zoneCoordinates(Zone.COMMERCIAL).filter { cityMap.isEmpty(it) }
+        val commercialZones = zoneCoordinates(Zone.COMMERCIAL)
 
         commercialZones.forEach { coordinate ->
 
@@ -64,7 +64,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
     private fun updateIndustrial(desirabilityLayer: DesirabilityLayer) {
 
         // ok... we just gotta find each block with an industrial zone...
-        val industryZones = zoneCoordinates(Zone.INDUSTRIAL).filter { cityMap.isEmpty(it) }
+        val industryZones = zoneCoordinates(Zone.INDUSTRIAL)
 
         industryZones.forEach { coordinate ->
 
@@ -110,7 +110,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
         // we like being near places that NEED labor
         // we like being near places that PROVIDE goods
 
-        val residentialZones = zoneCoordinates(Zone.RESIDENTIAL).filter { cityMap.isEmpty(it) }
+        val residentialZones = zoneCoordinates(Zone.RESIDENTIAL)
 
         val population = cityMap.censusTaker.population
 

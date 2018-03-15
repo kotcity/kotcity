@@ -245,8 +245,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             newIndex = newIndex.add(building, Geometries.rectangle(
                     coordinate.x.toFloat(),
                     coordinate.y.toFloat(),
-                    coordinate.x.toFloat() + building.width.toFloat(),
-                    coordinate.y.toFloat() + building.height.toFloat())
+                    coordinate.x.toFloat() + building.width.toFloat() - 1,
+                    coordinate.y.toFloat() + building.height.toFloat() - 1)
             )
         }
         buildingIndex = newIndex
@@ -292,6 +292,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 timeFunction("Generating traffic") { trafficCalculator.tick() }
                 async { timeFunction("Taking census") { censusTaker.tick() } }
                 async { timeFunction("Populating Zots") { zotPopulator.tick() } }
+                async {
+                    timeFunction("Updating happiness...") { happinessUpdater.tick() }
+                }
             }
 
             if (hour % 6 == 0) {
@@ -315,10 +318,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
         async {
             timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(self) }
-        }
-
-        async {
-            timeFunction("Updating happiness...") { happinessUpdater.tick() }
         }
 
         async {
@@ -504,7 +503,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val point = Geometries.point(coordinate.x.toDouble(), coordinate.y.toDouble())
         val buildings = buildingIndex.search(point)
         return buildings.map {
-            Location(BlockCoordinate(coordinate.x, coordinate.y), it.value())
+            val building = it.value()
+            val rectangle = it.geometry()
+            if (building != null && rectangle != null) {
+                Location(BlockCoordinate(rectangle.x1().toInt(), rectangle.y1().toInt()), building)
+            } else {
+                null
+            }
+
         }.toBlocking().toIterable().filterNotNull()
     }
 
