@@ -1,5 +1,7 @@
 # KotCity 0.42
 
+[![Build Status](https://semaphoreci.com/api/v1/kotcity/kotcity/branches/master/badge.svg)](https://semaphoreci.com/kotcity/kotcity)
+
 ## WARNING!
 
 This is _pre alpha_ software with super obvious bugs, rough edges etc. In the spirit of "release early and release often", I am posting the code. This project is far from done but I prefer to get the code out there to be used by whomever. Disagree with the project? Fork it :).
