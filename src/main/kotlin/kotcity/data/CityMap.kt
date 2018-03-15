@@ -175,9 +175,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         manufacturer.debug = false
         constructor.debug = false
         taxCollector.debug = false
-        desirabilityUpdater.debug = true
+        desirabilityUpdater.debug = false
         liquidator.debug = true
-        zotPopulator.debug = true
+        zotPopulator.debug = false
         censusTaker.tick()
         nationalTradeEntity.resetCounts()
     }

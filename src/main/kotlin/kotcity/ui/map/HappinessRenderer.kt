@@ -3,7 +3,7 @@ package kotcity.ui.map
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
 
-class HappinessRenderer(private val cityRenderer: CityRenderer, val cityMap: CityMap) {
+class HappinessRenderer(private val cityRenderer: CityRenderer, private val cityMap: CityMap) {
     fun render() {
 
         val maxHappiness = maxHappiness(cityMap)
