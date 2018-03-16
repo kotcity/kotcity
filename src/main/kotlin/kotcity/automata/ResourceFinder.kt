@@ -68,7 +68,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         var preferredPath: Path? = null
         // OK! now if we got a path we want to find the building in the last block...
         shortestPath?.blocks()?.last()?.let {
-            val location = cityMap.cachedBuildingsIn(it).firstOrNull()
+            val location = cityMap.locationsAt(it).firstOrNull()
             if (location != null) {
                 preferredPath = shortestPath
                 preferredTradeEntity = CityTradeEntity(it, location.building)
@@ -120,7 +120,9 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         // now we gotta make sure they got the resource...
         val buildingsWantingResource = buildings.filter { it.building.currentQuantityWanted(tradeable) > 0 }
 
-        val allBuildingBlocks = buildingsWantingResource.flatMap { cityMap.buildingBlocks(it.coordinate, it.building) }.distinct()
+        val allBuildingBlocks = buildingsWantingResource.flatMap {
+            cityMap.buildingBlocks(it.coordinate, it.building)
+        }.distinct()
 
         val shortestPath = pathfinder.tripTo(sourceBlocks, allBuildingBlocks)
 

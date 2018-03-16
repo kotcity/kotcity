@@ -57,7 +57,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                 }
 
                 if (bestSource != null) {
-                    debug("Found best source for $tradeable... ${bestSource?.first?.description()}!")
+                    debug("Found best source for $tradeable... ${bestSource.first.description()}!")
                     val otherTradeEntity = bestSource.first
                     val pathToOther = bestSource.second
                     val quantity = building.currentQuantityWanted(tradeable).coerceAtMost(otherTradeEntity.currentQuantityForSale(tradeable))
