@@ -22,8 +22,8 @@ const val DEFAULT_DESIRABILITY = 0.0
 data class BlockCoordinate(val x: Int, val y: Int) {
     companion object {
         fun iterate(from: BlockCoordinate, to: BlockCoordinate, callback: (BlockCoordinate) -> Unit) {
-            val xRange = (from.x .. to.x).reorder()
-            val yRange = (from.y ..to.y).reorder()
+            val xRange = (from.x..to.x).reorder()
+            val yRange = (from.y..to.y).reorder()
             for (x in xRange) {
                 for (y in yRange) {
                     callback(BlockCoordinate(x, y))
@@ -33,39 +33,34 @@ data class BlockCoordinate(val x: Int, val y: Int) {
     }
 
     fun neighbors(radius: Int = 1): List<BlockCoordinate> {
-        val xRange = this.x - radius .. this.x + radius
-        val yRange = this.y - radius .. this.y + radius
+        val xRange = this.x - radius..this.x + radius
+        val yRange = this.y - radius..this.y + radius
 
         return xRange.flatMap { x ->
             yRange.map { y ->
-                BlockCoordinate(x,y)
+                BlockCoordinate(x, y)
             }
         }
-
     }
 
     fun distanceTo(otherCoordinate: BlockCoordinate): Double {
-        return Math.sqrt(((this.x-otherCoordinate.x)*(this.x-otherCoordinate.x) + (this.y-otherCoordinate.y)*(this.y-otherCoordinate.y)).toDouble())
+        return Math.sqrt(((this.x - otherCoordinate.x) * (this.x - otherCoordinate.x) + (this.y - otherCoordinate.y) * (this.y - otherCoordinate.y)).toDouble())
     }
-
-
 }
 
 data class Corners(
-        private val topLeft: BlockCoordinate,
-        private val bottomRight: BlockCoordinate,
-        private val topRight: BlockCoordinate,
-        private val bottomLeft: BlockCoordinate
+    private val topLeft: BlockCoordinate,
+    private val bottomRight: BlockCoordinate,
+    private val topRight: BlockCoordinate,
+    private val bottomLeft: BlockCoordinate
 ) {
     fun includes(block: BlockCoordinate): Boolean {
         if (block.x >= topLeft.x && block.x <= bottomRight.x && block.y >= topLeft.y && block.y <= bottomRight.y) {
             return true
         }
-
         if (block.x <= topRight.x && block.x >= bottomLeft.x && block.y <= topRight.y && block.y >= bottomLeft.y) {
             return true
         }
-
         return false
     }
 }
@@ -78,7 +73,7 @@ fun IntRange.reorder(): IntRange {
     }
 }
 
-enum class TileType { GROUND, WATER}
+enum class TileType { GROUND, WATER }
 data class MapTile(val type: TileType, val elevation: Double)
 
 fun defaultTime(): Date {
@@ -87,7 +82,7 @@ fun defaultTime(): Date {
     return simpleDateFormat.parse("2000-01-01 12:00:00")
 }
 
-data class DesirabilityLayer(val zoneType: Zone, val level: Int): QuantizedMap<Double>(1) {
+data class DesirabilityLayer(val zoneType: Zone, val level: Int) : QuantizedMap<Double>(1) {
     init {
         map = map.withDefault { 0.0 }
     }
@@ -99,8 +94,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         fun flatMap(width: Int = 512, height: Int = 512): CityMap {
             val map = CityMap(width, height)
             // set all tiles to ground...
-            val xRange = 0 .. map.width
-            val yRange = 0 .. map.height
+            val xRange = 0..map.width
+            val yRange = 0..map.height
             xRange.map { x ->
                 yRange.map { y ->
                     map.groundLayer[BlockCoordinate(x, y)] = MapTile(TileType.GROUND, 0.1)
@@ -139,11 +134,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     var bulldozedCounts = mutableMapOf<KClass<out Building>, Int>().withDefault { 0 }
 
     private fun initializeDesirabilityLayers(): List<DesirabilityLayer> {
-
         return listOf(
-                DesirabilityLayer(Zone.RESIDENTIAL, 1),
-                DesirabilityLayer(Zone.COMMERCIAL, 1),
-                DesirabilityLayer(Zone.INDUSTRIAL, 1)
+            DesirabilityLayer(Zone.RESIDENTIAL, 1),
+            DesirabilityLayer(Zone.COMMERCIAL, 1),
+            DesirabilityLayer(Zone.INDUSTRIAL, 1)
         )
     }
 
@@ -159,7 +153,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     // OK! we will require one key per map cell
     private val numberOfCells = this.height.toLong() * this.width.toLong() + 100
-    private val buildingsInCachePair = ::buildingsIn.cache(CacheOptions(weakKeys = false, weakValues = true, maximumSize = numberOfCells))
+    private val buildingsInCachePair =
+        ::buildingsIn.cache(CacheOptions(weakKeys = false, weakValues = true, maximumSize = numberOfCells))
     private val buildingsInCache = buildingsInCachePair.first
     val cachedBuildingsIn = buildingsInCachePair.second
 
@@ -196,15 +191,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun elevations(): Pair<Double, Double> {
-        val mapMinElevation = groundLayer.values.mapNotNull { it.elevation }.min() ?: 0.0
-        val mapMaxElevation = groundLayer.values.mapNotNull { it.elevation }.max() ?: 0.0
+        val mapMinElevation = groundLayer.values.map { it.elevation }.min() ?: 0.0
+        val mapMaxElevation = groundLayer.values.map { it.elevation }.max() ?: 0.0
         return Pair(mapMinElevation, mapMaxElevation)
     }
 
-
     fun buildingBlocks(coordinate: BlockCoordinate, building: Building): List<BlockCoordinate> {
-        val xRange = coordinate.x .. coordinate.x + (building.width - 1)
-        val yRange = coordinate.y .. coordinate.y + (building.height - 1)
+        val xRange = coordinate.x..coordinate.x + (building.width - 1)
+        val yRange = coordinate.y..coordinate.y + (building.height - 1)
         return xRange.flatMap { x -> yRange.map { BlockCoordinate(x, it) } }
     }
 
@@ -212,12 +206,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val blockList = mutableListOf<BlockCoordinate>()
         if (Math.abs(startBlock.x - endBlock.x) > Math.abs(startBlock.y - endBlock.y)) {
             // going horizontally...
-            (startBlock.x .. endBlock.x).reorder().forEach { x ->
+            (startBlock.x..endBlock.x).reorder().forEach { x ->
                 blockList.add(BlockCoordinate(x, startBlock.y))
             }
         } else {
             // going vertically...
-            (startBlock.y .. endBlock.y).reorder().forEach { y ->
+            (startBlock.y..endBlock.y).reorder().forEach { y ->
                 blockList.add(BlockCoordinate(startBlock.x, y))
             }
         }
@@ -225,28 +219,35 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun nearestBuildings(coordinate: BlockCoordinate, distance: Int = 10): List<Location> {
-        val point = Geometries.rectangle(coordinate.x.toFloat(), coordinate.y.toFloat(),coordinate.x.toFloat()+1, coordinate.y.toFloat()+1)
+        val point = Geometries.rectangle(
+            coordinate.x.toFloat(),
+            coordinate.y.toFloat(),
+            coordinate.x.toFloat() + 1,
+            coordinate.y.toFloat() + 1
+        )
         return buildingIndex.search(point, distance.toDouble())
-                .filter( {t -> t != null } ).map { entry ->
-            val geometry = entry.geometry()
-            val building = entry.value()
-            if (geometry != null && building != null) {
-                Location(BlockCoordinate(geometry.x1().toInt(), geometry.y1().toInt()), building)
-            } else {
-                null
-            }
-        }.toBlocking().toIterable().filterNotNull()
+            .filter({ t -> t != null }).map { entry ->
+                val geometry = entry.geometry()
+                val building = entry.value()
+                if (geometry != null && building != null) {
+                    Location(BlockCoordinate(geometry.x1().toInt(), geometry.y1().toInt()), building)
+                } else {
+                    null
+                }
+            }.toBlocking().toIterable().filterNotNull()
     }
 
     // TODO: get smarter about index... we don't want to be rebuilding this all the time...
     fun updateBuildingIndex() {
         var newIndex = RTree.star().create<Building, Rectangle>()
         buildingLayer.forEach { coordinate, building ->
-            newIndex = newIndex.add(building, Geometries.rectangle(
+            newIndex = newIndex.add(
+                building, Geometries.rectangle(
                     coordinate.x.toFloat(),
                     coordinate.y.toFloat(),
                     coordinate.x.toFloat() + building.width.toFloat(),
-                    coordinate.y.toFloat() + building.height.toFloat())
+                    coordinate.y.toFloat() + building.height.toFloat()
+                )
             )
         }
         buildingIndex = newIndex
@@ -260,7 +261,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun tick() {
         time += 1000 * 60
         if (time.toDateTime().minuteOfHour == 0) {
-
             val hour = time.toDateTime().hourOfDay
             launch {
                 if (!doingHourly) {
@@ -269,9 +269,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                     debug("Warning... hourly still in progress!")
                 }
             }
-
         }
-
     }
 
     suspend fun hourlyTick(hour: Int) {
@@ -302,7 +300,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 debug("Processing tick for end of day...")
                 dailyTick()
             }
-        } catch(e: Exception ) {
+        } catch (e: Exception) {
             println("WARNING! Error during hourly: ${e.message}")
             e.printStackTrace()
         } finally {
@@ -340,7 +338,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun canBuildBuildingAt(newBuilding: Building, coordinate: BlockCoordinate, waterCheck: Boolean = true): Boolean {
 
         // OK... let's get nearby buildings to really cut this down...
-        val newBuildingEnd = BlockCoordinate(coordinate.x + newBuilding.width - 1, coordinate.y + newBuilding.height - 1)
+        val newBuildingEnd =
+            BlockCoordinate(coordinate.x + newBuilding.width - 1, coordinate.y + newBuilding.height - 1)
 
         val newBuildingTopRight = BlockCoordinate(coordinate.x + newBuilding.width - 1, coordinate.y)
         val newBuildingBottomLeft = BlockCoordinate(coordinate.x, coordinate.y + newBuilding.height - 1)
@@ -353,7 +352,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         nearby.forEach { cityLocation: Location ->
             val building = cityLocation.building
             val otherBuildingStart = cityLocation.coordinate
-            val otherBuildingEnd = BlockCoordinate(otherBuildingStart.x + building.width - 1, otherBuildingStart.y + building.height - 1)
+            val otherBuildingEnd =
+                BlockCoordinate(otherBuildingStart.x + building.width - 1, otherBuildingStart.y + building.height - 1)
             // now let's test...
             // top left corner...
             if (coordinate.x <= otherBuildingEnd.x && coordinate.x >= otherBuildingStart.x && coordinate.y <= otherBuildingEnd.y && coordinate.y >= otherBuildingStart.y) {
@@ -382,7 +382,13 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return true
     }
 
-    private fun collisionWarning(errorMessage: String, newBuilding: Building, coordinate: BlockCoordinate, building: Building, otherCoordinate: BlockCoordinate) {
+    private fun collisionWarning(
+        errorMessage: String,
+        newBuilding: Building,
+        coordinate: BlockCoordinate,
+        building: Building,
+        otherCoordinate: BlockCoordinate
+    ) {
         debug("$errorMessage -> ${newBuilding.name} at $coordinate: collision with ${building.name} at $otherCoordinate!")
     }
 
@@ -415,7 +421,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             synchronized(this.buildingLayer) {
                 this.buildingLayer[block] = building
                 building.powered = true
-                if ( building !is Commercial &&  building !is Residential && building !is Industrial) {
+                if (building !is Commercial && building !is Residential && building !is Industrial) {
                     val buildingBlocks = buildingBlocks(block, building)
                     buildingBlocks.forEach { zoneLayer.remove(it) }
                 }
@@ -482,7 +488,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun locationsIn(topLeft: BlockCoordinate, bottomRight: BlockCoordinate): List<Location> {
-        val buildings = buildingIndex.search(Geometries.rectangle(topLeft.x.toDouble(), topLeft.y.toDouble(), bottomRight.x.toDouble(), bottomRight.y.toDouble()))
+        val buildings = buildingIndex.search(
+            Geometries.rectangle(
+                topLeft.x.toDouble(),
+                topLeft.y.toDouble(),
+                bottomRight.x.toDouble(),
+                bottomRight.y.toDouble()
+            )
+        )
         return buildings.map { it ->
             it.value()?.let { building ->
                 val x = it.geometry().x1()
@@ -520,7 +533,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     private fun buildingsIn(block: BlockCoordinate): List<Location> {
-        val nearestBuildings = nearestBuildings(block, MAX_BUILDING_SIZE+1)
+        val nearestBuildings = nearestBuildings(block, MAX_BUILDING_SIZE + 1)
         val filteredBuildings = nearestBuildings.filter {
             val coordinate = it.coordinate
             val building = it.building
@@ -548,6 +561,4 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun isEmpty(coordinate: BlockCoordinate): Boolean {
         return this.buildingsIn(coordinate).count() == 0
     }
-
 }
-

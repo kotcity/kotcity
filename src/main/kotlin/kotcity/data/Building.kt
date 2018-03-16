@@ -93,12 +93,11 @@ interface HasConcreteContacts : HasContracts {
     override fun summarizeContracts(): String {
         val summaryBuffer = StringBuffer()
 
-        val tradeables = consumes.keys.distinct()
-        tradeables.forEach {
+        consumes.keys.distinct().forEach {
             summaryBuffer.append("Consumes: ${consumes[it]} $it\n")
         }
 
-        produces.keys.distinct().toList().forEach {
+        produces.keys.distinct().forEach {
             summaryBuffer.append("Produces: ${produces[it]} $it\n")
         }
 
@@ -115,23 +114,28 @@ interface HasConcreteContacts : HasContracts {
     }
 
     override fun quantityForSale(tradeable: Tradeable): Int {
-        val filter = {contract: Contract -> contract.from.building() }
-        val hash = produces.toMap()
-        return calculateAvailable(hash, tradeable, filter)
+        val filter = { contract: Contract -> contract.from.building() }
+        return calculateAvailable(produces.toMap(), tradeable, filter)
     }
 
     override fun quantityWanted(tradeable: Tradeable): Int {
         val inventoryCount = consumes[tradeable] ?: 0
         synchronized(contracts) {
-            val contractCount = contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+            val contractCount =
+                contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
             return inventoryCount - contractCount
         }
     }
 
-    private fun calculateAvailable(hash: Map<Tradeable, Int>, tradeable: Tradeable, filter: (Contract) -> Building?): Int {
+    private fun calculateAvailable(
+        hash: Map<Tradeable, Int>,
+        tradeable: Tradeable,
+        filter: (Contract) -> Building?
+    ): Int {
         val inventoryCount = hash[tradeable] ?: 0
         synchronized(contracts) {
-            val contractCount = contracts.toList().filter { filter(it) == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+            val contractCount =
+                contracts.toList().filter { filter(it) == this && it.tradeable == tradeable }.map { it.quantity }.sum()
             return inventoryCount - contractCount
         }
     }
@@ -153,24 +157,22 @@ interface HasConcreteContacts : HasContracts {
 
     override fun needs(tradeable: Tradeable): Int {
         val requiredCount = consumes[tradeable] ?: return 0
-        val contractCount = contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+        val contractCount =
+            contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
         return requiredCount - contractCount
     }
 
     fun voidRandomContract() {
         if (contracts.count() > 0) {
-            val contractToKill = contracts.getRandomElement()
-            if (contractToKill != null) {
-                val otherBuilding = contractToKill.to
+            contracts.getRandomElement()?.let {
+                val otherBuilding = it.to
                 voidContractsWith(otherBuilding)
             }
-
         }
     }
 
     override fun totalProvided(tradeable: Tradeable): Int {
-        return contracts.filter { it.from.building() == this && it.tradeable == tradeable}
-                .map { it.quantity }.sum()
+        return contracts.filter { it.from.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
     }
 
     override fun supplyCount(tradeable: Tradeable): Int {
@@ -179,24 +181,20 @@ interface HasConcreteContacts : HasContracts {
         }
     }
 
-    override fun productList(): List<Tradeable> {
-        return produces.keys.distinct()
-    }
+    override fun productList() = produces.keys.distinct()
 
     fun hasAnyContracts(): Boolean {
         synchronized(contracts) {
             return contracts.count() > 0
         }
     }
-
 }
-
 
 abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, HasConcreteContacts {
 
     companion object {
         fun classByString(name: String?): KClass<out Building> {
-            return when(name) {
+            return when (name) {
                 "Residential" -> Residential::class
                 "Commercial" -> Commercial::class
                 "Industrial" -> Industrial::class
@@ -245,7 +243,11 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
                 contracts.add(newContract)
                 otherTradeEntity.addContract(newContract)
             } else {
-                println("Tried to make an invalid contract: $newContract but failed because ${otherTradeEntity.description()} doesn't have enough $tradeable (it has ${otherTradeEntity.quantityForSale(tradeable)})")
+                println(
+                    "Tried to make an invalid contract: $newContract but failed because ${otherTradeEntity.description()} doesn't have enough $tradeable (it has ${otherTradeEntity.quantityForSale(
+                        tradeable
+                    )})"
+                )
             }
         }
     }
@@ -261,7 +263,6 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
             }
         }
     }
-
 }
 
 class Residential(override val cityMap: CityMap) : LoadableBuilding(cityMap)
@@ -272,30 +273,31 @@ class Industrial(override val cityMap: CityMap) : LoadableBuilding(cityMap)
 
 class Civic(override val cityMap: CityMap) : LoadableBuilding(cityMap)
 
-
 const val DEFAULT_MONEY = 10
 val POWER_PLANT_TYPES = listOf("coal", "nuclear")
 
-class PowerPlant : Building {
+class PowerPlant(override val variety: String, cityMap: CityMap) : Building(cityMap) {
 
-    override val variety: String
     var powerGenerated: Int = 0
 
-    constructor(variety: String, cityMap: CityMap) : super(cityMap) {
+    override var width = 4
+    override var height = 4
+
+    init {
         if (!POWER_PLANT_TYPES.contains(variety)) {
             throw RuntimeException("Invalid power plant type: $variety")
         }
-        this.variety = variety
         when (variety) {
-            "coal" -> { this.powerGenerated = 2000; this.description = "Coal Power Plant" }
-            "nuclear" -> { this.powerGenerated = 5000; this.description = "Nuclear Power Plant" }
+            "coal" -> {
+                this.powerGenerated = 2000; this.description = "Coal Power Plant"
+            }
+            "nuclear" -> {
+                this.powerGenerated = 5000; this.description = "Nuclear Power Plant"
+            }
         }
         // let's make it consume workers...
         this.consumes[Tradeable.LABOR] = 10
     }
-
-    override var width = 4
-    override var height = 4
 }
 
 class FireStation(cityMap: CityMap) : Building(cityMap) {
