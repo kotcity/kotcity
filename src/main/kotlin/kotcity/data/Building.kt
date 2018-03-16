@@ -1,7 +1,7 @@
 package kotcity.data
 
 import kotcity.pathfinding.Path
-import kotcity.util.getRandomElement
+import kotcity.util.randomElement
 import kotlin.reflect.KClass
 
 interface HasInventory {
@@ -157,7 +157,7 @@ interface HasConcreteContacts : HasContracts {
 
     fun voidRandomContract() {
         if (contracts.count() > 0) {
-            val contractToKill = contracts.getRandomElement()
+            val contractToKill = contracts.randomElement()
             if (contractToKill != null) {
                 val otherBuilding = contractToKill.to
                 voidContractsWith(otherBuilding)

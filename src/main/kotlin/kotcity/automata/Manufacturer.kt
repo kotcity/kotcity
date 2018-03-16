@@ -31,13 +31,14 @@ class Manufacturer(val cityMap: CityMap): Debuggable {
             return
         }
 
-        val maxToProduce: Int = building.consumesQuantity(Tradeable.WHOLESALE_GOODS) * 2
+        // produce up to 10x...
+        val maxToProduce: Int = building.consumesQuantity(Tradeable.WHOLESALE_GOODS) * 10
 
         repeat(availableLabor) {
             if (building.totalBeingBought(Tradeable.WHOLESALE_GOODS) > 0 && building.quantityOnHand(Tradeable.GOODS) < maxToProduce) {
                 building.subtractInventory(Tradeable.WHOLESALE_GOODS, 1)
-                building.addInventory(Tradeable.GOODS, 1)
-                debug("${building.description}: Converted 1 wholesale goods to goods...")
+                building.addInventory(Tradeable.GOODS, 4)
+                debug("${building.description}: Converted 1 wholesale goods to 4 goods...")
             }
         }
         building.payWorkers()
@@ -48,14 +49,14 @@ class Manufacturer(val cityMap: CityMap): Debuggable {
         val availableLabor: Int = building.totalBeingBought(Tradeable.LABOR)
         // OK... for every labor we have here we get one thing that we produce...
         val products: List<Tradeable> = building.productList()
-        if (availableLabor > 0 && building.totalBeingBought(Tradeable.LABOR) > 0) {
+        if (availableLabor > 0) {
             products.forEach { tradeable ->
                 debug("${building.description} just manufactured $availableLabor $tradeable")
-                building.addInventory(tradeable, availableLabor)
-                building.payWorkers()
+                building.addInventory(tradeable, availableLabor * 10)
             }
         } else {
             debug("Wanted to make products but we didn't have any labor!")
         }
+        building.payWorkers()
     }
 }

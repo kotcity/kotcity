@@ -71,7 +71,7 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
         } else {
             // let's figure out a ratio...
             val ratio = laborBuying / laborConsumed
-            debug("Building is buying $laborBuying and should be consuming $laborConsumed. That makes the ratio $ratio")
+            // debug("Building is buying $laborBuying and should be consuming $laborConsumed. That makes the ratio $ratio")
 
             newValue += when (ratio) {
                 in 0.0..0.2 -> 1.0
@@ -92,7 +92,7 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
         val laborProvided = location.building.producesQuantity(Tradeable.LABOR).toDouble()
         val laborForSale = location.building.currentQuantityForSale(Tradeable.LABOR).toDouble()
         val ratio = laborForSale / laborProvided
-        debug("Building is providing $laborProvided and is selling $laborForSale. The employment ratio is: $ratio.")
+        // debug("Building is providing $laborProvided and is selling $laborForSale. The employment ratio is: $ratio.")
         newValue += when (ratio) {
             in 0.0 .. 0.2 -> 1.0
             in 0.2 .. 0.4 -> 2.0

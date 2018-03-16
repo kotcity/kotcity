@@ -273,6 +273,8 @@ class GameFrame : View(), Debuggable {
         val alert = Alert(AlertType.INFORMATION)
         alert.title = "City Saved"
         alert.headerText = "City Saved OK!"
+        alert.height = 200.0
+        alert.width = 400.0
         alert.dialogPane.content = Label("Everything went great. Your city is saved to ${map.fileName}.")
         alert.showAndWait()
     }

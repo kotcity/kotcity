@@ -171,7 +171,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     init {
         shipper.debug = false
-        contractFulfiller.debug = false
+        contractFulfiller.debug = true
         manufacturer.debug = false
         constructor.debug = false
         taxCollector.debug = false
@@ -283,7 +283,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             if (hour % 3 == 0) {
                 timeFunction("Calculating desirability") { desirabilityUpdater.update() }
                 timeFunction("Constructing buildings") { constructor.tick() }
-                timeFunction("Terminating random contracts") { contractFulfiller.terminateRandomContracts() }
+                // timeFunction("Terminating random contracts") { contractFulfiller.terminateRandomContracts() }
                 withTimeout(5000, TimeUnit.MILLISECONDS) {
                     timeFunction("Signing contracts") { contractFulfiller.signContracts() }
                 }
@@ -529,7 +529,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun coordinatesForBuilding(building: Building): BlockCoordinate? {
         synchronized(buildingLayer) {
             return buildingLayer.toList().find {
-                it.second === building
+                it.second == building
             }?.first
         }
     }

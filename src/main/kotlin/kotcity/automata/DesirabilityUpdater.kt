@@ -7,6 +7,10 @@ import kotcity.util.Debuggable
 
 class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
     override var debug: Boolean = false
+    set(value) {
+        field = value
+        resourceFinder.debug = debug
+    }
 
     private val maxDistance = 100
     private val shortDistance = 10
@@ -14,6 +18,10 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
     private val longDistance = 100
     private val pathFinder: Pathfinder = Pathfinder(cityMap)
     private val resourceFinder = ResourceFinder(cityMap)
+
+    init {
+        resourceFinder.debug = debug
+    }
 
     fun update() {
         // let's update the desirability...

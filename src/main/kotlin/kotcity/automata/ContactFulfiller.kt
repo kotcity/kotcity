@@ -3,21 +3,22 @@ package kotcity.automata
 import kotcity.data.*
 import kotcity.pathfinding.Path
 import kotcity.util.Debuggable
-import kotcity.util.getRandomElements
+import kotcity.util.randomElements
 
 class ContactFulfiller(val cityMap: CityMap) : Debuggable {
 
     override var debug = false
+    set(value) {
+        field = value
+        resourceFinder.debug = value
+    }
     private val resourceFinder = ResourceFinder(cityMap)
 
     init {
-        resourceFinder.debug = true
+        resourceFinder.debug = debug
     }
 
     fun signContracts(shuffled: Boolean = true) {
-
-        val maxMs = 5000
-        val startAt = System.currentTimeMillis()
 
         val contractCollection = if (shuffled) {
             locationsNeedingContracts().shuffled()
@@ -25,13 +26,20 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
             locationsNeedingContracts()
         }
 
-        contractCollection.toList().shuffled().takeWhile { System.currentTimeMillis() - startAt < maxMs }.forEach { entry ->
-            val delta = System.currentTimeMillis() - startAt
-            if (delta > maxMs) {
-                debug("Out of time to sign contracts! Exceeded $maxMs milliseconds!")
-                return
-            } else {
-                handleBuilding(entry, maxMs, delta)
+        val industrial = contractCollection.filter { it.building is Industrial }
+        val commercial = contractCollection.filter { it.building is Commercial }
+        val residential = contractCollection.filter { it.building is Residential }
+
+        listOf(industrial, commercial, residential).parallelStream().forEach { locationList ->
+            val maxMs = 5000
+            val startAt = System.currentTimeMillis()
+            locationList.toList().parallelStream().forEach { entry ->
+                val delta = System.currentTimeMillis() - startAt
+                if (delta > maxMs) {
+                    debug("Out of time to sign contracts! Exceeded $maxMs milliseconds!")
+                } else {
+                    handleBuilding(entry, maxMs, delta)
+                }
             }
         }
 
@@ -82,7 +90,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
             var done = false
             while (building.currentQuantityForSale(tradeable) > 0 && !done) {
                 val forSaleCount = building.currentQuantityForSale(tradeable)
-                debug("$building trying to sell $forSaleCount $tradeable")
+                debug("${building.description} trying to sell $forSaleCount $tradeable")
                 if (resourceFinder.quantityWantedNearby(tradeable, coordinate) > 0) {
                     val entityAndPath = resourceFinder.nearestBuyingTradeable(tradeable, buildingBlocks, MAX_RESOURCE_DISTANCE)
 
@@ -115,7 +123,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
 
                     }
                 } else {
-                    debug("Cannot find any $tradeable nearby. Won't bother with pathfinding...")
+                    debug("Cannot find any place to sell $tradeable nearby. Won't bother with pathfinding...")
                     done = true
                 }
 
@@ -153,9 +161,9 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         val howMany = (entitiesWithContracts().count() * 0.01).toInt()
         debug("Terminating $howMany contracts...")
 
-        cityMap.locations().getRandomElements(howMany)?.forEach { location ->
+        cityMap.locations().randomElements(howMany)?.forEach { location ->
             val buildings = cityMap.cachedBuildingsIn(location.coordinate)
-            val blockAndBuilding = buildings.toList().getRandomElements(1)?.first()
+            val blockAndBuilding = buildings.toList().randomElements(1)?.first()
             if (blockAndBuilding != null) {
                 val building = blockAndBuilding.building
                 building.voidRandomContract()

@@ -17,8 +17,8 @@ import kotcity.ui.ResizableCanvas
 import kotcity.ui.map.CityRenderer
 import kotcity.ui.sprites.ZotSpriteLoader
 import kotcity.util.Debuggable
-import kotcity.util.getRandomElement
-import kotcity.util.getRandomElements
+import kotcity.util.randomElement
+import kotcity.util.randomElements
 import java.util.concurrent.TimeUnit
 
 class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRenderer, private val zotCanvas: ResizableCanvas): Debuggable {
@@ -90,7 +90,7 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
             return locationsWithZots
         }
 
-        locationsWithZots = randomBuildingsWithZots(visibleBlockRange).getRandomElements(10) ?: emptyList()
+        locationsWithZots = randomBuildingsWithZots(visibleBlockRange).randomElements(50) ?: emptyList()
         lastCalculatedTime = System.currentTimeMillis()
         return locationsWithZots
     }
@@ -125,7 +125,7 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
     private var zotForBuildingCache: LoadingCache<Location, Zot?> =  Caffeine.newBuilder()
             .maximumSize(10000)
             .expireAfterWrite(15, TimeUnit.SECONDS)
-            .build<Location, Zot?> { key -> key.building.zots.getRandomElement() }
+            .build<Location, Zot?> { key -> key.building.zots.randomElement() }
 
     private fun randomZot(location: Location): Zot? {
         return zotForBuildingCache[location]
