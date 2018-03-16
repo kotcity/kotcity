@@ -171,7 +171,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     init {
         shipper.debug = false
-        contractFulfiller.debug = true
+        contractFulfiller.debug = false
         manufacturer.debug = false
         constructor.debug = false
         taxCollector.debug = false
@@ -179,6 +179,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         liquidator.debug = true
         zotPopulator.debug = false
         censusTaker.tick()
+        happinessUpdater.debug = true
         nationalTradeEntity.resetCounts()
     }
 
