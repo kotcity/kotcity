@@ -298,6 +298,13 @@ class PowerPlant : Building {
     override var height = 4
 }
 
+class FireStation(cityMap: CityMap) : Building(cityMap) {
+    override var width = 3
+    override var height = 3
+    override val powerRequired = 1
+    override var description: String? = "Fire Station"
+}
+
 class Road(cityMap: CityMap) : Building(cityMap) {
     override var width = 1
     override var height = 1

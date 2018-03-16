@@ -404,6 +404,9 @@ class CityRenderer(
                     Tool.TOWN_WAREHOUSE -> {
                         mouseBlock?.let { highlightCenteredBlocks(it, 2, 2) }
                     }
+                    Tool.FIRE_STATION -> {
+                        mouseBlock?.let { highlightCenteredBlocks(it, 3, 3) }
+                    }
                 }
             }
         }
@@ -411,7 +414,12 @@ class CityRenderer(
 
     private fun highlightCenteredBlocks(start: BlockCoordinate, width: Int, height: Int) {
         // TODO: we want to make this shit kind of centered...
-        if (width == 2 || height == 2) {
+        if (width == 3 || height == 3) {
+            val offsetX = (width / 2)
+            val offsetY = (height / 2)
+            val newBlock = BlockCoordinate(start.x - offsetX, start.y - offsetY)
+            highlightBlocks(newBlock, width, height)
+        } else if (width == 2 || height == 2) {
             val offsetX = (width / 2)
             val offsetY = (height / 2)
             val newBlock = BlockCoordinate(start.x - offsetX, start.y - offsetY)
