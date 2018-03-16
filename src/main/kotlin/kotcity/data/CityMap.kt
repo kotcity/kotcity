@@ -117,7 +117,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val powerLineLayer = mutableMapOf<BlockCoordinate, Building>()
     val resourceLayers = mutableMapOf<String, QuantizedMap<Double>>()
     val desirabilityLayers = initializeDesirabilityLayers()
-    val fireCoverageLayer = FireCoverageLayer()
+    val fireCoverageLayer = mutableMapOf<BlockCoordinate, Double>()
     var trafficLayer = mutableMapOf<BlockCoordinate, Double>().withDefault { 0.0 }
 
     private val constructor = Constructor(this)

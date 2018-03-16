@@ -25,6 +25,8 @@ class CityRenderer(
             panMap(oldCenter)
         }
 
+    private val fireCoverageRenderer = FireCoverageRenderer(this, cityMap)
+
     var blockOffsetX: Double = 0.0
     var blockOffsetY: Double = 0.0
 
@@ -217,7 +219,7 @@ class CityRenderer(
 
         when (mapMode) {
             MapMode.SOIL, MapMode.COAL, MapMode.GOLD, MapMode.OIL -> drawResources()
-            MapMode.FIRE_COVERAGE -> cityMap.fireCoverageLayer.draw(this)
+            MapMode.FIRE_COVERAGE -> fireCoverageRenderer.render()
             MapMode.DESIRABILITY -> drawDesirability()
             MapMode.TRAFFIC -> drawTraffic()
         }
