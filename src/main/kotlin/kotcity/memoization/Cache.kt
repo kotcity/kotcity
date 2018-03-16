@@ -5,14 +5,21 @@ import aballano.kotlinmemoization.tuples.Quintuple
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
+import java.time.Duration
 import java.util.concurrent.TimeUnit
 
-data class CacheOptions(val weakKeys: Boolean = true, val weakValues: Boolean = true, val maximumSize: Long = 100_000)
+data class CacheOptions(
+        val weakKeys: Boolean = true,
+        val weakValues: Boolean = true,
+        val maximumSize: Long = 100_000,
+        val durationValue: Long = 3,
+        val durationUnit: TimeUnit = TimeUnit.MINUTES
+)
 
 private fun caffeinate(cacheOptions: CacheOptions): Caffeine<Any?, Any?> {
     var cache = Caffeine.newBuilder()
             .maximumSize(cacheOptions.maximumSize)
-            .expireAfterWrite(3, TimeUnit.MINUTES)
+            .expireAfterWrite(cacheOptions.durationValue, cacheOptions.durationUnit)
             if (cacheOptions.weakKeys) {
                 cache = cache.weakKeys()
             }

@@ -4,6 +4,13 @@ import kotcity.data.*
 import kotcity.pathfinding.Path
 import kotcity.util.Debuggable
 import kotcity.util.randomElements
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.runBlocking
+
+fun <A>Collection<A>.forEachParallel(f: suspend (A) -> Unit): Unit = runBlocking {
+    map { async(CommonPool) { f(it) } }.forEach { it.await() }
+}
 
 class ContactFulfiller(val cityMap: CityMap) : Debuggable {
 
@@ -18,7 +25,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         resourceFinder.debug = debug
     }
 
-    fun signContracts(shuffled: Boolean = true) {
+    fun signContracts(shuffled: Boolean = true, maxMillis: Long = 5000) {
 
         val contractCollection = if (shuffled) {
             locationsNeedingContracts().shuffled()
@@ -26,26 +33,25 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
             locationsNeedingContracts()
         }
 
-        val industrial = contractCollection.filter { it.building is Industrial }
-        val commercial = contractCollection.filter { it.building is Commercial }
-        val residential = contractCollection.filter { it.building is Residential }
+        val howManyNeedContracts = contractCollection.size
+        var howManyProcessed = 0
 
-        listOf(industrial, commercial, residential).parallelStream().forEach { locationList ->
-            val maxMs = 5000
-            val startAt = System.currentTimeMillis()
-            locationList.toList().parallelStream().forEach { entry ->
-                val delta = System.currentTimeMillis() - startAt
-                if (delta > maxMs) {
-                    debug("Out of time to sign contracts! Exceeded $maxMs milliseconds!")
-                } else {
-                    handleBuilding(entry, maxMs, delta)
-                }
-            }
+        val start = System.currentTimeMillis()
+
+        contractCollection.parallelStream().takeWhile {
+            System.currentTimeMillis() - start < maxMillis
+        }.parallel().forEach {
+            val delta = System.currentTimeMillis() - start
+            debug("Still ${maxMillis - delta} millis left to sign contracts...")
+            handleBuilding(it)
+            howManyProcessed += 1
         }
+
+        debug("$howManyNeedContracts needed contracts and we processed $howManyProcessed")
 
     }
 
-    private fun handleBuilding(entry: Location, maxMs: Int, delta: Long) {
+    private fun handleBuilding(entry: Location) {
         val coordinate = entry.coordinate
         val building = entry.building
 
@@ -77,7 +83,6 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                         debug("${building.name} now requires ${building.currentQuantityWanted(tradeable)} $tradeable")
                         debug("${otherTradeEntity.description()} has ${otherTradeEntity.currentQuantityForSale(tradeable)} left.")
                         // debug("New setup: ${building.summarizeContracts()}")
-                        debug("Still ${maxMs - delta} millis left to sign contracts...")
                     }
 
                 } else {
@@ -106,9 +111,6 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                         val quantity = otherEntity.currentQuantityWanted(tradeable).coerceAtMost(forSaleCount)
 
                         debug("Found a buyer for our $tradeable. It wants $quantity and we are selling $forSaleCount")
-
-                        // debug("New setup: ${building.summarizeContracts()}")
-                        debug("Still ${maxMs - delta} millis left to sign contracts...")
 
                         if (quantity > 0) {
                             val newContract = Contract(buildingTradeEntity, otherEntity, tradeable, quantity, path)
@@ -158,16 +160,18 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
             return
         }
 
-        val howMany = (entitiesWithContracts().count() * 0.01).toInt()
-        debug("Terminating $howMany contracts...")
-
-        cityMap.locations().randomElements(howMany)?.forEach { location ->
-            val buildings = cityMap.cachedBuildingsIn(location.coordinate)
-            val blockAndBuilding = buildings.toList().randomElements(1)?.first()
-            if (blockAndBuilding != null) {
-                val building = blockAndBuilding.building
-                building.voidRandomContract()
+        if (entitiesWithContracts().size > 100)
+        {
+            val howMany = 5
+            cityMap.locations().randomElements(howMany)?.forEach { location ->
+                val buildings = cityMap.cachedLocationsIn(location.coordinate)
+                val blockAndBuilding = buildings.toList().randomElements(1)?.first()
+                if (blockAndBuilding != null) {
+                    val building = blockAndBuilding.building
+                    building.voidRandomContract()
+                }
             }
         }
+
     }
 }

@@ -118,7 +118,7 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
 
     // OK we need a cache here so we only shoot back a few buildings
     private fun randomBuildingsWithZots(visibleBlockRange: Pair<BlockCoordinate, BlockCoordinate>): List<Location> {
-        return cityMap.locationsIn(visibleBlockRange.first, visibleBlockRange.second).filter { it.building.zots.isNotEmpty() }
+        return cityMap.locationsInRectangle(visibleBlockRange.first, visibleBlockRange.second).filter { it.building.zots.isNotEmpty() }
     }
 
 

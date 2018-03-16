@@ -56,7 +56,10 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         if (preferredTradeEntity == null) {
             // let's try and get a path to the outside...
             // make sure the outside city has a resource before we get too excited and make a path...
-            preferredTradeEntity = possiblePathToOutside(tradeable, quantity, sourceBlocks, preferredTradeEntity)
+            val pair = possiblePathToOutside(tradeable, quantity, sourceBlocks)
+            if (pair != null) {
+                preferredTradeEntity = pair.first
+            }
         }
 
         preferredPath?.let {path ->
@@ -71,23 +74,24 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
     private var lastOutsidePathFailAt: Long = System.currentTimeMillis()
 
 
-    private fun possiblePathToOutside(tradeable: Tradeable, quantity: Int, sourceBlocks: List<BlockCoordinate>, preferredTradeEntity: TradeEntity?): TradeEntity? {
+    private fun possiblePathToOutside(tradeable: Tradeable, quantity: Int, sourceBlocks: List<BlockCoordinate>): Pair<TradeEntity, Path>? {
         // OK what we want to do here is don't try and get a trip to the outside all the time...
         // if we fail we won't even bother for 10 more seconds....
         if (System.currentTimeMillis() - 10000 < lastOutsidePathFailAt) {
             return null
         }
-        var preferredTradeEntity1 = preferredTradeEntity
+        var preferredTradeEntity1: TradeEntity? = null
         if (cityMap.nationalTradeEntity.currentQuantityForSale(tradeable) >= quantity) {
-            val destinationBlock = pathfinder.pathToOutside(sourceBlocks)?.blocks()?.last()
+            val path = pathfinder.pathToOutside(sourceBlocks)
+            val destinationBlock = path?.blocks()?.last()
             if (destinationBlock != null) {
-                preferredTradeEntity1 = cityMap.nationalTradeEntity.outsideEntity(destinationBlock)
+                return Pair(cityMap.nationalTradeEntity.outsideEntity(destinationBlock), path)
             } else {
                 // we failed!
                 this.lastOutsidePathFailAt = System.currentTimeMillis()
             }
         }
-        return preferredTradeEntity1
+        return null
     }
 
     // TODO: find each path individually to each building...
@@ -120,9 +124,11 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         }
 
         if (cityMap.nationalTradeEntity.currentQuantityWanted(tradeable) >= 1) {
-            val outsidePath = pathfinder.pathToOutside(sourceBlocks)
-            outsidePath?.let {
-                return Pair(cityMap.nationalTradeEntity.outsideEntity(it.blocks().last()), it)
+            val outsidePair = possiblePathToOutside(tradeable, 1, sourceBlocks)
+            outsidePair?.let {
+                val tradeEntity = it.first
+                val path = it.second
+                return Pair(tradeEntity, path)
             }
         }
 

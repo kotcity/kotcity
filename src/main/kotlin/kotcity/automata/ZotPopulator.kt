@@ -80,7 +80,7 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
 
     private fun hasTrafficNearby(location: Location, radius: Int, quantity: Int): Boolean {
         val neighboringBlocks = location.coordinate.neighbors(radius)
-        val nearbyRoads = neighboringBlocks.flatMap { cityMap.cachedBuildingsIn(it) }
+        val nearbyRoads = neighboringBlocks.flatMap { cityMap.cachedLocationsIn(it) }
                                                        .filter { it.building is Road }
 
         val trafficCount = nearbyRoads.sumBy { cityMap.trafficLayer[it.coordinate]?.toInt() ?: 0}

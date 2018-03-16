@@ -159,9 +159,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     // OK! we will require one key per map cell
     private val numberOfCells = this.height.toLong() * this.width.toLong() + 100
-    private val buildingsInCachePair = ::buildingsIn.cache(CacheOptions(weakKeys = false, weakValues = true, maximumSize = numberOfCells))
-    private val buildingsInCache = buildingsInCachePair.first
-    val cachedBuildingsIn = buildingsInCachePair.second
+    private val locationsInCachePair = ::locationsIn.cache(CacheOptions(weakKeys = false, weakValues = true, maximumSize = numberOfCells, durationUnit = TimeUnit.SECONDS, durationValue = 15))
+    private val locationsInCache = locationsInCachePair.first
+    val cachedLocationsIn = locationsInCachePair.second
 
     fun debug(message: String) {
         if (debug) {
@@ -171,7 +171,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     init {
         shipper.debug = false
-        contractFulfiller.debug = true
+        contractFulfiller.debug = false
         manufacturer.debug = false
         constructor.debug = false
         taxCollector.debug = false
@@ -226,7 +226,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun nearestBuildings(coordinate: BlockCoordinate, distance: Int = 10): List<Location> {
-        val point = Geometries.rectangle(coordinate.x.toFloat(), coordinate.y.toFloat(),coordinate.x.toFloat()+1, coordinate.y.toFloat()+1)
+        val point = Geometries.point(coordinate.x.toFloat(), coordinate.y.toFloat())
         return buildingIndex.search(point, distance.toDouble())
                 .filter( {t -> t != null } ).map { entry ->
             val geometry = entry.geometry()
@@ -251,7 +251,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             )
         }
         buildingIndex = newIndex
-        buildingsInCache.invalidateAll()
+        locationsInCache.invalidateAll()
     }
 
     fun suggestedFilename(): String {
@@ -283,7 +283,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             if (hour % 3 == 0) {
                 timeFunction("Calculating desirability") { desirabilityUpdater.update() }
                 timeFunction("Constructing buildings") { constructor.tick() }
-                // timeFunction("Terminating random contracts") { contractFulfiller.terminateRandomContracts() }
+                timeFunction("Terminating random contracts") { contractFulfiller.terminateRandomContracts() }
                 withTimeout(5000, TimeUnit.MILLISECONDS) {
                     timeFunction("Signing contracts") { contractFulfiller.signContracts() }
                 }
@@ -299,7 +299,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
 
             if (hour % 6 == 0) {
-                async { timeFunction("Liquidating bankrupt properties") { liquidator.tick() } }
+
             }
 
             if (hour == 0) {
@@ -322,6 +322,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
 
         async {
+            timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
             timeFunction("Collect Taxes") { taxCollector.tick() }
             timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
         }
@@ -411,7 +412,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun zone(type: Zone, from: BlockCoordinate, to: BlockCoordinate) {
         BlockCoordinate.iterate(from, to) {
             if (!waterFound(it, it)) {
-                if (buildingsIn(it).count() == 0) {
+                if (locationsIn(it).count() == 0) {
                     zoneLayer[it] = type
                 }
             }
@@ -442,7 +443,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 synchronized(powerLineLayer) {
                     powerLineLayer.remove(coordinate)
                 }
-                val buildings = buildingsIn(coordinate)
+                val buildings = locationsIn(coordinate)
                 // now kill all those contracts...
                 buildings.forEach {
                     buildingLayer.values.forEach { otherBuilding ->
@@ -489,7 +490,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
-    fun locationsIn(topLeft: BlockCoordinate, bottomRight: BlockCoordinate): List<Location> {
+    fun locationsInRectangle(topLeft: BlockCoordinate, bottomRight: BlockCoordinate): List<Location> {
         val buildings = buildingIndex.search(Geometries.rectangle(topLeft.x.toDouble(), topLeft.y.toDouble(), bottomRight.x.toDouble(), bottomRight.y.toDouble()))
         return buildings.map { it ->
             it.value()?.let { building ->
@@ -534,7 +535,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
-    private fun buildingsIn(block: BlockCoordinate): List<Location> {
+    private fun locationsIn(block: BlockCoordinate): List<Location> {
         val nearestBuildings = nearestBuildings(block, MAX_BUILDING_SIZE+1)
         val filteredBuildings = nearestBuildings.filter {
             val coordinate = it.coordinate
@@ -561,7 +562,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun isEmpty(coordinate: BlockCoordinate): Boolean {
-        return this.buildingsIn(coordinate).count() == 0
+        return this.locationsIn(coordinate).count() == 0
     }
 
 }

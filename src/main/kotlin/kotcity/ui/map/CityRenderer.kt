@@ -463,7 +463,7 @@ class CityRenderer(
         // TODO: we can just cityMap over the two different layers... clean up later...
         val (from, to) = visibleBlockRange(padding = MAX_BUILDING_SIZE)
 
-        val locations = cityMap.locationsIn(from, to)
+        val locations = cityMap.locationsInRectangle(from, to)
 
         val powerLines = visibleBlocks(padding = MAX_BUILDING_SIZE).mapNotNull {
             val building = cityMap.powerLineLayer[it]

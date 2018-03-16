@@ -81,7 +81,7 @@ class DesirabilityTest {
 
         val cf = ContactFulfiller(map)
         cf.debug = true
-        cf.signContracts(shuffled = false)
+        cf.signContracts(shuffled = false, maxMillis = 5000)
 
         // ok now let's make sure the desirability is actually kosher...
         desirabilityUpdater.update()

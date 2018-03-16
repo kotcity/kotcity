@@ -205,8 +205,8 @@ fun readContracts(data: JsonObject, cityMap: CityMap) {
             // the first building MAY not be correct but let's try...
             val from = BlockCoordinate(contractObj["from_x"].asInt, contractObj["from_y"].asInt)
             val to = BlockCoordinate(contractObj["to_x"].asInt, contractObj["to_y"].asInt)
-            val fromBuildings = cityMap.cachedBuildingsIn(from)
-            val toBuildings = cityMap.cachedBuildingsIn(to)
+            val fromBuildings = cityMap.cachedLocationsIn(from)
+            val toBuildings = cityMap.cachedLocationsIn(to)
 
             if (fromBuildings.count() == 0) {
                 println("Error during contact loading! Cannot find source building at $from")
