@@ -18,6 +18,8 @@ A build for Windows is available at https://github.com/kotcity/kotcity/releases/
 
 macOS and Linux build available upon request (or build it yourself!)
 
+(note, on Ubuntu do apt-get install openjfx)
+
 ## Quick Start
 
 Be on the lookout for super easy to install package soon... until then...
