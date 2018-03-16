@@ -31,7 +31,7 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
         val building = location.building
         val zotList = mutableListOf<Zot>()
 
-        if (building.quantityOnHand(Tradeable.LABOR) <= 0) {
+        if (building.totalBeingBought(Tradeable.LABOR) == 0) {
             zotList.add(Zot.NO_WORKERS)
         }
 
@@ -42,7 +42,7 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
         val building = location.building
         val zotList = mutableListOf<Zot>()
 
-        if (building.quantityOnHand(Tradeable.LABOR) <= 0) {
+        if (building.totalBeingBought(Tradeable.LABOR) == 0) {
             zotList.add(Zot.NO_WORKERS)
         }
 

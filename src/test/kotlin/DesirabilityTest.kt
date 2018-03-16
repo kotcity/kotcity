@@ -70,14 +70,14 @@ class DesirabilityTest {
             assertTrue(nonDefaultFound, "Error setting desirability for $zt")
         }
 
-        assertTrue(slum.quantityForSale(Tradeable.LABOR) >= 2, "Has no labor...")
+        assertTrue(slum.currentQuantityForSale(Tradeable.LABOR) >= 2, "Has no labor...")
 
-        val oldSlumValue = slum.quantityForSale(Tradeable.LABOR)
-        val oldSlum2Value = slum.quantityForSale(Tradeable.LABOR)
+        val oldSlumValue = slum.currentQuantityForSale(Tradeable.LABOR)
+        val oldSlum2Value = slum.currentQuantityForSale(Tradeable.LABOR)
 
         // OK... the factory OR corner shore should get some workers...
-        val oldFactoryValue = factory.supplyCount(Tradeable.LABOR)
-        val oldCornerStoreValue = factory.supplyCount(Tradeable.LABOR)
+        val oldFactoryValue = factory.totalBeingBought(Tradeable.LABOR)
+        val oldCornerStoreValue = factory.totalBeingBought(Tradeable.LABOR)
 
         val cf = ContactFulfiller(map)
         cf.debug = true
@@ -86,8 +86,8 @@ class DesirabilityTest {
         // ok now let's make sure the desirability is actually kosher...
         desirabilityUpdater.update()
 
-        assertTrue(slum.quantityForSale(Tradeable.LABOR) != oldSlumValue || slum2.quantityForSale(Tradeable.LABOR) != oldSlum2Value, "Expected labor available to change...")
-        assertTrue(factory.supplyCount(Tradeable.LABOR) != oldFactoryValue || cornerStore.supplyCount(Tradeable.LABOR) != oldCornerStoreValue, "Expected consumed labor to change...")
+        assertTrue(slum.currentQuantityForSale(Tradeable.LABOR) != oldSlumValue || slum2.currentQuantityForSale(Tradeable.LABOR) != oldSlum2Value, "Expected labor available to change...")
+        assertTrue(factory.totalBeingBought(Tradeable.LABOR) != oldFactoryValue || cornerStore.totalBeingBought(Tradeable.LABOR) != oldCornerStoreValue, "Expected consumed labor to change...")
 
         val manufacturer = Manufacturer(map)
         manufacturer.debug = true

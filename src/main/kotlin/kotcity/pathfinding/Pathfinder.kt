@@ -116,14 +116,14 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
     fun pathToNearestLabor(start: List<BlockCoordinate>, quantity: Int = 1): Path? {
         val nearest = findNearestTrade(start, quantity) { building, _ ->
-            building.quantityForSale(Tradeable.LABOR) >= quantity
+            building.currentQuantityForSale(Tradeable.LABOR) >= quantity
         }
         return tripTo(start, nearest)
     }
 
     fun pathToNearestJob(start: List<BlockCoordinate>, quantity: Int = 1): Path? {
         val nearest = findNearestTrade(start, quantity) { building, _ ->
-            building.quantityWanted(Tradeable.LABOR) >= quantity
+            building.currentQuantityWanted(Tradeable.LABOR) >= quantity
         }
         return tripTo(start, nearest)
     }

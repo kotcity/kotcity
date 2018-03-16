@@ -51,7 +51,7 @@ class CityFileAdapterTest {
 
         val loadedJobCenter = loadedCity.cachedBuildingsIn(BlockCoordinate(0,0)).first().building
         println("Job center: ${loadedJobCenter.summarizeContracts()}")
-        println("How much labor: ${loadedJobCenter.quantityForSale(Tradeable.LABOR)}")
+        println("How much labor: ${loadedJobCenter.currentQuantityForSale(Tradeable.LABOR)}")
 
         assert(loadedCity.width == 100)
     }

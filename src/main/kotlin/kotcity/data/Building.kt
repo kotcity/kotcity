@@ -61,11 +61,10 @@ interface HasConcreteInventory : HasInventory {
 
 interface HasContracts {
     fun summarizeContracts(): String
-    fun quantityForSale(tradeable: Tradeable): Int
-    fun quantityWanted(tradeable: Tradeable): Int
-    fun needs(tradeable: Tradeable): Int
-    fun totalProvided(tradeable: Tradeable): Int
-    fun supplyCount(tradeable: Tradeable): Int
+    fun currentQuantityForSale(tradeable: Tradeable): Int
+    fun currentQuantityWanted(tradeable: Tradeable): Int
+    fun totalBeingSold(tradeable: Tradeable): Int
+    fun totalBeingBought(tradeable: Tradeable): Int
     fun consumesQuantity(tradeable: Tradeable): Int
     fun producesQuantity(tradeable: Tradeable): Int
     fun productList(): List<Tradeable>
@@ -73,7 +72,7 @@ interface HasContracts {
     fun needsAnyContracts(): Boolean {
 
         Tradeable.values().forEach { tradeable ->
-            if (quantityWanted(tradeable) > 0) {
+            if (currentQuantityWanted(tradeable) > 0) {
                 return true
             }
         }
@@ -120,15 +119,13 @@ interface HasConcreteContacts : HasContracts {
         return summaryBuffer.toString()
     }
 
-    // TODO: these are confusing! document them!
-    override fun quantityForSale(tradeable: Tradeable): Int {
+    override fun currentQuantityForSale(tradeable: Tradeable): Int {
         val filter = {contract: Contract -> contract.from.building() }
         val hash = produces.toMap()
         return calculateAvailable(hash, tradeable, filter)
     }
 
-    // TODO: these are confusing! document them!
-    override fun quantityWanted(tradeable: Tradeable): Int {
+    override fun currentQuantityWanted(tradeable: Tradeable): Int {
         val inventoryCount = consumes[tradeable] ?: 0
         synchronized(contracts) {
             val contractCount = contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
@@ -158,12 +155,6 @@ interface HasConcreteContacts : HasContracts {
         }
     }
 
-    override fun needs(tradeable: Tradeable): Int {
-        val requiredCount = consumes[tradeable] ?: return 0
-        val contractCount = contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
-        return requiredCount - contractCount
-    }
-
     fun voidRandomContract() {
         if (contracts.count() > 0) {
             val contractToKill = contracts.getRandomElement()
@@ -174,12 +165,12 @@ interface HasConcreteContacts : HasContracts {
         }
     }
 
-    override fun totalProvided(tradeable: Tradeable): Int {
+    override fun totalBeingSold(tradeable: Tradeable): Int {
         return contracts.filter { it.from.building() == this && it.tradeable == tradeable}
                 .map { it.quantity }.sum()
     }
 
-    override fun supplyCount(tradeable: Tradeable): Int {
+    override fun totalBeingBought(tradeable: Tradeable): Int {
         synchronized(contracts) {
             return contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
         }
@@ -246,13 +237,13 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
             return
         }
         val ourLocation = CityTradeEntity(ourBlocks, this)
-        val newContract = Contract(ourLocation, otherTradeEntity, tradeable, quantity, path)
+        val newContract = Contract(otherTradeEntity, ourLocation, tradeable, quantity, path)
         synchronized(contracts) {
-            if (otherTradeEntity.quantityForSale(tradeable) >= newContract.quantity) {
+            if (otherTradeEntity.currentQuantityForSale(tradeable) >= newContract.quantity) {
                 contracts.add(newContract)
                 otherTradeEntity.addContract(newContract)
             } else {
-                println("Tried to make an invalid contract: $newContract but failed because ${otherTradeEntity.description()} doesn't have enough $tradeable (it has ${otherTradeEntity.quantityForSale(tradeable)})")
+                println("Tried to make an invalid contract: $newContract but failed because ${otherTradeEntity.description()} doesn't have enough $tradeable (it has ${otherTradeEntity.currentQuantityForSale(tradeable)})")
             }
         }
     }

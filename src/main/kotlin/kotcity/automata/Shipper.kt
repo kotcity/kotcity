@@ -43,7 +43,7 @@ class Shipper(val cityMap: CityMap): Debuggable {
     }
 
     private fun exportToOutside(contract: Contract, building: Building) {
-        if (contract.to.quantityWanted(contract.tradeable) >= contract.quantity) {
+        if (contract.to.currentQuantityWanted(contract.tradeable) >= contract.quantity) {
             if (contract.tradeable == Tradeable.LABOR) {
                 // don't actually SEND anything... we just get $$$
                 building.addInventory(Tradeable.MONEY, contract.quantity)

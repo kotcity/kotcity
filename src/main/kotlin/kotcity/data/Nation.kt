@@ -4,6 +4,10 @@ import kotcity.pathfinding.Path
 
 // all the outside shares one contract list...
 data class OutsideTradeEntity(private val nationalTradeEntity: NationalTradeEntity, override val coordinate: BlockCoordinate, val cityMap: CityMap) : TradeEntity, HasContracts by nationalTradeEntity, HasInventory by nationalTradeEntity {
+    override fun currentQuantityWanted(tradeable: Tradeable): Int {
+        return nationalTradeEntity.currentQuantityWanted(tradeable)
+    }
+
     override fun hasAnyContracts(): Boolean {
         return nationalTradeEntity.hasAnyContracts()
     }
@@ -22,11 +26,11 @@ data class OutsideTradeEntity(private val nationalTradeEntity: NationalTradeEnti
 
     override fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path) {
         val newContract = Contract(this, otherTradeEntity, tradeable, quantity, path)
-        if (otherTradeEntity.quantityForSale(tradeable) >= newContract.quantity) {
+        if (otherTradeEntity.currentQuantityForSale(tradeable) >= newContract.quantity) {
             addContract(newContract)
             otherTradeEntity.addContract(newContract)
         } else {
-            println("Tried to make an invalid contract: $newContract but failed because ${otherTradeEntity.description()} doesn't have enough $tradeable (it has ${otherTradeEntity.quantityForSale(tradeable)})")
+            println("Tried to make an invalid contract: $newContract but failed because ${otherTradeEntity.description()} doesn't have enough $tradeable (it has ${otherTradeEntity.currentQuantityForSale(tradeable)})")
         }
     }
 
@@ -38,8 +42,8 @@ data class OutsideTradeEntity(private val nationalTradeEntity: NationalTradeEnti
         return "Outside the city"
     }
 
-    override fun quantityForSale(tradeable: Tradeable): Int {
-        return nationalTradeEntity.quantityForSale(tradeable)
+    override fun currentQuantityForSale(tradeable: Tradeable): Int {
+        return nationalTradeEntity.currentQuantityForSale(tradeable)
     }
 
 }
@@ -98,21 +102,17 @@ data class NationalTradeEntity(val cityMap: CityMap): HasContracts, HasInventory
                         .map { it.quantity }.sum()
     }
 
-    override fun quantityForSale(tradeable: Tradeable): Int {
+    override fun currentQuantityForSale(tradeable: Tradeable): Int {
         return providesCounter[tradeable] - existingSellQuantity(tradeable)
     }
 
-    override fun quantityWanted(tradeable: Tradeable): Int {
-        return wantsCounter[tradeable] - existingBuyQuantity(tradeable)
-    }
-
-    override fun needs(tradeable: Tradeable): Int {
+    override fun currentQuantityWanted(tradeable: Tradeable): Int {
         return wantsCounter[tradeable] - existingBuyQuantity(tradeable)
     }
 
     // we consume whatever the counter says...
     override fun consumesQuantity(tradeable: Tradeable): Int {
-        return needs(tradeable)
+        return currentQuantityWanted(tradeable)
     }
 
     // we provide whatever the counter says...
@@ -120,11 +120,11 @@ data class NationalTradeEntity(val cityMap: CityMap): HasContracts, HasInventory
         return providesCounter[tradeable] - existingSellQuantity(tradeable)
     }
 
-    override fun totalProvided(tradeable: Tradeable): Int {
+    override fun totalBeingSold(tradeable: Tradeable): Int {
         return providesCounter[tradeable]
     }
 
-    override fun supplyCount(tradeable: Tradeable): Int {
+    override fun totalBeingBought(tradeable: Tradeable): Int {
         return inventory.quantity(tradeable)
     }
 

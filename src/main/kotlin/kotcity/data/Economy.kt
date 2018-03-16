@@ -20,8 +20,8 @@ interface TradeEntity {
     fun voidContractsWith(otherTradeEntity: TradeEntity)
     fun hasAnyContracts(): Boolean
 
-    fun quantityForSale(tradeable: Tradeable): Int
-    fun quantityWanted(tradeable: Tradeable): Int
+    fun currentQuantityForSale(tradeable: Tradeable): Int
+    fun currentQuantityWanted(tradeable: Tradeable): Int
 }
 
 data class CityTradeEntity(override val coordinate: BlockCoordinate, val building: Building) : TradeEntity {
@@ -49,18 +49,18 @@ data class CityTradeEntity(override val coordinate: BlockCoordinate, val buildin
         return building.description
     }
 
-    override fun quantityForSale(tradeable: Tradeable): Int {
-        return building.quantityForSale(tradeable)
+    override fun currentQuantityForSale(tradeable: Tradeable): Int {
+        return building.currentQuantityForSale(tradeable)
     }
 
-    override fun quantityWanted(tradeable: Tradeable): Int {
-        return building.quantityWanted(tradeable)
+    override fun currentQuantityWanted(tradeable: Tradeable): Int {
+        return building.currentQuantityWanted(tradeable)
     }
 }
 
 data class Contract(
-        val to: TradeEntity,
         val from: TradeEntity,
+        val to: TradeEntity,
         val tradeable: Tradeable,
         val quantity: Int,
         val path: kotcity.pathfinding.Path?

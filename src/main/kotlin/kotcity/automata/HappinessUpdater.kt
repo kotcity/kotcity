@@ -58,20 +58,26 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
         // we are happy if we don't need any workers...
         var newValue = newValue
         val laborConsumed = location.building.consumesQuantity(Tradeable.LABOR).toDouble()
-        val laborNeeded = location.building.needs(Tradeable.LABOR).toDouble()
+        val laborBuying = location.building.totalBeingBought(Tradeable.LABOR).toDouble()
+        val laborWanted = location.building.currentQuantityWanted(Tradeable.LABOR).toDouble()
+        debug("Building is buying $laborBuying and should be consuming $laborConsumed")
 
-        if (laborNeeded == 0.0) {
-            newValue = 1.0
+        if (laborBuying == 0.0) {
+            return -3.0
+        }
+
+        if (laborWanted == 0.0) {
+            newValue = 5.0
         } else {
             // let's figure out a ratio...
-            val presentLabor = laborNeeded - laborConsumed
-            val ratio = presentLabor / laborConsumed
+            val ratio = laborBuying / laborConsumed
+            debug("That makes the ratio $ratio")
             newValue += when (ratio) {
                 in 0.0..0.2 -> 1.0
                 in 0.2..0.4 -> 2.0
                 in 0.4..0.6 -> 3.0
                 in 0.6..0.8 -> 4.0
-                in 0.8..1.0 -> 5.0
+                in 0.8..10.0 -> 5.0
                 else -> 0.0
             }
         }
@@ -83,14 +89,14 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
 
         // res is happy when everyone is employed...
         val laborProvided = location.building.producesQuantity(Tradeable.LABOR).toDouble()
-        val laborForSale = location.building.quantityForSale(Tradeable.LABOR).toDouble()
+        val laborForSale = location.building.currentQuantityForSale(Tradeable.LABOR).toDouble()
         val ratio = laborForSale / laborProvided
         newValue += when (ratio) {
             in 0.0 .. 0.2 -> 1.0
             in 0.2 .. 0.4 -> 2.0
             in 0.4 .. 0.6 -> 3.0
             in 0.6 .. 0.8 -> 4.0
-            in 0.8 .. 1.0 -> 5.0
+            in 0.8 .. 10.0 -> 5.0
             else -> 0.0
         }
 
