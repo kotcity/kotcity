@@ -98,11 +98,11 @@ interface HasConcreteContacts : HasContracts {
     override fun summarizeContracts(): String {
         val summaryBuffer = StringBuffer()
 
-        consumes.keys.distinct().forEach {
+        consumes.keys.distinct().toList().forEach {
             summaryBuffer.append("Consumes: ${consumes[it]} $it\n")
         }
 
-        produces.keys.distinct().forEach {
+        produces.keys.distinct().toList().forEach {
             summaryBuffer.append("Produces: ${produces[it]} $it\n")
         }
 
