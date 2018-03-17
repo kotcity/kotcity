@@ -20,9 +20,9 @@ KotCity is a city simulator written in Kotlin inspired by the statistical city s
 
 ## Gimme the Software!
 
-A build for Windows is available at https://github.com/kotcity/kotcity/releases/tag/0.43.
+A build for Windows, macOS and Linux is available at https://github.com/kotcity/kotcity/releases/tag/0.43.
 
-macOS and Linux build available upon request (or build it yourself!)
+Java 8+ is required. On Windows it will look for JRE and bring you to download page if you don't have it.
 
 (note, on Ubuntu do apt-get install openjfx)
 
