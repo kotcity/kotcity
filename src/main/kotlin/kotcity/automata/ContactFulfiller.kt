@@ -38,7 +38,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
 
         val startAt = System.currentTimeMillis()
 
-        contractCollection.toList().shuffled().parallelStream().takeWhile { System.currentTimeMillis() - startAt < maxMillis }.forEach { location ->
+        contractCollection.toList().shuffled().takeWhile { System.currentTimeMillis() - startAt < maxMillis }.forEach { location: Location ->
             if (location != null) {
                 val delta = System.currentTimeMillis() - startAt
                 debug("Still ${maxMillis - delta} millis left to sign contracts...")
