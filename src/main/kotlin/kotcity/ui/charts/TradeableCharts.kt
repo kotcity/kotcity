@@ -22,8 +22,8 @@ class SupplyDemandChart : View() {
     private val xAxis = CategoryAxis()
     private val yAxis = NumberAxis()
     private val barChart = BarChart(xAxis, yAxis)
-    val supplySeries = XYChart.Series<String, Number>()
-    val demandSeries = XYChart.Series<String, Number>()
+    private val supplySeries = XYChart.Series<String, Number>()
+    private val demandSeries = XYChart.Series<String, Number>()
 
     init {
         title = "Supply and Demand"
@@ -41,26 +41,19 @@ class SupplyDemandChart : View() {
         barChart.data.addAll(supplySeries, demandSeries)
 
         updateChart()
-
     }
 
     private fun updateChart() {
         census?.let {
-
             supplySeries.data.clear()
             demandSeries.data.clear()
 
             it.resourceCounts.totals().forEach { economyReport ->
-
                 if (economyReport.tradeable != Tradeable.MONEY && economyReport.tradeable != Tradeable.RAW_MATERIALS) {
-
                     supplySeries.data.add(XYChart.Data(economyReport.tradeable.name, economyReport.supply))
                     demandSeries.data.add(XYChart.Data(economyReport.tradeable.name, economyReport.demand))
                 }
-
             }
-
         }
     }
-
 }

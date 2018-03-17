@@ -15,7 +15,7 @@ const val GAME_STRING = "KotCity 0.43"
 
 class LaunchScreen : View() {
     override val root: VBox by fxml("/LaunchScreen.fxml")
-    val titleLabel: Label by fxid()
+    private val titleLabel: Label by fxid()
 
     init {
         title = GAME_STRING
@@ -45,7 +45,6 @@ class LaunchScreen : View() {
     fun quitPressed() {
         System.exit(0)
     }
-
 }
 
 class LaunchScreenApp : App(LaunchScreen::class, KotcityStyles::class) {

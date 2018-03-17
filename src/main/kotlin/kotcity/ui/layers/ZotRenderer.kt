@@ -21,7 +21,14 @@ import kotcity.util.randomElement
 import kotcity.util.randomElements
 import java.util.concurrent.TimeUnit
 
-class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRenderer, private val zotCanvas: ResizableCanvas): Debuggable {
+class ZotRenderer(
+    private val cityMap: CityMap,
+    private val cityRenderer: CityRenderer,
+    private val zotCanvas: ResizableCanvas
+) : Debuggable {
+
+    override var debug: Boolean = true
+    var visibleBlockRange: Pair<BlockCoordinate, BlockCoordinate>? = null
 
     private var offsetTimeline: Timeline
     private var degree = 0.0
@@ -29,17 +36,39 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
     private var locationsWithZots = emptyList<Location>()
     private val zotRecalcInterval = 15000
 
-    init {
+    private var zotForBuildingCache: LoadingCache<Location, Zot?> = Caffeine.newBuilder()
+        .maximumSize(10000)
+        .expireAfterWrite(15, TimeUnit.SECONDS)
+        .build<Location, Zot?> { key -> key.building.zots.randomElement() }
 
+    init {
         this.offsetTimeline = Timeline(KeyFrame(Duration.millis(50.0), EventHandler {
             degree += 5
             if (degree >= 360) {
                 degree = 0.0
             }
         }))
-
         offsetTimeline.cycleCount = Timeline.INDEFINITE
         offsetTimeline.play()
+    }
+
+    fun render() {
+        val gc = zotCanvas.graphicsContext2D
+        gc.clearRect(0.0, 0.0, zotCanvas.width, zotCanvas.height)
+        gc.fill = Color.AQUAMARINE
+
+        // ok let's get all buildings with zots now...
+        visibleBlockRange?.let { visibleBlockRange ->
+            cachedLocationsWithZots(visibleBlockRange).forEach { location ->
+                // TODO: we gotta get different zots every once in a while...
+                randomZot(location)?.let {
+                    val blockSize = cityRenderer.blockSize()
+                    ZotSpriteLoader.spriteForZot(it, blockSize, blockSize)?.let {
+                        drawZot(it, gc, location)
+                    }
+                }
+            }
+        }
     }
 
     fun stop() {
@@ -59,7 +88,6 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
         } else {
             0.0
         }
-
 
         val y = (ty - 1) * blockSize + ((Math.sin(Math.toRadians(degree)) * (blockSize * 0.1)))
         drawOutline(g2d, tx, blockSize, y, halfBuildingWidth)
@@ -95,42 +123,13 @@ class ZotRenderer(private val cityMap: CityMap, private val cityRenderer: CityRe
         return locationsWithZots
     }
 
-    fun render() {
-        val gc = zotCanvas.graphicsContext2D
-        gc.clearRect(0.0, 0.0, zotCanvas.width, zotCanvas.height)
-        gc.fill = Color.AQUAMARINE
-
-        // ok let's get all buildings with zots now...
-        visibleBlockRange?.let { visibleBlockRange ->
-            val locationsWithZots = cachedLocationsWithZots(visibleBlockRange)
-            locationsWithZots?.forEach { location ->
-                // TODO: we gotta get different zots every once in a while...
-                val randomZot: Zot? = randomZot(location)
-                if (randomZot != null) {
-                    val image = ZotSpriteLoader.spriteForZot(randomZot, cityRenderer.blockSize(), cityRenderer.blockSize())
-                    if (image != null) {
-                        drawZot(image, gc, location)
-                    }
-                }
-            }
-        }
-    }
-
     // OK we need a cache here so we only shoot back a few buildings
     private fun randomBuildingsWithZots(visibleBlockRange: Pair<BlockCoordinate, BlockCoordinate>): List<Location> {
-        return cityMap.locationsInRectangle(visibleBlockRange.first, visibleBlockRange.second).filter { it.building.zots.isNotEmpty() }
+        return cityMap.locationsInRectangle(visibleBlockRange.first, visibleBlockRange.second)
+            .filter { it.building.zots.isNotEmpty() }
     }
-
-
-    private var zotForBuildingCache: LoadingCache<Location, Zot?> =  Caffeine.newBuilder()
-            .maximumSize(10000)
-            .expireAfterWrite(15, TimeUnit.SECONDS)
-            .build<Location, Zot?> { key -> key.building.zots.randomElement() }
 
     private fun randomZot(location: Location): Zot? {
         return zotForBuildingCache[location]
     }
-
-    override var debug: Boolean = true
-    var visibleBlockRange: Pair<BlockCoordinate, BlockCoordinate>? = null
 }

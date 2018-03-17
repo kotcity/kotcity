@@ -9,6 +9,7 @@ import kotcity.automata.*
 import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotcity.ui.map.MAX_BUILDING_SIZE
+import kotcity.util.reorder
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withTimeout
@@ -78,14 +79,6 @@ data class Corners(
             return true
         }
         return false
-    }
-}
-
-fun IntRange.reorder(): IntRange {
-    return if (first < last) {
-        this
-    } else {
-        last..first
     }
 }
 
@@ -170,7 +163,15 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     // OK! we will require one key per map cell
     private val numberOfCells = this.height.toLong() * this.width.toLong() + 100
-    private val locationsInCachePair = ::locationsIn.cache(CacheOptions(weakKeys = false, weakValues = true, maximumSize = numberOfCells, durationUnit = TimeUnit.SECONDS, durationValue = 15))
+    private val locationsInCachePair = ::locationsIn.cache(
+        CacheOptions(
+            weakKeys = false,
+            weakValues = true,
+            maximumSize = numberOfCells,
+            durationUnit = TimeUnit.SECONDS,
+            durationValue = 15
+        )
+    )
     private val locationsInCache = locationsInCachePair.first
     val cachedLocationsIn = locationsInCachePair.second
 
@@ -258,7 +259,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                     coordinate.x.toFloat(),
                     coordinate.y.toFloat(),
                     coordinate.x.toFloat() + building.width.toFloat() - 1,
-                    coordinate.y.toFloat() + building.height.toFloat() - 1)
+                    coordinate.y.toFloat() + building.height.toFloat() - 1
+                )
             )
         }
         buildingIndex = newIndex
@@ -574,18 +576,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return filteredBuildings
     }
 
-    fun desirabilityLayer(type: Zone, level: Int): DesirabilityLayer? {
-        return desirabilityLayers.find { it.level == level && it.zoneType == type }
-    }
+    fun desirabilityLayer(type: Zone, level: Int) = desirabilityLayers.find { it.level == level && it.zoneType == type }
 
     fun locations(): List<Location> {
         synchronized(buildingLayer) {
             val sequence = buildingLayer.entries.iterator().asSequence()
             return sequence.map { Location(it.key, it.value) }.toList()
         }
-    }
-
-    fun isEmpty(coordinate: BlockCoordinate): Boolean {
-        return this.locationsIn(coordinate).count() == 0
     }
 }

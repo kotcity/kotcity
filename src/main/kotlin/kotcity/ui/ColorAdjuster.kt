@@ -4,18 +4,16 @@ import javafx.scene.paint.Color
 import kotcity.data.MapTile
 import kotcity.data.TileType
 
-class ColorAdjuster(val mapMinElevation: Double, val mapMaxElevation: Double) {
+class ColorAdjuster(private val mapMinElevation: Double, private val mapMaxElevation: Double) {
     fun colorForTile(tile: MapTile): Color {
         val newColor =
-                if (tile.type == TileType.GROUND) {
-                    Color.rgb(153, 102, 0)
-                } else {
-                    Color.DARKBLUE
-                }
+            when (tile.type) {
+                TileType.GROUND -> Color.rgb(153, 102, 0)
+                else -> Color.DARKBLUE
+            }
         // this next line maps the elevations from -0.5 to 0.5 so we don't get
         // weird looking colors....
-        val elevation = tile.elevation
-        return adjustColor(elevation, newColor)
+        return adjustColor(tile.elevation, newColor)
     }
 
     private fun adjustColor(elevation: Double, color: Color): Color {
@@ -30,4 +28,3 @@ class ColorAdjuster(val mapMinElevation: Double, val mapMaxElevation: Double) {
         return Color.color(red, green, blue)
     }
 }
-

@@ -1,12 +1,12 @@
 package kotcity.ui.map
 
-import javafx.scene.canvas.GraphicsContext
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import kotcity.data.*
 import kotcity.ui.*
 import kotcity.ui.sprites.BuildingSpriteLoader
+import kotcity.util.reorder
 
 const val MAX_BUILDING_SIZE = 4
 const val DESIRABILITY_CAP: Double = 300.0
@@ -37,16 +37,18 @@ class CityRenderer(
     private var colorAdjuster: ColorAdjuster = ColorAdjuster(mapMinElevation, mapMaxElevation)
 
     private var mouseDown = false
-    var mouseBlock: BlockCoordinate? = null
+    private var mouseBlock: BlockCoordinate? = null
     private var firstBlockPressed: BlockCoordinate? = null
 
     var mapMode: MapMode = MapMode.NORMAL
 
     var showRoutesFor: BlockCoordinate? = null
 
+    private val panListeners: MutableList<(Pair<BlockCoordinate, BlockCoordinate>) -> Unit> = mutableListOf()
+
     init {
-        mapMinElevation = cityMap.groundLayer.values.mapNotNull { it.elevation }.min() ?: 0.0
-        mapMaxElevation = cityMap.groundLayer.values.mapNotNull { it.elevation }.max() ?: 0.0
+        mapMinElevation = cityMap.groundLayer.values.map { it.elevation }.min() ?: 0.0
+        mapMaxElevation = cityMap.groundLayer.values.map { it.elevation }.max() ?: 0.0
         colorAdjuster = ColorAdjuster(mapMinElevation, mapMaxElevation)
 
         println("Map min: $mapMinElevation Map max: $mapMaxElevation")
@@ -64,18 +66,13 @@ class CityRenderer(
         var endBlockX = startBlockX + canvasBlockWidth() + padding
         var endBlockY = startBlockY + canvasBlockHeight() + padding
 
-        if (endBlockX > cityMap.width) {
-            endBlockX = cityMap.width
-        }
-
-        if (endBlockY > cityMap.height) {
-            endBlockY = cityMap.height
-        }
+        endBlockX = Math.min(endBlockX, cityMap.width)
+        endBlockY = Math.min(endBlockY, cityMap.height)
 
         val startCoordinate = BlockCoordinate(startBlockX, startBlockY)
         val endCoordinate = BlockCoordinate(endBlockX, endBlockY)
 
-        return Pair(startCoordinate, endCoordinate)
+        return startCoordinate to endCoordinate
     }
 
     fun panMap(coordinate: BlockCoordinate) {
@@ -86,15 +83,17 @@ class CityRenderer(
         val dx = coordinate.x - centerBlock.x
         val dy = coordinate.y - centerBlock.y
         // println("Delta is: $dx,$dy")
-        blockOffsetX += (dx)
-        blockOffsetY += (dy)
+        blockOffsetX += dx
+        blockOffsetY += dy
         firePanChanged()
     }
 
-    private val panListeners: MutableList<(Pair<BlockCoordinate, BlockCoordinate>) -> Unit> = mutableListOf()
-
     fun addPanListener(listener: (Pair<BlockCoordinate, BlockCoordinate>) -> Unit) {
         this.panListeners.add(listener)
+    }
+
+    fun removePanListeners() {
+        this.panListeners.clear()
     }
 
     private fun firePanChanged() {
@@ -110,9 +109,7 @@ class CityRenderer(
     }
 
     // returns the first and last block that we dragged from / to
-    fun blockRange(): Pair<BlockCoordinate?, BlockCoordinate?> {
-        return Pair(this.firstBlockPressed, this.mouseBlock)
-    }
+    fun blockRange() = this.firstBlockPressed to this.mouseBlock
 
     private fun mouseToBlock(mouseX: Double, mouseY: Double): BlockCoordinate {
         // OK... this should be pretty easy...
@@ -123,47 +120,41 @@ class CityRenderer(
         return BlockCoordinate(blockX + blockOffsetX.toInt(), blockY + blockOffsetY.toInt())
     }
 
-    fun onMousePressed(evt: MouseEvent) {
+    fun onMousePressed(event: MouseEvent) {
         this.mouseDown = true
-        this.firstBlockPressed = mouseToBlock(evt.x, evt.y)
+        this.firstBlockPressed = mouseToBlock(event.x, event.y)
         this.mouseBlock = this.firstBlockPressed
         // println("Pressed on block: $firstBlockPressed")
     }
 
-    fun onMouseReleased(evt: MouseEvent) {
-        this.mouseDown = evt.isPrimaryButtonDown
+    fun onMouseReleased(event: MouseEvent) {
+        this.mouseDown = event.isPrimaryButtonDown
     }
 
-    fun onMouseDragged(evt: MouseEvent) {
-        updateMouseBlock(evt)
+    fun onMouseDragged(event: MouseEvent) {
+        updateMouseBlock(event)
         // println("The mouse is at $blockCoordinate")
     }
 
-    private fun updateMouseBlock(evt: MouseEvent) {
-        val mouseX = evt.x
-        val mouseY = evt.y
-        val blockCoordinate = mouseToBlock(mouseX, mouseY)
-        this.mouseBlock = blockCoordinate
+    private fun updateMouseBlock(event: MouseEvent) {
+        this.mouseBlock = mouseToBlock(event.x, event.y)
     }
 
-    fun getHoveredBlock(): BlockCoordinate? {
-        return this.mouseBlock
-    }
+    fun getHoveredBlock() = this.mouseBlock
 
-    fun onMouseMoved(evt: MouseEvent) {
+    fun onMouseMoved(event: MouseEvent) {
         // OK... if we have an active tool we might
         // have to draw a building highlight
-        updateMouseBlock(evt)
+        updateMouseBlock(event)
     }
 
-    fun onMouseClicked(evt: MouseEvent) {
-        if (evt.button == MouseButton.SECONDARY) {
-            val clickedBlock = mouseToBlock(evt.x, evt.y)
-            panMap(clickedBlock)
+    fun onMouseClicked(event: MouseEvent) {
+        if (event.button == MouseButton.SECONDARY) {
+            panMap(mouseToBlock(event.x, event.y))
         }
     }
 
-    private fun drawMap(gc: GraphicsContext) {
+    private fun drawMap() {
         // we got that cityMap...
         val (startBlock, endBlock) = visibleBlockRange()
         val blockSize = blockSize()
@@ -177,45 +168,42 @@ class CityRenderer(
                 val tile = cityMap.groundLayer[BlockCoordinate(x, y)]
                 if (tile != null) {
                     val adjustedColor = colorAdjuster.colorForTile(tile)
-                    gc.fill = adjustedColor
+                    canvas.graphicsContext2D.fill = adjustedColor
 
-                    gc.fillRect(
+                    canvas.graphicsContext2D.fillRect(
                         xi * blockSize,
                         yi * blockSize,
                         blockSize, blockSize
                     )
 
                     if (DRAW_GRID && zoom >= 3.0) {
-                        gc.fill = Color.BLACK
-                        gc.strokeRect(xi * blockSize, yi * blockSize, blockSize, blockSize)
+                        canvas.graphicsContext2D.fill = Color.BLACK
+                        canvas.graphicsContext2D.strokeRect(xi * blockSize, yi * blockSize, blockSize, blockSize)
                     }
                 }
-
-
             }
         }
     }
 
-    private fun fillBlocks(g2d: GraphicsContext, blockX: Int, blockY: Int, width: Int, height: Int) {
+    private fun fillBlocks(blockX: Int, blockY: Int, width: Int, height: Int) {
         for (y in blockY until blockY + height) {
             for (x in blockX until blockX + width) {
-                highlightBlock(g2d, x, y)
+                highlightBlock(x, y)
             }
         }
     }
 
     fun render() {
-        if (canvas.graphicsContext2D == null) {
-            return
-        }
         canvas.graphicsContext2D.fill = Color.BLACK
         canvas.graphicsContext2D.fillRect(0.0, 0.0, canvas.width, canvas.height)
-        drawMap(canvas.graphicsContext2D)
+
+        drawMap()
         drawZones()
-        drawBuildings(canvas.graphicsContext2D)
-        showRoutesFor?.let {
-            if (gameFrame.activeTool == Tool.ROUTES) {
-                drawRoutes(canvas.graphicsContext2D, it)
+        drawBuildings()
+
+        if (gameFrame.activeTool == Tool.ROUTES) {
+            showRoutesFor?.let {
+                drawRoutes(it)
             }
         }
 
@@ -233,7 +221,6 @@ class CityRenderer(
         val (startBlock, endBlock) = visibleBlockRange()
 
         BlockCoordinate.iterate(startBlock, endBlock) { coord ->
-
             val traffic = cityMap.trafficLayer[coord] ?: 0.0
 
             val tx = coord.x - blockOffsetX
@@ -244,7 +231,7 @@ class CityRenderer(
         }
     }
 
-    private fun drawRoutes(graphicsContext: GraphicsContext, showRoutesFor: BlockCoordinate) {
+    private fun drawRoutes(showRoutesFor: BlockCoordinate) {
         // ok... we know the coordinate we are interested in... so let's find ALL contracts that involve it...
         // this is going to be super gross...
 
@@ -260,7 +247,7 @@ class CityRenderer(
         val (startBlock, endBlock) = visibleBlockRange()
         BlockCoordinate.iterate(startBlock, endBlock) { blockCoordinate ->
             if (blocksWithPath.contains(blockCoordinate)) {
-                highlightBlock(graphicsContext, blockCoordinate.x, blockCoordinate.y)
+                highlightBlock(blockCoordinate.x, blockCoordinate.y)
             }
         }
 
@@ -366,16 +353,14 @@ class CityRenderer(
 
             }
         }
-
-
     }
 
     private fun drawHighlights() {
         mouseBlock?.let {
             if (mouseDown) {
                 when (gameFrame.activeTool) {
-                    Tool.ROAD -> drawRoadBlueprint(canvas.graphicsContext2D)
-                    Tool.POWER_LINES -> drawRoadBlueprint(canvas.graphicsContext2D)
+                    Tool.ROAD -> drawRoadBlueprint()
+                    Tool.POWER_LINES -> drawRoadBlueprint()
                     Tool.RESIDENTIAL_ZONE,
                     Tool.COMMERCIAL_ZONE,
                     Tool.INDUSTRIAL_ZONE,
@@ -441,7 +426,7 @@ class CityRenderer(
         val startY = start.y
         for (x in startX until startX + width) {
             for (y in startY until startY + height) {
-                highlightBlock(canvas.graphicsContext2D, x, y)
+                highlightBlock(x, y)
             }
         }
     }
@@ -449,7 +434,7 @@ class CityRenderer(
     private fun highlightBlocks(from: BlockCoordinate, to: BlockCoordinate) {
         for (x in (from.x..to.x).reorder()) {
             for (y in (from.y..to.y).reorder()) {
-                highlightBlock(canvas.graphicsContext2D, x, y)
+                highlightBlock(x, y)
             }
         }
     }
@@ -479,10 +464,10 @@ class CityRenderer(
                 null
             }
         }
-        return locations.plus(powerLines)
+        return locations + powerLines
     }
 
-    private fun drawBuildings(context: GraphicsContext) {
+    private fun drawBuildings() {
         // can we cache this shit at all???
 
         visibleLocations().forEach { location ->
@@ -493,8 +478,8 @@ class CityRenderer(
             val blockSize = blockSize()
             when (building) {
                 is Road -> {
-                    context.fill = Color.BLACK
-                    context.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
+                    canvas.graphicsContext2D.fill = Color.BLACK
+                    canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
                 }
                 else -> {
                     drawBuildingType(building, tx, ty)
@@ -522,7 +507,6 @@ class CityRenderer(
             val iy = (ty * blockSize) + shrink
             canvas.graphicsContext2D.drawImage(img, ix, iy)
         }
-
     }
 
     private fun drawBuildingBorder(
@@ -533,7 +517,6 @@ class CityRenderer(
         height: Double,
         blockSize: Double
     ) {
-
         if (building is Road) {
             return
         }
@@ -551,26 +534,12 @@ class CityRenderer(
         canvas.graphicsContext2D.fill = Color.WHITE
         canvas.graphicsContext2D.fillRoundRect(sx, sy, ex, ey, arcSize, arcSize)
 
-        val borderColor = when (building::class) {
-            Road::class -> Color.BLACK
-            Residential::class -> Color.GREEN
-            Commercial::class -> Color.BLUE
-            Industrial::class -> Color.GOLD
-            PowerLine::class -> Color.BLACK
-            PowerPlant::class -> Color.DARKGRAY
-            Civic::class -> Color.DARKGRAY
-            else -> {
-                Color.PINK
-            }
-        }
-
-        canvas.graphicsContext2D.stroke = borderColor
+        canvas.graphicsContext2D.stroke = building.borderColor
         canvas.graphicsContext2D.strokeRoundRect(sx, sy, ex, ey, arcSize, arcSize)
     }
 
     private fun drawZones() {
         val blockSize = blockSize()
-        val graphics = canvas.graphicsContext2D
         visibleBlocks().forEach { coordinate ->
             cityMap.zoneLayer[coordinate]?.let { zone ->
                 // figure out fill color...
@@ -582,19 +551,19 @@ class CityRenderer(
                     Zone.INDUSTRIAL -> Color.LIGHTGOLDENRODYELLOW
                 }
                 val shadyColor = Color(zoneColor.red, zoneColor.green, zoneColor.blue, 0.3)
-                graphics.fill = shadyColor
-                graphics.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
+                canvas.graphicsContext2D.fill = shadyColor
+                canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
             }
         }
     }
 
-    private fun highlightBlock(g2d: GraphicsContext, x: Int, y: Int) {
-        g2d.fill = Color(Color.MAGENTA.red, Color.MAGENTA.green, Color.MAGENTA.blue, 0.50)
+    private fun highlightBlock(x: Int, y: Int) {
+        canvas.graphicsContext2D.fill = Color(Color.MAGENTA.red, Color.MAGENTA.green, Color.MAGENTA.blue, 0.50)
         // gotta translate here...
         val tx = x - blockOffsetX
         val ty = y - blockOffsetY
         val blockSize = blockSize()
-        g2d.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
+        canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
     }
 
     private fun arcWidth(): Double {
@@ -633,9 +602,9 @@ class CityRenderer(
         }
     }
 
-    private fun drawRoadBlueprint(gc: GraphicsContext) {
+    private fun drawRoadBlueprint() {
         // figure out if we are more horizontal or vertical away from origin point
-        gc.fill = (Color.YELLOW)
+        canvas.graphicsContext2D.fill = Color.YELLOW
         val startBlock = firstBlockPressed ?: return
         val endBlock = mouseBlock ?: return
         val x = startBlock.x
@@ -649,9 +618,9 @@ class CityRenderer(
             // y2 = y
 
             if (x < x2) {
-                fillBlocks(gc, x, y, Math.abs(x - x2) + 1, 1)
+                fillBlocks(x, y, Math.abs(x - x2) + 1, 1)
             } else {
-                fillBlocks(gc, x2, y, Math.abs(x - x2) + 1, 1)
+                fillBlocks(x2, y, Math.abs(x - x2) + 1, 1)
             }
         } else {
             // building vertically
@@ -659,17 +628,10 @@ class CityRenderer(
             // x2 = x
 
             if (y < y2) {
-                fillBlocks(gc, x, y, 1, Math.abs(y - y2) + 1)
+                fillBlocks(x, y, 1, Math.abs(y - y2) + 1)
             } else {
-                fillBlocks(gc, x, y2, 1, Math.abs(y - y2) + 1)
+                fillBlocks(x, y2, 1, Math.abs(y - y2) + 1)
             }
-
         }
-
     }
-
-    fun removePanListeners() {
-        this.panListeners.clear()
-    }
-
 }
