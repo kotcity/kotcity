@@ -178,19 +178,17 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         destinations: List<BlockCoordinate>
     ): Path? {
         // switch these to list of navigation nodes...
-        val openList = mutableSetOf(
-            *(
-                    source.map {
-                        NavigationNode(
-                            cityMap,
-                            it,
-                            null,
-                            cachedHeuristic(it, destinations),
-                            TransitType.ROAD,
-                            Direction.STATIONARY
-                        )
-                    }.toTypedArray())
-        )
+        val openList = source.map {
+            NavigationNode(
+                cityMap,
+                it,
+                null,
+                cachedHeuristic(it, destinations),
+                TransitType.ROAD,
+                Direction.STATIONARY
+            )
+        }.toMutableSet()
+
         val closedList = mutableSetOf<NavigationNode>()
 
         var done = false
