@@ -17,6 +17,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
+
 const val DEFAULT_DESIRABILITY = 0.0
 
 data class BlockCoordinate(val x: Int, val y: Int) {
@@ -41,6 +42,21 @@ data class BlockCoordinate(val x: Int, val y: Int) {
                 BlockCoordinate(x, y)
             }
         }
+    }
+
+    fun circle(radius: Int = 1): List<BlockCoordinate> {
+        val coords = mutableListOf<BlockCoordinate>()
+        for (i in y - radius..y + radius) {
+            val di2 = (i - y) * (i - y)
+            // iterate through all y-coordinates
+            for (j in x - radius..x + radius) {
+                // test if in-circle
+                if ((j - x) * (j - x) + di2 <= (radius * radius)) {
+                    coords.add(BlockCoordinate(j, i))
+                }
+            }
+        }
+        return coords
     }
 
     fun distanceTo(otherCoordinate: BlockCoordinate): Double {
@@ -314,6 +330,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(self) }
             timeFunction("Collect Taxes") { taxCollector.tick() }
             timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
+            timeFunction("Calculating fire coverage") { FireCoverageUpdater.update(self) }
         }
     }
 
