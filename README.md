@@ -1,10 +1,16 @@
-# KotCity 0.42
+# KotCity 0.43
 
 [![Build Status](https://semaphoreci.com/api/v1/kotcity/kotcity/branches/master/badge.svg)](https://semaphoreci.com/kotcity/kotcity) [![Build Status](https://travis-ci.org/kotcity/kotcity.svg?branch=master)](https://travis-ci.org/kotcity/kotcity)
 
 ## WARNING!
 
 This is _pre alpha_ software with super obvious bugs, rough edges etc. In the spirit of "release early and release often", I am posting the code. This project is far from done but I prefer to get the code out there to be used by whomever. Disagree with the project? Fork it :).
+
+## New in this release
+
+* Fire stations and fire coverage (by @sabieber)
+* Improvements to path finding
+* Tweaks to economy
 
 ![KotCity Screenshot](screenshot.jpg?raw=true "Screenshot of the game's UI and an example city")
 
@@ -14,7 +20,7 @@ KotCity is a city simulator written in Kotlin inspired by the statistical city s
 
 ## Gimme the Software!
 
-A build for Windows is available at https://github.com/kotcity/kotcity/releases/tag/0.42.
+A build for Windows is available at https://github.com/kotcity/kotcity/releases/tag/0.43.
 
 macOS and Linux build available upon request (or build it yourself!)
 
@@ -73,7 +79,6 @@ By submitting the work to the repository, you're agree that your work should be 
 To make a game that "takes over" from SimCity 4. We have a loooooong way to go:
 * Implement land values.
 * Have traffic affect desirability.
-* Implement "zots" showing what buildings are happy/sad about.
 * Bus and rail and stations.
 * More types of power plant (hydro, wind, etc).
 * Create buildings that use resources under the ground (coal, etc).
