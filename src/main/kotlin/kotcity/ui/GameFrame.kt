@@ -514,7 +514,7 @@ class GameFrame : View(), Debuggable {
         }
 
         root.requestFocus()
-        root.setOnKeyPressed {keyEvent ->
+        root.setOnKeyPressed { keyEvent ->
             cityRenderer?.apply {
                 when (keyEvent.code) {
                     KeyCode.LEFT, KeyCode.A -> blockOffsetX -= 10
@@ -536,35 +536,29 @@ class GameFrame : View(), Debuggable {
             cityRenderer?.onMouseClicked(evt)
             // now let's handle some tools...
             if (evt.button == MouseButton.PRIMARY) {
-                when (activeTool) {
-                    Tool.COAL_POWER_PLANT -> // TODO: we have to figure out some kind of offset for this shit...
-                        // can't take place at hovered block...
-                        cityRenderer?.getHoveredBlock()?.let {
-                            val newX = it.x - 1
-                            val newY = it.y - 1
+                cityRenderer?.getHoveredBlock()?.let {
+                    val newX = it.x - 1
+                    val newY = it.y - 1
+                    when (activeTool) {
+                        Tool.COAL_POWER_PLANT -> {
+                            // TODO: we have to figure out some kind of offset for this shit...
+                            // can't take place at hovered block...
                             map.build(PowerPlant("coal", map), BlockCoordinate(newX, newY))
                         }
-                    Tool.NUCLEAR_POWER_PLANT -> cityRenderer?.getHoveredBlock()?.let {
-                        val newX = it.x - 1
-                        val newY = it.y - 1
-                        map.build(PowerPlant("nuclear", map), BlockCoordinate(newX, newY))
-                    }
-                    Tool.JOB_CENTER -> cityRenderer?.getHoveredBlock()?.let {
-                        val newX = it.x - 1
-                        val newY = it.y - 1
-                        val jobCenter = assetManager.buildingFor(Civic::class, "job_center")
-                        map.build(jobCenter, BlockCoordinate(newX, newY))
-                    }
-                    Tool.FIRE_STATION -> cityRenderer?.getHoveredBlock()?.let {
-                        val newX = it.x - 1
-                        val newY = it.y - 1
-                        map.build(FireStation(map), BlockCoordinate(newX, newY))
-                    }
-                    Tool.TOWN_WAREHOUSE -> cityRenderer?.getHoveredBlock()?.let {
-                        val newX = it.x - 1
-                        val newY = it.y - 1
-                        val townWarehouse = assetManager.buildingFor(Civic::class, "town_warehouse")
-                        map.build(townWarehouse, BlockCoordinate(newX, newY))
+                        Tool.NUCLEAR_POWER_PLANT -> {
+                            map.build(PowerPlant("nuclear", map), BlockCoordinate(newX, newY))
+                        }
+                        Tool.JOB_CENTER -> {
+                            val jobCenter = assetManager.buildingFor(Civic::class, "job_center")
+                            map.build(jobCenter, BlockCoordinate(newX, newY))
+                        }
+                        Tool.FIRE_STATION -> {
+                            map.build(FireStation(map), BlockCoordinate(newX, newY))
+                        }
+                        Tool.TOWN_WAREHOUSE -> {
+                            val townWarehouse = assetManager.buildingFor(Civic::class, "town_warehouse")
+                            map.build(townWarehouse, BlockCoordinate(newX, newY))
+                        }
                     }
                 }
             }
