@@ -116,6 +116,15 @@ class MapGeneratorScreen : View() {
     }
 
     fun generatePressed() {
+
+        var size = sizeField.text.toInt()
+
+        // map doesn't work if it's ~64...
+        if (size < 128) {
+            size = 128
+            sizeField.text = size.toString()
+        }
+
         newMap = generate(sizeField.text.toInt(), sizeField.text.toInt())
         cityMapCanvas.map = newMap
         fitMap()
