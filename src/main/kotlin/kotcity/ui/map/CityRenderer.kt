@@ -30,7 +30,15 @@ class CityRenderer(
     private val fireCoverageRenderer = FireCoverageRenderer(this, cityMap)
 
     var blockOffsetX: Double = 0.0
+    set(value) {
+        val newValue = value.coerceIn(0.0 .. this.cityMap.width.toDouble())
+        field = newValue
+    }
     var blockOffsetY: Double = 0.0
+        set(value) {
+            val newValue = value.coerceIn(0.0 .. this.cityMap.height.toDouble())
+            field = newValue
+        }
 
     private var mapMinElevation = 0.0
     private var mapMaxElevation = 1.0
@@ -468,8 +476,8 @@ class CityRenderer(
     }
 
     private fun drawBuildings() {
-        // can we cache this shit at all???
 
+        // can we cache this shit at all???
         visibleLocations().forEach { location ->
             val coordinate = location.coordinate
             val building = location.building
