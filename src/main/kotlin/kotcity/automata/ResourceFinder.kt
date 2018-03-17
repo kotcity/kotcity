@@ -6,7 +6,7 @@ import kotcity.pathfinding.Path
 import kotcity.pathfinding.Pathfinder
 import kotcity.util.Debuggable
 
-const val MAX_RESOURCE_DISTANCE = 300
+const val MAX_RESOURCE_DISTANCE = 500
 
 class ResourceFinder(val cityMap: CityMap): Debuggable {
     override var debug = false
@@ -31,45 +31,47 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         // now we gotta make sure they got the resource...
         val buildingsWithResource = nearbyBuildings.filter { it.building.currentQuantityForSale(tradeable) >= quantity }
 
-        debug("We have ${buildingsWithResource.size} buildings to potentially buy $tradeable from...")
-
-
-        var shortestPath: Path? = null
-        var preferredTradeEntity: TradeEntity? = null
-        var preferredPath: Path? = null
-
-        buildingsWithResource.firstOrNull {
-            val buildingBlocks = cityMap.buildingBlocks(it.coordinate, it.building)
-            shortestPath = pathfinder.tripTo(sourceBlocks, buildingBlocks)
-            shortestPath != null
+        if (buildingsWithResource.isNotEmpty()) {
+            debug("We have ${buildingsWithResource.size} buildings to potentially buy $tradeable from...")
         }
 
-        // OK! now if we got a path we want to find the building in the last block...
-        shortestPath?.blocks()?.last()?.let {
-            val location = cityMap.locationsAt(it).firstOrNull()
-            if (location != null) {
-                preferredPath = shortestPath
-                preferredTradeEntity = CityTradeEntity(it, location.building)
+        synchronized(buildingsWithResource) {
+            var shortestPath: Path? = null
+            var preferredTradeEntity: TradeEntity? = null
+            var preferredPath: Path? = null
+
+            val destinationBlocks = buildingsWithResource.flatMap { cityMap.buildingBlocks(it.coordinate, it.building)}.distinct()
+            shortestPath = pathfinder.tripTo(sourceBlocks, destinationBlocks)
+
+            // OK! now if we got a path we want to find the building in the last block...
+            shortestPath?.blocks()?.last()?.let {
+                val location = cityMap.locationsAt(it).firstOrNull()
+                if (location != null) {
+                    preferredPath = shortestPath
+                    preferredTradeEntity = CityTradeEntity(it, location.building)
+                }
             }
-        }
 
-        // so basically we can't find a nearby building with what we want so let's look to the nation...
-        if (preferredTradeEntity == null) {
-            // let's try and get a path to the outside...
-            // make sure the outside city has a resource before we get too excited and make a path...
-            val pair = possiblePathToOutside(tradeable, quantity, sourceBlocks)
-            if (pair != null) {
-                preferredTradeEntity = pair.first
+            // so basically we can't find a nearby building with what we want so let's look to the nation...
+            if (preferredTradeEntity == null) {
+                // let's try and get a path to the outside...
+                // make sure the outside city has a resource before we get too excited and make a path...
+                val pair = possiblePathToOutside(tradeable, quantity, sourceBlocks)
+                if (pair != null) {
+                    preferredTradeEntity = pair.first
+                }
             }
-        }
 
-        preferredPath?.let {path ->
-            preferredTradeEntity?.let { entity ->
-                return Pair(entity, path)
+            preferredPath?.let {path ->
+                preferredTradeEntity?.let { entity ->
+                    return Pair(entity, path)
+                }
             }
+
+            return null
         }
 
-        return null
+
     }
 
     private var lastOutsidePathFailAt: Long = System.currentTimeMillis()
@@ -102,38 +104,40 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         // now we gotta make sure they got the resource...
         val buildingsWantingResource = buildings.filter { it.building.currentQuantityWanted(tradeable) > 0 }
 
-        debug("We have ${buildingsWantingResource.size} buildings to potentially sell $tradeable to...")
-
-        var shortestPath: Path? = null
-
-        buildingsWantingResource.firstOrNull {
-            val buildingBlocks = cityMap.buildingBlocks(it.coordinate, it.building)
-            shortestPath = pathfinder.tripTo(sourceBlocks, buildingBlocks)
-            shortestPath != null
+        if (buildingsWantingResource.isNotEmpty()) {
+            debug("We have ${buildingsWantingResource.size} buildings to potentially sell $tradeable to...")
         }
 
-        // OK! now if we got a path we want to find the building in the last block...
-        shortestPath?.let {shortestPath ->
-            shortestPath.blocks()?.last()?.let {
-                val location = cityMap.locationsAt(it).firstOrNull()
-                if (location != null) {
-                    if (location.building.currentQuantityWanted(tradeable) > 0) {
-                        return Pair(CityTradeEntity(it, location.building), shortestPath)
+        synchronized(buildingsWantingResource) {
+            var shortestPath: Path? = null
+
+            val destinationBlocks = buildingsWantingResource.flatMap { cityMap.buildingBlocks(it.coordinate, it.building)}.distinct()
+            shortestPath = pathfinder.tripTo(sourceBlocks, destinationBlocks)
+
+            // OK! now if we got a path we want to find the building in the last block...
+            shortestPath?.let {shortestPath ->
+                shortestPath.blocks()?.last()?.let {
+                    val location = cityMap.locationsAt(it).firstOrNull()
+                    if (location != null) {
+                        if (location.building.currentQuantityWanted(tradeable) > 0) {
+                            return Pair(CityTradeEntity(it, location.building), shortestPath)
+                        }
                     }
                 }
             }
-        }
 
-        if (cityMap.nationalTradeEntity.currentQuantityWanted(tradeable) >= 1) {
-            val outsidePair = possiblePathToOutside(tradeable, 1, sourceBlocks)
-            outsidePair?.let {
-                val tradeEntity = it.first
-                val path = it.second
-                return Pair(tradeEntity, path)
+            if (cityMap.nationalTradeEntity.currentQuantityWanted(tradeable) >= 1) {
+                val outsidePair = possiblePathToOutside(tradeable, 1, sourceBlocks)
+                outsidePair?.let {
+                    val tradeEntity = it.first
+                    val path = it.second
+                    return Pair(tradeEntity, path)
+                }
             }
+
+            return null
         }
 
-        return null
     }
 
 
