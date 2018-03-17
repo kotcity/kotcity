@@ -9,5 +9,6 @@ enum class MapMode {
     DESIRABILITY,
     TRAFFIC,
     HAPPINESS,
-    FIRE_COVERAGE
+    FIRE_COVERAGE,
+    CRIME
 }

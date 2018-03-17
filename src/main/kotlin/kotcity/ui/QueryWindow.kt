@@ -47,6 +47,10 @@ class QueryWindow : View() {
 
                 val coverage = ((city.fireCoverageLayer[coordinate] ?: 0.0) * 100).roundToInt()
                 buffer.append("Fire Coverage: $coverage %\n")
+                val crime = ((city.crimeLayer[coordinate] ?: 0.0) * 100).roundToInt()
+                buffer.append("Fire Coverage: $crime %\n")
+                val policePresence = ((city.policePresenceLayer[coordinate] ?: 0.0) * 100).roundToInt()
+                buffer.append("Fire Coverage: $policePresence %\n")
 
                 buildingDescriptionArea.text = buffer.toString()
             }

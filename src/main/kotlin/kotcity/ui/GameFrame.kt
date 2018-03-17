@@ -107,6 +107,7 @@ class GameFrame : View(), Debuggable {
     private val soilMapMode: RadioMenuItem by fxid()
     private val desirabilityMapMode: RadioMenuItem by fxid()
     private val fireCoverageMapMode: RadioMenuItem by fxid()
+    private val crimeMapMode: RadioMenuItem by fxid()
     private val trafficMapMode: RadioMenuItem by fxid()
     private val happinessMapMode: RadioMenuItem by fxid()
 
@@ -326,6 +327,9 @@ class GameFrame : View(), Debuggable {
         }
         fireCoverageMapMode.setOnAction {
             setMapModes(MapMode.FIRE_COVERAGE)
+        }
+        crimeMapMode.setOnAction {
+            setMapModes(MapMode.CRIME)
         }
         trafficMapMode.setOnAction {
             setMapModes(MapMode.TRAFFIC)
