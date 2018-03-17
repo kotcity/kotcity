@@ -17,11 +17,11 @@ class FireCoverageRenderer(private val cityRenderer: CityRenderer, private val c
         BlockCoordinate.iterate(startBlock, endBlock) { coord ->
             val coverageScore = cityMap.fireCoverageLayer[coord] ?: 0.0
             cityRenderer.apply {
-                val dX = (coord.x - cityRenderer.blockOffsetX) * blockSize()
-                val dY = (coord.y - cityRenderer.blockOffsetY) * blockSize()
-                canvas.apply {
-                    graphicsContext2D.fill = determineColor(cityRenderer, coverageScore)
-                    graphicsContext2D.fillRect(dX, dY, blockSize(), blockSize())
+                val dX = (coord.x - blockOffsetX) * blockSize()
+                val dY = (coord.y - blockOffsetY) * blockSize()
+                canvas.graphicsContext2D.apply {
+                    fill = determineColor(cityRenderer, coverageScore)
+                    fillRect(dX, dY, blockSize(), blockSize())
                 }
             }
         }
