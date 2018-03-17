@@ -57,6 +57,7 @@ enum class Tool {
     JOB_CENTER,
     TOWN_WAREHOUSE,
     FIRE_STATION,
+    POLICE_STATION,
     ROUTES, RECENTER
 }
 
@@ -96,6 +97,7 @@ class GameFrame : View(), Debuggable {
     private val jobCenterButton: ToggleButton by fxid()
     private val townWarehouseButton: ToggleButton by fxid()
     private val fireStationButton: ToggleButton by fxid()
+    private val policeStationButton: ToggleButton by fxid()
     private val routesButton: ToggleButton by fxid()
     private val recenterButton: ToggleButton by fxid()
 
@@ -293,6 +295,7 @@ class GameFrame : View(), Debuggable {
         townWarehouseButton.setOnAction { activeTool = Tool.TOWN_WAREHOUSE }
         jobCenterButton.setOnAction { activeTool = Tool.JOB_CENTER }
         fireStationButton.setOnAction { activeTool = Tool.FIRE_STATION }
+        policeStationButton.setOnAction { activeTool = Tool.POLICE_STATION }
         routesButton.setOnAction { activeTool = Tool.ROUTES }
         supplyDemandMenuItem.setOnAction {
             val supplyDemandChart = find(SupplyDemandChart::class)
@@ -537,6 +540,9 @@ class GameFrame : View(), Debuggable {
                         }
                         Tool.FIRE_STATION -> {
                             map.build(FireStation(map), BlockCoordinate(newX, newY))
+                        }
+                        Tool.POLICE_STATION -> {
+                            map.build(PoliceStation(map), BlockCoordinate(newX, newY))
                         }
                         Tool.TOWN_WAREHOUSE -> {
                             val townWarehouse = assetManager.buildingFor(Civic::class, "town_warehouse")

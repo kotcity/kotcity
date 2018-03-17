@@ -395,6 +395,7 @@ class CityRenderer(
                     Tool.TOWN_WAREHOUSE -> {
                         mouseBlock?.let { highlightCenteredBlocks(it, 2, 2) }
                     }
+                    Tool.POLICE_STATION,
                     Tool.FIRE_STATION -> {
                         mouseBlock?.let { highlightCenteredBlocks(it, 3, 3) }
                     }

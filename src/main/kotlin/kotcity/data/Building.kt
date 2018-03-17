@@ -271,7 +271,7 @@ class Residential(override val cityMap: CityMap) : LoadableBuilding(cityMap) {
         val consumesCount = (consumes[tradeable] ?: 0) * 3
         synchronized(contracts) {
             val contractCount =
-                    contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+                contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
             return consumesCount - contractCount
         }
     }
@@ -325,6 +325,13 @@ class FireStation(cityMap: CityMap) : Building(cityMap) {
     override var height = 3
     override val powerRequired = 1
     override var description: String? = "Fire Station"
+}
+
+class PoliceStation(cityMap: CityMap) : Building(cityMap) {
+    override var width = 3
+    override var height = 3
+    override val powerRequired = 1
+    override var description: String? = "Police Station"
 }
 
 class Road(cityMap: CityMap) : Building(cityMap) {

@@ -146,6 +146,7 @@
                                     <ToggleButton fx:id="jobCenterButton" mnemonicParsing="false" prefWidth="200.0" text="Job Center" toggleGroup="$buildTools" />
                                     <ToggleButton fx:id="townWarehouseButton" mnemonicParsing="false" prefWidth="200.0" text="Town Warehouse" toggleGroup="$buildTools" />
                                     <ToggleButton fx:id="fireStationButton" mnemonicParsing="false" prefWidth="200.0" text="Fire Station" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="policeStationButton" mnemonicParsing="false" prefWidth="200.0" text="Police Station" toggleGroup="$buildTools" />
                                  </children>
                               </FlowPane>
                            </content>
