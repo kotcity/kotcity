@@ -33,7 +33,10 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
 
         debug("We have ${buildingsWithResource.size} buildings to potentially buy $tradeable from...")
 
+
         var shortestPath: Path? = null
+        var preferredTradeEntity: TradeEntity? = null
+        var preferredPath: Path? = null
 
         buildingsWithResource.firstOrNull {
             val buildingBlocks = cityMap.buildingBlocks(it.coordinate, it.building)
@@ -41,8 +44,6 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
             shortestPath != null
         }
 
-        var preferredTradeEntity: TradeEntity? = null
-        var preferredPath: Path? = null
         // OK! now if we got a path we want to find the building in the last block...
         shortestPath?.blocks()?.last()?.let {
             val location = cityMap.locationsAt(it).firstOrNull()
@@ -52,7 +53,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
             }
         }
 
-        // we have to find the nearest one now...
+        // so basically we can't find a nearby building with what we want so let's look to the nation...
         if (preferredTradeEntity == null) {
             // let's try and get a path to the outside...
             // make sure the outside city has a resource before we get too excited and make a path...
@@ -80,7 +81,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         if (System.currentTimeMillis() - 10000 < lastOutsidePathFailAt) {
             return null
         }
-        var preferredTradeEntity1: TradeEntity? = null
+
         if (cityMap.nationalTradeEntity.currentQuantityForSale(tradeable) >= quantity) {
             val path = pathfinder.pathToOutside(sourceBlocks)
             val destinationBlock = path?.blocks()?.last()

@@ -49,7 +49,7 @@ class PathfinderTest {
         }
 
         val contractFulfiller = ContactFulfiller(flatMap)
-        contractFulfiller.debug = false
+        contractFulfiller.debug = true
         contractFulfiller.signContracts(false, maxMillis = 50000)
 
         // now get all industrial zones... they MUST have all labor populated...

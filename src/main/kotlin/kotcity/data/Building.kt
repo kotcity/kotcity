@@ -124,11 +124,11 @@ interface HasConcreteContacts : HasContracts {
     }
 
     override fun currentQuantityWanted(tradeable: Tradeable): Int {
-        val inventoryCount = consumes[tradeable] ?: 0
+        val consumesCount = (consumes[tradeable] ?: 0)
         synchronized(contracts) {
             val contractCount =
                 contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
-            return inventoryCount - contractCount
+            return consumesCount - contractCount
         }
     }
 
@@ -263,7 +263,16 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
     }
 }
 
-class Residential(override val cityMap: CityMap) : LoadableBuilding(cityMap)
+class Residential(override val cityMap: CityMap) : LoadableBuilding(cityMap) {
+    override fun currentQuantityWanted(tradeable: Tradeable): Int {
+        val consumesCount = (consumes[tradeable] ?: 0) * 3
+        synchronized(contracts) {
+            val contractCount =
+                    contracts.filter { it.to.building() == this && it.tradeable == tradeable }.map { it.quantity }.sum()
+            return consumesCount - contractCount
+        }
+    }
+}
 
 class Commercial(override val cityMap: CityMap) : LoadableBuilding(cityMap)
 

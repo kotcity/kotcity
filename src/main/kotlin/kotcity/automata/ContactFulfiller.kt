@@ -39,16 +39,21 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         val startAt = System.currentTimeMillis()
 
         contractCollection.toList().shuffled().takeWhile { System.currentTimeMillis() - startAt < maxMillis }.forEach { location: Location ->
-            if (location != null) {
-                val delta = System.currentTimeMillis() - startAt
+
+            val delta = System.currentTimeMillis() - startAt
+
+            if (delta < maxMillis) {
                 debug("Still ${maxMillis - delta} millis left to sign contracts...")
-                handleBuilding(location)
-                howManyProcessed += 1
+                if (location != null) {
+                    handleBuilding(location)
+                    howManyProcessed += 1
+                }
+            } else {
+                debug("Time to sign contracts has expired! We are at $delta milliseconds remaining!")
             }
         }
 
         debug("$howManyNeedContracts needed contracts and we processed $howManyProcessed")
-
     }
 
     private fun handleBuilding(entry: Location) {

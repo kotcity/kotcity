@@ -182,7 +182,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     init {
         shipper.debug = false
-        contractFulfiller.debug = false
+        contractFulfiller.debug = true
         manufacturer.debug = false
         constructor.debug = false
         taxCollector.debug = false
@@ -338,6 +338,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     private fun timeFunction(desc: String, timedFunction: () -> Unit) {
+        println("Beginning $desc...")
         val startMillis = System.currentTimeMillis()
         timedFunction()
         val endMillis = System.currentTimeMillis()
