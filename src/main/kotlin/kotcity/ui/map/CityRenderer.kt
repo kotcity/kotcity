@@ -6,6 +6,7 @@ import javafx.scene.paint.Color
 import kotcity.data.*
 import kotcity.ui.*
 import kotcity.ui.sprites.BuildingSpriteLoader
+import kotcity.util.reorder
 
 const val MAX_BUILDING_SIZE = 4
 const val DESIRABILITY_CAP: Double = 300.0
