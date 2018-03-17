@@ -49,7 +49,7 @@ class PathfinderTest {
         }
 
         val contractFulfiller = ContactFulfiller(flatMap)
-        contractFulfiller.debug = true
+        contractFulfiller.debug = false
         contractFulfiller.signContracts(false, maxMillis = 50000)
 
         // now get all industrial zones... they MUST have all labor populated...
@@ -66,7 +66,7 @@ class PathfinderTest {
                 }
             }
         }
-        
+
         val needsLaborRatio = numberWithoutLabor / numberWithLabor
         assertTrue(needsLaborRatio < 0.05, "Expected 95%+ labor fill rate but was $needsLaborRatio")
     }
