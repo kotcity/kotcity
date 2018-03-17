@@ -8,7 +8,7 @@ class ColorAdjuster(private val mapMinElevation: Double, private val mapMaxEleva
     fun colorForTile(tile: MapTile): Color {
         val newColor =
             when (tile.type) {
-                TileType.GROUND -> Color.rgb(153, 102, 0)
+                TileType.GROUND -> Color.DARKGREEN
                 else -> Color.DARKBLUE
             }
         // this next line maps the elevations from -0.5 to 0.5 so we don't get

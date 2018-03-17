@@ -29,6 +29,8 @@ class CityRenderer(
 
     private val fireCoverageRenderer = FireCoverageRenderer(this, cityMap)
 
+    private val crimeRenderer = CrimeRenderer(this, cityMap)
+
     var blockOffsetX: Double = 0.0
     set(value) {
         val newValue = value.coerceIn(0.0 .. this.cityMap.width.toDouble())
@@ -218,6 +220,7 @@ class CityRenderer(
         when (mapMode) {
             MapMode.SOIL, MapMode.COAL, MapMode.GOLD, MapMode.OIL -> drawResources()
             MapMode.FIRE_COVERAGE -> fireCoverageRenderer.render()
+            MapMode.CRIME -> crimeRenderer.render()
             MapMode.DESIRABILITY -> drawDesirability()
             MapMode.TRAFFIC -> drawTraffic()
             MapMode.HAPPINESS -> happinessRenderer.render()
@@ -400,6 +403,7 @@ class CityRenderer(
                     Tool.TOWN_WAREHOUSE -> {
                         mouseBlock?.let { highlightCenteredBlocks(it, 2, 2) }
                     }
+                    Tool.POLICE_STATION,
                     Tool.FIRE_STATION -> {
                         mouseBlock?.let { highlightCenteredBlocks(it, 3, 3) }
                     }

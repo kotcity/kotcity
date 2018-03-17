@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="744.0" prefWidth="1034.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="744.0" prefWidth="1034.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar>
          <menus>
@@ -46,6 +46,7 @@
                   <RadioMenuItem fx:id="happinessMapMode" mnemonicParsing="false" text="Happiness" toggleGroup="$mapMode" />
                   <RadioMenuItem fx:id="desirabilityMapMode" mnemonicParsing="false" text="Desirability" toggleGroup="$mapMode" />
                   <RadioMenuItem fx:id="fireCoverageMapMode" mnemonicParsing="false" text="Fire Coverage" toggleGroup="$mapMode" />
+                  <RadioMenuItem fx:id="crimeMapMode" mnemonicParsing="false" text="Crime" toggleGroup="$mapMode" />
                   <RadioMenuItem fx:id="trafficMapMode" mnemonicParsing="false" text="Traffic" toggleGroup="$mapMode" />
                   <Menu mnemonicParsing="false" text="Resources">
                     <items>
@@ -145,6 +146,7 @@
                                     <ToggleButton fx:id="jobCenterButton" mnemonicParsing="false" prefWidth="200.0" text="Job Center" toggleGroup="$buildTools" />
                                     <ToggleButton fx:id="townWarehouseButton" mnemonicParsing="false" prefWidth="200.0" text="Town Warehouse" toggleGroup="$buildTools" />
                                     <ToggleButton fx:id="fireStationButton" mnemonicParsing="false" prefWidth="200.0" text="Fire Station" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="policeStationButton" mnemonicParsing="false" prefWidth="200.0" text="Police Station" toggleGroup="$buildTools" />
                                  </children>
                               </FlowPane>
                            </content>

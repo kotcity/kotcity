@@ -122,6 +122,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val resourceLayers = mutableMapOf<String, QuantizedMap<Double>>()
     val desirabilityLayers = initializeDesirabilityLayers()
     val fireCoverageLayer = mutableMapOf<BlockCoordinate, Double>()
+    val crimeLayer = mutableMapOf<BlockCoordinate, Double>()
+    val policePresenceLayer = mutableMapOf<BlockCoordinate, Double>()
     var trafficLayer = mutableMapOf<BlockCoordinate, Double>().withDefault { 0.0 }
 
     private val constructor = Constructor(this)
@@ -336,6 +338,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             timeFunction("Collect Taxes") { taxCollector.tick() }
             timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
             timeFunction("Calculating fire coverage") { FireCoverageUpdater.update(self) }
+            timeFunction("Calculating crime and police presence") { CrimeUpdater.update(self) }
         }
     }
 
