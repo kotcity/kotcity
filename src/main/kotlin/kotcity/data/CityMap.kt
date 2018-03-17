@@ -338,6 +338,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             timeFunction("Collect Taxes") { taxCollector.tick() }
             timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
             timeFunction("Calculating fire coverage") { FireCoverageUpdater.update(self) }
+            timeFunction("Calculating crime and police presence") { CrimeUpdater.update(self) }
         }
     }
 
