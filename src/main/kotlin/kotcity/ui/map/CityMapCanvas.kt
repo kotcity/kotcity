@@ -35,10 +35,12 @@ class CityMapCanvas : ResizableCanvas() {
     private var colorAdjuster: ColorAdjuster? = null
     var visibleBlockRange: Pair<BlockCoordinate, BlockCoordinate>? = null
 
+    private val visibleAreaHighlight = Color(Color.HOTPINK.red, Color.HOTPINK.green, Color.HOTPINK.blue, 0.8)
+
     private val buildingCache = Caffeine.newBuilder()
-            .expireAfterWrite(3, TimeUnit.MINUTES)
-            .refreshAfterWrite(2, TimeUnit.MINUTES)
-            .softValues().build({ key: BlockCoordinate -> map?.cachedLocationsIn?.let { it(key) } })
+        .expireAfterWrite(3, TimeUnit.MINUTES)
+        .refreshAfterWrite(2, TimeUnit.MINUTES)
+        .softValues().build({ key: BlockCoordinate -> map?.cachedLocationsIn?.let { it(key) } })
 
     fun render() {
 
@@ -48,17 +50,10 @@ class CityMapCanvas : ResizableCanvas() {
 
             gc.clearRect(0.0, 0.0, this.width, this.height)
 
-            val smallerDimension = if (this.width < this.height) {
-                this.width
-            } else {
-                this.height
-            }
+            val smallerDimension = Math.min(this.width, this.height)
 
-            val xRange = 0..smallerDimension.toInt()
-            val yRange = 0..smallerDimension.toInt()
-
-            for (canvasX in xRange) {
-                for (canvasY in yRange) {
+            for (canvasX in 0..smallerDimension.toInt()) {
+                for (canvasY in 0..smallerDimension.toInt()) {
 
                     // OK we gotta scale the cityMap coordinates to this crap...
                     val nx = Algorithms.scale(canvasX.toDouble(), 0.0, smallerDimension, 0.0, map.width.toDouble())
@@ -95,21 +90,42 @@ class CityMapCanvas : ResizableCanvas() {
 
             // now let's highlight the area of the cityMap we can see...
             visibleBlockRange?.let { visibleBlockRange ->
-                val sx = Algorithms.scale(visibleBlockRange.first.x.toDouble(), 0.0, map.width.toDouble(), 0.0, smallerDimension)
-                val sy = Algorithms.scale(visibleBlockRange.first.y.toDouble(), 0.0, map.height.toDouble(), 0.0, smallerDimension)
-                val ex = Algorithms.scale(visibleBlockRange.second.x.toDouble(), 0.0, map.width.toDouble(), 0.0, smallerDimension)
-                val ey = Algorithms.scale(visibleBlockRange.second.y.toDouble(), 0.0, map.height.toDouble(), 0.0, smallerDimension)
+                val sx = Algorithms.scale(
+                    visibleBlockRange.first.x.toDouble(),
+                    0.0,
+                    map.width.toDouble(),
+                    0.0,
+                    smallerDimension
+                )
+                val sy = Algorithms.scale(
+                    visibleBlockRange.first.y.toDouble(),
+                    0.0,
+                    map.height.toDouble(),
+                    0.0,
+                    smallerDimension
+                )
+                val ex = Algorithms.scale(
+                    visibleBlockRange.second.x.toDouble(),
+                    0.0,
+                    map.width.toDouble(),
+                    0.0,
+                    smallerDimension
+                )
+                val ey = Algorithms.scale(
+                    visibleBlockRange.second.y.toDouble(),
+                    0.0,
+                    map.height.toDouble(),
+                    0.0,
+                    smallerDimension
+                )
                 val width = ex - sx
                 val height = ey - sy
 
-                val seeThruPink = Color(Color.HOTPINK.red, Color.HOTPINK.green, Color.HOTPINK.blue, 0.8)
-                gc.fill = seeThruPink
+                gc.fill = visibleAreaHighlight
                 // println("Minimap rendering starting at $sx, $sy ending at $ex, $ey")
                 gc.fillRect(sx, sy, width, height)
             }
         }
-
-
     }
 
     private fun renderResources() {
@@ -122,28 +138,20 @@ class CityMapCanvas : ResizableCanvas() {
                     MapMode.SOIL -> map.resourceLayers["soil"]
                     else -> null
                 }
-                if (layer != null) {
-                    drawResourceLayer(layer)
+                layer?.let {
+                    drawResourceLayer(it)
                 }
             }
         }
-
     }
 
     private fun drawResourceLayer(layer: QuantizedMap<Double>) {
-        val smallerDimension = if (this.width < this.height) {
-            this.width
-        } else {
-            this.height
-        }
-
-        val xRange = 0..smallerDimension.toInt()
-        val yRange = 0..smallerDimension.toInt()
+        val smallerDimension = Math.min(this.width, this.height)
 
         // println("Map is rendering from 0 to $yRange")
 
-        for (x in xRange) {
-            for (y in yRange) {
+        for (x in 0..smallerDimension.toInt()) {
+            for (y in 0..smallerDimension.toInt()) {
                 // OK we gotta scale the cityMap coordinates to this crap...
                 val nx = Algorithms.scale(x.toDouble(), 0.0, smallerDimension, 0.0, this.map?.width?.toDouble() ?: 0.0)
                 val ny = Algorithms.scale(y.toDouble(), 0.0, smallerDimension, 0.0, this.map?.height?.toDouble() ?: 0.0)
@@ -153,9 +161,7 @@ class CityMapCanvas : ResizableCanvas() {
                     this.graphicsContext2D.fill = Color.YELLOW
                     this.graphicsContext2D.fillRect(x.toDouble(), y.toDouble(), 1.0, 1.0)
                 }
-
             }
         }
     }
-
 }

@@ -4,7 +4,10 @@ import javafx.animation.AnimationTimer
 import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import javafx.stage.FileChooser
-import kotcity.data.*
+import kotcity.data.BMPImporter
+import kotcity.data.CityMap
+import kotcity.data.MapGenerator
+import kotcity.data.MapMode
 import kotcity.ui.map.CityMapCanvas
 import tornadofx.View
 import tornadofx.runLater
@@ -32,15 +35,13 @@ class MapGeneratorScreen : View() {
 
     private var newMap = mapGenerator.generateMap(sizeField.text.toInt(), sizeField.text.toInt())
 
-    val mapModes = listOf("Normal", "Oil", "Coal", "Gold", "Soil")
+    private val mapModes = listOf("Normal", "Oil", "Coal", "Gold", "Soil")
 
     init {
-
         cityMapCanvas.map = newMap
         root.center = cityMapCanvas
 
-        mapModeComboBox.items.clear()
-        mapModeComboBox.items.addAll(mapModes)
+        mapModeComboBox.items.setAll(mapModes)
 
         mapModeComboBox.selectionModel.select(0)
 
@@ -83,7 +84,6 @@ class MapGeneratorScreen : View() {
         runLater {
             val file = fileChooser.showOpenDialog(currentStage)
             if (file != null) {
-
                 // let's use the dialog... :)
                 currentWindow?.let { window ->
                     val workDialog = WorkIndicatorDialog<File>(window, "Importing map...")
@@ -102,21 +102,18 @@ class MapGeneratorScreen : View() {
                         1
                     })
                 }
-
-
             } else {
-                val alert = Alert(Alert.AlertType.ERROR)
-                alert.title = "Error during load"
-                alert.headerText = "Could not import your map!"
-                alert.contentText = "Why not? Totally unknown?"
-
-                alert.showAndWait()
+                Alert(Alert.AlertType.ERROR).apply {
+                    title = "Error during load"
+                    headerText = "Could not import your map!"
+                    contentText = "Why not? Totally unknown?"
+                    showAndWait()
+                }
             }
         }
     }
 
     fun generatePressed() {
-
         var size = sizeField.text.toInt()
 
         // map doesn't work if it's ~64...
@@ -131,10 +128,14 @@ class MapGeneratorScreen : View() {
     }
 
     private fun fitMap() {
-        cityMapCanvas.prefWidth(newMap.width.toDouble())
-        cityMapCanvas.prefHeight(newMap.height.toDouble())
-        cityMapCanvas.width = newMap.width.toDouble().coerceAtMost(1024.0)
-        cityMapCanvas.height = newMap.height.toDouble().coerceAtMost(1024.0)
+        val width = newMap.width.toDouble()
+        val height = newMap.height.toDouble()
+        cityMapCanvas.apply {
+            prefWidth(width)
+            prefHeight(height)
+            setWidth(width.coerceAtMost(1024.0))
+            setHeight(height.coerceAtMost(1024.0))
+        }
     }
 
     fun mapModeSelected() {
@@ -149,23 +150,23 @@ class MapGeneratorScreen : View() {
     }
 
     fun acceptPressed() {
+        TextInputDialog("My City").apply {
+            title = "Name your city"
+            headerText = "Choose a name for your city"
+            contentText = "Please enter your city's name:"
 
-        val dialog = TextInputDialog("My City")
-        dialog.title = "Name your city"
-        dialog.headerText = "Choose a name for your city"
-        dialog.contentText = "Please enter your city's name:"
+            val result = showAndWait()
+            if (result.isPresent) {
+                newMap.cityName = result.get()
+            }
 
-        // Traditional way to get the response value.
-        val result = dialog.showAndWait()
-        if (result.isPresent) {
-            newMap.cityName = result.get()
+            this.close()
+            timer?.stop()
+            tornadofx.find(GameFrame::class).apply {
+                setMap(newMap)
+                openWindow(escapeClosesWindow = false)
+                currentStage?.isMaximized = true
+            }
         }
-
-        this.close()
-        val gameFrame = tornadofx.find(GameFrame::class)
-        timer?.stop()
-        gameFrame.setMap(newMap)
-        gameFrame.openWindow(escapeClosesWindow = false)
-        gameFrame.currentStage?.isMaximized = true
     }
 }

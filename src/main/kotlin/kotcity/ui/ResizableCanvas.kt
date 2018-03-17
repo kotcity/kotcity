@@ -11,7 +11,6 @@ open class ResizableCanvas : Canvas() {
      * Constructor
      */
     init {
-
         // if i didn't add the draw to the @Override resize(double width, double
         // height) then it must be into the below listeners
 
@@ -22,28 +21,17 @@ open class ResizableCanvas : Canvas() {
         heightProperty().addListener { _, _, _ ->
             canvasHeight = heightProperty().get().toInt()
         }
-
     }
 
-    override fun minHeight(width: Double): Double {
-        return 1.0
-    }
+    override fun minHeight(width: Double) = 1.0
 
-    override fun maxHeight(width: Double): Double {
-        return java.lang.Double.MAX_VALUE
-    }
+    override fun maxHeight(width: Double) = java.lang.Double.MAX_VALUE
 
-    override fun minWidth(height: Double): Double {
-        return 1.0
-    }
+    override fun minWidth(height: Double) = 1.0
 
-    override fun maxWidth(height: Double): Double {
-        return java.lang.Double.MAX_VALUE
-    }
+    override fun maxWidth(height: Double) = java.lang.Double.MAX_VALUE
 
-    override fun isResizable(): Boolean {
-        return true
-    }
+    override fun isResizable() = true
 
     override fun resize(width: Double, height: Double) {
         super.setWidth(width)

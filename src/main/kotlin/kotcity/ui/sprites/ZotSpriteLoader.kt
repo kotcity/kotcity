@@ -7,6 +7,10 @@ import kotcity.memoization.cache
 
 object ZotSpriteLoader {
 
+    private val imageForFileCachePair =
+        ::uncachedImageForFile.cache(CacheOptions(weakKeys = false, weakValues = false, maximumSize = 4096))
+    private val imageForFile = imageForFileCachePair.second
+
     fun spriteForZot(zot: Zot, width: Double, height: Double): Image? {
         val filename = when (zot) {
             Zot.TOO_MUCH_TRAFFIC -> "file:./assets/zots/too_much_traffic.png"
@@ -20,10 +24,7 @@ object ZotSpriteLoader {
         return imageForFile(filename, width, height)
     }
 
-    private fun uncachedImageForFile(filename: String, width: Double, height: Double): Image {
-        return Image(filename, width, height, true, true)
-    }
+    private fun uncachedImageForFile(filename: String, width: Double, height: Double) =
+        Image(filename, width, height, true, true)
 
-    private val imageForFileCachePair = ::uncachedImageForFile.cache(CacheOptions(weakKeys = false, weakValues = false, maximumSize = 4096))
-    private val imageForFile = imageForFileCachePair.second
 }

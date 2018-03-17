@@ -1,5 +1,6 @@
 package kotcity.data
 
+import javafx.scene.paint.Color
 import kotcity.pathfinding.Path
 import kotcity.util.randomElement
 import kotlin.reflect.KClass
@@ -215,6 +216,7 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
     open val powerRequired = 0
     open var upkeep: Int = 0
     open var happiness: Int = 0
+    open var borderColor: Color = Color.PINK
 
     var zots = listOf<Zot>()
 
@@ -264,6 +266,7 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
 }
 
 class Residential(override val cityMap: CityMap) : LoadableBuilding(cityMap) {
+
     override fun currentQuantityWanted(tradeable: Tradeable): Int {
         val consumesCount = (consumes[tradeable] ?: 0) * 3
         synchronized(contracts) {
@@ -272,13 +275,22 @@ class Residential(override val cityMap: CityMap) : LoadableBuilding(cityMap) {
             return consumesCount - contractCount
         }
     }
+
+    override var borderColor: Color = Color.GREEN
+
 }
 
-class Commercial(override val cityMap: CityMap) : LoadableBuilding(cityMap)
+class Commercial(override val cityMap: CityMap) : LoadableBuilding(cityMap) {
+    override var borderColor: Color = Color.BLUE
+}
 
-class Industrial(override val cityMap: CityMap) : LoadableBuilding(cityMap)
+class Industrial(override val cityMap: CityMap) : LoadableBuilding(cityMap) {
+    override var borderColor: Color = Color.GOLD
+}
 
-class Civic(override val cityMap: CityMap) : LoadableBuilding(cityMap)
+class Civic(override val cityMap: CityMap) : LoadableBuilding(cityMap) {
+    override var borderColor: Color = Color.DARKGRAY
+}
 
 const val DEFAULT_MONEY = 10
 val POWER_PLANT_TYPES = listOf("coal", "nuclear")
@@ -289,6 +301,7 @@ class PowerPlant(override val variety: String, cityMap: CityMap) : Building(city
 
     override var width = 4
     override var height = 4
+    override var borderColor: Color = Color.BLACK
 
     init {
         if (!POWER_PLANT_TYPES.contains(variety)) {
@@ -317,6 +330,7 @@ class FireStation(cityMap: CityMap) : Building(cityMap) {
 class Road(cityMap: CityMap) : Building(cityMap) {
     override var width = 1
     override var height = 1
+    override var borderColor: Color = Color.BLACK
     override var description: String? = "Road"
 }
 
@@ -324,6 +338,7 @@ class PowerLine(cityMap: CityMap) : Building(cityMap) {
     override var width = 1
     override var height = 1
     override val powerRequired = 1
+    override var borderColor: Color = Color.BLACK
     override var description: String? = "Power Line"
 }
 

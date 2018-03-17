@@ -28,6 +28,7 @@ import tornadofx.runLater
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.concurrent.timerTask
 
 
 object Algorithms {
@@ -59,7 +60,11 @@ enum class Tool {
     ROUTES, RECENTER
 }
 
-enum class GameSpeed { SLOW, MEDIUM, FAST }
+enum class GameSpeed(val tickPeriod: Long) {
+    SLOW(250),
+    MEDIUM(125),
+    FAST(50)
+}
 
 class GameFrame : View(), Debuggable {
     override var debug: Boolean = false
@@ -113,7 +118,7 @@ class GameFrame : View(), Debuggable {
 
     private val pauseMenuItem: CheckMenuItem by fxid()
 
-    var gameSpeed = GameSpeed.MEDIUM
+    private var gameSpeed = GameSpeed.MEDIUM
         set(value) {
             field = value
             scheduleGameTickTimer()
@@ -145,7 +150,6 @@ class GameFrame : View(), Debuggable {
     }
 
     fun setMap(cityMap: CityMap) {
-
         this.map = cityMap
         cityMapCanvas.map = cityMap
         this.assetManager = AssetManager(cityMap)
@@ -200,12 +204,8 @@ class GameFrame : View(), Debuggable {
         horizontalScroll.min = 0.0
         verticalScroll.min = 0.0
 
-        horizontalScroll.max = getMap().width.toDouble()
-        verticalScroll.max = getMap().height.toDouble()
-    }
-
-    private fun getMap(): CityMap {
-        return this.map
+        horizontalScroll.max = map.width.toDouble()
+        verticalScroll.max = map.height.toDouble()
     }
 
     fun slowClicked() {
@@ -223,19 +223,13 @@ class GameFrame : View(), Debuggable {
 
     fun zoomOut() {
         cityRenderer?.let {
-            it.zoom -= 1
-            if (it.zoom < 1) {
-                it.zoom = 1.0
-            }
+            it.zoom = Math.max(it.zoom - 1, 1.0)
         }
     }
 
     fun zoomIn() {
         cityRenderer?.let {
-            it.zoom += 1
-            if (it.zoom > 5.0) {
-                it.zoom = 5.0
-            }
+            it.zoom = Math.min(it.zoom + 1, 5.0)
         }
     }
 
@@ -273,16 +267,17 @@ class GameFrame : View(), Debuggable {
     }
 
     private fun saveMessageBox() {
-        val alert = Alert(AlertType.INFORMATION)
-        alert.title = "City Saved"
-        alert.headerText = "City Saved OK!"
-        alert.height = 200.0
-        alert.width = 400.0
-        alert.dialogPane.content = Label("Everything went great. Your city is saved to ${map.fileName}.")
-        alert.showAndWait()
+        Alert(AlertType.INFORMATION).apply {
+            title = "City Saved"
+            headerText = "City Saved OK!"
+            height = 200.0
+            width = 400.0
+            dialogPane.content = Label("Everything went great. Your city is saved to ${map.fileName}.")
+            showAndWait()
+        }
     }
 
-    fun bindButtons() {
+    private fun bindButtons() {
         roadButton.setOnAction { activeTool = Tool.ROAD }
         queryButton.setOnAction { activeTool = Tool.QUERY }
         bulldozeButton.setOnAction { activeTool = Tool.BULLDOZE }
@@ -351,10 +346,6 @@ class GameFrame : View(), Debuggable {
         title = "$GAME_STRING - ${map.cityName}"
     }
 
-    init {
-
-    }
-
     private fun initComponents() {
         title = GAME_STRING
 
@@ -391,54 +382,42 @@ class GameFrame : View(), Debuggable {
     private fun scheduleGameTickTimer() {
         val delay = 0L // delay for 0 sec.
 
-        val period = when (gameSpeed) {
-            GameSpeed.SLOW -> 250L
-            GameSpeed.MEDIUM -> 125L
-            GameSpeed.FAST -> 50L
-        }
         gameTickTask?.cancel()
-        gameTickTask = object : TimerTask() {
-            override fun run() {
-                runLater {
-                    if (!pauseMenuItem.isSelected) {
-                        map.tick()
-                        clockLabel.text = serializeDate(map.time)
-                    }
+        gameTickTask = timerTask {
+            runLater {
+                if (!pauseMenuItem.isSelected) {
+                    map.tick()
+                    clockLabel.text = serializeDate(map.time)
                 }
             }
         }
-
-        gameTickTimer.scheduleAtFixedRate(gameTickTask, delay, period)
+        gameTickTimer.scheduleAtFixedRate(gameTickTask, delay, gameSpeed.tickPeriod)
     }
 
     fun quitPressed() {
-        val alert = Alert(AlertType.CONFIRMATION)
-        alert.title = "Quitting KotCity"
-        alert.headerText = "Are you ready to leave?"
-        alert.contentText = "Please confirm..."
+        Alert(AlertType.CONFIRMATION).apply {
+            title = "Quitting KotCity"
+            headerText = "Are you ready to leave?"
+            contentText = "Please confirm..."
 
-        val buttonTypeOne = ButtonType("Yes, please quit.")
-        val buttonTypeTwo = ButtonType("No, I want to keep playing.")
-        val buttonTypeCancel = ButtonType("Cancel", ButtonData.CANCEL_CLOSE)
+            val buttonTypeOne = ButtonType("Yes, please quit.")
+            val buttonTypeTwo = ButtonType("No, I want to keep playing.")
+            val buttonTypeCancel = ButtonType("Cancel", ButtonData.CANCEL_CLOSE)
 
-        alert.buttonTypes.setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel)
+            buttonTypes.setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel)
 
-        val result = alert.showAndWait()
-        when {
-            result.get() == buttonTypeOne -> System.exit(1)
-            result.get() == buttonTypeTwo -> {
-                // don't do anything...
-            }
-            else -> {
-                // don't do anything..
+            val result = showAndWait()
+            when (result.get()) {
+                buttonTypeOne -> System.exit(1)
+                else -> {
+                    // don't do anything ...
+                }
             }
         }
     }
 
     private fun bindCanvas() {
-
-        // TODO: we are handling scrolling ourself... so we have to figure out what's
-        //       visible and what's not...
+        // TODO: we are handling scrolling ourself... so we have to figure out what's visible and what's not...
         cityCanvas.prefHeight(canvasPane.height - 20)
         cityCanvas.prefWidth(canvasPane.width - 20)
 
@@ -562,7 +541,6 @@ class GameFrame : View(), Debuggable {
                     }
                 }
             }
-
         }
 
         canvasPane.heightProperty().addListener { _, _, newValue ->
@@ -579,18 +557,15 @@ class GameFrame : View(), Debuggable {
             cityRenderer?.blockOffsetY = newValue.toDouble()
         }
 
-        with(cityCanvas) {
-            this.setOnScroll { scrollEvent ->
-                if (scrollEvent.deltaY < 0) {
-                    zoomOut()
-                } else if (scrollEvent.deltaY > 0) {
-                    zoomIn()
-                }
-                cityMapCanvas.render()
+        cityCanvas.setOnScroll { scrollEvent ->
+            if (scrollEvent.deltaY < 0) {
+                zoomOut()
+            } else if (scrollEvent.deltaY > 0) {
+                zoomIn()
             }
+            cityMapCanvas.render()
         }
     }
-
 }
 
 class GameFrameApp : App(GameFrame::class, KotcityStyles::class) {
