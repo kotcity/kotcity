@@ -5,15 +5,13 @@ import javafx.application.Platform
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
-import javafx.stage.WindowEvent
 import javafx.util.Duration
 import tornadofx.App
 import tornadofx.View
 import tornadofx.find
 import tornadofx.runLater
 
-
-const val GAME_STRING = "KotCity 0.42"
+const val GAME_STRING = "KotCity 0.43"
 
 class LaunchScreen : View() {
     override val root: VBox by fxml("/LaunchScreen.fxml")
