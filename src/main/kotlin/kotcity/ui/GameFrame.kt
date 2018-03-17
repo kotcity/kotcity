@@ -55,6 +55,7 @@ enum class Tool {
     POWER_LINES,
     JOB_CENTER,
     TOWN_WAREHOUSE,
+    FIRE_STATION,
     ROUTES, RECENTER
 }
 
@@ -89,6 +90,7 @@ class GameFrame : View(), Debuggable {
     private val powerLinesButton: ToggleButton by fxid()
     private val jobCenterButton: ToggleButton by fxid()
     private val townWarehouseButton: ToggleButton by fxid()
+    private val fireStationButton: ToggleButton by fxid()
     private val routesButton: ToggleButton by fxid()
     private val recenterButton: ToggleButton by fxid()
 
@@ -99,6 +101,7 @@ class GameFrame : View(), Debuggable {
     private val goldMapMode: RadioMenuItem by fxid()
     private val soilMapMode: RadioMenuItem by fxid()
     private val desirabilityMapMode: RadioMenuItem by fxid()
+    private val fireCoverageMapMode: RadioMenuItem by fxid()
     private val trafficMapMode: RadioMenuItem by fxid()
     private val happinessMapMode: RadioMenuItem by fxid()
 
@@ -293,6 +296,7 @@ class GameFrame : View(), Debuggable {
         nuclearPowerButton.setOnAction { activeTool = Tool.NUCLEAR_POWER_PLANT }
         townWarehouseButton.setOnAction { activeTool = Tool.TOWN_WAREHOUSE }
         jobCenterButton.setOnAction { activeTool = Tool.JOB_CENTER }
+        fireStationButton.setOnAction { activeTool = Tool.FIRE_STATION }
         routesButton.setOnAction { activeTool = Tool.ROUTES }
         supplyDemandMenuItem.setOnAction {
             val supplyDemandChart = find(SupplyDemandChart::class)
@@ -324,6 +328,9 @@ class GameFrame : View(), Debuggable {
         }
         desirabilityMapMode.setOnAction {
             setMapModes(MapMode.DESIRABILITY)
+        }
+        fireCoverageMapMode.setOnAction {
+            setMapModes(MapMode.FIRE_COVERAGE)
         }
         trafficMapMode.setOnAction {
             setMapModes(MapMode.TRAFFIC)
@@ -507,7 +514,7 @@ class GameFrame : View(), Debuggable {
         }
 
         root.requestFocus()
-        root.setOnKeyPressed {keyEvent ->
+        root.setOnKeyPressed { keyEvent ->
             cityRenderer?.apply {
                 when (keyEvent.code) {
                     KeyCode.LEFT, KeyCode.A -> blockOffsetX -= 10
@@ -529,30 +536,29 @@ class GameFrame : View(), Debuggable {
             cityRenderer?.onMouseClicked(evt)
             // now let's handle some tools...
             if (evt.button == MouseButton.PRIMARY) {
-                when (activeTool) {
-                    Tool.COAL_POWER_PLANT -> // TODO: we have to figure out some kind of offset for this shit...
-                        // can't take place at hovered block...
-                        cityRenderer?.getHoveredBlock()?.let {
-                            val newX = it.x - 1
-                            val newY = it.y - 1
+                cityRenderer?.getHoveredBlock()?.let {
+                    val newX = it.x - 1
+                    val newY = it.y - 1
+                    when (activeTool) {
+                        Tool.COAL_POWER_PLANT -> {
+                            // TODO: we have to figure out some kind of offset for this shit...
+                            // can't take place at hovered block...
                             map.build(PowerPlant("coal", map), BlockCoordinate(newX, newY))
                         }
-                    Tool.NUCLEAR_POWER_PLANT -> cityRenderer?.getHoveredBlock()?.let {
-                        val newX = it.x - 1
-                        val newY = it.y - 1
-                        map.build(PowerPlant("nuclear", map), BlockCoordinate(newX, newY))
-                    }
-                    Tool.JOB_CENTER -> cityRenderer?.getHoveredBlock()?.let {
-                        val newX = it.x - 1
-                        val newY = it.y - 1
-                        val jobCenter = assetManager.buildingFor(Civic::class, "job_center")
-                        map.build(jobCenter, BlockCoordinate(newX, newY))
-                    }
-                    Tool.TOWN_WAREHOUSE -> cityRenderer?.getHoveredBlock()?.let {
-                        val newX = it.x - 1
-                        val newY = it.y - 1
-                        val townWarehouse = assetManager.buildingFor(Civic::class, "town_warehouse")
-                        map.build(townWarehouse, BlockCoordinate(newX, newY))
+                        Tool.NUCLEAR_POWER_PLANT -> {
+                            map.build(PowerPlant("nuclear", map), BlockCoordinate(newX, newY))
+                        }
+                        Tool.JOB_CENTER -> {
+                            val jobCenter = assetManager.buildingFor(Civic::class, "job_center")
+                            map.build(jobCenter, BlockCoordinate(newX, newY))
+                        }
+                        Tool.FIRE_STATION -> {
+                            map.build(FireStation(map), BlockCoordinate(newX, newY))
+                        }
+                        Tool.TOWN_WAREHOUSE -> {
+                            val townWarehouse = assetManager.buildingFor(Civic::class, "town_warehouse")
+                            map.build(townWarehouse, BlockCoordinate(newX, newY))
+                        }
                     }
                 }
             }

@@ -8,5 +8,6 @@ enum class MapMode {
     SOIL,
     DESIRABILITY,
     TRAFFIC,
-    HAPPINESS
+    HAPPINESS,
+    FIRE_COVERAGE
 }

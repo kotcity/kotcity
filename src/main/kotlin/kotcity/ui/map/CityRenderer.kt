@@ -27,6 +27,8 @@ class CityRenderer(
 
     private val happinessRenderer = HappinessRenderer(this, cityMap)
 
+    private val fireCoverageRenderer = FireCoverageRenderer(this, cityMap)
+
     var blockOffsetX: Double = 0.0
     var blockOffsetY: Double = 0.0
 
@@ -217,16 +219,12 @@ class CityRenderer(
             }
         }
 
-        if (mapMode == MapMode.HAPPINESS) {
-            happinessRenderer.render()
-        }
-
-        if (mapMode == MapMode.SOIL || mapMode == MapMode.COAL || mapMode == MapMode.GOLD || mapMode == MapMode.OIL) {
-            drawResources()
-        } else if (mapMode == MapMode.DESIRABILITY) {
-            drawDesirability()
-        } else if (mapMode == MapMode.TRAFFIC) {
-            drawTraffic()
+        when (mapMode) {
+            MapMode.SOIL, MapMode.COAL, MapMode.GOLD, MapMode.OIL -> drawResources()
+            MapMode.FIRE_COVERAGE -> fireCoverageRenderer.render()
+            MapMode.DESIRABILITY -> drawDesirability()
+            MapMode.TRAFFIC -> drawTraffic()
+            MapMode.HAPPINESS -> happinessRenderer.render()
         }
         drawHighlights()
     }
@@ -291,7 +289,7 @@ class CityRenderer(
         }
     }
 
-    private fun interpolateColor(color1: java.awt.Color, color2: java.awt.Color, fraction: Float): Color {
+    internal fun interpolateColor(color1: java.awt.Color, color2: java.awt.Color, fraction: Float): Color {
         var colorFraction = fraction
         val intToFloatConst = 1f / 255f
         colorFraction = Math.min(colorFraction, 1f)
@@ -409,6 +407,9 @@ class CityRenderer(
                     Tool.TOWN_WAREHOUSE -> {
                         mouseBlock?.let { highlightCenteredBlocks(it, 2, 2) }
                     }
+                    Tool.FIRE_STATION -> {
+                        mouseBlock?.let { highlightCenteredBlocks(it, 3, 3) }
+                    }
                 }
             }
         }
@@ -416,7 +417,12 @@ class CityRenderer(
 
     private fun highlightCenteredBlocks(start: BlockCoordinate, width: Int, height: Int) {
         // TODO: we want to make this shit kind of centered...
-        if (width == 2 || height == 2) {
+        if (width == 3 || height == 3) {
+            val offsetX = (width / 2)
+            val offsetY = (height / 2)
+            val newBlock = BlockCoordinate(start.x - offsetX, start.y - offsetY)
+            highlightBlocks(newBlock, width, height)
+        } else if (width == 2 || height == 2) {
             val offsetX = (width / 2)
             val offsetY = (height / 2)
             val newBlock = BlockCoordinate(start.x - offsetX, start.y - offsetY)

@@ -10,6 +10,7 @@ import kotcity.data.CityMap
 import kotcity.data.Road
 import kotcity.ui.sprites.BuildingSpriteLoader
 import tornadofx.View
+import kotlin.math.roundToInt
 
 class QueryWindow : View() {
     override val root: BorderPane by fxml("/QueryWindow.fxml")
@@ -82,7 +83,10 @@ class QueryWindow : View() {
                 // let's get that desirability...
                 buffer.append("Desirability: ${desirability(city, coordinate)}\n")
                 buffer.append("Elevation: ${city.groundLayer[coordinate]?.elevation}\n")
-                buffer.append("Land Value: ???")
+                buffer.append("Land Value: ???\n")
+
+                val coverage = ((city.fireCoverageLayer[coordinate] ?: 0.0) * 100).roundToInt()
+                buffer.append("Fire Coverage: $coverage %\n")
 
                 buildingDescriptionArea.text = buffer.toString()
             }

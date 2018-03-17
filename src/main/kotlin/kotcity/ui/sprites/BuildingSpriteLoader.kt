@@ -25,6 +25,7 @@ object BuildingSpriteLoader {
             Residential::class -> "file:./assets/residential/${building.sprite}"
             Industrial::class -> "file:./assets/industrial/${building.sprite}"
             PowerLine::class -> "file:./assets/utility/power_line.png"
+            FireStation::class -> "file:./assets/utility/fire_station.png"
             Civic::class -> "file:./assets/civic/${building.sprite}"
             else -> throw RuntimeException("Unknown sprite for ${building::class}")
         }

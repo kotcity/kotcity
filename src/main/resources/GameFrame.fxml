@@ -45,6 +45,7 @@
                   </RadioMenuItem>
                   <RadioMenuItem fx:id="happinessMapMode" mnemonicParsing="false" text="Happiness" toggleGroup="$mapMode" />
                   <RadioMenuItem fx:id="desirabilityMapMode" mnemonicParsing="false" text="Desirability" toggleGroup="$mapMode" />
+                  <RadioMenuItem fx:id="fireCoverageMapMode" mnemonicParsing="false" text="Fire Coverage" toggleGroup="$mapMode" />
                   <RadioMenuItem fx:id="trafficMapMode" mnemonicParsing="false" text="Traffic" toggleGroup="$mapMode" />
                   <Menu mnemonicParsing="false" text="Resources">
                     <items>
@@ -143,6 +144,7 @@
                                  <children>
                                     <ToggleButton fx:id="jobCenterButton" mnemonicParsing="false" prefWidth="200.0" text="Job Center" toggleGroup="$buildTools" />
                                     <ToggleButton fx:id="townWarehouseButton" mnemonicParsing="false" prefWidth="200.0" text="Town Warehouse" toggleGroup="$buildTools" />
+                                    <ToggleButton fx:id="fireStationButton" mnemonicParsing="false" prefWidth="200.0" text="Fire Station" toggleGroup="$buildTools" />
                                  </children>
                               </FlowPane>
                            </content>
