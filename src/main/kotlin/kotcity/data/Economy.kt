@@ -22,6 +22,9 @@ interface TradeEntity {
 
     fun currentQuantityForSale(tradeable: Tradeable): Int
     fun currentQuantityWanted(tradeable: Tradeable): Int
+
+    fun producesQuantity(tradeable: Tradeable): Int
+    fun consumesQuantity(tradeable: Tradeable): Int
 }
 
 data class CityTradeEntity(override val coordinate: BlockCoordinate, val building: Building) : TradeEntity {
@@ -47,6 +50,14 @@ data class CityTradeEntity(override val coordinate: BlockCoordinate, val buildin
 
     override fun description(): String? {
         return building.description
+    }
+
+    override fun producesQuantity(tradeable: Tradeable): Int {
+        return building.producesQuantity(tradeable)
+    }
+
+    override fun consumesQuantity(tradeable: Tradeable): Int {
+        return building.consumesQuantity(tradeable)
     }
 
     override fun currentQuantityForSale(tradeable: Tradeable): Int {
