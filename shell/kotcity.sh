@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar kotcity4-1.0-SNAPSHOT-all.jar
+java -jar lib/kotcity4-1.0-SNAPSHOT.jar

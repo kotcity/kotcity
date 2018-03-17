@@ -41,7 +41,7 @@ class PowerCoverageAutomata(
         neighbors.forEach { block ->
             // if the block has no power... AND contains buildings
             // add to open list...
-            val buildings = map.cachedBuildingsIn(block)
+            val buildings = map.cachedLocationsIn(block)
             if (buildings.count() > 0 && !gridMap.containsKey(block)) {
                 openList.add(block)
             }

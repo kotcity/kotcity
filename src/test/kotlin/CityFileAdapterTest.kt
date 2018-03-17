@@ -42,16 +42,16 @@ class CityFileAdapterTest {
 
         map.buildRoad(BlockCoordinate(0, 2), BlockCoordinate(10, 2))
 
-        contractFulfiller.signContracts()
+        contractFulfiller.signContracts(maxMillis = 5000)
 
         val tmpFile = File.createTempFile("testcity", ".kcity")
         CityFileAdapter.save(map, tmpFile)
 
         val loadedCity = CityFileAdapter.load(tmpFile)
 
-        val loadedJobCenter = loadedCity.cachedBuildingsIn(BlockCoordinate(0,0)).first().building
+        val loadedJobCenter = loadedCity.cachedLocationsIn(BlockCoordinate(0,0)).first().building
         println("Job center: ${loadedJobCenter.summarizeContracts()}")
-        println("How much labor: ${loadedJobCenter.quantityForSale(Tradeable.LABOR)}")
+        println("How much labor: ${loadedJobCenter.currentQuantityForSale(Tradeable.LABOR)}")
 
         assert(loadedCity.width == 100)
     }

@@ -103,6 +103,7 @@ class GameFrame : View(), Debuggable {
     private val desirabilityMapMode: RadioMenuItem by fxid()
     private val fireCoverageMapMode: RadioMenuItem by fxid()
     private val trafficMapMode: RadioMenuItem by fxid()
+    private val happinessMapMode: RadioMenuItem by fxid()
 
     private val selectedToolLabel: Label by fxid()
     private val cityNameLabel: Label by fxid()
@@ -135,6 +136,13 @@ class GameFrame : View(), Debuggable {
     private var cityRenderer: CityRenderer? = null
     private var trafficRenderer: TrafficRenderer? = null
     private var zotRenderer: ZotRenderer? = null
+
+    override fun onDock() {
+        currentStage?.setOnCloseRequest {
+            quitPressed()
+            it.consume()
+        }
+    }
 
     fun setMap(cityMap: CityMap) {
 
@@ -173,6 +181,7 @@ class GameFrame : View(), Debuggable {
         this.cityMapCanvas.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
         trafficRenderer.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
         zotRenderer.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
+
     }
 
     private fun setCanvasSize() {
@@ -259,7 +268,7 @@ class GameFrame : View(), Debuggable {
         val file = fileChooser.showSaveDialog(this.primaryStage)
         CityFileAdapter.save(map, file)
         map.fileName = file.absoluteFile.toString()
-        println("The new cityMap filename is: ${map.fileName}")
+
         saveMessageBox()
     }
 
@@ -267,6 +276,8 @@ class GameFrame : View(), Debuggable {
         val alert = Alert(AlertType.INFORMATION)
         alert.title = "City Saved"
         alert.headerText = "City Saved OK!"
+        alert.height = 200.0
+        alert.width = 400.0
         alert.dialogPane.content = Label("Everything went great. Your city is saved to ${map.fileName}.")
         alert.showAndWait()
     }
@@ -323,6 +334,9 @@ class GameFrame : View(), Debuggable {
         }
         trafficMapMode.setOnAction {
             setMapModes(MapMode.TRAFFIC)
+        }
+        happinessMapMode.setOnAction {
+            setMapModes(MapMode.HAPPINESS)
         }
     }
 
@@ -447,7 +461,6 @@ class GameFrame : View(), Debuggable {
         }
 
         canvasPane.widthProperty().addListener { _, _, newValue ->
-            println("resizing cityCanvas width to: $newValue")
             cityCanvas.width = newValue.toDouble()
             setCanvasSize()
             setScrollbarSizes()
@@ -471,7 +484,6 @@ class GameFrame : View(), Debuggable {
                     if (evt.button == MouseButton.PRIMARY) {
                         when (activeTool) {
                             Tool.ROAD -> {
-                                println("Want to build road from: $firstBlock, $lastBlock")
                                 map.buildRoad(firstBlock, lastBlock)
                             }
                             Tool.POWER_LINES -> map.buildPowerline(firstBlock, lastBlock)
@@ -502,12 +514,17 @@ class GameFrame : View(), Debuggable {
         }
 
         root.requestFocus()
-        root.setOnKeyPressed {
-            when (it.code) {
-                KeyCode.LEFT, KeyCode.A -> cityRenderer?.let { it.blockOffsetX -= 10 }
-                KeyCode.RIGHT, KeyCode.D -> cityRenderer?.let { it.blockOffsetX += 10 }
-                KeyCode.UP, KeyCode.W -> cityRenderer?.let { it.blockOffsetY -= 10 }
-                KeyCode.DOWN, KeyCode.S -> cityRenderer?.let { it.blockOffsetY += 10 }
+        root.setOnKeyPressed {keyEvent ->
+            cityRenderer?.apply {
+                when (keyEvent.code) {
+                    KeyCode.LEFT, KeyCode.A -> blockOffsetX -= 10
+                    KeyCode.RIGHT, KeyCode.D -> blockOffsetX += 10
+                    KeyCode.UP, KeyCode.W -> blockOffsetY -= 10
+                    KeyCode.DOWN, KeyCode.S -> blockOffsetY += 10
+                    else -> {
+                        // noop...
+                    }
+                }
             }
         }
 
@@ -555,7 +572,6 @@ class GameFrame : View(), Debuggable {
         }
 
         canvasPane.heightProperty().addListener { _, _, newValue ->
-            println("resizing cityCanvas height to: $newValue")
             cityCanvas.height = newValue.toDouble()
             setCanvasSize()
             setScrollbarSizes()
@@ -571,7 +587,6 @@ class GameFrame : View(), Debuggable {
 
         with(cityCanvas) {
             this.setOnScroll { scrollEvent ->
-                // println("We are scrolling: $scrollEvent")
                 if (scrollEvent.deltaY < 0) {
                     zoomOut()
                 } else if (scrollEvent.deltaY > 0) {

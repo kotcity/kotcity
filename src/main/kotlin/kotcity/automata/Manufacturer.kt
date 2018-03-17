@@ -23,21 +23,22 @@ class Manufacturer(val cityMap: CityMap): Debuggable {
 
     private fun handleCommercial(building: Building) {
         // every worker can flip 3 goods...
-        val availableLabor: Int = building.supplyCount(Tradeable.LABOR) * 10
-        val availableWholesaleGoods: Int = building.supplyCount(Tradeable.WHOLESALE_GOODS)
+        val availableLabor: Int = building.totalBeingBought(Tradeable.LABOR) * 10
+        val availableWholesaleGoods: Int = building.totalBeingBought(Tradeable.WHOLESALE_GOODS)
         // we want to convert "wholesale goods" to "goods"
         if (availableWholesaleGoods == 0 || availableLabor == 0) {
             debug("${building.description}: We are missing either goods or workers...")
             return
         }
 
-        val maxToProduce: Int = building.consumesQuantity(Tradeable.WHOLESALE_GOODS) * 2
+        // produce up to 10x...
+        val maxToProduce: Int = building.consumesQuantity(Tradeable.WHOLESALE_GOODS) * 10
 
         repeat(availableLabor) {
-            if (building.supplyCount(Tradeable.WHOLESALE_GOODS) > 0 && building.quantityOnHand(Tradeable.GOODS) < maxToProduce) {
+            if (building.totalBeingBought(Tradeable.WHOLESALE_GOODS) > 0 && building.quantityOnHand(Tradeable.GOODS) < maxToProduce) {
                 building.subtractInventory(Tradeable.WHOLESALE_GOODS, 1)
-                building.addInventory(Tradeable.GOODS, 1)
-                debug("${building.description}: Converted 1 wholesale goods to goods...")
+                building.addInventory(Tradeable.GOODS, 4)
+                debug("${building.description}: Converted 1 wholesale goods to 4 goods...")
             }
         }
         building.payWorkers()
@@ -45,17 +46,17 @@ class Manufacturer(val cityMap: CityMap): Debuggable {
 
     private fun handleIndustrial(building: Building) {
         // TODO: we probably should look to see how much money we have...
-        val availableLabor: Int = building.supplyCount(Tradeable.LABOR)
+        val availableLabor: Int = building.totalBeingBought(Tradeable.LABOR)
         // OK... for every labor we have here we get one thing that we produce...
         val products: List<Tradeable> = building.productList()
-        if (availableLabor > 0 && building.supplyCount(Tradeable.LABOR) > 0) {
+        if (availableLabor > 0) {
             products.forEach { tradeable ->
                 debug("${building.description} just manufactured $availableLabor $tradeable")
-                building.addInventory(tradeable, availableLabor)
-                building.payWorkers()
+                building.addInventory(tradeable, availableLabor * 10)
             }
         } else {
             debug("Wanted to make products but we didn't have any labor!")
         }
+        building.payWorkers()
     }
 }

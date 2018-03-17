@@ -142,6 +142,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private val trafficCalculator = TrafficCalculator(this)
     private val goodsConsumer = GoodsConsumer(this)
     private val zotPopulator = ZotPopulator(this)
+    private val happinessUpdater = HappinessUpdater(this)
 
     val nationalTradeEntity = NationalTradeEntity(this)
 
@@ -169,10 +170,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     // OK! we will require one key per map cell
     private val numberOfCells = this.height.toLong() * this.width.toLong() + 100
-    private val buildingsInCachePair =
-        ::buildingsIn.cache(CacheOptions(weakKeys = false, weakValues = true, maximumSize = numberOfCells))
-    private val buildingsInCache = buildingsInCachePair.first
-    val cachedBuildingsIn = buildingsInCachePair.second
+    private val locationsInCachePair = ::locationsIn.cache(CacheOptions(weakKeys = false, weakValues = true, maximumSize = numberOfCells, durationUnit = TimeUnit.SECONDS, durationValue = 15))
+    private val locationsInCache = locationsInCachePair.first
+    val cachedLocationsIn = locationsInCachePair.second
 
     fun debug(message: String) {
         if (debug) {
@@ -186,10 +186,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         manufacturer.debug = false
         constructor.debug = false
         taxCollector.debug = false
-        desirabilityUpdater.debug = true
+        desirabilityUpdater.debug = false
         liquidator.debug = true
-        zotPopulator.debug = true
+        zotPopulator.debug = false
         censusTaker.tick()
+        happinessUpdater.debug = true
         nationalTradeEntity.resetCounts()
     }
 
@@ -235,12 +236,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun nearestBuildings(coordinate: BlockCoordinate, distance: Int = 10): List<Location> {
-        val point = Geometries.rectangle(
-            coordinate.x.toFloat(),
-            coordinate.y.toFloat(),
-            coordinate.x.toFloat() + 1,
-            coordinate.y.toFloat() + 1
-        )
+        val point = Geometries.point(coordinate.x.toFloat(), coordinate.y.toFloat())
         return buildingIndex.search(point, distance.toDouble())
             .filter({ t -> t != null }).map { entry ->
                 val geometry = entry.geometry()
@@ -261,13 +257,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 building, Geometries.rectangle(
                     coordinate.x.toFloat(),
                     coordinate.y.toFloat(),
-                    coordinate.x.toFloat() + building.width.toFloat(),
-                    coordinate.y.toFloat() + building.height.toFloat()
-                )
+                    coordinate.x.toFloat() + building.width.toFloat() - 1,
+                    coordinate.y.toFloat() + building.height.toFloat() - 1)
             )
         }
         buildingIndex = newIndex
-        buildingsInCache.invalidateAll()
+        locationsInCache.invalidateAll()
     }
 
     fun suggestedFilename(): String {
@@ -306,10 +301,13 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 timeFunction("Generating traffic") { trafficCalculator.tick() }
                 async { timeFunction("Taking census") { censusTaker.tick() } }
                 async { timeFunction("Populating Zots") { zotPopulator.tick() } }
+                async {
+                    timeFunction("Updating happiness...") { happinessUpdater.tick() }
+                }
             }
 
             if (hour % 6 == 0) {
-                async { timeFunction("Liquidating bankrupt properties") { liquidator.tick() } }
+
             }
 
             if (hour == 0) {
@@ -326,15 +324,20 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     private fun dailyTick() {
         val self = this
+
         async {
             timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(self) }
+        }
+
+        async {
+            timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
             timeFunction("Collect Taxes") { taxCollector.tick() }
             timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
             timeFunction("Calculating fire coverage") { FireCoverageUpdater.update(self) }
         }
     }
 
-    private suspend fun timeFunction(desc: String, timedFunction: () -> Unit) {
+    private fun timeFunction(desc: String, timedFunction: () -> Unit) {
         val startMillis = System.currentTimeMillis()
         timedFunction()
         val endMillis = System.currentTimeMillis()
@@ -426,7 +429,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun zone(type: Zone, from: BlockCoordinate, to: BlockCoordinate) {
         BlockCoordinate.iterate(from, to) {
             if (!waterFound(it, it)) {
-                if (buildingsIn(it).count() == 0) {
+                if (locationsIn(it).count() == 0) {
                     zoneLayer[it] = type
                 }
             }
@@ -457,7 +460,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 synchronized(powerLineLayer) {
                     powerLineLayer.remove(coordinate)
                 }
-                val buildings = buildingsIn(coordinate)
+                val buildings = locationsIn(coordinate)
                 // now kill all those contracts...
                 buildings.forEach {
                     buildingLayer.values.forEach { otherBuilding ->
@@ -504,7 +507,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
-    fun locationsIn(topLeft: BlockCoordinate, bottomRight: BlockCoordinate): List<Location> {
+    fun locationsInRectangle(topLeft: BlockCoordinate, bottomRight: BlockCoordinate): List<Location> {
         val buildings = buildingIndex.search(
             Geometries.rectangle(
                 topLeft.x.toDouble(),
@@ -526,7 +529,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val point = Geometries.point(coordinate.x.toDouble(), coordinate.y.toDouble())
         val buildings = buildingIndex.search(point)
         return buildings.map {
-            Location(BlockCoordinate(coordinate.x, coordinate.y), it.value())
+            val building = it.value()
+            val rectangle = it.geometry()
+            if (building != null && rectangle != null) {
+                Location(BlockCoordinate(rectangle.x1().toInt(), rectangle.y1().toInt()), building)
+            } else {
+                null
+            }
+
         }.toBlocking().toIterable().filterNotNull()
     }
 
@@ -544,12 +554,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun coordinatesForBuilding(building: Building): BlockCoordinate? {
         synchronized(buildingLayer) {
             return buildingLayer.toList().find {
-                it.second === building
+                it.second == building
             }?.first
         }
     }
 
-    private fun buildingsIn(block: BlockCoordinate): List<Location> {
+    private fun locationsIn(block: BlockCoordinate): List<Location> {
         val nearestBuildings = nearestBuildings(block, MAX_BUILDING_SIZE + 1)
         val filteredBuildings = nearestBuildings.filter {
             val coordinate = it.coordinate
@@ -576,6 +586,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun isEmpty(coordinate: BlockCoordinate): Boolean {
-        return this.buildingsIn(coordinate).count() == 0
+        return this.locationsIn(coordinate).count() == 0
     }
 }

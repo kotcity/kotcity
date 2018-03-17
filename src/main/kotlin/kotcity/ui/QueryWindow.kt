@@ -24,17 +24,31 @@ class QueryWindow : View() {
             value?.let { pair ->
                 val city = pair.first
                 val coordinate = pair.second
-                val buildings = city.cachedBuildingsIn(coordinate)
+                val buildings = city.cachedLocationsIn(coordinate)
                 val buffer = StringBuffer()
                 if (buildings.count() > 0) {
                     val building = buildings.first().building
-                    println("Updating the components...")
+                    println("Buildings at: $coordinate -> $buildings")
                     // ok now let's do the text
                     buildingNameLabel.text = building.description
                     this.title = "Inspecting ${building.description}"
                     buffer.append(building.description + "\n")
                     buffer.append("Powered: ${building.powered}\n")
                     buffer.append("Money: $${building.balance()}\n")
+                    buffer.append("Happiness: ${building.happiness}\n")
+
+                    if (building.zots.isNotEmpty()) {
+                        buffer.append("\nComplaints:\n")
+                    }
+
+                    building.zots.forEach {
+                        buffer.append(it.toString() + "\n")
+                    }
+
+                    if (building.zots.isNotEmpty()) {
+                        buffer.append("\n")
+                    }
+
                     if (building.sprite != null && building.sprite != "") {
                         buildingImageView.image = BuildingSpriteLoader.spriteForBuildingType(building, 64.0, 64.0)
                     } else {

@@ -4,7 +4,7 @@ import kotcity.data.*
 import kotcity.data.assets.AssetManager
 import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotcity.util.Debuggable
-import kotcity.util.getRandomElement
+import kotcity.util.randomElement
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -16,11 +16,11 @@ class Constructor(val cityMap: CityMap) : Debuggable {
 
     val assetManager = AssetManager(cityMap)
     private val random = Random()
-    private val maxTries = 30
+    private val maxTries = 50
     override var debug = false
 
     private fun isEmpty(entry: MutableMap.MutableEntry<BlockCoordinate, Double>): Boolean {
-        return cityMap.cachedBuildingsIn(entry.key).count() == 0
+        return cityMap.cachedLocationsIn(entry.key).count() == 0
     }
 
     fun tick() {
@@ -33,14 +33,14 @@ class Constructor(val cityMap: CityMap) : Debuggable {
 
         val zoneTypes = listOf(Zone.INDUSTRIAL, Zone.COMMERCIAL, Zone.RESIDENTIAL)
         zoneTypes.forEach { zoneType ->
-            val howManyTimes: Int = (desirableZoneCount(zoneType).toDouble() * 0.01).coerceIn(1.0..5.0).toInt()
-            println("We will be trying to construct $howManyTimes")
-            repeat(howManyTimes, {
+            val howManyBuildings: Int = (desirableZoneCount(zoneType).toDouble() * 0.05).coerceIn(1.0..5.0).toInt()
+            println("We will be trying to construct $howManyBuildings")
+            repeat(howManyBuildings, {
 
                 val layer = cityMap.desirabilityLayer(zoneType, 1) ?: return
 
                 // get the 10 best places... pick one randomly ....
-                val blockAndScore = layer.entries().filter { isEmpty(it) }.filter { it.value > 0}.sortedBy { it.value }.take(10).getRandomElement()
+                val blockAndScore = layer.entries().filter { isEmpty(it) }.filter { it.value > 0}.sortedBy { it.value }.take(10).randomElement()
                 if (blockAndScore == null) {
                     if (debug) {
                         debug("Could not find most desirable $zoneType zone!")
@@ -65,7 +65,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
     }
 
     private fun desirableZoneCount(zone: Zone): Int {
-        return cityMap.zoneLayer.keys.filter { cityMap.zoneLayer[it] == zone && cityMap.cachedBuildingsIn(it).count() == 0 }.map {coordinate ->
+        return cityMap.zoneLayer.keys.filter { cityMap.zoneLayer[it] == zone && cityMap.cachedLocationsIn(it).count() == 0 }.map { coordinate ->
             cityMap.desirabilityLayers.map { it[coordinate] ?: 0.0 }.max()
         }.filterNotNull().filter { it > 0 }.count()
     }
@@ -111,7 +111,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
 
     // TODO: use desirability later...
     private fun findBuilding(zoneType: Zone): Building? {
-        return assetManager.all().filterIsInstance(zoneTypeToClass(zoneType)).getRandomElement()
+        return assetManager.all().filterIsInstance(zoneTypeToClass(zoneType)).randomElement()
     }
 
     private fun zoneTypeToClass(zoneType: Zone): Class<out Building> {

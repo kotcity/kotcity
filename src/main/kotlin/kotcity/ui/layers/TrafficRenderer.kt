@@ -100,7 +100,7 @@ class TrafficRenderer(private val cityMap: CityMap, private val cityRenderer: Ci
     }
 
     private fun hasRoad(coordinate: BlockCoordinate): Boolean {
-        return cityMap.cachedBuildingsIn(coordinate).any { it.building is Road }
+        return cityMap.cachedLocationsIn(coordinate).any { it.building is Road }
     }
 
     private fun drawVertical(image: Image, g2d: GraphicsContext, coordinate: BlockCoordinate) {
@@ -124,7 +124,7 @@ class TrafficRenderer(private val cityMap: CityMap, private val cityRenderer: Ci
 
         visibleBlockRange?.let { visibleBlockRange ->
 
-            val visibleRoads = cityMap.locationsIn(visibleBlockRange.first, visibleBlockRange.second).filter { it.building is Road }
+            val visibleRoads = cityMap.locationsInRectangle(visibleBlockRange.first, visibleBlockRange.second).filter { it.building is Road }
 
             visibleRoads.forEach {
                 if (cityMap.trafficLayer[it.coordinate] ?: 0.0 > 30) {

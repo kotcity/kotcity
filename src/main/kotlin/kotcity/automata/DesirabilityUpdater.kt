@@ -7,6 +7,10 @@ import kotcity.util.Debuggable
 
 class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
     override var debug: Boolean = false
+    set(value) {
+        field = value
+        resourceFinder.debug = debug
+    }
 
     private val maxDistance = 100
     private val shortDistance = 10
@@ -14,6 +18,10 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
     private val longDistance = 100
     private val pathFinder: Pathfinder = Pathfinder(cityMap)
     private val resourceFinder = ResourceFinder(cityMap)
+
+    init {
+        resourceFinder.debug = debug
+    }
 
     fun update() {
         // let's update the desirability...
@@ -36,7 +44,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
 
     private fun updateCommercial(desirabilityLayer: DesirabilityLayer) {
 
-        val commercialZones = zoneCoordinates(Zone.COMMERCIAL).filter { cityMap.isEmpty(it) }
+        val commercialZones = zoneCoordinates(Zone.COMMERCIAL)
 
         commercialZones.forEach { coordinate ->
 
@@ -64,7 +72,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
     private fun updateIndustrial(desirabilityLayer: DesirabilityLayer) {
 
         // ok... we just gotta find each block with an industrial zone...
-        val industryZones = zoneCoordinates(Zone.INDUSTRIAL).filter { cityMap.isEmpty(it) }
+        val industryZones = zoneCoordinates(Zone.INDUSTRIAL)
 
         industryZones.forEach { coordinate ->
 
@@ -110,7 +118,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
         // we like being near places that NEED labor
         // we like being near places that PROVIDE goods
 
-        val residentialZones = zoneCoordinates(Zone.RESIDENTIAL).filter { cityMap.isEmpty(it) }
+        val residentialZones = zoneCoordinates(Zone.RESIDENTIAL)
 
         val population = cityMap.censusTaker.population
 

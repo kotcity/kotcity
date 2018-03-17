@@ -57,7 +57,7 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
             val building = location.building
             if (building is Residential) {
                 // see how many labor is provided...
-                tempPop += building.totalProvided(Tradeable.LABOR)
+                tempPop += building.totalBeingSold(Tradeable.LABOR)
             }
         }
         population = tempPop
