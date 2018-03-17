@@ -71,7 +71,8 @@ class QueryWindow : View() {
                 buffer.append("Elevation: ${city.groundLayer[coordinate]?.elevation}\n")
                 buffer.append("Land Value: ???\n")
 
-                buffer.append("Fire Coverage: ${(city.fireCoverageLayer[coordinate] ?: 0.0).roundToInt() * 100} %\n")
+                val coverage = ((city.fireCoverageLayer[coordinate] ?: 0.0) * 100).roundToInt()
+                buffer.append("Fire Coverage: $coverage %\n")
 
                 buildingDescriptionArea.text = buffer.toString()
             }
