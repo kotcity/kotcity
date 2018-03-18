@@ -46,7 +46,7 @@ The UI is done with FXML created with [Gluon's SceneBuilder](http://gluonhq.com/
 **A:** It has a lot of libraries (pick any random Java library...) It's pretty productive! Gee-whiz functional stuff baked in. Besides, if this project gets to a place where it's really awesome but just needs extra speed we can reach for that C++ or Rust book.
 
 ### Q: Bedeutet "Kot" nicht 💩 in Deutsch?
-**A:** Du bist am richtigsten!
+**A:** Du hast Recht!
 
 ## Why Another City Simulator?
 
