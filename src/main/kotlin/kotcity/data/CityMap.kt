@@ -309,8 +309,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 }
             }
 
-            if (hour % 6 == 0) {
-
+            if (hour % 12 == 0) {
+                timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
+                timeFunction("Constructing buildings") { constructor.tick() }
             }
 
             if (hour == 0) {
@@ -333,8 +334,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
 
         async {
-            timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
-            timeFunction("Constructing buildings") { constructor.tick() }
             timeFunction("Collect Taxes") { taxCollector.tick() }
             timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
             timeFunction("Calculating fire coverage") { FireCoverageUpdater.update(self) }
