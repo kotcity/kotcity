@@ -11,15 +11,17 @@ import tornadofx.View
 import tornadofx.find
 import tornadofx.runLater
 
-const val GAME_STRING = "KotCity 0.43"
+var GAME_VERSION = System.getenv("KotCity.version") ?: ""
+var GAME_NAME = System.getenv("KotCity.name") ?: ""
+var GAME_TITLE = "$GAME_NAME $GAME_VERSION"
 
 class LaunchScreen : View() {
     override val root: VBox by fxml("/LaunchScreen.fxml")
     private val titleLabel: Label by fxid()
 
     init {
-        title = GAME_STRING
-        titleLabel.text = GAME_STRING
+        title = GAME_TITLE
+        titleLabel.text = GAME_TITLE
         currentStage?.toFront()
 
         primaryStage.setOnCloseRequest {

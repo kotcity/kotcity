@@ -161,7 +161,7 @@ class GameFrame : View(), Debuggable {
         setCanvasSize()
         initComponents()
 
-        title = "$GAME_STRING - ${cityMap.cityName}"
+        title = "$GAME_TITLE - ${cityMap.cityName}"
         cityNameLabel.text = cityMap.cityName
 
         // clean up the old renderers here...
@@ -350,11 +350,11 @@ class GameFrame : View(), Debuggable {
         renderTimer?.stop()
         gameTickTask?.cancel()
         CityLoader.loadCity(this)
-        title = "$GAME_STRING - ${map.cityName}"
+        title = "$GAME_TITLE - ${map.cityName}"
     }
 
     private fun initComponents() {
-        title = GAME_STRING
+        title = GAME_TITLE
 
         bindCanvas()
         bindButtons()
