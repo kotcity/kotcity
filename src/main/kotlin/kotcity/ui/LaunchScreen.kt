@@ -1,19 +1,21 @@
 package kotcity.ui
 
+import com.natpryce.konfig.ConfigurationProperties
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import javafx.util.Duration
+import kotcity.util.Game
 import tornadofx.App
 import tornadofx.View
 import tornadofx.find
 import tornadofx.runLater
 
-var GAME_VERSION = System.getenv("KotCity.version") ?: ""
-var GAME_NAME = System.getenv("KotCity.name") ?: ""
-var GAME_TITLE = "$GAME_NAME $GAME_VERSION"
+val config = ConfigurationProperties.fromResource("config/defaults.properties")
+
+var GAME_TITLE = "${config[Game.Name]} ${config[Game.Version]}"
 
 class LaunchScreen : View() {
     override val root: VBox by fxml("/LaunchScreen.fxml")

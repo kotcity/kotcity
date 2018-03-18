@@ -48,6 +48,8 @@ dependencies {
 
     compile 'com.github.ben-manes.caffeine:caffeine:2.6.1'
 
+    compile 'com.natpryce:konfig:1.6.1.0'
+
     // Optional extensions
     compile 'com.github.ben-manes.caffeine:guava:2.6.1'
     compile 'com.github.ben-manes.caffeine:jcache:2.6.1'
@@ -64,11 +66,6 @@ compileKotlin {
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
-}
-
-run {
-    environment "KotCity.name", "KotCity"
-    environment "KotCity.version", project.version
 }
 
 jar {
