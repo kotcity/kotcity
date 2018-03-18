@@ -45,7 +45,7 @@ class MapGeneratorScreen : View() {
 
         mapModeComboBox.selectionModel.select(0)
 
-        title = "$GAME_STRING - Generate a Map"
+        title = "$GAME_TITLE - Generate a Map"
 
         // newMap = generate(sizeField.text.toInt(), sizeField.text.toInt())
         fitMap()

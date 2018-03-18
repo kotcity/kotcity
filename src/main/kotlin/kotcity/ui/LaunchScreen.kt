@@ -1,25 +1,29 @@
 package kotcity.ui
 
+import com.natpryce.konfig.ConfigurationProperties
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import javafx.util.Duration
+import kotcity.util.Game
 import tornadofx.App
 import tornadofx.View
 import tornadofx.find
 import tornadofx.runLater
 
-const val GAME_STRING = "KotCity 0.43"
+val config = ConfigurationProperties.fromResource("config/defaults.properties")
+
+var GAME_TITLE = "${config[Game.Name]} ${config[Game.Version]}"
 
 class LaunchScreen : View() {
     override val root: VBox by fxml("/LaunchScreen.fxml")
     private val titleLabel: Label by fxid()
 
     init {
-        title = GAME_STRING
-        titleLabel.text = GAME_STRING
+        title = GAME_TITLE
+        titleLabel.text = GAME_TITLE
         currentStage?.toFront()
 
         primaryStage.setOnCloseRequest {
