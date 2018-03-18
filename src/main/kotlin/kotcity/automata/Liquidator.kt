@@ -18,10 +18,10 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
 
             val start = System.currentTimeMillis()
 
-            val bulldozedCounts = mutableMapOf<KClass<out Building>, Int>().withDefault { 0 }
-            bulldozedCounts[Residential::class] = 0
-            bulldozedCounts[Commercial::class] = 0
-            bulldozedCounts[Industrial::class] = 0
+            val bulldozedCounts = mutableMapOf<Zone, Int>().withDefault { 0 }
+            bulldozedCounts[Zone.RESIDENTIAL] = 0
+            bulldozedCounts[Zone.COMMERCIAL] = 0
+            bulldozedCounts[Zone.INDUSTRIAL] = 0
 
             bankruptLocations.shuffled().take(howManyNeedDestruction).forEach { location ->
                 if (System.currentTimeMillis() - start > 5000) {
@@ -31,15 +31,26 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
                 }
                 debug("Building ${location.building.description} is bankrupt or has no goods! Blowing it up!")
                 cityMap.bulldoze(location.coordinate, location.coordinate)
-                bulldozedCounts[location.building::class] = (bulldozedCounts[location.building::class] ?: 0) + 1
+                bulldozedCounts[zoneForBuilding(location.building::class)] = (bulldozedCounts[zoneForBuilding(location.building::class)] ?: 0) + 1
             }
             updateBulldozedCount(bulldozedCounts)
         }
     }
 
-    private fun updateBulldozedCount(bulldozeCounts: MutableMap<KClass<out Building>, Int>) {
+    private fun updateBulldozedCount(bulldozeCounts: MutableMap<Zone, Int>) {
         debug("After all that blowing up, the count is: $bulldozeCounts")
         cityMap.bulldozedCounts = bulldozeCounts
+    }
+
+    private fun zoneForBuilding(klass: KClass<out Building>): Zone {
+        return when (klass) {
+            Residential::class -> Zone.RESIDENTIAL
+            Commercial::class -> Zone.COMMERCIAL
+            Industrial::class -> Zone.INDUSTRIAL
+            else -> {
+                throw RuntimeException("Liquidator doesn't know to work with $klass!")
+            }
+        }
     }
 
     private fun bankruptLocations(): List<Location> {

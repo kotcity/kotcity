@@ -143,7 +143,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     private var doingHourly: Boolean = false
 
-    var bulldozedCounts = mutableMapOf<KClass<out Building>, Int>().withDefault { 0 }
+    var bulldozedCounts = mutableMapOf<Zone, Int>().withDefault { 0 }
 
     private fun initializeDesirabilityLayers(): List<DesirabilityLayer> {
         return listOf(
@@ -294,7 +294,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
             if (hour % 3 == 0) {
                 timeFunction("Calculating desirability") { desirabilityUpdater.update() }
-                timeFunction("Constructing buildings") { constructor.tick() }
                 timeFunction("Terminating random contracts") { contractFulfiller.terminateRandomContracts() }
                 withTimeout(5000, TimeUnit.MILLISECONDS) {
                     timeFunction("Signing contracts") { contractFulfiller.signContracts() }
@@ -335,6 +334,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
         async {
             timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
+            timeFunction("Constructing buildings") { constructor.tick() }
             timeFunction("Collect Taxes") { taxCollector.tick() }
             timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
             timeFunction("Calculating fire coverage") { FireCoverageUpdater.update(self) }

@@ -24,41 +24,40 @@ class Constructor(val cityMap: CityMap) : Debuggable {
     }
 
     fun tick() {
-
-        // how many empty zones??
-        // val emptyZoneCount = cityMap.zoneLayer.keys.count { cityMap.buildingsIn(it).count() == 0 }
-        // debug("We have this many empty zones: $emptyZoneCount")
-
-        // TODO: should probably look at a % of DESIRABLE zones...
-
         val zoneTypes = listOf(Zone.INDUSTRIAL, Zone.COMMERCIAL, Zone.RESIDENTIAL)
         zoneTypes.forEach { zoneType ->
             val howManyBuildings: Int = (desirableZoneCount(zoneType).toDouble() * 0.05).coerceIn(1.0..5.0).toInt()
-            println("We will be trying to construct $howManyBuildings")
             repeat(howManyBuildings, {
 
-                val layer = cityMap.desirabilityLayer(zoneType, 1) ?: return
+                val howManyBulldozed = cityMap.bulldozedCounts
+                if (howManyBulldozed[zoneType] ?: 0 == 0) {
+                    val layer = cityMap.desirabilityLayer(zoneType, 1) ?: return
 
-                // get the 10 best places... pick one randomly ....
-                val blockAndScore = layer.entries().filter { isEmpty(it) }.filter { it.value > 0}.sortedBy { it.value }.take(10).randomElement()
-                if (blockAndScore == null) {
-                    if (debug) {
-                        debug("Could not find most desirable $zoneType zone!")
+                    // get the 10 best places... pick one randomly ....
+                    val blockAndScore = layer.entries().filter { isEmpty(it) }.filter { it.value > 0}.sortedBy { it.value }.take(10).randomElement()
+                    if (blockAndScore == null) {
+                        if (debug) {
+                            debug("Could not find most desirable $zoneType zone!")
+                        }
+                    } else {
+                        debug("We will be trying to build at ${blockAndScore.key} with desirability ${blockAndScore.value}")
+                        val coordinate = blockAndScore.key
+                        val desirability = blockAndScore.value
+                        val newBuilding = findBuilding(zoneType)
+                        if (newBuilding != null) {
+                            debug("The building to be attempted is: $newBuilding")
+                            // let's try like X times...
+                            tryToBuild(coordinate, newBuilding, layer)
+                        } else {
+                            debug("Sorry, no building could be found for $zoneType and $desirability")
+                        }
+
                     }
                 } else {
-                    debug("We will be trying to build at ${blockAndScore.key} with desirability ${blockAndScore.value}")
-                    val coordinate = blockAndScore.key
-                    val desirability = blockAndScore.value
-                    val newBuilding = findBuilding(zoneType)
-                    if (newBuilding != null) {
-                        debug("The building to be attempted is: $newBuilding")
-                        // let's try like X times...
-                        tryToBuild(coordinate, newBuilding, layer)
-                    } else {
-                        debug("Sorry, no building could be found for $zoneType and $desirability")
-                    }
-
+                    debug("Some $zoneType were bulldozed, so we don't want to build any...")
                 }
+
+
 
             })
         }

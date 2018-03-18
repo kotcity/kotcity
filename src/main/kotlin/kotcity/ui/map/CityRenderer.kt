@@ -60,9 +60,6 @@ class CityRenderer(
         mapMinElevation = cityMap.groundLayer.values.map { it.elevation }.min() ?: 0.0
         mapMaxElevation = cityMap.groundLayer.values.map { it.elevation }.max() ?: 0.0
         colorAdjuster = ColorAdjuster(mapMinElevation, mapMaxElevation)
-
-        println("Map min: $mapMinElevation Map max: $mapMaxElevation")
-        println("Map has been set to: $cityMap. Size is ${canvas.width}x${canvas.height}")
     }
 
     private fun canvasBlockHeight() = (canvas.height / blockSize()).toInt()
@@ -88,11 +85,9 @@ class CityRenderer(
     fun panMap(coordinate: BlockCoordinate) {
         // OK, we want to figure out the CENTER block now...
         val centerBlock = centerBlock()
-        // println("The center block is: $centerX,$centerY")
-        // println("We clicked at: ${clickedBlock.x},${clickedBlock.y}")
         val dx = coordinate.x - centerBlock.x
         val dy = coordinate.y - centerBlock.y
-        // println("Delta is: $dx,$dy")
+
         blockOffsetX += dx
         blockOffsetY += dy
         firePanChanged()
@@ -126,7 +121,7 @@ class CityRenderer(
         val blockSize = blockSize()
         val blockX = (mouseX / blockSize).toInt()
         val blockY = (mouseY / blockSize).toInt()
-        // println("Mouse block coords: $blockX,$blockY")
+
         return BlockCoordinate(blockX + blockOffsetX.toInt(), blockY + blockOffsetY.toInt())
     }
 
@@ -134,7 +129,6 @@ class CityRenderer(
         this.mouseDown = true
         this.firstBlockPressed = mouseToBlock(event.x, event.y)
         this.mouseBlock = this.firstBlockPressed
-        // println("Pressed on block: $firstBlockPressed")
     }
 
     fun onMouseReleased(event: MouseEvent) {
@@ -143,7 +137,6 @@ class CityRenderer(
 
     fun onMouseDragged(event: MouseEvent) {
         updateMouseBlock(event)
-        // println("The mouse is at $blockCoordinate")
     }
 
     private fun updateMouseBlock(event: MouseEvent) {
@@ -397,21 +390,22 @@ class CityRenderer(
                     Tool.INDUSTRIAL_ZONE,
                     Tool.RESIDENTIAL_ZONE,
                     Tool.ROUTES -> {
-                        mouseBlock?.let { highlightBlocks(it, it) }
+                        it.let { highlightBlocks(it, it) }
                     }
                     Tool.JOB_CENTER,
                     Tool.TOWN_WAREHOUSE -> {
-                        mouseBlock?.let { highlightCenteredBlocks(it, 2, 2) }
+                        it.let { highlightCenteredBlocks(it, 2, 2) }
                     }
                     Tool.POLICE_STATION,
                     Tool.FIRE_STATION -> {
-                        mouseBlock?.let { highlightCenteredBlocks(it, 3, 3) }
+                        it.let { highlightCenteredBlocks(it, 3, 3) }
                     }
                 }
             }
         }
     }
 
+    // TODO: so ugly to have every size hardcoded...
     private fun highlightCenteredBlocks(start: BlockCoordinate, width: Int, height: Int) {
         // TODO: we want to make this shit kind of centered...
         if (width == 3 || height == 3) {

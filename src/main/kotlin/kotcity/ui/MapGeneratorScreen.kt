@@ -160,7 +160,11 @@ class MapGeneratorScreen : View() {
                 newMap.cityName = result.get()
             }
 
-            this.close()
+            runLater {
+                val oldStage = currentStage
+                oldStage?.close()
+            }
+
             timer?.stop()
             tornadofx.find(GameFrame::class).apply {
                 setMap(newMap)
