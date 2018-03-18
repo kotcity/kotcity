@@ -59,8 +59,8 @@ class ZotRenderer(
 
         // ok let's get all buildings with zots now...
         visibleBlockRange?.let { visibleBlockRange ->
-            cachedLocationsWithZots(visibleBlockRange).forEach { location ->
-                // TODO: we gotta get different zots every once in a while...
+            val zotLocations = cachedLocationsWithZots(visibleBlockRange)
+            zotLocations.forEach { location ->
                 randomZot(location)?.let {
                     val blockSize = cityRenderer.blockSize()
                     ZotSpriteLoader.spriteForZot(it, blockSize, blockSize)?.let {
@@ -118,15 +118,15 @@ class ZotRenderer(
             return locationsWithZots
         }
 
-        locationsWithZots = randomBuildingsWithZots(visibleBlockRange).randomElements(50) ?: emptyList()
+        locationsWithZots = randomBuildingsWithZots(visibleBlockRange).randomElements(50)
         lastCalculatedTime = System.currentTimeMillis()
         return locationsWithZots
     }
 
     // OK we need a cache here so we only shoot back a few buildings
     private fun randomBuildingsWithZots(visibleBlockRange: Pair<BlockCoordinate, BlockCoordinate>): List<Location> {
-        return cityMap.locationsInRectangle(visibleBlockRange.first, visibleBlockRange.second)
-            .filter { it.building.zots.isNotEmpty() }
+        val buildingsInRectangle = cityMap.locationsInRectangle(visibleBlockRange.first, visibleBlockRange.second)
+        return buildingsInRectangle.filter { it.building.zots.isNotEmpty() }
     }
 
     private fun randomZot(location: Location): Zot? {

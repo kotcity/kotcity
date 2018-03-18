@@ -24,7 +24,7 @@ class Shipper(val cityMap: CityMap): Debuggable {
                 // }
 
                 // let's try to "pull" what we need...
-                if (contract.to.building() == building) {
+                if (contract.to.building() == building && contract.tradeable != Tradeable.LABOR) {
                     val wasSuccessful = contract.execute()
                     if (!wasSuccessful) {
                         contractsToVoid.add(contract)

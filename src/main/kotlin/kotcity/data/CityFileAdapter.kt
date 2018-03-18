@@ -170,10 +170,10 @@ private fun readBuildingLayer(data: JsonObject, cityMap: CityMap) {
 
                 else -> throw RuntimeException("Unknown building: $it")
             }
-            cityMap.build(building, BlockCoordinate(x, y))
+            cityMap.build(building, BlockCoordinate(x, y), updateBuildingIndex = false)
         }
-
     }
+    cityMap.updateBuildingIndex()
 }
 
 private fun readGroundTiles(data: JsonObject, cityMap: CityMap) {

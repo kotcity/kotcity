@@ -408,16 +408,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return true
     }
 
-    private fun collisionWarning(
-        errorMessage: String,
-        newBuilding: Building,
-        coordinate: BlockCoordinate,
-        building: Building,
-        otherCoordinate: BlockCoordinate
-    ) {
-        debug("$errorMessage -> ${newBuilding.name} at $coordinate: collision with ${building.name} at $otherCoordinate!")
-    }
-
     fun buildRoad(from: BlockCoordinate, to: BlockCoordinate) {
         roadBlocks(from, to).forEach { block ->
             val newRoad = Road(this)

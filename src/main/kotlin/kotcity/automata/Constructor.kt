@@ -34,7 +34,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
                     val layer = cityMap.desirabilityLayer(zoneType, 1) ?: return
 
                     // get the 10 best places... pick one randomly ....
-                    val blockAndScore = layer.entries().filter { isEmpty(it) }.filter { it.value > 0}.sortedBy { it.value }.take(10).randomElement()
+                    val blockAndScore = layer.entries().filter { isEmpty(it) }.filter { it.value > 0}.sortedByDescending { it.value }.take(10).randomElement()
                     if (blockAndScore == null) {
                         if (debug) {
                             debug("Could not find most desirable $zoneType zone!")

@@ -14,7 +14,7 @@ fun <E> List<E>.randomElement() = if (size > 0) get(Random().nextInt(size)) else
  * number of elements in the list it returns the whole damn thing
  */
 fun <E> List<E>.randomElements(numberOfElements: Int) =
-    if (numberOfElements < size) shuffled().take(numberOfElements) else null
+    if (numberOfElements < size) shuffled().take(numberOfElements) else this
 
 fun IntRange.reorder() = if (first < last) this else last..first
 
