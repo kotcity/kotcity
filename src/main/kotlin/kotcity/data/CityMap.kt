@@ -82,7 +82,6 @@ data class Corners(
     }
 }
 
-enum class TileType { GROUND, WATER }
 data class MapTile(val type: TileType, val elevation: Double)
 
 fun defaultTime(): Date {

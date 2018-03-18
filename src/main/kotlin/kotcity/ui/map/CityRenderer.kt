@@ -32,13 +32,13 @@ class CityRenderer(
     private val crimeRenderer = CrimeRenderer(this, cityMap)
 
     var blockOffsetX: Double = 0.0
-    set(value) {
-        val newValue = value.coerceIn(0.0 .. this.cityMap.width.toDouble())
-        field = newValue
-    }
+        set(value) {
+            val newValue = value.coerceIn(0.0..this.cityMap.width.toDouble())
+            field = newValue
+        }
     var blockOffsetY: Double = 0.0
         set(value) {
-            val newValue = value.coerceIn(0.0 .. this.cityMap.height.toDouble())
+            val newValue = value.coerceIn(0.0..this.cityMap.height.toDouble())
             field = newValue
         }
 
@@ -551,12 +551,7 @@ class CityRenderer(
                 // figure out fill color...
                 val tx = coordinate.x - blockOffsetX
                 val ty = coordinate.y - blockOffsetY
-                val zoneColor = when (zone) {
-                    Zone.RESIDENTIAL -> Color.DARKGREEN
-                    Zone.COMMERCIAL -> Color.DARKBLUE
-                    Zone.INDUSTRIAL -> Color.LIGHTGOLDENRODYELLOW
-                }
-                val shadyColor = Color(zoneColor.red, zoneColor.green, zoneColor.blue, 0.3)
+                val shadyColor = Color(zone.color.red, zone.color.green, zone.color.blue, 0.4)
                 canvas.graphicsContext2D.fill = shadyColor
                 canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
             }
