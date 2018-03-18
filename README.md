@@ -39,11 +39,14 @@ The UI is done with FXML created with [Gluon's SceneBuilder](http://gluonhq.com/
 
 ## FAQ
 
-Q: Why 2D?  
-A: This project is a lot of work already without having to worry about 3D modeling and so forth. One of my bottlenecks is art, so 2D is an easy way to sidestep that concern. Additionally, the actual "renderers" for the game are kept semi-separate from the simulation, so there's no reason why this couldn't turn into 3D later.
+### Q: Why 2D?  
+**A:** This project is a lot of work already without having to worry about 3D modeling and so forth. One of my bottlenecks is art, so 2D is an easy way to sidestep that concern. Additionally, the actual "renderers" for the game are kept semi-separate from the simulation, so there's no reason why this couldn't turn into 3D later.
 
-Q: Why Kotlin?  
-A: It has a lot of libraries (pick any random Java library...) It's pretty productive! Gee-whiz functional stuff baked in. Besides, if this project gets to a place where it's really awesome but just needs extra speed we can reach for that C++ or Rust book.
+### Q: Why Kotlin?  
+**A:** It has a lot of libraries (pick any random Java library...) It's pretty productive! Gee-whiz functional stuff baked in. Besides, if this project gets to a place where it's really awesome but just needs extra speed we can reach for that C++ or Rust book.
+
+### Q: Bedeutet "Kot" nicht 💩 in Deutsch?
+**A:** Du bist am richtigsten!
 
 ## Why Another City Simulator?
 
