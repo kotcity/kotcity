@@ -118,7 +118,7 @@ class ZotRenderer(
             return locationsWithZots
         }
 
-        locationsWithZots = randomBuildingsWithZots(visibleBlockRange).randomElements(50) ?: emptyList()
+        locationsWithZots = randomBuildingsWithZots(visibleBlockRange).randomElements(50)
         lastCalculatedTime = System.currentTimeMillis()
         return locationsWithZots
     }
