@@ -4,7 +4,7 @@
 
 ## WARNING!
 
-This is _pre alpha_ software with super obvious bugs, rough edges etc. In the spirit of "release early and release often", I am posting the code. This project is far from done but I prefer to get the code out there to be used by whomever. Disagree with the project? Fork it :).
+This is _pre alpha_ software with super obvious bugs, rough edges etc. In the spirit of "release early and release often", I am posting the code. This project is far from done but I prefer to get the code out there to be used by whomever. Disagree with the project? Fork it :)
 
 ## New in this release
 
@@ -57,8 +57,6 @@ If you get stuck or want to suggest suggestions, you can discuss it in [our topi
 
 You can contribute buildings (see assets directory), ideas for the game, help with art and so on by creating issues or fork the repo and start to make pull requests.
 
-By submitting the work to the repository, you're agree that your work should be compatible with Apache License 2.0 and assets license (undecided for now).
-
 ## Current Status
 
 * GPU accelerated graphics.
@@ -90,4 +88,4 @@ To make a game that "takes over" from SimCity 4. We have a loooooong way to go:
 
 ## License
 
-This project is licensed with Apache License 2.0. Assets license currently undecided. This project includes icons by various graphic designers from the Noun Project.
+This project is licensed with Apache License 2.0. This project includes icons by various graphic designers from the Noun Project.
