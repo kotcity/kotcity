@@ -9,6 +9,10 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
 
     fun tick() {
 
+        if (cityMap.censusTaker.population < 10) {
+            return
+        }
+
         // we will only kill some of what needs to go...
         val bankruptLocations = bankruptLocations()
 
