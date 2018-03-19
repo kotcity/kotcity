@@ -82,6 +82,10 @@ class CityRenderer(
         return startCoordinate to endCoordinate
     }
 
+    fun panToMouse() {
+        mouseBlock?.let { panMap(it) }
+    }
+
     fun panMap(coordinate: BlockCoordinate) {
         // OK, we want to figure out the CENTER block now...
         val centerBlock = centerBlock()

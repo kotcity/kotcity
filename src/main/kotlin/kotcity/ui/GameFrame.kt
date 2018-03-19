@@ -572,6 +572,7 @@ class GameFrame : View(), Debuggable {
             } else if (scrollEvent.deltaY > 0) {
                 zoomIn()
             }
+            cityRenderer?.panToMouse()
             cityMapCanvas.render()
         }
     }
