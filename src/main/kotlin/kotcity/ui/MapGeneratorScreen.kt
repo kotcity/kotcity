@@ -117,8 +117,8 @@ class MapGeneratorScreen : View() {
         var size = sizeField.text.toInt()
 
         // map doesn't work if it's ~64...
-        if (size < 128) {
-            size = 128
+        if (size < 32) {
+            size = 32
             sizeField.text = size.toString()
         }
 

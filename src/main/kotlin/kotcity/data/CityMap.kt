@@ -308,7 +308,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 }
             }
 
-            if (hour % 12 == 0) {
+            if (hour == 0 || hour == 12) {
                 timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
                 timeFunction("Constructing buildings") { constructor.tick() }
             }
