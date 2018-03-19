@@ -62,9 +62,9 @@ class CityRenderer(
         colorAdjuster = ColorAdjuster(mapMinElevation, mapMaxElevation)
     }
 
-    private fun canvasBlockHeight() = (canvas.height / blockSize()).toInt()
+    fun canvasBlockHeight() = (canvas.height / blockSize()).toInt()
 
-    private fun canvasBlockWidth() = (canvas.width / blockSize()).toInt()
+    fun canvasBlockWidth() = (canvas.width / blockSize()).toInt()
 
     // awkward... we need padding to get building off the screen...
     fun visibleBlockRange(padding: Int = 0): Pair<BlockCoordinate, BlockCoordinate> {
@@ -149,6 +149,7 @@ class CityRenderer(
             if (startX != startY || currentX != currentY) {
                 blockOffsetX += startX - currentX
                 blockOffsetY += startY - currentY
+                firePanChanged()
             }
         }
     }
