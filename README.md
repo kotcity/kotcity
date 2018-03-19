@@ -25,6 +25,7 @@ This is _pre alpha_ software with super obvious bugs, rough edges etc. In the sp
 * Pollution
 * Land value
 
+## Obligatory Screenshot
 ![KotCity Screenshot](screenshot.jpg?raw=true "Screenshot of the game's UI and an example city")
 
 ## What is KotCity?
@@ -60,6 +61,9 @@ The UI is done with FXML created with [Gluon's SceneBuilder](http://gluonhq.com/
 
 ### Q: Bedeutet "Kot" nicht 💩 in Deutsch?
 **A:** Du hast Recht!
+
+### Q: Is it any good?
+**A:** Yes!
 
 ## Why Another City Simulator?
 
