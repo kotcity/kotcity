@@ -1,2 +1,3 @@
 #!/bin/sh
-java -jar lib/kotcity4-1.0-SNAPSHOT.jar
+JARFILE=`ls lib/kotcity4* | head -n 1`
+java -jar ${JARFILE}
