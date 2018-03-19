@@ -6,11 +6,24 @@
 
 This is _pre alpha_ software with super obvious bugs, rough edges etc. In the spirit of "release early and release often", I am posting the code. This project is far from done but I prefer to get the code out there to be used by whomever. Disagree with the project? Fork it :)
 
-## New in this release
+## Changes in this release
 
-* Fire stations and fire coverage (by @sabieber)
-* Improvements to path finding
-* Tweaks to economy
+* Green terrain
+* Buildings now build properly in the most desirable areas
+* Police stations and police coverage
+* Contracts / Economy reworked to avoid "swinging" in economy
+* Improve layout of query window, title screen and map gen
+* Zots display properly now
+* Fixed bug where user could pan outside map and crash the game
+* Pathfinding uses all cores now :)
+* Contracts void themselves if their source is out of goods
+* Buildings obtain up to 3 contracts with suppliers, to fill in when they run low on goods
+
+## Next up!
+
+* Upgrading of zones to level 2 - 5 buildings
+* Pollution
+* Land value
 
 ![KotCity Screenshot](screenshot.jpg?raw=true "Screenshot of the game's UI and an example city")
 
