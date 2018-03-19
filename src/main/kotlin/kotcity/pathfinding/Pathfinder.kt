@@ -60,7 +60,8 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     val cachedTripTo = cachedTripToPair.second
 
     private val mapBorders: List<BlockCoordinate> by lazy {
-        // OK... what the fuck...
+        // I found this frustrating to write and this code
+        // can probably be improved upon...
         val widthRange = -1..cityMap.width
         val heightRange = -1..cityMap.height
 
