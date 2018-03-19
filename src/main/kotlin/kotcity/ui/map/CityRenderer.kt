@@ -137,6 +137,16 @@ class CityRenderer(
 
     fun onMouseDragged(event: MouseEvent) {
         updateMouseBlock(event)
+        if (event.button == MouseButton.SECONDARY) {
+            val startX = firstBlockPressed?.x ?: 0
+            val startY = firstBlockPressed?.y ?: 0
+            val currentX = mouseBlock?.x ?: 0
+            val currentY = mouseBlock?.y ?: 0
+            if (startX != startY || currentX != currentY) {
+                blockOffsetX += startX - currentX
+                blockOffsetY += startY - currentY
+            }
+        }
     }
 
     private fun updateMouseBlock(event: MouseEvent) {
@@ -149,12 +159,6 @@ class CityRenderer(
         // OK... if we have an active tool we might
         // have to draw a building highlight
         updateMouseBlock(event)
-    }
-
-    fun onMouseClicked(event: MouseEvent) {
-        if (event.button == MouseButton.SECONDARY) {
-            panMap(mouseToBlock(event.x, event.y))
-        }
     }
 
     private fun drawMap() {

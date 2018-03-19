@@ -519,7 +519,6 @@ class GameFrame : View(), Debuggable {
         }
 
         cityCanvas.setOnMouseClicked { evt ->
-            cityRenderer?.onMouseClicked(evt)
             // now let's handle some tools...
             if (evt.button == MouseButton.PRIMARY) {
                 cityRenderer?.getHoveredBlock()?.let {
