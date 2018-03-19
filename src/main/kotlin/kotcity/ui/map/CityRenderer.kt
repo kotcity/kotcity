@@ -33,12 +33,12 @@ class CityRenderer(
 
     var blockOffsetX: Double = 0.0
         set(value) {
-            val newValue = value.coerceIn(0.0..this.cityMap.width.toDouble())
+            val newValue = value.coerceIn(0.0..(cityMap.width - canvasBlockWidth() - 1.0))
             field = newValue
         }
     var blockOffsetY: Double = 0.0
         set(value) {
-            val newValue = value.coerceIn(0.0..this.cityMap.height.toDouble())
+            val newValue = value.coerceIn(0.0..(cityMap.height - canvasBlockHeight() - 1.0))
             field = newValue
         }
 
@@ -80,6 +80,10 @@ class CityRenderer(
         val endCoordinate = BlockCoordinate(endBlockX, endBlockY)
 
         return startCoordinate to endCoordinate
+    }
+
+    fun panToMouse() {
+        mouseBlock?.let { panMap(it) }
     }
 
     fun panMap(coordinate: BlockCoordinate) {
@@ -137,6 +141,16 @@ class CityRenderer(
 
     fun onMouseDragged(event: MouseEvent) {
         updateMouseBlock(event)
+        if (event.button == MouseButton.SECONDARY) {
+            val startX = firstBlockPressed?.x ?: 0
+            val startY = firstBlockPressed?.y ?: 0
+            val currentX = mouseBlock?.x ?: 0
+            val currentY = mouseBlock?.y ?: 0
+            if (startX != startY || currentX != currentY) {
+                blockOffsetX += startX - currentX
+                blockOffsetY += startY - currentY
+            }
+        }
     }
 
     private fun updateMouseBlock(event: MouseEvent) {
@@ -149,12 +163,6 @@ class CityRenderer(
         // OK... if we have an active tool we might
         // have to draw a building highlight
         updateMouseBlock(event)
-    }
-
-    fun onMouseClicked(event: MouseEvent) {
-        if (event.button == MouseButton.SECONDARY) {
-            panMap(mouseToBlock(event.x, event.y))
-        }
     }
 
     private fun drawMap() {

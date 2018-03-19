@@ -519,7 +519,6 @@ class GameFrame : View(), Debuggable {
         }
 
         cityCanvas.setOnMouseClicked { evt ->
-            cityRenderer?.onMouseClicked(evt)
             // now let's handle some tools...
             if (evt.button == MouseButton.PRIMARY) {
                 cityRenderer?.getHoveredBlock()?.let {
@@ -573,6 +572,7 @@ class GameFrame : View(), Debuggable {
             } else if (scrollEvent.deltaY > 0) {
                 zoomIn()
             }
+            cityRenderer?.panToMouse()
             cityMapCanvas.render()
         }
     }
