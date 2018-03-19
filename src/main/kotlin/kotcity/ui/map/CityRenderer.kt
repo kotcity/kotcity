@@ -33,12 +33,12 @@ class CityRenderer(
 
     var blockOffsetX: Double = 0.0
         set(value) {
-            val newValue = value.coerceIn(0.0..this.cityMap.width.toDouble())
+            val newValue = value.coerceIn(0.0..(cityMap.width - canvasBlockWidth() - 1.0))
             field = newValue
         }
     var blockOffsetY: Double = 0.0
         set(value) {
-            val newValue = value.coerceIn(0.0..this.cityMap.height.toDouble())
+            val newValue = value.coerceIn(0.0..(cityMap.height - canvasBlockHeight() - 1.0))
             field = newValue
         }
 
