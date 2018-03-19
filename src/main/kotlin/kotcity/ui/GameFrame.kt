@@ -44,7 +44,8 @@ fun serializeDate(date: Date): String {
 }
 
 const val DRAW_GRID = false
-const val TICK_DELAY: Int = 5 // only render every X ticks... (framerate limiter)
+const val TICK_DELAY_AT_REST: Int = 5 // only render every 5 ticks... (framerate limiter)
+const val TICK_DELAY_AT_MOVE: Int = 1 // only render every tick when moving the camera around
 
 enum class Tool {
     BULLDOZE,
@@ -127,7 +128,9 @@ class GameFrame : View(), Debuggable {
             scheduleGameTickTimer()
         }
 
-    var ticks = 0
+    private var tickDelay = TICK_DELAY_AT_REST
+    private var ticks = 0
+
     private var renderTimer: AnimationTimer? = null
     private var gameTickTimer: Timer = Timer()
     private var gameTickTask: TimerTask? = null
@@ -366,7 +369,7 @@ class GameFrame : View(), Debuggable {
         renderTimer?.stop()
         renderTimer = object : AnimationTimer() {
             override fun handle(now: Long) {
-                if (ticks == TICK_DELAY) {
+                if (ticks >= tickDelay) {
                     trafficRenderer?.render()
                     cityRenderer?.render()
                     zotRenderer?.render()
@@ -387,8 +390,6 @@ class GameFrame : View(), Debuggable {
     }
 
     private fun scheduleGameTickTimer() {
-        val delay = 0L // delay for 0 sec.
-
         gameTickTask?.cancel()
         gameTickTask = timerTask {
             runLater {
@@ -398,7 +399,7 @@ class GameFrame : View(), Debuggable {
                 }
             }
         }
-        gameTickTimer.scheduleAtFixedRate(gameTickTask, delay, gameSpeed.tickPeriod)
+        gameTickTimer.scheduleAtFixedRate(gameTickTask, 0L, gameSpeed.tickPeriod)
     }
 
     fun quitPressed() {
@@ -462,6 +463,7 @@ class GameFrame : View(), Debuggable {
         }
 
         cityCanvas.setOnMouseReleased { evt ->
+            tickDelay = TICK_DELAY_AT_REST
             cityMapCanvas.render()
             cityRenderer?.let {
                 it.onMouseReleased(evt)
@@ -515,6 +517,7 @@ class GameFrame : View(), Debuggable {
         }
 
         cityCanvas.setOnMouseDragged { evt ->
+            tickDelay = TICK_DELAY_AT_MOVE
             cityRenderer?.onMouseDragged(evt)
         }
 
