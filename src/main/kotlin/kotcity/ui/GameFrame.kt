@@ -187,11 +187,14 @@ class GameFrame : View(), Debuggable {
             this.cityMapCanvas.visibleBlockRange = visibleBlockRange
             trafficRenderer.visibleBlockRange = visibleBlockRange
             zotRenderer.visibleBlockRange = visibleBlockRange
-        }
-        this.cityMapCanvas.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
-        trafficRenderer.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
-        zotRenderer.visibleBlockRange = this.cityRenderer?.visibleBlockRange(padding = 0)
 
+            horizontalScroll.value = cityRenderer.blockOffsetX
+            verticalScroll.value = cityRenderer.blockOffsetY
+        }
+        val visibleBlockRange = this.cityRenderer?.visibleBlockRange()
+        this.cityMapCanvas.visibleBlockRange = visibleBlockRange
+        trafficRenderer.visibleBlockRange = visibleBlockRange
+        zotRenderer.visibleBlockRange = visibleBlockRange
     }
 
     private fun setCanvasSize() {
@@ -210,8 +213,13 @@ class GameFrame : View(), Debuggable {
         horizontalScroll.min = 0.0
         verticalScroll.min = 0.0
 
-        horizontalScroll.max = map.width.toDouble()
-        verticalScroll.max = map.height.toDouble()
+        val canvasBlockWidth = cityRenderer?.canvasBlockWidth() ?: 0
+        val canvasBlockHeight = cityRenderer?.canvasBlockHeight() ?: 0
+        horizontalScroll.max = map.width - canvasBlockWidth - 1.0
+        verticalScroll.max = map.height - canvasBlockHeight - 1.0
+
+        horizontalScroll.visibleAmount = horizontalScroll.max * canvasBlockWidth / map.width
+        verticalScroll.visibleAmount = verticalScroll.max * canvasBlockHeight / map.height
     }
 
     fun slowClicked() {
@@ -230,12 +238,14 @@ class GameFrame : View(), Debuggable {
     fun zoomOut() {
         cityRenderer?.let {
             it.zoom = Math.max(it.zoom - 1, 1.0)
+            setScrollbarSizes()
         }
     }
 
     fun zoomIn() {
         cityRenderer?.let {
             it.zoom = Math.min(it.zoom + 1, 5.0)
+            setScrollbarSizes()
         }
     }
 
