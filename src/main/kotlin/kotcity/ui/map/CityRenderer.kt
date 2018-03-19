@@ -1,5 +1,6 @@
 package kotcity.ui.map
 
+import javafx.scene.Cursor
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
@@ -7,6 +8,7 @@ import kotcity.data.*
 import kotcity.ui.*
 import kotcity.ui.sprites.BuildingSpriteLoader
 import kotcity.util.reorder
+import tornadofx.runLater
 
 const val MAX_BUILDING_SIZE = 4
 const val DESIRABILITY_CAP: Double = 300.0
@@ -133,15 +135,32 @@ class CityRenderer(
         this.mouseDown = true
         this.firstBlockPressed = mouseToBlock(event.x, event.y)
         this.mouseBlock = this.firstBlockPressed
+
+        runLater {
+            if (event.button == MouseButton.SECONDARY) {
+                gameFrame.currentStage?.scene?.root?.cursor = Cursor.MOVE
+            } else {
+                gameFrame.currentStage?.scene?.root?.cursor = Cursor.DEFAULT
+            }
+        }
+
     }
 
     fun onMouseReleased(event: MouseEvent) {
         this.mouseDown = event.isPrimaryButtonDown
+        runLater {
+            gameFrame.currentStage?.scene?.root?.cursor = Cursor.DEFAULT
+        }
+
     }
 
     fun onMouseDragged(event: MouseEvent) {
         updateMouseBlock(event)
         if (event.button == MouseButton.SECONDARY) {
+            runLater {
+                gameFrame.currentStage?.scene?.root?.cursor = Cursor.MOVE
+            }
+
             val startX = firstBlockPressed?.x ?: 0
             val startY = firstBlockPressed?.y ?: 0
             val currentX = mouseBlock?.x ?: 0
