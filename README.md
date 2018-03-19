@@ -86,7 +86,7 @@ You can contribute buildings (see assets directory), ideas for the game, help wi
 * As-you-want map size (Can your PC handle 100km^2? Go for it!).
 * Power plants and coverage.
 * Dynamic economy where goods, services and labor are exchanged.
-* Happiness (available in separate branch).
+* Happiness
 
 ## Future Plans
 
