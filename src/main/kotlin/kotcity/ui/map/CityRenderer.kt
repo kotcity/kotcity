@@ -132,7 +132,7 @@ class CityRenderer(
     }
 
     fun onMousePressed(event: MouseEvent) {
-        this.mouseDown = true
+        this.mouseDown = event.isPrimaryButtonDown
         this.firstBlockPressed = mouseToBlock(event.x, event.y)
         this.mouseBlock = this.firstBlockPressed
 
