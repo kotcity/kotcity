@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="744.0" prefWidth="1034.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="744.0" prefWidth="1034.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar>
          <menus>
@@ -92,7 +92,7 @@
          <items>
             <VBox maxWidth="200.0">
                <children>
-                  <Accordion fx:id="accordion" maxWidth="223.0" minHeight="298.0" prefHeight="298.0" prefWidth="223.0" VBox.vgrow="ALWAYS">
+                  <Accordion fx:id="accordion" maxWidth="223.0" minHeight="268.0" prefHeight="268.0" prefWidth="223.0" VBox.vgrow="ALWAYS">
                      <panes>
                         <TitledPane fx:id="toolsPane" animated="false" text="Tools">
                            <content>
@@ -156,11 +156,16 @@
                         <Insets />
                      </VBox.margin>
                   </Accordion>
-                  <VBox prefHeight="115.0" prefWidth="223.0">
+                  <VBox prefHeight="153.0" prefWidth="223.0">
                      <children>
                         <Label fx:id="cityNameLabel" text="City: &lt;CITY NAME&gt;">
                            <VBox.margin>
                               <Insets bottom="10.0" left="10.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="populationLabel" layoutX="20.0" layoutY="20.0" text="Population: 0">
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" />
                            </VBox.margin>
                         </Label>
                         <Label fx:id="moneyLabel" text="Money: $1,000,000">

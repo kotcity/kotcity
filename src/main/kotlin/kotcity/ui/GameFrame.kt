@@ -117,6 +117,7 @@ class GameFrame : View(), Debuggable {
     private val selectedToolLabel: Label by fxid()
     private val cityNameLabel: Label by fxid()
     private val clockLabel: Label by fxid()
+    private val populationLabel: Label by fxid()
 
     private val supplyDemandMenuItem: MenuItem by fxid()
 
@@ -405,6 +406,7 @@ class GameFrame : View(), Debuggable {
             runLater {
                 if (!pauseMenuItem.isSelected) {
                     map.tick()
+                    populationLabel.text = "Population: ${map.censusTaker.population}"
                     clockLabel.text = serializeDate(map.time)
                 }
             }
