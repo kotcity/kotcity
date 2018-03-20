@@ -3,6 +3,9 @@ package kotcity.ui
 import com.natpryce.konfig.ConfigurationProperties
 import javafx.application.Application
 import javafx.application.Platform
+import javafx.scene.control.Alert
+import javafx.scene.control.ButtonBar
+import javafx.scene.control.ButtonType
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
@@ -10,7 +13,6 @@ import javafx.util.Duration
 import kotcity.util.Game
 import tornadofx.App
 import tornadofx.View
-import tornadofx.find
 import tornadofx.runLater
 
 val config = ConfigurationProperties.fromResource("config/defaults.properties")
@@ -25,18 +27,16 @@ class LaunchScreen : View() {
         title = GAME_TITLE
         titleLabel.text = GAME_TITLE
         currentStage?.toFront()
+    }
 
-        primaryStage.setOnCloseRequest {
-            Platform.exit()
-            java.lang.System.exit(0)
-        }
+    override fun onDock() {
+        super.onDock()
+        currentWindow?.sizeToScene()
+        currentWindow?.centerOnScreen()
     }
 
     fun newCityPressed() {
-        println("We want a new city!")
-        this.currentStage?.close()
-        this.primaryStage.close()
-        MapGeneratorScreen().openWindow()
+        replaceWith<MapGeneratorScreen>()
     }
 
     fun loadCityPressed() {
@@ -63,12 +63,31 @@ class LaunchScreenApp : App(LaunchScreen::class, KotcityStyles::class) {
         super.start(stage)
 
         stage.setOnCloseRequest {
-            val gameFrame = find(GameFrame::class)
-            gameFrame.quitPressed()
+            Alert(Alert.AlertType.CONFIRMATION).apply {
+                title = "Quitting KotCity"
+                headerText = "Are you ready to leave?"
+                contentText = "Please confirm..."
+
+                val buttonTypeOne = ButtonType("Yes, please quit.")
+                val buttonTypeTwo = ButtonType("No, I want to keep playing.")
+                val buttonTypeCancel = ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE)
+
+                buttonTypes.setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel)
+
+                val result = showAndWait()
+                when (result.get()) {
+                    buttonTypeOne -> {
+                        Platform.exit()
+                        System.exit(0)
+                    }
+                    else -> {
+                        // don't do anything ...
+                    }
+                }
+            }
             it.consume()
         }
     }
-
 }
 
 fun main(args: Array<String>) {
