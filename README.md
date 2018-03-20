@@ -1,4 +1,4 @@
-# KotCity 0.44
+# KotCity 0.45
 
 [![Build Status](https://semaphoreci.com/api/v1/kotcity/kotcity/branches/master/badge.svg)](https://semaphoreci.com/kotcity/kotcity) [![Build Status](https://travis-ci.org/kotcity/kotcity.svg?branch=master)](https://travis-ci.org/kotcity/kotcity)
 
@@ -6,18 +6,31 @@
 
 This is _pre alpha_ software with super obvious bugs, rough edges etc. In the spirit of "release early and release often", I am posting the code. This project is far from done but I prefer to get the code out there to be used by whomever. Disagree with the project? Fork it :)
 
-## Changes in this release
+## Obligatory Screenshot
+![KotCity Screenshot](screenshot.jpg?raw=true "Screenshot of the game's UI and an example city")
 
-* Green terrain
-* Buildings now build properly in the most desirable areas
-* Police stations and police coverage
-* Contracts / Economy reworked to avoid "swinging" in economy
-* Improve layout of query window, title screen and map gen
-* Zots display properly now
-* Fixed bug where user could pan outside map and crash the game
-* Pathfinding uses all cores now :)
-* Contracts void themselves if their source is out of goods
-* Buildings obtain up to 3 contracts with suppliers, to fill in when they run low on goods
+## Gimme the Software!
+
+A build for Windows, macOS and Linux is available at https://github.com/kotcity/kotcity/releases/tag/0.45
+
+Java 8+ is required. On Windows it will look for JRE and bring you to download page if you don't have it.
+
+(note, on Ubuntu do apt-get install openjfx)
+
+## New in this version
+
+95% of these are from my main man @sabieber, who is the KotCity hero
+
+See our roadmap at https://github.com/kotcity/kotcity/wiki/Roadmap
+
+* displaying population
+* buildings construct a little more often
+* tweaked required kots for industrial plant
+* min map size reduced (can play on a 32x32 map if you want now...)
+* right click and drag to pan map
+* update cursor on map pan
+* dynamic framerate adjustment during panning, zooming
+* zoom to mouse position on zoom
 
 ## Next up!
 
@@ -25,20 +38,9 @@ This is _pre alpha_ software with super obvious bugs, rough edges etc. In the sp
 * Pollution
 * Land value
 
-## Obligatory Screenshot
-![KotCity Screenshot](screenshot.jpg?raw=true "Screenshot of the game's UI and an example city")
-
 ## What is KotCity?
 
 KotCity is a city simulator written in Kotlin inspired by the statistical city simulators of old. This game aims to achieve a mark somewhere between SimCity (1989) and SC2000. Hopefully this mark will be hit and we can set our sights higher. The game will be fully supported on Windows, macOS, and Linux.
-
-## Gimme the Software!
-
-A build for Windows, macOS and Linux is available at https://github.com/kotcity/kotcity/releases/tag/0.44
-
-Java 8+ is required. On Windows it will look for JRE and bring you to download page if you don't have it.
-
-(note, on Ubuntu do apt-get install openjfx)
 
 ## Quick Start
 
