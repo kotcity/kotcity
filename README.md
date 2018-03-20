@@ -1,4 +1,4 @@
-# KotCity 0.44
+# KotCity 0.45
 
 [![Build Status](https://semaphoreci.com/api/v1/kotcity/kotcity/branches/master/badge.svg)](https://semaphoreci.com/kotcity/kotcity) [![Build Status](https://travis-ci.org/kotcity/kotcity.svg?branch=master)](https://travis-ci.org/kotcity/kotcity)
 
@@ -34,7 +34,7 @@ KotCity is a city simulator written in Kotlin inspired by the statistical city s
 
 ## Gimme the Software!
 
-A build for Windows, macOS and Linux is available at https://github.com/kotcity/kotcity/releases/tag/0.44
+A build for Windows, macOS and Linux is available at https://github.com/kotcity/kotcity/releases/tag/0.45
 
 Java 8+ is required. On Windows it will look for JRE and bring you to download page if you don't have it.
 
