@@ -4,10 +4,28 @@
 
 ## WARNING!
 
-This is _pre alpha_ software with super obvious bugs, rough edges etc. In the spirit of "release early and release often", I am posting the code. This project is far from done but I prefer to get the code out there to be used by whomever. Disagree with the project? Fork it :)
+This is _pre-alpha_ software with super obvious bugs, rough edges etc. In the spirit of "release early and release often", I am posting the code. This project is far from done but I prefer to get the code out there to be used by whomever. Disagree with the project? Fork it :)
 
-## Obligatory Screenshot
 ![KotCity Screenshot](screenshot.jpg?raw=true "Screenshot of the game's UI and an example city")
+
+## New in this version
+
+95% of these are from my main man @sabieber, who is the KotCity hero.
+
+See our roadmap at https://github.com/kotcity/kotcity/wiki/Roadmap
+
+* Displaying population.
+* Buildings construct a little more often.
+* Tweaked required kots (equivalent to *sims*) for industrial plant.
+* Minimal map size reduced (you can start a 32*32 map).
+* Right click and drag to pan map.
+* Update cursor on map pan.
+* Dynamic framerate adjustment during panning & zooming.
+* Zoom to mouse position on zoom.
+
+## What is KotCity?
+
+KotCity is a city simulator written in Kotlin inspired by the statistical city simulators of old. This game aims to achieve a mark somewhere between SimCity (1989) and SC2000. Hopefully this mark will be hit and we can set our sights higher. The game will be fully supported on Windows, macOS, and Linux.
 
 ## Gimme the Software!
 
@@ -15,32 +33,13 @@ A build for Windows, macOS and Linux is available at https://github.com/kotcity/
 
 Java 8+ is required. On Windows it will look for JRE and bring you to download page if you don't have it.
 
-(note, on Ubuntu do apt-get install openjfx)
-
-## New in this version
-
-95% of these are from my main man @sabieber, who is the KotCity hero
-
-See our roadmap at https://github.com/kotcity/kotcity/wiki/Roadmap
-
-* displaying population
-* buildings construct a little more often
-* tweaked required kots for industrial plant
-* min map size reduced (can play on a 32x32 map if you want now...)
-* right click and drag to pan map
-* update cursor on map pan
-* dynamic framerate adjustment during panning, zooming
-* zoom to mouse position on zoom
+On Ubuntu, you should do ```apt-get install openjfx```.
 
 ## Next up!
 
-* Upgrading of zones to level 2 - 5 buildings
-* Pollution
-* Land value
-
-## What is KotCity?
-
-KotCity is a city simulator written in Kotlin inspired by the statistical city simulators of old. This game aims to achieve a mark somewhere between SimCity (1989) and SC2000. Hopefully this mark will be hit and we can set our sights higher. The game will be fully supported on Windows, macOS, and Linux.
+* Level 2 to 5 buildings.
+* Pollution.
+* Land value.
 
 ## Quick Start
 
@@ -61,15 +60,9 @@ The UI is done with FXML created with [Gluon's SceneBuilder](http://gluonhq.com/
 ### Q: Why Kotlin?  
 **A:** It has a lot of libraries (pick any random Java library...) It's pretty productive! Gee-whiz functional stuff baked in. Besides, if this project gets to a place where it's really awesome but just needs extra speed we can reach for that C++ or Rust book.
 
-### Q: Bedeutet "Kot" nicht 💩 in Deutsch?
-**A:** Du hast Recht!
+### Q: Why Another City Simulator?
 
-### Q: Is it any good?
-**A:** Yes!
-
-## Why Another City Simulator?
-
-After many years of not seeing any new city builders descend that are satisfactory, I decided to take matters into my own hands. Why? SimCity 2013 was REALLY disappointing. Cities Skylines is fun, but it doesn't seem to scratch that itch that SimCity 4 does. Even though there are still patches and new content coming out for SimCity 4, it's definitely on life support. I looked around at a few of the city simulators available but it doesn't seem like anyone is really working on a modern version of SimCity.
+**A:** After many years of not seeing any new city builders descend that are satisfactory, I decided to take matters into my own hands. Why? SimCity 2013 was REALLY disappointing. Cities Skylines is fun, but it doesn't seem to scratch that itch that SimCity 4 does. Even though there are still patches and new content coming out for SimCity 4, it's definitely on life support. I looked around at a few of the city simulators available but it doesn't seem like anyone is really working on a modern version of SimCity.
 
 ## Community
 
@@ -78,35 +71,6 @@ If you get stuck or want to suggest suggestions, you can discuss it in [our topi
 ## Contribution
 
 You can contribute buildings (see assets directory), ideas for the game, help with art and so on by creating issues or fork the repo and start to make pull requests.
-
-## Current Status
-
-* GPU accelerated graphics.
-* Map generation (simplex noise based).
-* "Perfect" A* pathfinding.
-* Zoning of residential, commercial, industrial, similar to SimCity.
-* Moddable buildings.
-* City saving and loading.
-* Data overlays for traffic, desirability, natural resources.
-* Multi-threaded engine that allows for speedy traffic / city calculations.
-* As-you-want map size (Can your PC handle 100km^2? Go for it!).
-* Power plants and coverage.
-* Dynamic economy where goods, services and labor are exchanged.
-* Happiness
-
-## Future Plans
-
-To make a game that "takes over" from SimCity 4. We have a loooooong way to go:
-* Implement land values.
-* Have traffic affect desirability.
-* Bus and rail and stations.
-* More types of power plant (hydro, wind, etc).
-* Create buildings that use resources under the ground (coal, etc).
-* Implement "module upgrade" system from SimCity 2013 (upgrades to power plants etc).
-* Improve graphics.
-* Obtain sound effects / music.
-* Add many, many additional types of buildings.
-* Add "mod manager" (think Steam workshop... SC4 has many mods but they really suck to obtain/install).
 
 ## License
 
