@@ -116,7 +116,6 @@ class MapGeneratorScreen : View() {
     fun generatePressed() {
         var size = sizeField.text.toInt()
 
-        // map doesn't work if it's ~64...
         if (size < 32) {
             size = 32
             sizeField.text = size.toString()
