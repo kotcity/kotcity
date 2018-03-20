@@ -17,18 +17,20 @@ Java 8+ is required. On Windows it will look for JRE and bring you to download p
 
 (note, on Ubuntu do apt-get install openjfx)
 
-## Changes in this release
+## New in this version
 
-* Green terrain
-* Buildings now build properly in the most desirable areas
-* Police stations and police coverage
-* Contracts / Economy reworked to avoid "swinging" in economy
-* Improve layout of query window, title screen and map gen
-* Zots display properly now
-* Fixed bug where user could pan outside map and crash the game
-* Pathfinding uses all cores now :)
-* Contracts void themselves if their source is out of goods
-* Buildings obtain up to 3 contracts with suppliers, to fill in when they run low on goods
+95% of these are from my main man @sabieber, who is the KotCity hero
+
+See our roadmap at https://github.com/kotcity/kotcity/wiki/Roadmap
+
+* displaying population
+* buildings construct a little more often
+* tweaked required kots for industrial plant
+* min map size reduced (can play on a 32x32 map if you want now...)
+* right click and drag to pan map
+* update cursor on map pan
+* dynamic framerate adjustment during panning, zooming
+* zoom to mouse position on zoom
 
 ## Next up!
 
