@@ -4,7 +4,6 @@ import javafx.animation.AnimationTimer
 import javafx.application.Application
 import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType
-import javafx.scene.control.ButtonBar.ButtonData
 import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.AnchorPane
@@ -13,6 +12,7 @@ import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
 import javafx.stage.FileChooser
 import javafx.stage.Stage
+import javafx.stage.WindowEvent
 import kotcity.data.*
 import kotcity.data.AssetManager
 import kotcity.ui.charts.SupplyDemandChart
@@ -150,10 +150,9 @@ class GameFrame : View(), Debuggable {
     private var zotRenderer: ZotRenderer? = null
 
     override fun onDock() {
-        currentStage?.setOnCloseRequest {
-            quitPressed()
-            it.consume()
-        }
+        super.onDock()
+        currentWindow?.sizeToScene()
+        currentWindow?.centerOnScreen()
     }
 
     fun setMap(cityMap: CityMap) {
@@ -415,25 +414,7 @@ class GameFrame : View(), Debuggable {
     }
 
     fun quitPressed() {
-        Alert(AlertType.CONFIRMATION).apply {
-            title = "Quitting KotCity"
-            headerText = "Are you ready to leave?"
-            contentText = "Please confirm..."
-
-            val buttonTypeOne = ButtonType("Yes, please quit.")
-            val buttonTypeTwo = ButtonType("No, I want to keep playing.")
-            val buttonTypeCancel = ButtonType("Cancel", ButtonData.CANCEL_CLOSE)
-
-            buttonTypes.setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel)
-
-            val result = showAndWait()
-            when (result.get()) {
-                buttonTypeOne -> System.exit(1)
-                else -> {
-                    // don't do anything ...
-                }
-            }
-        }
+        currentStage?.fireEvent(WindowEvent(currentStage, WindowEvent.WINDOW_CLOSE_REQUEST))
     }
 
     private fun bindCanvas() {
