@@ -11,7 +11,7 @@ import kotcity.util.reorder
 import tornadofx.runLater
 
 const val MAX_BUILDING_SIZE = 4
-const val DESIRABILITY_CAP: Double = 300.0
+const val DESIRABILITY_CAP: Double = 10.0
 // the coal power plant is the biggest...
 
 class CityRenderer(

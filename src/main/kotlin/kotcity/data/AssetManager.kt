@@ -1,10 +1,10 @@
-package kotcity.data.assets
+package kotcity.data
 
 import com.github.salomonbrys.kotson.*
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import kotcity.data.*
 import kotcity.ui.sprites.BuildingSpriteLoader
+import kotcity.util.randomElement
 import java.io.FileReader
 import java.nio.file.FileSystems
 import java.nio.file.Files
@@ -22,6 +22,19 @@ class AssetManager(val cityMap: CityMap) {
         return directories.map { dir ->
             assetsInDir(dir)
         }.flatten()
+    }
+
+    // TODO: use desirability later...
+    fun findBuilding(zoneType: Zone, level: Int): Building? {
+        return all().filterIsInstance(zoneTypeToClass(zoneType)).filter { it.level == level }.randomElement()
+    }
+
+    private fun zoneTypeToClass(zoneType: Zone): Class<out Building> {
+        return when (zoneType) {
+            Zone.RESIDENTIAL -> Residential::class.java
+            Zone.COMMERCIAL -> Commercial::class.java
+            Zone.INDUSTRIAL -> Industrial::class.java
+        }
     }
 
     private fun assetsInDir(dir: String): List<String> {

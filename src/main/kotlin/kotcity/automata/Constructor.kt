@@ -1,7 +1,7 @@
 package kotcity.automata
 
 import kotcity.data.*
-import kotcity.data.assets.AssetManager
+import kotcity.data.AssetManager
 import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotcity.util.Debuggable
 import kotcity.util.randomElement
@@ -43,7 +43,8 @@ class Constructor(val cityMap: CityMap) : Debuggable {
                         debug("We will be trying to build at ${blockAndScore.key} with desirability ${blockAndScore.value}")
                         val coordinate = blockAndScore.key
                         val desirability = blockAndScore.value
-                        val newBuilding = findBuilding(zoneType)
+                        // constructor only constructs level 1 buildings...
+                        val newBuilding = assetManager.findBuilding(zoneType, 1)
                         if (newBuilding != null) {
                             debug("The building to be attempted is: $newBuilding")
                             // let's try like X times...
@@ -106,18 +107,4 @@ class Constructor(val cityMap: CityMap) : Debuggable {
         return random.nextInt(to - from) + from
     }
 
-
-
-    // TODO: use desirability later...
-    private fun findBuilding(zoneType: Zone): Building? {
-        return assetManager.all().filterIsInstance(zoneTypeToClass(zoneType)).randomElement()
-    }
-
-    private fun zoneTypeToClass(zoneType: Zone): Class<out Building> {
-        return when (zoneType) {
-            Zone.RESIDENTIAL -> Residential::class.java
-            Zone.COMMERCIAL -> Commercial::class.java
-            Zone.INDUSTRIAL -> Industrial::class.java
-        }
-    }
 }

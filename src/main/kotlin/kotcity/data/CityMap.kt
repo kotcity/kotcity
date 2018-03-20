@@ -340,6 +340,15 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
+    fun hasTrafficNearby(coordinate: BlockCoordinate, radius: Int, quantity: Int): Boolean {
+        val neighboringBlocks = coordinate.neighbors(radius)
+        val nearbyRoads = neighboringBlocks.flatMap { cachedLocationsIn(it) }
+                .filter { it.building is Road }
+
+        val trafficCount = nearbyRoads.sumBy { trafficLayer[it.coordinate]?.toInt() ?: 0}
+        return trafficCount > quantity
+    }
+
     private fun timeFunction(desc: String, timedFunction: () -> Unit) {
         println("Beginning $desc...")
         val startMillis = System.currentTimeMillis()

@@ -224,6 +224,8 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
     override val produces: MutableMap<Tradeable, Int> = mutableMapOf()
     override val inventory: Inventory = Inventory()
     override val contracts: MutableList<Contract> = mutableListOf()
+    var goodwill: Int = 0
+    var level = 1
 
     init {
         // everyone gets 10 dollars...
@@ -350,7 +352,6 @@ class PowerLine(cityMap: CityMap) : Building(cityMap) {
 }
 
 open class LoadableBuilding(cityMap: CityMap) : Building(cityMap) {
-    var level: Int = 1
     override var height: Int = 1
     override var width: Int = 1
 }

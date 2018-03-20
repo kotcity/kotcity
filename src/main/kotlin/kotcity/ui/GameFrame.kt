@@ -14,7 +14,7 @@ import javafx.stage.FileChooser
 import javafx.stage.Stage
 import javafx.stage.WindowEvent
 import kotcity.data.*
-import kotcity.data.assets.AssetManager
+import kotcity.data.AssetManager
 import kotcity.ui.charts.SupplyDemandChart
 import kotcity.ui.layers.TrafficRenderer
 import kotcity.ui.layers.ZotRenderer

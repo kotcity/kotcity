@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kotcity.automata.PowerCoverageUpdater
-import kotcity.data.assets.AssetManager
 import kotcity.pathfinding.Pathfinder
 import java.io.File
 import java.text.SimpleDateFormat
