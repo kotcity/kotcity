@@ -117,8 +117,5 @@ class QueryWindow : View() {
         buffer.append("Type: ${city.groundLayer[coordinate]?.type}\n")
     }
 
-    fun dismissClicked() {
-        println("We want to close...")
-        this.currentStage?.close()
-    }
+    fun dismissClicked() = this.currentStage?.close()
 }
