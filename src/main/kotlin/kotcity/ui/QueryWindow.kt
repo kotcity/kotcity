@@ -72,6 +72,7 @@ class QueryWindow : View() {
         buffer.append("Powered: ${building.powered}\n")
         buffer.append("Money: $${building.balance()}\n")
         buffer.append("Happiness: ${building.happiness}\n")
+        buffer.append("Goodwill: ${building.goodwill}\n")
 
         if (building.zots.isNotEmpty()) {
             buffer.append("\nComplaints:\n")

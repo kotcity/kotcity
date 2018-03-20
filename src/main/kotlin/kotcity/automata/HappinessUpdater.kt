@@ -33,6 +33,10 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
                         0.0
                     }
                 }
+                
+                it.building.goodwill += zoneHappiness.toInt()
+                it.building.goodwill.coerceIn(-100.. 100)
+
                 // TODO: we will probably have some generic ones too... like fire coverage
                 // crime... pollution... etc.
                 location.building.happiness = zoneHappiness.toInt()
@@ -60,7 +64,6 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
         val laborConsumed = location.building.consumesQuantity(Tradeable.LABOR).toDouble()
         val laborBuying = location.building.totalBeingBought(Tradeable.LABOR).toDouble()
         val laborWanted = location.building.currentQuantityWanted(Tradeable.LABOR).toDouble()
-
 
         if (laborBuying == 0.0) {
             return -3.0

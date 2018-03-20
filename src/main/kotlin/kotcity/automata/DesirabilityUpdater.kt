@@ -4,6 +4,8 @@ import kotcity.data.*
 import kotcity.pathfinding.Pathfinder
 import kotcity.util.Debuggable
 
+const val HEAVY_TRAFFIC = 5000
+const val MEDIUM_TRAFFIC = 2500
 
 class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
     override var debug: Boolean = false
@@ -51,15 +53,38 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
             if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
-                val availableGoodsShortDistance = resourceFinder.quantityWantedNearby(Tradeable.GOODS, coordinate, shortDistance)
-                val availableGoodsMediumDistance = resourceFinder.quantityWantedNearby(Tradeable.GOODS, coordinate, mediumDistance)
-                val availableGoodsLongDistance = resourceFinder.quantityWantedNearby(Tradeable.GOODS, coordinate, longDistance)
-                val availableLabor = resourceFinder.quantityForSaleNearby(Tradeable.LABOR, coordinate, maxDistance)
+                val availableGoodsShortDistance = if (resourceFinder.quantityWantedNearby(Tradeable.GOODS, coordinate, shortDistance) > 0) {
+                    3.0
+                } else {
+                    0.0
+                }
+                val availableGoodsMediumDistance = if (resourceFinder.quantityWantedNearby(Tradeable.GOODS, coordinate, mediumDistance) > 0) {
+                    2.0
+                } else {
+                    0.0
+                }
+                val availableGoodsLongDistance = if (resourceFinder.quantityWantedNearby(Tradeable.GOODS, coordinate, longDistance) > 0) {
+                    1.0
+                } else {
+                    0.0
+                }
+                val availableLabor = if (resourceFinder.quantityForSaleNearby(Tradeable.LABOR, coordinate, maxDistance) > 0) {
+                    1.0
+                } else {
+                    0.0
+                }
 
-                desirabilityLayer[coordinate] = if (availableGoodsLongDistance == 0 && availableLabor == 0) {
+                val trafficAdjustment = if (cityMap.hasTrafficNearby(coordinate, 2, MEDIUM_TRAFFIC)) {
+                    2.0
+                } else {
+                    0.0
+                }
+
+
+                desirabilityLayer[coordinate] = if (availableGoodsLongDistance == 0.0 && availableLabor == 0.0) {
                     0.0
                 } else {
-                    (availableGoodsShortDistance + availableGoodsMediumDistance + availableGoodsLongDistance + availableLabor).toDouble()
+                    (availableGoodsShortDistance + availableGoodsMediumDistance + availableGoodsLongDistance + availableLabor + trafficAdjustment)
                 }
 
             }
@@ -75,19 +100,40 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
         val industryZones = zoneCoordinates(Zone.INDUSTRIAL)
 
         industryZones.forEach { coordinate ->
-
+                // if we aren't near a road we are not desirable...
                 if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                     desirabilityLayer[coordinate] = 0.0
                 } else {
-                    val availableBuyingWholesaleGoodsShortDistance = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, shortDistance)
-                    val availableBuyingWholesaleGoodsMediumDistance = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, mediumDistance)
-                    val availableBuyingWholesaleGoodsLongDistance = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, longDistance)
-                    val availableLabor = resourceFinder.quantityForSaleNearby(Tradeable.LABOR, coordinate, maxDistance)
+                    val availableBuyingWholesaleGoodsShortDistance = if (resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, shortDistance) > 0) {
+                        3.0
+                    } else {
+                        0.0
+                    }
+                    val availableBuyingWholesaleGoodsMediumDistance = if (resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, mediumDistance) > 0) {
+                        2.0
+                    } else {
+                        0.0
+                    }
+                    val availableBuyingWholesaleGoodsLongDistance = if (resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, longDistance) > 0) {
+                        1.0
+                    } else {
+                        0.0
+                    }
+                    val availableLabor = if (resourceFinder.quantityForSaleNearby(Tradeable.LABOR, coordinate, maxDistance) > 0) {
+                        1.0
+                    } else {
+                        0.0
+                    }
 
-                    desirabilityLayer[coordinate] = if (availableBuyingWholesaleGoodsLongDistance == 0 && availableLabor == 0) {
+                    desirabilityLayer[coordinate] = if (availableBuyingWholesaleGoodsLongDistance == 0.0 && availableLabor == 0.0) {
                         0.0
                     } else {
-                        (availableBuyingWholesaleGoodsShortDistance + availableBuyingWholesaleGoodsMediumDistance + availableBuyingWholesaleGoodsLongDistance + availableLabor).toDouble()
+                        (
+                            availableBuyingWholesaleGoodsShortDistance +
+                            availableBuyingWholesaleGoodsMediumDistance +
+                            availableBuyingWholesaleGoodsLongDistance +
+                            availableLabor
+                        )
                     }
 
                 }
@@ -127,15 +173,42 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
             if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                 desirabilityLayer[coordinate] = 0.0
             } else {
-                val availableJobsShortDistance = resourceFinder.quantityWantedNearby(Tradeable.LABOR, coordinate, shortDistance)
-                val availableJobsMediumDistance = resourceFinder.quantityWantedNearby(Tradeable.LABOR, coordinate, mediumDistance)
-                val availableJobsLongDistance = resourceFinder.quantityWantedNearby(Tradeable.LABOR, coordinate, longDistance)
-                val availableGoodsShortDistance = resourceFinder.quantityForSaleNearby(Tradeable.GOODS, coordinate, shortDistance)
-                val availableGoodsMediumDistance = resourceFinder.quantityForSaleNearby(Tradeable.GOODS, coordinate, mediumDistance)
+                val availableJobsShortDistance = if (resourceFinder.quantityWantedNearby(Tradeable.LABOR, coordinate, shortDistance) > 0) {
+                    3.0
+                } else {
+                    0.0
+                }
+                val availableJobsMediumDistance = if (resourceFinder.quantityWantedNearby(Tradeable.LABOR, coordinate, mediumDistance) > 0) {
+                    2.0
+                } else {
+                    0.0
+                }
+                val availableJobsLongDistance = if (resourceFinder.quantityWantedNearby(Tradeable.LABOR, coordinate, longDistance) > 0) {
+                    1.0
+                } else {
+                    0.0
+                }
+                val availableGoodsShortDistance = if (resourceFinder.quantityForSaleNearby(Tradeable.GOODS, coordinate, shortDistance) > 0) {
+                    3.0
+                } else {
+                    0.0
+                }
+                val availableGoodsMediumDistance = if (resourceFinder.quantityForSaleNearby(Tradeable.GOODS, coordinate, mediumDistance) > 0) {
+                    2.0
+                } else {
+                    1.0
+                }
+
+                val trafficAdjustment = if (cityMap.hasTrafficNearby(coordinate, 2, HEAVY_TRAFFIC)) {
+                    -3.0
+                } else {
+                    0.0
+                }
+
                 if (population == 0) {
                     desirabilityLayer[coordinate] = 0.1
                 } else {
-                    desirabilityLayer[coordinate] = (availableJobsShortDistance + availableJobsMediumDistance + availableJobsLongDistance + availableGoodsShortDistance + availableGoodsMediumDistance).toDouble()
+                    desirabilityLayer[coordinate] = (availableJobsShortDistance + availableJobsMediumDistance + availableJobsLongDistance + availableGoodsShortDistance + availableGoodsMediumDistance + trafficAdjustment)
                 }
 
             }
