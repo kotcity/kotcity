@@ -3,7 +3,7 @@ import kotcity.automata.DesirabilityUpdater
 import kotcity.automata.Manufacturer
 import kotcity.automata.Shipper
 import kotcity.data.*
-import kotcity.data.assets.AssetManager
+import kotcity.data.AssetManager
 import kotcity.pathfinding.Pathfinder
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
