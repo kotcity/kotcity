@@ -97,6 +97,19 @@ with a clear title and description against the master branch.
 
 You should adhere to the Kotlin code guidelines for codes. Also, by submitting your work, you're agree to license your work under Apache License 2.0 for codes.
 
+## KotCity principles
+In order to make your code consistent with others, you should follow this principles to your works:
+1. Fast. Everything should be executed in short time possible,
+   including world rendering.
+2. Simple. Anything shouldn't be executed by many steps, including the 
+   API.
+3. Natural. Everything should be realistically as possible without
+   giving headaches.
+4. Flexible. Anything shouldn't specific certain conditions, including 
+   what platform can run the game and modularity.
+5. Control. Everything should be controlled by the player without 
+   disobeying another principles.
+
 ## Reporting security exploits
 Due to their nature, security exploits aren't reported using issue tracker. Please send them privately to kotcity at zoho dot com.
 
