@@ -34,6 +34,18 @@ data class BlockCoordinate(val x: Int, val y: Int) {
         }
     }
 
+    private val random = Random()
+
+    fun fuzz(): BlockCoordinate {
+        val randX = rand(-MAX_BUILDING_SIZE, MAX_BUILDING_SIZE)
+        val randY = rand(-MAX_BUILDING_SIZE, MAX_BUILDING_SIZE)
+        return BlockCoordinate(x + randX, y + randY)
+    }
+
+    private fun rand(from: Int, to: Int) : Int {
+        return random.nextInt(to - from) + from
+    }
+
     fun neighbors(radius: Int = 1): List<BlockCoordinate> {
         val xRange = this.x - radius..this.x + radius
         val yRange = this.y - radius..this.y + radius
@@ -137,6 +149,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private val goodsConsumer = GoodsConsumer(this)
     private val zotPopulator = ZotPopulator(this)
     private val happinessUpdater = HappinessUpdater(this)
+    private val upgrader: Upgrader = Upgrader(this)
 
     val nationalTradeEntity = NationalTradeEntity(this)
 
@@ -184,15 +197,16 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     init {
         shipper.debug = false
-        contractFulfiller.debug = true
+        contractFulfiller.debug = false
         manufacturer.debug = false
         constructor.debug = false
         taxCollector.debug = false
         desirabilityUpdater.debug = false
-        liquidator.debug = true
+        liquidator.debug = false
         zotPopulator.debug = false
         censusTaker.tick()
         happinessUpdater.debug = true
+        upgrader.debug = true
         nationalTradeEntity.resetCounts()
     }
 
@@ -311,6 +325,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             if (hour == 0 || hour == 12) {
                 timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
                 timeFunction("Constructing buildings") { constructor.tick() }
+                timeFunction("Performing upgrades") { upgrader.tick() }
             }
 
             if (hour == 0) {
@@ -453,7 +468,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 }
             }
         } else {
-            // debug("We have an overlap! not building!")
+            debug("We have an overlap! not building!")
         }
     }
 

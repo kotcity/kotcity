@@ -1,0 +1,18 @@
+{
+  "type": "industrial",
+  "width": 2,
+  "height": 2,
+  "name": "chemical_refinery",
+  "sprite": "chemical_refinery.png",
+  "description": "Chemical Refinery",
+  "level": 2,
+  "power_required": 5,
+  "production": {
+    "consumes": {
+      "labor": 10
+    },
+    "produces": {
+      "wholesale_goods": 150
+    }
+  }
+}

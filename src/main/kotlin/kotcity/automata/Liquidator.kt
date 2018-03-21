@@ -59,10 +59,13 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
 
     private fun locationsToDestroy(): List<Location> {
         return cityMap.locations().toList().filter { location ->
+            val building = location.building
+            building is Residential || building is Commercial || building is Industrial
+        }.filter { location ->
             val noMoney = (location.building.quantityOnHand(Tradeable.MONEY) <= 0)
             val isResidentialWithNoGoods = (location.building is Residential && location.building.quantityOnHand(Tradeable.GOODS) <= 0)
 
-            val outOfGoodwill = location.building.goodwill < 99
+            val outOfGoodwill = location.building.goodwill < -99
 
             noMoney || isResidentialWithNoGoods || outOfGoodwill
         }

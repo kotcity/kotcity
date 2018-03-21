@@ -1,0 +1,19 @@
+{
+  "type": "commercial",
+  "width": 1,
+  "height": 1,
+  "name": "organic_market",
+  "sprite": "organic_market.png",
+  "description": "Organic Market",
+  "level": 2,
+  "power_required": 2,
+  "production": {
+    "consumes": {
+      "labor": 3,
+      "wholesale_goods": 10
+    },
+    "produces": {
+      "goods": 25
+    }
+  }
+}
