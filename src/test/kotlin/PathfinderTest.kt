@@ -1,6 +1,6 @@
 import kotcity.automata.ContactFulfiller
 import kotcity.data.*
-import kotcity.data.assets.AssetManager
+import kotcity.data.AssetManager
 import kotcity.pathfinding.Pathfinder
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

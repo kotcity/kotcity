@@ -72,6 +72,7 @@ class QueryWindow : View() {
         buffer.append("Powered: ${building.powered}\n")
         buffer.append("Money: $${building.balance()}\n")
         buffer.append("Happiness: ${building.happiness}\n")
+        buffer.append("Goodwill: ${building.goodwill}\n")
 
         if (building.zots.isNotEmpty()) {
             buffer.append("\nComplaints:\n")
@@ -117,8 +118,5 @@ class QueryWindow : View() {
         buffer.append("Type: ${city.groundLayer[coordinate]?.type}\n")
     }
 
-    fun dismissClicked() {
-        println("We want to close...")
-        this.currentStage?.close()
-    }
+    fun dismissClicked() = this.currentStage?.close()
 }

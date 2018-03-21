@@ -1,6 +1,6 @@
 
 import kotcity.data.CityMap
-import kotcity.data.assets.AssetManager
+import kotcity.data.AssetManager
 import org.junit.jupiter.api.Test
 
 class AssetManagerTest {

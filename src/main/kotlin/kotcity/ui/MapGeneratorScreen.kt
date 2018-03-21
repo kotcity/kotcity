@@ -65,6 +65,12 @@ class MapGeneratorScreen : View() {
         timer?.start()
     }
 
+    override fun onDock() {
+        super.onDock()
+        currentWindow?.sizeToScene()
+        currentWindow?.centerOnScreen()
+    }
+
     private fun generate(width: Int, height: Int): CityMap {
         val f1 = f1Field.text.toDouble()
         val f2 = f2Field.text.toDouble()
@@ -159,17 +165,9 @@ class MapGeneratorScreen : View() {
                 newMap.cityName = result.get()
             }
 
-            runLater {
-                val oldStage = currentStage
-                oldStage?.close()
-            }
-
             timer?.stop()
-            tornadofx.find(GameFrame::class).apply {
-                setMap(newMap)
-                openWindow(escapeClosesWindow = false)
-                currentStage?.isMaximized = true
-            }
+            replaceWith<GameFrame>()
+            tornadofx.find(GameFrame::class).setMap(newMap)
         }
     }
 }

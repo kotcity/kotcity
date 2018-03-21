@@ -14,7 +14,7 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
         }
 
         // we will only kill some of what needs to go...
-        val bankruptLocations = bankruptLocations()
+        val bankruptLocations = locationsToDestroy()
 
         if (bankruptLocations.isNotEmpty()) {
             val howManyNeedDestruction : Int = Math.floor(bankruptLocations.count() * 0.10).toInt().coerceIn(1 .. 15)
@@ -57,11 +57,17 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
         }
     }
 
-    private fun bankruptLocations(): List<Location> {
+    private fun locationsToDestroy(): List<Location> {
         return cityMap.locations().toList().filter { location ->
+            val building = location.building
+            building is Residential || building is Commercial || building is Industrial
+        }.filter { location ->
             val noMoney = (location.building.quantityOnHand(Tradeable.MONEY) <= 0)
             val isResidentialWithNoGoods = (location.building is Residential && location.building.quantityOnHand(Tradeable.GOODS) <= 0)
-            noMoney || isResidentialWithNoGoods
+
+            val outOfGoodwill = location.building.goodwill < -99
+
+            noMoney || isResidentialWithNoGoods || outOfGoodwill
         }
     }
 }
