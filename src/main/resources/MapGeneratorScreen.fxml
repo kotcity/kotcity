@@ -53,6 +53,7 @@
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -60,62 +61,72 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="F1" GridPane.rowIndex="2">
+            <Label text="F1" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
             </Label>
-            <TextField fx:id="f1Field" text="2.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <TextField fx:id="f1Field" text="2.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>
             </TextField>
-            <Label text="F2" GridPane.rowIndex="3">
+            <Label text="F2" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
             </Label>
-            <TextField fx:id="f2Field" text="10.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <TextField fx:id="f2Field" text="10.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>
             </TextField>
-            <Label text="F3" GridPane.rowIndex="4">
+            <Label text="F3" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
             </Label>
-            <TextField fx:id="f3Field" text="20.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <TextField fx:id="f3Field" text="20.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>
             </TextField>
-            <Label text="Exp" GridPane.rowIndex="5">
+            <Label text="Exp" GridPane.rowIndex="6">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
             </Label>
-            <TextField fx:id="expField" text="1" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <TextField fx:id="expField" text="1" GridPane.columnIndex="1" GridPane.rowIndex="6">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>
             </TextField>
-            <Slider fx:id="seaLevelSlider" majorTickUnit="0.5" max="1.0" min="-1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <Slider fx:id="seaLevelSlider" majorTickUnit="0.5" max="1.0" min="-1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" GridPane.columnIndex="1" GridPane.rowIndex="7">
                <GridPane.margin>
                   <Insets right="10.0" top="25.0" />
                </GridPane.margin>
             </Slider>
-            <Label text="Sealevel" GridPane.rowIndex="6">
+            <Label text="Sealevel" GridPane.rowIndex="7">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
             </Label>
-            <Label text="Size">
+            <Label text="Size" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
             </Label>
-            <TextField fx:id="sizeField" text="512" GridPane.columnIndex="1">
+            <TextField fx:id="sizeField" text="512" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets right="10.0" />
+               </GridPane.margin>
+            </TextField>
+            <Label text="Name">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </Label>
+            <TextField fx:id="nameField" text="My City" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>
