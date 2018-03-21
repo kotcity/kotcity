@@ -4,6 +4,7 @@ import javafx.scene.paint.Color
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
 import kotcity.ui.Algorithms
+import kotcity.util.interpolate
 
 class TrafficRenderer(private val cityRenderer: CityRenderer, private val cityMap: CityMap) {
 
@@ -25,16 +26,16 @@ class TrafficRenderer(private val cityRenderer: CityRenderer, private val cityMa
                 val ty = coord.y - blockOffsetY
                 val blockSize = blockSize()
                 canvas.graphicsContext2D.apply {
-                    fill = determineColor(cityRenderer, traffic)
+                    fill = determineColor(traffic)
                     fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
                 }
             }
         }
     }
 
-    private fun determineColor(renderer: CityRenderer, traffic: Double): Color {
+    private fun determineColor(traffic: Double): Color {
         val fraction = Algorithms.scale(traffic.coerceAtMost(TRAFFIC_CAP), 0.00, TRAFFIC_CAP, 0.0, 1.0)
-        val newColor = renderer.interpolateColor(NEGATIVE_COLOR, POSITIVE_COLOR, traffic.toFloat())
+        val newColor = NEGATIVE_COLOR.interpolate(POSITIVE_COLOR, fraction.toFloat())
         return Color(newColor.red, newColor.green, newColor.blue, 0.5)
     }
 }

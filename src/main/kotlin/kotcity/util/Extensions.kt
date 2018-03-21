@@ -1,5 +1,6 @@
 package kotcity.util
 
+import javafx.scene.paint.Color
 import java.util.*
 
 /**
@@ -18,3 +19,25 @@ fun <E> List<E>.randomElements(numberOfElements: Int) =
 
 fun IntRange.reorder() = if (first < last) this else last..first
 
+internal fun java.awt.Color.interpolate(other: java.awt.Color, fraction: Float): Color {
+    val colorFraction = fraction.coerceIn(0f, 1f)
+
+    val deltaRed = other.red.toColorFraction() - red.toColorFraction()
+    val deltaGreen = other.green.toColorFraction() - green.toColorFraction()
+    val deltaBlue = other.blue.toColorFraction() - blue.toColorFraction()
+    val deltaAlpha = other.alpha.toColorFraction() - alpha.toColorFraction()
+
+    val red = red.toColorFraction() + deltaRed * colorFraction
+    val green = green.toColorFraction() + deltaGreen * colorFraction
+    val blue = blue.toColorFraction() + deltaBlue * colorFraction
+    val alpha = alpha.toColorFraction() + deltaAlpha * colorFraction
+
+    return Color(
+        red.coerceIn(0f, 1f).toDouble(),
+        green.coerceIn(0f, 1f).toDouble(),
+        blue.coerceIn(0f, 1f).toDouble(),
+        alpha.coerceIn(0f, 1f).toDouble()
+    )
+}
+
+internal fun Int.toColorFraction() = this * 1f / 255f

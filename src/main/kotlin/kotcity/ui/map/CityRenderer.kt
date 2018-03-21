@@ -88,9 +88,7 @@ class CityRenderer(
         return startCoordinate to endCoordinate
     }
 
-    fun panToMouse() {
-        mouseBlock?.let { panMap(it) }
-    }
+    fun panToMouse() = mouseBlock?.let { panMap(it) }
 
     fun panMap(coordinate: BlockCoordinate) {
         // OK, we want to figure out the CENTER block now...
@@ -103,19 +101,11 @@ class CityRenderer(
         firePanChanged()
     }
 
-    fun addPanListener(listener: (Pair<BlockCoordinate, BlockCoordinate>) -> Unit) {
-        this.panListeners.add(listener)
-    }
+    fun addPanListener(listener: (Pair<BlockCoordinate, BlockCoordinate>) -> Unit) = this.panListeners.add(listener)
 
-    fun removePanListeners() {
-        this.panListeners.clear()
-    }
+    fun removePanListeners() = this.panListeners.clear()
 
-    private fun firePanChanged() {
-        this.panListeners.forEach {
-            it(this.visibleBlockRange())
-        }
-    }
+    private fun firePanChanged() = this.panListeners.forEach { it(this.visibleBlockRange()) }
 
     private fun centerBlock(): BlockCoordinate {
         val centerX = blockOffsetX + (canvasBlockWidth() / 2)
@@ -147,7 +137,6 @@ class CityRenderer(
                 gameFrame.currentStage?.scene?.root?.cursor = Cursor.DEFAULT
             }
         }
-
     }
 
     fun onMouseReleased(event: MouseEvent) {
@@ -155,7 +144,6 @@ class CityRenderer(
         runLater {
             gameFrame.currentStage?.scene?.root?.cursor = Cursor.DEFAULT
         }
-
     }
 
     fun onMouseDragged(event: MouseEvent) {
@@ -183,11 +171,9 @@ class CityRenderer(
 
     fun getHoveredBlock() = this.mouseBlock
 
-    fun onMouseMoved(event: MouseEvent) {
-        // OK... if we have an active tool we might
-        // have to draw a building highlight
-        updateMouseBlock(event)
-    }
+    // OK... if we have an active tool we might
+    // have to draw a building highlight
+    fun onMouseMoved(event: MouseEvent) = updateMouseBlock(event)
 
     private fun drawMap() {
         // we got that cityMap...
@@ -275,60 +261,11 @@ class CityRenderer(
                 highlightBlock(blockCoordinate.x, blockCoordinate.y)
             }
         }
-
     }
 
     // TODO: this is probably brutally slow...
-    private fun contractsWithPathThrough(building: Building, coordinate: BlockCoordinate): List<Contract> {
-        return building.contracts.toList().filter { it.path?.blocks()?.contains(coordinate) ?: false }
-    }
-
-    internal fun interpolateColor(color1: java.awt.Color, color2: java.awt.Color, fraction: Float): Color {
-        var colorFraction = fraction
-        val intToFloatConst = 1f / 255f
-        colorFraction = Math.min(colorFraction, 1f)
-        colorFraction = Math.max(colorFraction, 0f)
-
-        val red1 = (color1.red * intToFloatConst)
-        val green1 = (color1.green * intToFloatConst)
-        val blue1 = (color1.blue * intToFloatConst)
-        val alpha1 = color1.alpha * intToFloatConst
-
-        val red2 = (color2.red * intToFloatConst)
-        val green2 = (color2.green * intToFloatConst)
-        val blue2 = (color2.blue * intToFloatConst)
-        val alpha2 = color2.alpha * intToFloatConst
-
-        val deltaRed = red2 - red1
-        val deltaGreen = green2 - green1
-        val deltaBlue = blue2 - blue1
-        val deltaAlpha = alpha2 - alpha1
-
-        var red = red1 + deltaRed * colorFraction
-        var green = green1 + deltaGreen * colorFraction
-        var blue = blue1 + deltaBlue * colorFraction
-        var alpha = alpha1 + deltaAlpha * colorFraction
-
-        red = Math.min(red, 1f)
-        red = Math.max(red, 0f)
-        green = Math.min(green, 1f)
-        green = Math.max(green, 0f)
-        blue = Math.min(blue, 1f)
-        blue = Math.max(blue, 0f)
-        alpha = Math.min(alpha, 1f)
-        alpha = Math.max(alpha, 0f)
-
-        return Color(red.toDouble(), green.toDouble(), blue.toDouble(), alpha.toDouble())
-    }
-
-    fun colorValue(value: Double, max: Double): Color {
-        val color1 = java.awt.Color.RED
-        val color2 = java.awt.Color.GREEN
-        // gotta clamp value between 0.0f and max...
-        val fraction = Algorithms.scale(value.coerceAtMost(max), 0.00, max, 0.0, 1.0)
-        val newColor = interpolateColor(color1, color2, fraction.toFloat())
-        return Color(newColor.red, newColor.green, newColor.blue, 0.5)
-    }
+    private fun contractsWithPathThrough(building: Building, coordinate: BlockCoordinate) =
+        building.contracts.toList().filter { it.path?.blocks()?.contains(coordinate) ?: false }
 
     private fun resourceLayer(mode: MapMode): QuantizedMap<Double>? {
         return when (mode) {
@@ -341,7 +278,6 @@ class CityRenderer(
     }
 
     private fun drawResources() {
-
         val (startBlock, endBlock) = visibleBlockRange()
 
         val layer = resourceLayer(this.mapMode) ?: return
@@ -349,7 +285,6 @@ class CityRenderer(
         BlockCoordinate.iterate(startBlock, endBlock) { coord ->
             val tile = layer[coord]
             tile?.let {
-
                 if (tile > 0.5) {
                     val tx = coord.x - blockOffsetX
                     val ty = coord.y - blockOffsetY
@@ -357,7 +292,6 @@ class CityRenderer(
                     canvas.graphicsContext2D.fill = Color.LIGHTGOLDENRODYELLOW
                     canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
                 }
-
             }
         }
     }
@@ -427,7 +361,6 @@ class CityRenderer(
             val newBlock = BlockCoordinate(start.x - offsetX, start.y - offsetY)
             highlightBlocks(newBlock, width, height)
         }
-
     }
 
     private fun highlightBlocks(start: BlockCoordinate, width: Int, height: Int) {
@@ -477,7 +410,6 @@ class CityRenderer(
     }
 
     private fun drawBuildings() {
-
         // can we cache this shit at all???
         visibleLocations().forEach { location ->
             val coordinate = location.coordinate
@@ -529,7 +461,6 @@ class CityRenderer(
         if (building is Road) {
             return
         }
-
         // this looks like shit when we are zoomed way out...
         val arcSize = arcWidth()
         canvas.graphicsContext2D.lineWidth = borderWidth()

@@ -4,6 +4,7 @@ import javafx.scene.paint.Color
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
 import kotcity.ui.Algorithms
+import kotcity.util.interpolate
 
 class DesirabilityRenderer(private val cityRenderer: CityRenderer, private val cityMap: CityMap) {
 
@@ -29,17 +30,16 @@ class DesirabilityRenderer(private val cityRenderer: CityRenderer, private val c
                 val ty = coord.y - blockOffsetY
                 val blockSize = blockSize()
                 canvas.graphicsContext2D.apply {
-                    fill = determineColor(cityRenderer, maxDesirability)
+                    fill = determineColor(maxDesirability)
                     fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
                 }
             }
-
         }
     }
 
-    private fun determineColor(renderer: CityRenderer, desirability: Double): Color {
+    private fun determineColor(desirability: Double): Color {
         val fraction = Algorithms.scale(desirability.coerceAtMost(DESIRABILITY_CAP), 0.00, DESIRABILITY_CAP, 0.0, 1.0)
-        val newColor = renderer.interpolateColor(NEGATIVE_COLOR, POSITIVE_COLOR, fraction.toFloat())
+        val newColor = NEGATIVE_COLOR.interpolate(POSITIVE_COLOR, fraction.toFloat())
         return Color(newColor.red, newColor.green, newColor.blue, 0.5)
     }
 }
