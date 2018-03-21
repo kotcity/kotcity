@@ -539,6 +539,9 @@ class GameFrame : View(), Debuggable {
                             val townWarehouse = assetManager.buildingFor(Civic::class, "town_warehouse")
                             map.build(townWarehouse, BlockCoordinate(newX, newY))
                         }
+                        else -> {
+                            // We handle the other tools on a different place
+                        }
                     }
                 }
             }

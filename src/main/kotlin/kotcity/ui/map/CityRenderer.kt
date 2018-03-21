@@ -5,6 +5,7 @@ import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import kotcity.data.*
+import kotcity.data.MapMode.*
 import kotcity.ui.*
 import kotcity.ui.sprites.BuildingSpriteLoader
 import kotcity.util.reorder
@@ -52,7 +53,7 @@ class CityRenderer(
     private var mouseBlock: BlockCoordinate? = null
     private var firstBlockPressed: BlockCoordinate? = null
 
-    var mapMode: MapMode = MapMode.NORMAL
+    var mapMode: MapMode = NORMAL
 
     var showRoutesFor: BlockCoordinate? = null
 
@@ -239,12 +240,15 @@ class CityRenderer(
         }
 
         when (mapMode) {
-            MapMode.SOIL, MapMode.COAL, MapMode.GOLD, MapMode.OIL -> drawResources()
-            MapMode.FIRE_COVERAGE -> fireCoverageRenderer.render()
-            MapMode.CRIME -> crimeRenderer.render()
-            MapMode.DESIRABILITY -> drawDesirability()
-            MapMode.TRAFFIC -> drawTraffic()
-            MapMode.HAPPINESS -> happinessRenderer.render()
+            SOIL, COAL, GOLD, OIL -> drawResources()
+            FIRE_COVERAGE -> fireCoverageRenderer.render()
+            CRIME -> crimeRenderer.render()
+            DESIRABILITY -> drawDesirability()
+            TRAFFIC -> drawTraffic()
+            HAPPINESS -> happinessRenderer.render()
+            NORMAL -> {
+                // We don't have to render anything special when in normal mode
+            }
         }
         drawHighlights()
     }
@@ -357,10 +361,10 @@ class CityRenderer(
 
     private fun resourceLayer(mode: MapMode): QuantizedMap<Double>? {
         return when (mode) {
-            MapMode.COAL -> cityMap.resourceLayers["coal"]
-            MapMode.OIL -> cityMap.resourceLayers["oil"]
-            MapMode.GOLD -> cityMap.resourceLayers["gold"]
-            MapMode.SOIL -> cityMap.resourceLayers["soil"]
+            COAL -> cityMap.resourceLayers["coal"]
+            OIL -> cityMap.resourceLayers["oil"]
+            GOLD -> cityMap.resourceLayers["gold"]
+            SOIL -> cityMap.resourceLayers["soil"]
             else -> null
         }
     }
@@ -536,7 +540,7 @@ class CityRenderer(
         val imgWidth = (building.width * blockSize) - (shrink * 2)
         val imgHeight = (building.height * blockSize) - (shrink * 2)
 
-        BuildingSpriteLoader.spriteForBuildingType(building, imgWidth, imgHeight)?.let { img ->
+        BuildingSpriteLoader.spriteForBuildingType(building, imgWidth, imgHeight).let { img ->
             val ix = (tx * blockSize) + shrink
             val iy = (ty * blockSize) + shrink
             canvas.graphicsContext2D.drawImage(img, ix, iy)
