@@ -33,9 +33,9 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
                         0.0
                     }
                 }
-                
+
                 it.building.goodwill += zoneHappiness.toInt()
-                it.building.goodwill.coerceIn(-100.. 100)
+                it.building.goodwill.coerceIn(-100..100)
 
                 // TODO: we will probably have some generic ones too... like fire coverage
                 // crime... pollution... etc.
@@ -60,7 +60,7 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
 
     private fun hasLabor(location: Location, newValue: Double): Double {
         // we are happy if we don't need any workers...
-        var newValue = newValue
+        var result = newValue
         val laborConsumed = location.building.consumesQuantity(Tradeable.LABOR).toDouble()
         val laborBuying = location.building.totalBeingBought(Tradeable.LABOR).toDouble()
         val laborWanted = location.building.currentQuantityWanted(Tradeable.LABOR).toDouble()
@@ -68,24 +68,23 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
         if (laborBuying == 0.0) {
             return -3.0
         }
-
         if (laborWanted == 0.0) {
-            newValue = 5.0
-        } else {
-            // let's figure out a ratio...
-            val ratio = laborBuying / laborConsumed
-            // debug("Building is buying $laborBuying and should be consuming $laborConsumed. That makes the ratio $ratio")
-
-            newValue += when (ratio) {
-                in 0.0..0.2 -> 1.0
-                in 0.2..0.4 -> 2.0
-                in 0.4..0.6 -> 3.0
-                in 0.6..0.8 -> 4.0
-                in 0.8..10.0 -> 5.0
-                else -> 0.0
-            }
+            return 5.0
         }
-        return newValue
+
+        // let's figure out a ratio...
+        val ratio = laborBuying / laborConsumed
+        // debug("Building is buying $laborBuying and should be consuming $laborConsumed. That makes the ratio $ratio")
+
+        result += when (ratio) {
+            in 0.0..0.2 -> 1.0
+            in 0.2..0.4 -> 2.0
+            in 0.4..0.6 -> 3.0
+            in 0.6..0.8 -> 4.0
+            in 0.8..10.0 -> 5.0
+            else -> 0.0
+        }
+        return result
     }
 
     private fun processResidential(location: Location): Double {
@@ -97,11 +96,11 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
         val ratio = laborForSale / laborProvided
         // debug("Building is providing $laborProvided and is selling $laborForSale. The employment ratio is: $ratio.")
         newValue += when (ratio) {
-            in 0.0 .. 0.2 -> 1.0
-            in 0.2 .. 0.4 -> 2.0
-            in 0.4 .. 0.6 -> 3.0
-            in 0.6 .. 0.8 -> 4.0
-            in 0.8 .. 10.0 -> 5.0
+            in 0.0..0.2 -> 1.0
+            in 0.2..0.4 -> 2.0
+            in 0.4..0.6 -> 3.0
+            in 0.6..0.8 -> 4.0
+            in 0.8..10.0 -> 5.0
             else -> 0.0
         }
 
