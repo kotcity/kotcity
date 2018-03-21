@@ -12,7 +12,6 @@ import kotcity.util.reorder
 import tornadofx.runLater
 
 const val MAX_BUILDING_SIZE = 4
-const val DESIRABILITY_CAP: Double = 10.0
 // the coal power plant is the biggest...
 
 class CityRenderer(
@@ -35,6 +34,8 @@ class CityRenderer(
     private val crimeRenderer = CrimeRenderer(this, cityMap)
 
     private val trafficRenderer = TrafficRenderer(this, cityMap)
+
+    private val desirabilityRenderer = DesirabilityRenderer(this, cityMap)
 
     var blockOffsetX: Double = 0.0
         set(value) {
@@ -245,7 +246,7 @@ class CityRenderer(
             SOIL, COAL, GOLD, OIL -> drawResources()
             FIRE_COVERAGE -> fireCoverageRenderer.render()
             CRIME -> crimeRenderer.render()
-            DESIRABILITY -> drawDesirability()
+            DESIRABILITY -> desirabilityRenderer.render()
             TRAFFIC -> trafficRenderer.render()
             HAPPINESS -> happinessRenderer.render()
             NORMAL -> {
@@ -280,24 +281,6 @@ class CityRenderer(
     // TODO: this is probably brutally slow...
     private fun contractsWithPathThrough(building: Building, coordinate: BlockCoordinate): List<Contract> {
         return building.contracts.toList().filter { it.path?.blocks()?.contains(coordinate) ?: false }
-    }
-
-    private fun drawDesirability() {
-        val (startBlock, endBlock) = visibleBlockRange()
-
-        BlockCoordinate.iterate(startBlock, endBlock) { coord ->
-            val desirabilityScores = cityMap.desirabilityLayers.map {
-                it[coord]
-            }
-
-            val maxDesirability = desirabilityScores.filterNotNull().max() ?: 0.0
-
-            val tx = coord.x - blockOffsetX
-            val ty = coord.y - blockOffsetY
-            val blockSize = blockSize()
-            canvas.graphicsContext2D.fill = colorValue(maxDesirability, DESIRABILITY_CAP)
-            canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
-        }
     }
 
     internal fun interpolateColor(color1: java.awt.Color, color2: java.awt.Color, fraction: Float): Color {
