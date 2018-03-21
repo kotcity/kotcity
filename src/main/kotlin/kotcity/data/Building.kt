@@ -227,6 +227,17 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
     var goodwill: Int = 0
     var level = 1
 
+    fun zone(): Zone? {
+        return when {
+            this is Residential -> return Zone.RESIDENTIAL
+            this is Commercial -> return Zone.COMMERCIAL
+            this is Industrial -> return Zone.INDUSTRIAL
+            else -> {
+                null
+            }
+        }
+    }
+
     init {
         // everyone gets 10 dollars...
         addInventory(Tradeable.MONEY, DEFAULT_MONEY)
