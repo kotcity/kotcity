@@ -34,6 +34,8 @@ class CityRenderer(
 
     private val crimeRenderer = CrimeRenderer(this, cityMap)
 
+    private val trafficRenderer = TrafficRenderer(this, cityMap)
+
     var blockOffsetX: Double = 0.0
         set(value) {
             val newValue = value.coerceIn(0.0..(cityMap.width - canvasBlockWidth() - 1.0))
@@ -244,27 +246,13 @@ class CityRenderer(
             FIRE_COVERAGE -> fireCoverageRenderer.render()
             CRIME -> crimeRenderer.render()
             DESIRABILITY -> drawDesirability()
-            TRAFFIC -> drawTraffic()
+            TRAFFIC -> trafficRenderer.render()
             HAPPINESS -> happinessRenderer.render()
             NORMAL -> {
                 // We don't have to render anything special when in normal mode
             }
         }
         drawHighlights()
-    }
-
-    private fun drawTraffic() {
-        val (startBlock, endBlock) = visibleBlockRange()
-
-        BlockCoordinate.iterate(startBlock, endBlock) { coord ->
-            val traffic = cityMap.trafficLayer[coord] ?: 0.0
-
-            val tx = coord.x - blockOffsetX
-            val ty = coord.y - blockOffsetY
-            val blockSize = blockSize()
-            canvas.graphicsContext2D.fill = colorValue(traffic, DESIRABILITY_CAP)
-            canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
-        }
     }
 
     private fun drawRoutes(showRoutesFor: BlockCoordinate) {
