@@ -97,4 +97,7 @@ with a clear title and description against the master branch.
 
 You should adhere to the Kotlin code guidelines for codes. Also, by submitting your work, you're agree to license your work under Apache License 2.0 for codes.
 
+## Reporting security exploits
+Due to their nature, security exploits aren't reported using issue tracker. Please send them privately to kotcity at zoho dot com.
+
 *This document is adapted from the [Bootstrap contributing guidelines.](https://github.com/twbs/bootstrap/blob/master/CONTRIBUTING.md)*

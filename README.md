@@ -66,11 +66,11 @@ The UI is done with FXML created with [Gluon's SceneBuilder](http://gluonhq.com/
 
 ## Community
 
-If you get stuck or want to suggest suggestions, you can discuss it in [our topic on Simtropolis](https://community.simtropolis.com/forums/topic/74899-announcement-kotcity-an-open-source-city-simulator/ "Our topic on Simtropolis"). Chat with the developers at https://gitter.im/kotcity/Lobby.
+If you get stuck or want to suggest suggestions, you can discuss it in [our topic on Simtropolis](https://community.simtropolis.com/forums/topic/74899-announcement-kotcity-an-open-source-city-simulator/ "Our topic on Simtropolis"). Chat with the developers at https://gitter.im/kotcity/Lobby. You can also contact the project team by sending an email to kotcity at zoho dot com.
 
 ## Contribution
 
-You can contribute buildings (see assets directory), ideas for the game, help with art and so on by creating issues or fork the repo and start to make pull requests.
+Please refer to CONTRIBUTING.md file for more information.
 
 ## License
 
