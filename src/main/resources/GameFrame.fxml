@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Label?>
@@ -11,196 +10,211 @@
 <?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.control.ScrollBar?>
 <?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="760.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <MenuBar>
-         <menus>
-            <Menu mnemonicParsing="false" text="File">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#newCityPressed" text="New City..." />
-                  <MenuItem mnemonicParsing="false" onAction="#loadCityPressed" text="Load City..." />
-                  <MenuItem fx:id="saveCityButton" mnemonicParsing="false" onAction="#saveCity" text="Save City" />
-                  <MenuItem fx:id="saveCityAsButton" mnemonicParsing="false" onAction="#saveCityAs" text="Save City As..." />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="quitButton" mnemonicParsing="false" onAction="#quitPressed" text="Quit" />
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Map">
-               <items>
-                  <RadioMenuItem fx:id="normalMapMode" mnemonicParsing="false" selected="true" text="Normal">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="mapMode" />
-                     </toggleGroup>
-                  </RadioMenuItem>
-                  <RadioMenuItem fx:id="happinessMapMode" mnemonicParsing="false" text="Happiness" toggleGroup="$mapMode" />
-                  <RadioMenuItem fx:id="desirabilityMapMode" mnemonicParsing="false" text="Desirability" toggleGroup="$mapMode" />
-                  <RadioMenuItem fx:id="fireCoverageMapMode" mnemonicParsing="false" text="Fire Coverage" toggleGroup="$mapMode" />
-                  <RadioMenuItem fx:id="crimeMapMode" mnemonicParsing="false" text="Crime" toggleGroup="$mapMode" />
-                  <RadioMenuItem fx:id="trafficMapMode" mnemonicParsing="false" text="Traffic" toggleGroup="$mapMode" />
-                  <Menu mnemonicParsing="false" text="Resources">
-                    <items>
-                        <RadioMenuItem fx:id="goldMapMode" mnemonicParsing="false" text="Gold" toggleGroup="$mapMode" />
-                        <RadioMenuItem fx:id="coalMapMode" mnemonicParsing="false" text="Coal" toggleGroup="$mapMode" />
-                        <RadioMenuItem fx:id="oilMapMode" mnemonicParsing="false" text="Oil" toggleGroup="$mapMode" />
-                        <RadioMenuItem fx:id="soilMapMode" mnemonicParsing="false" text="Soil" toggleGroup="$mapMode" />
-                    </items>
-                  </Menu>
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Speed">
-              <items>
-                  <CheckMenuItem fx:id="pauseMenuItem" mnemonicParsing="false" text="Paused" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <RadioMenuItem fx:id="slowMenuItem" mnemonicParsing="false" onAction="#slowClicked" text="Slow">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="gameSpeed" />
-                     </toggleGroup>
-                  </RadioMenuItem>
-                  <RadioMenuItem fx:id="mediumMenuItem" mnemonicParsing="false" onAction="#mediumClicked" selected="true" text="Medium" toggleGroup="$gameSpeed" />
-                  <RadioMenuItem fx:id="fastMenuItem" mnemonicParsing="false" onAction="#fastClicked" text="Fast" toggleGroup="$gameSpeed" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Info">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="City Information..." />
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Charts">
-              <items>
-                  <MenuItem fx:id="supplyDemandMenuItem" mnemonicParsing="false" text="Supply / Demand" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-               <items>
-                  <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" text="About" />
-               </items>
-            </Menu>
-         </menus>
-      </MenuBar>
-      <SplitPane dividerPositions="0.21128318584070796" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="600.0" minWidth="800.0" VBox.vgrow="ALWAYS">
-         <items>
-            <VBox maxWidth="200.0">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="760.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0">
+         <children>
+            <AnchorPane fx:id="canvasPane" style="-fx-background-color: #cccccc;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Accordion fx:id="accordion" maxWidth="223.0" minHeight="268.0" prefHeight="268.0" prefWidth="223.0" VBox.vgrow="ALWAYS">
-                     <panes>
-                        <TitledPane fx:id="toolsPane" animated="false" text="Tools">
-                           <content>
-                              <FlowPane alignment="TOP_CENTER" hgap="10.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
-                                 <children>
-                                    <ToggleButton fx:id="bulldozeButton" mnemonicParsing="false" prefWidth="200.0" text="Bulldoze">
-                                       <toggleGroup>
-                                          <ToggleGroup fx:id="buildTools" />
-                                       </toggleGroup>
-                                    </ToggleButton>
-                                    <ToggleButton fx:id="dezoneButton" mnemonicParsing="false" prefWidth="200.0" text="Dezone" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="queryButton" mnemonicParsing="false" prefWidth="200.0" selected="true" text="Query" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="routesButton" mnemonicParsing="false" prefWidth="200.0" text="Routes" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="recenterButton" layoutX="89.0" layoutY="57.0" mnemonicParsing="false" prefWidth="200.0" text="Recenter" toggleGroup="$buildTools" />
-                                    <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="5.0" prefWidth="200.0" />
-                                    <Button mnemonicParsing="false" onAction="#zoomIn" prefWidth="200.0" text="Zoom In" />
-                                    <Button mnemonicParsing="false" onAction="#zoomOut" prefWidth="200.0" text="Zoom Out" />
-                                 </children>
-                              </FlowPane>
-                           </content>
-                        </TitledPane>
-                        <TitledPane fx:id="basicPane" animated="false" expanded="false" text="Basic">
-                           <content>
-                              <FlowPane alignment="TOP_CENTER" hgap="10.0" maxWidth="200.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
-                                 <children>
-                                    <ToggleButton fx:id="residentialButton" mnemonicParsing="false" prefWidth="200.0" text="Residential" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="commercialButton" mnemonicParsing="false" prefWidth="200.0" text="Commercial" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="industrialButton" mnemonicParsing="false" prefWidth="200.0" text="Industrial" toggleGroup="$buildTools" />
-                                    <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="5.0" prefWidth="200.0" />
-                                    <ToggleButton fx:id="roadButton" mnemonicParsing="false" prefWidth="200.0" text="Road" toggleGroup="$buildTools" />
-                                 </children>
-                              </FlowPane>
-                           </content>
-                        </TitledPane>
-                        <TitledPane animated="false" expanded="false" text="Power">
-                           <content>
-                              <FlowPane alignment="TOP_CENTER" hgap="10.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
-                                 <children>
-                                    <ToggleButton fx:id="coalPowerButton" mnemonicParsing="false" prefWidth="200.0" text="Coal Power Plant" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="nuclearPowerButton" layoutX="21.0" layoutY="21.0" mnemonicParsing="false" prefWidth="200.0" text="Nuclear Power Plant" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="powerLinesButton" mnemonicParsing="false" prefWidth="200.0" text="Power Lines" toggleGroup="$buildTools" />
-                                 </children>
-                              </FlowPane>
-                           </content>
-                        </TitledPane>
-                        <TitledPane animated="false" expanded="false" text="Other" />
-                        <TitledPane animated="false" expanded="false" text="Civic">
-                           <content>
-                              <FlowPane alignment="TOP_CENTER" hgap="10.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
-                                 <children>
-                                    <ToggleButton fx:id="jobCenterButton" mnemonicParsing="false" prefWidth="200.0" text="Job Center" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="townWarehouseButton" mnemonicParsing="false" prefWidth="200.0" text="Town Warehouse" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="fireStationButton" mnemonicParsing="false" prefWidth="200.0" text="Fire Station" toggleGroup="$buildTools" />
-                                    <ToggleButton fx:id="policeStationButton" mnemonicParsing="false" prefWidth="200.0" text="Police Station" toggleGroup="$buildTools" />
-                                 </children>
-                              </FlowPane>
-                           </content>
-                        </TitledPane>
-                     </panes>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </Accordion>
-                  <VBox prefHeight="153.0" prefWidth="223.0">
-                     <children>
-                        <Label fx:id="cityNameLabel" text="City: &lt;CITY NAME&gt;">
-                           <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" top="10.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label fx:id="populationLabel" layoutX="20.0" layoutY="20.0" text="Population: 0">
-                           <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label fx:id="moneyLabel" text="Money: $1,000,000">
-                           <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label fx:id="demandLabel" text="R: 50% C: 50% I: 50%">
-                           <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label fx:id="clockLabel" text="Clock: Jan 1, 2000 at 8:00AM">
-                           <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" />
-                           </VBox.margin>
-                        </Label>
-                     </children>
-                  </VBox>
-                  <BorderPane fx:id="mapPane" prefHeight="182.0" prefWidth="223.0" style="-fx-border-color: cccccc;" />
-               </children>
-            </VBox>
-            <AnchorPane minHeight="600.0" minWidth="600.0">
-               <children>
-                  <AnchorPane fx:id="canvasPane" minHeight="580.0" minWidth="580.0" style="-fx-background-color: #cccccc;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <StackPane fx:id="canvasStackPane" alignment="TOP_LEFT" prefHeight="674.0" prefWidth="781.0" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0" />
-                        <ScrollBar fx:id="horizontalScroll" layoutY="561.0" prefHeight="17.0" prefWidth="567.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="20.0" />
-                        <ScrollBar fx:id="verticalScroll" layoutX="570.0" orientation="VERTICAL" prefHeight="559.0" prefWidth="17.0" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
-                  <Label fx:id="selectedToolLabel" prefWidth="690.0" text="Currently Selected Tool" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <StackPane fx:id="canvasStackPane" alignment="TOP_LEFT" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0" />
+                  <ScrollBar fx:id="horizontalScroll" layoutY="561.0" prefHeight="20.0" prefWidth="567.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="20.0" />
+                  <ScrollBar fx:id="verticalScroll" layoutX="570.0" orientation="VERTICAL" prefHeight="559.0" prefWidth="20.0" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label fx:id="selectedToolLabel" prefHeight="20.0" prefWidth="690.0" text="Currently Selected Tool" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                </children>
             </AnchorPane>
-         </items>
-      </SplitPane>
-   </children>
-</VBox>
+         </children>
+      </AnchorPane>
+   </center>
+   <bottom>
+      <AnchorPane BorderPane.alignment="CENTER">
+         <children>
+            <BorderPane fx:id="mapPane" prefHeight="140.0" prefWidth="140.0" style="-fx-border-color: cccccc;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
+            <TabPane prefHeight="140.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" tabMinHeight="26.0" tabMinWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="0.0">
+              <tabs>
+                <Tab text="Tools">
+                     <content>
+                        <HBox spacing="4.0">
+                           <children>
+                              <ToggleButton fx:id="bulldozeButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Bulldoze">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="buildTools" />
+                                 </toggleGroup>
+                              </ToggleButton>
+                              <ToggleButton fx:id="dezoneButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Dezone" toggleGroup="$buildTools" />
+                              <ToggleButton fx:id="queryButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" selected="true" text="Query" toggleGroup="$buildTools" />
+                              <ToggleButton fx:id="routesButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Routes" toggleGroup="$buildTools" />
+                              <ToggleButton fx:id="recenterButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Recenter" toggleGroup="$buildTools" />
+                              <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="16.0" prefWidth="32.0" />
+                              <Button mnemonicParsing="false" onAction="#zoomIn" prefHeight="100.0" prefWidth="120.0" text="Zoom In" />
+                              <Button mnemonicParsing="false" onAction="#zoomOut" prefHeight="100.0" prefWidth="120.0" text="Zoom Out" />
+                           </children>
+                           <padding>
+                              <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                           </padding>
+                        </HBox>
+                     </content>
+                </Tab>
+                <Tab text="Basic">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                     <content>
+                        <HBox spacing="4.0">
+                           <children>
+                              <ToggleButton fx:id="residentialButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Residential" toggleGroup="$buildTools" />
+                              <ToggleButton fx:id="commercialButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Commercial" toggleGroup="$buildTools" />
+                              <ToggleButton fx:id="industrialButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Industrial" toggleGroup="$buildTools" />
+                              <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="16.0" prefWidth="32.0" />
+                              <ToggleButton fx:id="roadButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Road" toggleGroup="$buildTools" />
+                           </children>
+                           <padding>
+                              <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                           </padding>
+                        </HBox>
+                     </content>
+                </Tab>
+                  <Tab text="Power">
+                     <content>
+                        <HBox spacing="4.0">
+                           <children>
+                              <ToggleButton fx:id="coalPowerButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Coal Power Plant" toggleGroup="$buildTools" />
+                              <ToggleButton fx:id="nuclearPowerButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Nuclear Power Plant" toggleGroup="$buildTools" />
+                              <ToggleButton fx:id="powerLinesButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Power Lines" toggleGroup="$buildTools" />
+                           </children>
+                           <padding>
+                              <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                           </padding>
+                        </HBox>
+                     </content>
+                  </Tab>
+                  <Tab text="Other" />
+                  <Tab text="Civic">
+                     <content>
+                        <HBox spacing="4.0">
+                           <children>
+                              <ToggleButton fx:id="jobCenterButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Job Center" toggleGroup="$buildTools">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </ToggleButton>
+                              <ToggleButton fx:id="townWarehouseButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Town Warehouse" toggleGroup="$buildTools">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </ToggleButton>
+                              <ToggleButton fx:id="fireStationButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Fire Station" toggleGroup="$buildTools">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </ToggleButton>
+                              <ToggleButton fx:id="policeStationButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Police Station" toggleGroup="$buildTools">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </ToggleButton>
+                           </children>
+                           <padding>
+                              <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                           </padding>
+                        </HBox>
+                     </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+         </children>
+      </AnchorPane>
+   </bottom>
+   <top>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar prefHeight="26.0">
+               <menus>
+                  <Menu mnemonicParsing="false" text="File">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#newCityPressed" text="New City..." />
+                        <MenuItem mnemonicParsing="false" onAction="#loadCityPressed" text="Load City..." />
+                        <MenuItem fx:id="saveCityButton" mnemonicParsing="false" onAction="#saveCity" text="Save City" />
+                        <MenuItem fx:id="saveCityAsButton" mnemonicParsing="false" onAction="#saveCityAs" text="Save City As..." />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="quitButton" mnemonicParsing="false" onAction="#quitPressed" text="Quit" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Map">
+                     <items>
+                        <RadioMenuItem fx:id="normalMapMode" mnemonicParsing="false" selected="true" text="Normal">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="mapMode" />
+                           </toggleGroup>
+                        </RadioMenuItem>
+                        <RadioMenuItem fx:id="happinessMapMode" mnemonicParsing="false" text="Happiness" toggleGroup="$mapMode" />
+                        <RadioMenuItem fx:id="desirabilityMapMode" mnemonicParsing="false" text="Desirability" toggleGroup="$mapMode" />
+                        <RadioMenuItem fx:id="fireCoverageMapMode" mnemonicParsing="false" text="Fire Coverage" toggleGroup="$mapMode" />
+                        <RadioMenuItem fx:id="crimeMapMode" mnemonicParsing="false" text="Crime" toggleGroup="$mapMode" />
+                        <RadioMenuItem fx:id="trafficMapMode" mnemonicParsing="false" text="Traffic" toggleGroup="$mapMode" />
+                        <Menu mnemonicParsing="false" text="Resources">
+                          <items>
+                              <RadioMenuItem fx:id="goldMapMode" mnemonicParsing="false" text="Gold" toggleGroup="$mapMode" />
+                              <RadioMenuItem fx:id="coalMapMode" mnemonicParsing="false" text="Coal" toggleGroup="$mapMode" />
+                              <RadioMenuItem fx:id="oilMapMode" mnemonicParsing="false" text="Oil" toggleGroup="$mapMode" />
+                              <RadioMenuItem fx:id="soilMapMode" mnemonicParsing="false" text="Soil" toggleGroup="$mapMode" />
+                          </items>
+                        </Menu>
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Speed">
+                    <items>
+                        <CheckMenuItem fx:id="pauseMenuItem" mnemonicParsing="false" text="Paused" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <RadioMenuItem fx:id="slowMenuItem" mnemonicParsing="false" onAction="#slowClicked" text="Slow">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="gameSpeed" />
+                           </toggleGroup>
+                        </RadioMenuItem>
+                        <RadioMenuItem fx:id="mediumMenuItem" mnemonicParsing="false" onAction="#mediumClicked" selected="true" text="Medium" toggleGroup="$gameSpeed" />
+                        <RadioMenuItem fx:id="fastMenuItem" mnemonicParsing="false" onAction="#fastClicked" text="Fast" toggleGroup="$gameSpeed" />
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Info">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="City Information..." />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Charts">
+                    <items>
+                        <MenuItem fx:id="supplyDemandMenuItem" mnemonicParsing="false" text="Supply / Demand" />
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Help">
+                     <items>
+                        <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" text="About" />
+                     </items>
+                  </Menu>
+               </menus>
+            </MenuBar>
+            <HBox alignment="CENTER" prefHeight="36.0" prefWidth="200.0" spacing="48.0">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <children>
+                  <Label fx:id="cityNameLabel" text="City: &lt;CITY NAME&gt;" />
+                  <Label fx:id="populationLabel" text="Population: 0" />
+                  <Label fx:id="moneyLabel" text="Money: $1,000,000" />
+                  <Label fx:id="demandLabel" text="R: 50% C: 50% I: 50%" />
+                  <Label fx:id="clockLabel" text="Clock: Jan 1, 2000 at 8:00AM" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+</BorderPane>

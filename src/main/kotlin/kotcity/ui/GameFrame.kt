@@ -9,12 +9,10 @@ import javafx.scene.input.MouseButton
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.StackPane
-import javafx.scene.layout.VBox
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import javafx.stage.WindowEvent
 import kotcity.data.*
-import kotcity.data.AssetManager
 import kotcity.ui.charts.SupplyDemandChart
 import kotcity.ui.layers.TrafficRenderer
 import kotcity.ui.layers.ZotRenderer
@@ -70,14 +68,12 @@ enum class GameSpeed(val tickPeriod: Long) {
 
 class GameFrame : View(), Debuggable {
     override var debug: Boolean = false
-    override val root: VBox by fxml("/GameFrame.fxml")
+    override val root: BorderPane by fxml("/GameFrame.fxml")
     private val cityCanvas = ResizableCanvas()
     private val trafficCanvas = ResizableCanvas()
     private val zotCanvas = ResizableCanvas()
 
     private val canvasPane: StackPane by fxid("canvasStackPane")
-    private val accordion: Accordion by fxid()
-    private val toolsPane: TitledPane by fxid()
     private val verticalScroll: ScrollBar by fxid()
     private val horizontalScroll: ScrollBar by fxid()
 
@@ -117,6 +113,7 @@ class GameFrame : View(), Debuggable {
     private val selectedToolLabel: Label by fxid()
     private val cityNameLabel: Label by fxid()
     private val clockLabel: Label by fxid()
+    private val demandLabel: Label by fxid()
     private val populationLabel: Label by fxid()
 
     private val supplyDemandMenuItem: MenuItem by fxid()
@@ -165,7 +162,7 @@ class GameFrame : View(), Debuggable {
         initComponents()
 
         title = "$GAME_TITLE - ${cityMap.cityName}"
-        cityNameLabel.text = cityMap.cityName
+        cityNameLabel.text = "City: ${cityMap.cityName}"
 
         // clean up the old renderers here...
         this.cityRenderer?.removePanListeners()
@@ -374,7 +371,6 @@ class GameFrame : View(), Debuggable {
         bindMapModes()
 
         mapPane.center = cityMapCanvas
-        accordion.expandedPane = toolsPane
 
         renderTimer?.stop()
         renderTimer = object : AnimationTimer() {
