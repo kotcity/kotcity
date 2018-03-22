@@ -1,4 +1,4 @@
-# KotCity 0.45
+# KotCity 0.46
 
 [![Build Status](https://semaphoreci.com/api/v1/kotcity/kotcity/branches/master/badge.svg)](https://semaphoreci.com/kotcity/kotcity) [![Build Status](https://travis-ci.org/kotcity/kotcity.svg?branch=master)](https://travis-ci.org/kotcity/kotcity)
 
@@ -11,7 +11,7 @@ This is _pre alpha_ software with super obvious bugs, rough edges etc. In the sp
 
 ## Gimme the Software!
 
-A build for Windows, macOS and Linux is available at https://github.com/kotcity/kotcity/releases/tag/0.45
+A build for Windows, macOS and Linux is available at https://github.com/kotcity/kotcity/releases/tag/0.46
 
 Java 8+ is required. On Windows it will look for JRE and bring you to download page if you don't have it.
 
@@ -19,22 +19,13 @@ Java 8+ is required. On Windows it will look for JRE and bring you to download p
 
 ## New in this version
 
-95% of these are from my main man @sabieber, who is the KotCity hero
-
 See our roadmap at https://github.com/kotcity/kotcity/wiki/Roadmap
 
-* displaying population
-* buildings construct a little more often
-* tweaked required kots for industrial plant
-* min map size reduced (can play on a 32x32 map if you want now...)
-* right click and drag to pan map
-* update cursor on map pan
-* dynamic framerate adjustment during panning, zooming
-* zoom to mouse position on zoom
+* buildings upgrade to level 2 now :)
+* reworked UI (@sabieber!)
 
 ## Next up!
 
-* Upgrading of zones to level 2 - 5 buildings
 * Pollution
 * Land value
 
