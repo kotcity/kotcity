@@ -11,15 +11,13 @@ This is _pre alpha_ software with super obvious bugs, rough edges etc. In the sp
 
 ## Gimme the Software!
 
-A build for Windows, macOS and Linux is available at https://github.com/kotcity/kotcity/releases/tag/0.46
+A build for Windows, macOS and Linux is available [here](https://github.com/kotcity/kotcity/releases/tag/0.46).
 
 Java 8+ is required. On Windows it will look for JRE and bring you to download page if you don't have it.
 
 (note, on Ubuntu do apt-get install openjfx)
 
 ## New in this version
-
-See our roadmap at https://github.com/kotcity/kotcity/wiki/Roadmap
 
 * buildings upgrade to level 2 now :)
 * reworked UI (@sabieber!)
@@ -64,7 +62,7 @@ After many years of not seeing any new city builders descend that are satisfacto
 
 ## Community
 
-If you get stuck or want to suggest suggestions, you can discuss it in [our topic on Simtropolis](https://community.simtropolis.com/forums/topic/74899-announcement-kotcity-an-open-source-city-simulator/ "Our topic on Simtropolis"). Chat with the developers at https://gitter.im/kotcity/Lobby.
+If you get stuck or want to suggest suggestions, you can discuss it in [our topic on Simtropolis](https://community.simtropolis.com/forums/topic/74899-announcement-kotcity-an-open-source-city-simulator/). Chat with the developers via [Gitter](https://gitter.im/kotcity/Lobby).
 
 ## Contribution
 
@@ -98,6 +96,8 @@ To make a game that "takes over" from SimCity 4. We have a loooooong way to go:
 * Obtain sound effects / music.
 * Add many, many additional types of buildings.
 * Add "mod manager" (think Steam workshop... SC4 has many mods but they really suck to obtain/install).
+
+For a more detailed overview of whats planned see our [roadmap](https://github.com/kotcity/kotcity/wiki/Roadmap).
 
 ## License
 
