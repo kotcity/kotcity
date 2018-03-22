@@ -16,66 +16,9 @@ import kotlinx.coroutines.experimental.withTimeout
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.reflect.KClass
 
 
 const val DEFAULT_DESIRABILITY = 0.0
-
-data class BlockCoordinate(val x: Int, val y: Int) {
-    companion object {
-        fun iterate(from: BlockCoordinate, to: BlockCoordinate, callback: (BlockCoordinate) -> Unit) {
-            val xRange = (from.x..to.x).reorder()
-            val yRange = (from.y..to.y).reorder()
-            for (x in xRange) {
-                for (y in yRange) {
-                    callback(BlockCoordinate(x, y))
-                }
-            }
-        }
-    }
-
-    private val random = Random()
-
-    fun fuzz(): BlockCoordinate {
-        val randX = rand(-MAX_BUILDING_SIZE, MAX_BUILDING_SIZE)
-        val randY = rand(-MAX_BUILDING_SIZE, MAX_BUILDING_SIZE)
-        return BlockCoordinate(x + randX, y + randY)
-    }
-
-    private fun rand(from: Int, to: Int) : Int {
-        return random.nextInt(to - from) + from
-    }
-
-    fun neighbors(radius: Int = 1): List<BlockCoordinate> {
-        val xRange = this.x - radius..this.x + radius
-        val yRange = this.y - radius..this.y + radius
-
-        return xRange.flatMap { x ->
-            yRange.map { y ->
-                BlockCoordinate(x, y)
-            }
-        }
-    }
-
-    fun circle(radius: Int = 1): List<BlockCoordinate> {
-        val coords = mutableListOf<BlockCoordinate>()
-        for (i in y - radius..y + radius) {
-            val di2 = (i - y) * (i - y)
-            // iterate through all y-coordinates
-            for (j in x - radius..x + radius) {
-                // test if in-circle
-                if ((j - x) * (j - x) + di2 <= (radius * radius)) {
-                    coords.add(BlockCoordinate(j, i))
-                }
-            }
-        }
-        return coords
-    }
-
-    fun distanceTo(otherCoordinate: BlockCoordinate): Double {
-        return Math.sqrt(((this.x - otherCoordinate.x) * (this.x - otherCoordinate.x) + (this.y - otherCoordinate.y) * (this.y - otherCoordinate.y)).toDouble())
-    }
-}
 
 data class Corners(
     private val topLeft: BlockCoordinate,
@@ -92,14 +35,6 @@ data class Corners(
         }
         return false
     }
-}
-
-data class MapTile(val type: TileType, val elevation: Double)
-
-fun defaultTime(): Date {
-    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-    simpleDateFormat.timeZone = TimeZone.getDefault()
-    return simpleDateFormat.parse("2000-01-01 12:00:00")
 }
 
 data class DesirabilityLayer(val zoneType: Zone, val level: Int) : QuantizedMap<Double>(1) {
@@ -131,11 +66,15 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val zoneLayer = mutableMapOf<BlockCoordinate, Zone>()
     val powerLineLayer = mutableMapOf<BlockCoordinate, Building>()
     val resourceLayers = mutableMapOf<String, QuantizedMap<Double>>()
-    val desirabilityLayers = initializeDesirabilityLayers()
     val fireCoverageLayer = mutableMapOf<BlockCoordinate, Double>()
     val crimeLayer = mutableMapOf<BlockCoordinate, Double>()
     val policePresenceLayer = mutableMapOf<BlockCoordinate, Double>()
     var trafficLayer = mutableMapOf<BlockCoordinate, Double>().withDefault { 0.0 }
+    val desirabilityLayers = listOf(
+        DesirabilityLayer(Zone.RESIDENTIAL, 1),
+        DesirabilityLayer(Zone.COMMERCIAL, 1),
+        DesirabilityLayer(Zone.INDUSTRIAL, 1)
+    )
 
     private val constructor = Constructor(this)
     private val contractFulfiller = ContactFulfiller(this)
@@ -153,19 +92,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     val nationalTradeEntity = NationalTradeEntity(this)
 
-    private var doingHourly: Boolean = false
+    private var doingHourly = false
 
     var bulldozedCounts = mutableMapOf<Zone, Int>().withDefault { 0 }
 
-    private fun initializeDesirabilityLayers(): List<DesirabilityLayer> {
-        return listOf(
-            DesirabilityLayer(Zone.RESIDENTIAL, 1),
-            DesirabilityLayer(Zone.COMMERCIAL, 1),
-            DesirabilityLayer(Zone.INDUSTRIAL, 1)
-        )
-    }
-
-    var time = defaultTime()
+    var time: Date
 
     var debug = true
 
@@ -190,9 +121,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val cachedLocationsIn = locationsInCachePair.second
 
     fun debug(message: String) {
-        if (debug) {
-            println("Map: $message")
-        }
+        if (!debug) return
+        println("Map: $message")
     }
 
     init {
@@ -208,6 +138,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         happinessUpdater.debug = true
         upgrader.debug = true
         nationalTradeEntity.resetCounts()
+
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        simpleDateFormat.timeZone = TimeZone.getDefault()
+        time = simpleDateFormat.parse("2000-01-01 12:00:00")
     }
 
     fun eachLocation(callback: (Location) -> Unit) {
@@ -282,9 +216,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         locationsInCache.invalidateAll()
     }
 
-    fun suggestedFilename(): String {
-        return Slug.makeSlug(cityName) + ".kcity"
-    }
+    fun suggestedFilename() = Slug.makeSlug(cityName) + ".kcity"
 
     fun tick() {
         time += 1000 * 60
@@ -358,9 +290,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun hasTrafficNearby(coordinate: BlockCoordinate, radius: Int, quantity: Int): Boolean {
         val neighboringBlocks = coordinate.neighbors(radius)
         val nearbyRoads = neighboringBlocks.flatMap { cachedLocationsIn(it) }
-                .filter { it.building is Road }
+            .filter { it.building is Road }
 
-        val trafficCount = nearbyRoads.sumBy { trafficLayer[it.coordinate]?.toInt() ?: 0}
+        val trafficCount = nearbyRoads.sumBy { trafficLayer[it.coordinate]?.toInt() ?: 0 }
         return trafficCount > quantity
     }
 
@@ -378,6 +310,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         BlockCoordinate.iterate(from, to) {
             if (groundLayer[it]?.type == TileType.WATER) {
                 waterFound = true
+                // TODO exit iteration early
             }
         }
         return waterFound
@@ -455,20 +388,20 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun build(building: Building, block: BlockCoordinate, updateBuildingIndex: Boolean = true) {
-        if (canBuildBuildingAt(building, block)) {
-            synchronized(this.buildingLayer) {
-                this.buildingLayer[block] = building
-                building.powered = true
-                if (building !is Commercial && building !is Residential && building !is Industrial) {
-                    val buildingBlocks = buildingBlocks(block, building)
-                    buildingBlocks.forEach { zoneLayer.remove(it) }
-                }
-                if (updateBuildingIndex) {
-                    updateBuildingIndex()
-                }
-            }
-        } else {
+        if (!canBuildBuildingAt(building, block)) {
             debug("We have an overlap! not building!")
+            return
+        }
+        synchronized(this.buildingLayer) {
+            this.buildingLayer[block] = building
+            building.powered = true
+            if (building !is Commercial && building !is Residential && building !is Industrial) {
+                val buildingBlocks = buildingBlocks(block, building)
+                buildingBlocks.forEach { zoneLayer.remove(it) }
+            }
+            if (updateBuildingIndex) {
+                updateBuildingIndex()
+            }
         }
     }
 
@@ -487,7 +420,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                             val otherEntity = CityTradeEntity(otherCoords, otherBuilding)
                             otherBuilding.voidContractsWith(otherEntity)
                         }
-
                     }
                     // gotta remove building from the list...
                     val iterator = buildingLayer.iterator()
@@ -554,7 +486,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             } else {
                 null
             }
-
         }.toBlocking().toIterable().filterNotNull()
     }
 
@@ -584,7 +515,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             val building = it.building
             buildingCorners(building, coordinate).includes(block)
         }
-
         // now we also need the power lines that are here...
         powerLineLayer[block]?.let {
             return filteredBuildings.plus(Location(block, it))
