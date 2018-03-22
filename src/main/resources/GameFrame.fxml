@@ -14,6 +14,9 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -46,18 +49,88 @@
                      <content>
                         <HBox spacing="4.0">
                            <children>
-                              <ToggleButton fx:id="bulldozeButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Bulldoze">
+                              <ToggleButton fx:id="bulldozeButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0">
                                  <toggleGroup>
                                     <ToggleGroup fx:id="buildTools" />
                                  </toggleGroup>
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/tools/bulldozer.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Bulldoze" />
+                                 </tooltip>
                               </ToggleButton>
-                              <ToggleButton fx:id="dezoneButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Dezone" toggleGroup="$buildTools" />
-                              <ToggleButton fx:id="queryButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" selected="true" text="Query" toggleGroup="$buildTools" />
-                              <ToggleButton fx:id="routesButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Routes" toggleGroup="$buildTools" />
-                              <ToggleButton fx:id="recenterButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Recenter" toggleGroup="$buildTools" />
-                              <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="16.0" prefWidth="32.0" />
-                              <Button mnemonicParsing="false" onAction="#zoomIn" prefHeight="100.0" prefWidth="120.0" text="Zoom In" />
-                              <Button mnemonicParsing="false" onAction="#zoomOut" prefHeight="100.0" prefWidth="120.0" text="Zoom Out" />
+                              <ToggleButton fx:id="dezoneButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/tools/dezone.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Dezone" />
+                                 </tooltip></ToggleButton>
+                              <ToggleButton fx:id="queryButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" selected="true" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/misc/unknown.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Query" />
+                                 </tooltip></ToggleButton>
+                              <ToggleButton fx:id="routesButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/tools/route.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Routes" />
+                                 </tooltip></ToggleButton>
+                              <ToggleButton fx:id="recenterButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/tools/recenter.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Recenter" />
+                                 </tooltip></ToggleButton>
+                              <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="100.0" />
+                              <Button mnemonicParsing="false" onAction="#zoomIn" prefHeight="100.0" prefWidth="100.0">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/tools/zoom_in.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Zoom In" />
+                                 </tooltip></Button>
+                              <Button mnemonicParsing="false" onAction="#zoomOut" prefHeight="100.0" prefWidth="100.0">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/tools/zoom_out.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Zoom Out" />
+                                 </tooltip></Button>
                            </children>
                            <padding>
                               <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -72,11 +145,51 @@
                      <content>
                         <HBox spacing="4.0">
                            <children>
-                              <ToggleButton fx:id="residentialButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Residential" toggleGroup="$buildTools" />
-                              <ToggleButton fx:id="commercialButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Commercial" toggleGroup="$buildTools" />
-                              <ToggleButton fx:id="industrialButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Industrial" toggleGroup="$buildTools" />
-                              <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="16.0" prefWidth="32.0" />
-                              <ToggleButton fx:id="roadButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Road" toggleGroup="$buildTools" />
+                              <ToggleButton fx:id="residentialButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/residential/cheap_house.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Residential" />
+                                 </tooltip></ToggleButton>
+                              <ToggleButton fx:id="commercialButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/commercial/supermarket.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Commercial" />
+                                 </tooltip></ToggleButton>
+                              <ToggleButton fx:id="industrialButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/industrial/large_factory.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Industrial" />
+                                 </tooltip></ToggleButton>
+                              <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="100.0" />
+                              <ToggleButton fx:id="roadButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/misc/road.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Road" />
+                                 </tooltip></ToggleButton>
                            </children>
                            <padding>
                               <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -88,9 +201,39 @@
                      <content>
                         <HBox spacing="4.0">
                            <children>
-                              <ToggleButton fx:id="coalPowerButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Coal Power Plant" toggleGroup="$buildTools" />
-                              <ToggleButton fx:id="nuclearPowerButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Nuclear Power Plant" toggleGroup="$buildTools" />
-                              <ToggleButton fx:id="powerLinesButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Power Lines" toggleGroup="$buildTools" />
+                              <ToggleButton fx:id="coalPowerButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/utility/coal_power_plant.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Coal Power Plant" />
+                                 </tooltip></ToggleButton>
+                              <ToggleButton fx:id="nuclearPowerButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/utility/nuclear_power_plant.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Nuclear Power Plant" />
+                                 </tooltip></ToggleButton>
+                              <ToggleButton fx:id="powerLinesButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/utility/power_line.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Power Lines" />
+                                 </tooltip></ToggleButton>
                            </children>
                            <padding>
                               <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -103,25 +246,65 @@
                      <content>
                         <HBox spacing="4.0">
                            <children>
-                              <ToggleButton fx:id="jobCenterButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Job Center" toggleGroup="$buildTools">
+                              <ToggleButton fx:id="jobCenterButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/civic/job_center.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Job Center" />
+                                 </tooltip>
                               </ToggleButton>
-                              <ToggleButton fx:id="townWarehouseButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Town Warehouse" toggleGroup="$buildTools">
+                              <ToggleButton fx:id="townWarehouseButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/civic/town_warehouse.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Town Warehouse" />
+                                 </tooltip>
                               </ToggleButton>
-                              <ToggleButton fx:id="fireStationButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Fire Station" toggleGroup="$buildTools">
+                              <ToggleButton fx:id="fireStationButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/utility/fire_station.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Fire Station" />
+                                 </tooltip>
                               </ToggleButton>
-                              <ToggleButton fx:id="policeStationButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="120.0" text="Police Station" toggleGroup="$buildTools">
+                              <ToggleButton fx:id="policeStationButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../assets/utility/police_station.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Police Station" />
+                                 </tooltip>
                               </ToggleButton>
                            </children>
                            <padding>
