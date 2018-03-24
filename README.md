@@ -1,4 +1,4 @@
-# KotCity 0.46
+# KotCity 0.47
 
 [![Build Status](https://semaphoreci.com/api/v1/kotcity/kotcity/branches/master/badge.svg)](https://semaphoreci.com/kotcity/kotcity) [![Build Status](https://travis-ci.org/kotcity/kotcity.svg?branch=master)](https://travis-ci.org/kotcity/kotcity)
 
@@ -11,7 +11,7 @@ This is _pre alpha_ software with super obvious bugs, rough edges etc. In the sp
 
 ## Gimme the Software!
 
-A build for Windows, macOS and Linux is available [here](https://github.com/kotcity/kotcity/releases/tag/0.46).
+[Download pre-alpha builds for Windows, macOS and Linux](https://github.com/kotcity/kotcity/releases/).
 
 Java 8+ is required. On Windows it will look for JRE and bring you to download page if you don't have it.
 
@@ -87,7 +87,6 @@ You can contribute buildings (see assets directory), ideas for the game, help wi
 
 To make a game that "takes over" from SimCity 4. We have a loooooong way to go:
 * Implement land values.
-* Have traffic affect desirability.
 * Bus and rail and stations.
 * More types of power plant (hydro, wind, etc).
 * Create buildings that use resources under the ground (coal, etc).

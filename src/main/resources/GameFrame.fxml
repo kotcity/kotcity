@@ -56,7 +56,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/tools/bulldozer.png" />
+                                          <Image url="file:assets/tools/bulldozer.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -68,7 +68,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/tools/dezone.png" />
+                                          <Image url="file:assets/tools/dezone.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -79,7 +79,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/misc/unknown.png" />
+                                          <Image url="file:assets/misc/unknown.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -90,7 +90,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/tools/route.png" />
+                                          <Image url="file:assets/tools/route.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -101,7 +101,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/tools/recenter.png" />
+                                          <Image url="file:assets/tools/recenter.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -113,7 +113,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/tools/zoom_in.png" />
+                                          <Image url="file:assets/tools/zoom_in.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -124,7 +124,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/tools/zoom_out.png" />
+                                          <Image url="file:assets/tools/zoom_out.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -149,7 +149,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/residential/cheap_house.png" />
+                                          <Image url="file:assets/residential/cheap_house.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -160,7 +160,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/commercial/supermarket.png" />
+                                          <Image url="file:assets/commercial/supermarket.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -171,7 +171,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/industrial/large_factory.png" />
+                                          <Image url="file:assets/industrial/large_factory.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -183,7 +183,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/misc/road.png" />
+                                          <Image url="file:assets/misc/road.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -205,7 +205,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/utility/coal_power_plant.png" />
+                                          <Image url="file:assets/utility/coal_power_plant.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -216,7 +216,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/utility/nuclear_power_plant.png" />
+                                          <Image url="file:assets/utility/nuclear_power_plant.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -227,7 +227,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/utility/power_line.png" />
+                                          <Image url="file:assets/utility/power_line.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -253,7 +253,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/civic/job_center.png" />
+                                          <Image url="file:assets/civic/job_center.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -268,7 +268,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/civic/town_warehouse.png" />
+                                          <Image url="file:assets/civic/town_warehouse.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -283,7 +283,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/utility/fire_station.png" />
+                                          <Image url="file:assets/utility/fire_station.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -298,7 +298,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../assets/utility/police_station.png" />
+                                          <Image url="file:assets/utility/police_station.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>

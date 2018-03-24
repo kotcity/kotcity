@@ -27,6 +27,10 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.timerTask
+import javafx.scene.control.ButtonType
+import javafx.scene.control.Alert
+import javafx.scene.layout.Region
+import kotcity.util.randomElement
 
 
 object Algorithms {
@@ -145,6 +149,17 @@ class GameFrame : View(), Debuggable {
     private var cityRenderer: CityRenderer? = null
     private var trafficRenderer: TrafficRenderer? = null
     private var zotRenderer: ZotRenderer? = null
+
+    private val quitMessages = listOf(
+            "You want to quit?\n" + "Then, thou hast lost an eighth!",
+            "Don't go now, there's a\n" +
+            "dimensional shambler waiting\n" +
+            "at the DOS prompt!",
+            "Get outta here and go back to your boring programs.",
+            "Are you sure you want to quit this great game?",
+            "You're trying to say you like DOS\n" +
+                    "better than me, right? "
+    )
 
     override fun onDock() {
         super.onDock()
@@ -410,7 +425,18 @@ class GameFrame : View(), Debuggable {
     }
 
     fun quitPressed() {
-        currentStage?.fireEvent(WindowEvent(currentStage, WindowEvent.WINDOW_CLOSE_REQUEST))
+
+        val alert = Alert(AlertType.CONFIRMATION)
+        alert.title = "Are you sure you want to quit?"
+        alert.headerText = "Confirm your action."
+        alert.contentText = quitMessages.randomElement()
+        alert.dialogPane.minHeight = Region.USE_PREF_SIZE
+
+        val result = alert.showAndWait()
+        if (result.get() === ButtonType.OK) {
+            System.exit(1)
+        }
+
     }
 
     private fun bindCanvas() {
