@@ -1,5 +1,3 @@
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
 import kotcity.automata.Upgrader
 import kotcity.data.*
 import org.junit.jupiter.api.Test
@@ -18,11 +16,11 @@ class UpgraderTest {
         val upgrader = Upgrader(map)
         upgrader.debug = true
         map.debug = true
-        assertFalse( map.locations().all { it.building.level == 2 })
-        assertTrue(map.locations().count() == 1)
+        assert(!map.locations().all { it.building.level == 2 })
+        assert(map.locations().count() == 1)
         upgrader.tick()
-        assertTrue(map.locations().count() == 1)
+        assert(map.locations().count() == 1)
         val allLocations = map.locations().all { it.building.level == 2 }
-        assertTrue(allLocations)
+        assert(allLocations)
     }
 }

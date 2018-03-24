@@ -7,7 +7,7 @@
 This is _pre alpha_ software with super obvious bugs, rough edges etc. In the spirit of "release early and release often", I am posting the code. This project is far from done but I prefer to get the code out there to be used by whomever. Disagree with the project? Fork it :)
 
 ## Obligatory Screenshot
-![KotCity Screenshot](screenshot.jpg?raw=true "Screenshot of the game's UI and an example city")
+![KotCity Screenshot](screenshot.gif?raw=true "Screenshot of the game's UI and an example city")
 
 ## Gimme the Software!
 

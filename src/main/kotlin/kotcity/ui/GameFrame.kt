@@ -2,6 +2,7 @@ package kotcity.ui
 
 import javafx.animation.AnimationTimer
 import javafx.application.Application
+import javafx.application.Platform
 import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.input.KeyCode
@@ -30,6 +31,7 @@ import kotlin.concurrent.timerTask
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Alert
 import javafx.scene.layout.Region
+import javafx.util.Duration
 import kotcity.util.randomElement
 
 
@@ -165,6 +167,12 @@ class GameFrame : View(), Debuggable {
         super.onDock()
         currentWindow?.sizeToScene()
         currentWindow?.centerOnScreen()
+
+        // BUG: why doesn't this work???
+        this.currentWindow?.setOnCloseRequest {
+            it.consume()
+            confirmQuit()
+        }
     }
 
     fun setMap(cityMap: CityMap) {
@@ -175,6 +183,10 @@ class GameFrame : View(), Debuggable {
         setScrollbarSizes()
         setCanvasSize()
         initComponents()
+
+        Platform.setImplicitExit(false)
+
+
 
         title = "$GAME_TITLE - ${cityMap.cityName}"
         cityNameLabel.text = "City: ${cityMap.cityName}"
@@ -425,7 +437,10 @@ class GameFrame : View(), Debuggable {
     }
 
     fun quitPressed() {
+        confirmQuit()
+    }
 
+    private fun confirmQuit() {
         val alert = Alert(AlertType.CONFIRMATION)
         alert.title = "Are you sure you want to quit?"
         alert.headerText = "Confirm your action."
@@ -436,7 +451,6 @@ class GameFrame : View(), Debuggable {
         if (result.get() === ButtonType.OK) {
             System.exit(1)
         }
-
     }
 
     private fun bindCanvas() {
