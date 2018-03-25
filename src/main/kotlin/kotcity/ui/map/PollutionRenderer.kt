@@ -45,6 +45,7 @@ class PollutionRenderer(private val cityRenderer: CityRenderer, private val city
     }
 
     private fun determineColor(pollution: Double, maxPollution: Double): Color {
+        val maxPollution = 1000.0
         val fraction = Algorithms.scale(pollution.coerceAtMost(maxPollution), 0.00, maxPollution, 0.0, 1.0)
         val newColor = NEGATIVE_COLOR.interpolate(POSITIVE_COLOR, fraction.toFloat())
         return Color(newColor.red, newColor.green, newColor.blue, 0.5)

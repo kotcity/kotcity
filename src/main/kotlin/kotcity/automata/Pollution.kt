@@ -12,9 +12,9 @@ class PollutionUpdater(val cityMap: CityMap): Debuggable {
     override var debug: Boolean = false
 
     fun tick() {
-        generate()
         diffuse()
         evaporate()
+        generate()
     }
 
     private fun generate() {
@@ -51,9 +51,17 @@ class PollutionUpdater(val cityMap: CityMap): Debuggable {
 
     private fun evaporate() {
         synchronized(cityMap.pollutionLayer) {
+
             val blocksWithPollution = cityMap.pollutionLayer.filterValues { it > 0.0 }
-            blocksWithPollution.keys.forEach {
-                cityMap.pollutionLayer[it] = cityMap.pollutionLayer[it] ?: 0.0 * EVAPORATION_FACTOR
+            blocksWithPollution.keys.toList().forEach {
+                val newVal = cityMap.pollutionLayer[it] ?: 0.0 * EVAPORATION_FACTOR
+                // trim out anything with fractional pollution...
+                if (newVal < 1.0) {
+                    cityMap.pollutionLayer.remove(it)
+                } else {
+                    cityMap.pollutionLayer[it] = newVal
+                }
+
             }
         }
     }

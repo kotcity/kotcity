@@ -7,7 +7,7 @@
   "description": "Chemical Refinery",
   "level": 2,
   "power_required": 5,
-  "pollution": 2,
+  "pollution": 10,
   "production": {
     "consumes": {
       "labor": 10

@@ -7,7 +7,7 @@
   "description": "Small Manufacturing Plant",
   "level": 1,
   "power_required": 1,
-  "pollution": 1,
+  "pollution": 3,
   "production": {
       "consumes": {
           "labor": 2
