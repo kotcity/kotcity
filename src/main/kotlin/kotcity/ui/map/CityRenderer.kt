@@ -28,14 +28,11 @@ class CityRenderer(
         }
 
     private val happinessRenderer = HappinessRenderer(this, cityMap)
-
     private val fireCoverageRenderer = FireCoverageRenderer(this, cityMap)
-
     private val crimeRenderer = CrimeRenderer(this, cityMap)
-
     private val trafficRenderer = TrafficRenderer(this, cityMap)
-
     private val desirabilityRenderer = DesirabilityRenderer(this, cityMap)
+    private val pollutionRenderer = PollutionRenderer(this, cityMap)
 
     var blockOffsetX: Double = 0.0
         set(value) {
@@ -235,6 +232,7 @@ class CityRenderer(
             DESIRABILITY -> desirabilityRenderer.render()
             TRAFFIC -> trafficRenderer.render()
             HAPPINESS -> happinessRenderer.render()
+            POLLUTION -> pollutionRenderer.render()
             NORMAL -> {
                 // We don't have to render anything special when in normal mode
             }
@@ -401,7 +399,7 @@ class CityRenderer(
         val powerLines = visibleBlocks(padding = MAX_BUILDING_SIZE).mapNotNull {
             val building = cityMap.powerLineLayer[it]
             if (building != null) {
-                Location(it, building)
+                Location(cityMap, it, building)
             } else {
                 null
             }

@@ -51,6 +51,8 @@ class QueryWindow : View() {
                 buffer.append("Crime: $crime %\n")
                 val policePresence = ((city.policePresenceLayer[coordinate] ?: 0.0) * 100).roundToInt()
                 buffer.append("Police Presence: $policePresence %\n")
+                val pollution = (city.pollutionLayer[coordinate] ?: 0.0)
+                buffer.append("Pollution: ${pollution.toInt()}\n")
 
                 buildingDescriptionArea.text = buffer.toString()
             }
