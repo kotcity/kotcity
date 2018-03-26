@@ -162,12 +162,22 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return false
     }
 
+    private fun oppositeDir(d: Direction): Direction {
+        return when (d) {
+            Direction.WEST -> Direction.EAST
+            Direction.EAST -> Direction.WEST
+            Direction.NORTH -> Direction.SOUTH
+            Direction.SOUTH -> Direction.NORTH
+            else -> Direction.STATIONARY
+        }
+    }
+
     private fun drivable(node: NavigationNode): Boolean {
         // make sure we got a road under it...
         val locations = cityMap.cachedLocationsIn(node.coordinate)
         if (locations.count() > 0) {
             val building = locations.first().building
-            return building is Road && (building.direction == Direction.STATIONARY || building.direction == node.direction)
+            return building is Road && (building.direction == Direction.STATIONARY || building.direction != oppositeDir(node.direction))
         }
         return false
     }
