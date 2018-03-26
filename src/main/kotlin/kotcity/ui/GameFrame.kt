@@ -53,7 +53,9 @@ const val TICK_DELAY_AT_MOVE: Int = 1 // only render every tick when moving the 
 
 enum class Tool {
     BULLDOZE,
-    QUERY, ROAD,
+    QUERY, 
+    ROAD,
+    ONE_WAY_ROAD,
     RESIDENTIAL_ZONE, INDUSTRIAL_ZONE,
     COMMERCIAL_ZONE, COAL_POWER_PLANT,
     NUCLEAR_POWER_PLANT,
@@ -88,6 +90,7 @@ class GameFrame : View(), Debuggable {
 
     // BUTTONS
     private val roadButton: ToggleButton by fxid()
+    private val oneWayRoadButton: ToggleButton by fxid()
     private val queryButton: ToggleButton by fxid()
     private val bulldozeButton: ToggleButton by fxid()
     private val residentialButton: ToggleButton by fxid()
@@ -319,6 +322,7 @@ class GameFrame : View(), Debuggable {
 
     private fun bindButtons() {
         roadButton.setOnAction { activeTool = Tool.ROAD }
+        oneWayRoadButton.setOnAction { activeTool = Tool.ONE_WAY_ROAD }
         queryButton.setOnAction { activeTool = Tool.QUERY }
         bulldozeButton.setOnAction { activeTool = Tool.BULLDOZE }
         recenterButton.setOnAction { activeTool = Tool.RECENTER }
@@ -502,6 +506,9 @@ class GameFrame : View(), Debuggable {
                         when (activeTool) {
                             Tool.ROAD -> {
                                 map.buildRoad(firstBlock, lastBlock)
+                            }
+                            Tool.ONE_WAY_ROAD -> {
+                                map.buildRoad(firstBlock, lastBlock, true)
                             }
                             Tool.POWER_LINES -> map.buildPowerline(firstBlock, lastBlock)
                             Tool.BULLDOZE -> map.bulldoze(firstBlock, lastBlock)

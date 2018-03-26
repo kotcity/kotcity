@@ -4,8 +4,10 @@ import javafx.scene.Cursor
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
+import javafx.scene.text.Font;
 import kotcity.data.*
 import kotcity.data.MapMode.*
+import kotcity.pathfinding.Direction
 import kotcity.ui.*
 import kotcity.ui.sprites.BuildingSpriteLoader
 import kotcity.util.reorder
@@ -301,6 +303,7 @@ class CityRenderer(
             if (mouseDown) {
                 when (gameFrame.activeTool) {
                     Tool.ROAD -> drawRoadBlueprint()
+                    Tool.ONE_WAY_ROAD -> drawRoadBlueprint()
                     Tool.POWER_LINES -> drawRoadBlueprint()
                     Tool.RESIDENTIAL_ZONE,
                     Tool.COMMERCIAL_ZONE,
@@ -318,6 +321,7 @@ class CityRenderer(
                         highlightCenteredBlocks(it, 4, 4)
                     }
                     Tool.ROAD,
+                    Tool.ONE_WAY_ROAD,
                     Tool.DEZONE,
                     Tool.POWER_LINES,
                     Tool.QUERY,
@@ -421,6 +425,52 @@ class CityRenderer(
                 is Road -> {
                     canvas.graphicsContext2D.fill = Color.BLACK
                     canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
+
+                    val fontSize =
+                        when (zoom) {
+                            1.0 -> 4.0
+                            2.0 -> 8.0
+                            3.0 -> 12.0
+                            4.0 -> 20.0
+                            else -> 40.0
+                        }
+
+                    val offsetX =
+                        when (zoom) {
+                            1.0 -> 0.0
+                            2.0 -> 1.0
+                            3.0 -> 3.0
+                            4.0 -> 8.0
+                            else -> 15.0
+                        }
+
+                    val offsetY =
+                        when (zoom) {
+                            1.0 -> 1.0
+                            2.0 -> 1.0
+                            3.0 -> 4.0
+                            4.0 -> 10.0
+                            else -> 19.0
+                        }
+                    canvas.graphicsContext2D.fill = javafx.scene.paint.Color.WHITE
+                    canvas.graphicsContext2D.setFont(Font.font(fontSize))
+                    val blockX = tx * blockSize + offsetX
+                    val blockY = (ty + 1) * blockSize - offsetY
+                    when (building.dir) {
+                        Direction.STATIONARY -> {}
+                        Direction.NORTH -> {
+                            canvas.graphicsContext2D.fillText("↑", blockX, blockY)
+                        }
+                        Direction.SOUTH -> {
+                            canvas.graphicsContext2D.fillText("↓", blockX, blockY)
+                        }
+                        Direction.WEST -> {
+                            canvas.graphicsContext2D.fillText("←", blockX, blockY)
+                        }
+                        Direction.EAST -> {
+                            canvas.graphicsContext2D.fillText("→", blockX, blockY)
+                        }
+                    }
                 }
                 else -> {
                     drawBuildingType(building, tx, ty)

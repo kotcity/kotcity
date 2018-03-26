@@ -190,6 +190,17 @@
                                  <tooltip>
                                     <Tooltip text="Road" />
                                  </tooltip></ToggleButton>
+                              <ToggleButton fx:id="oneWayRoadButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="file:assets/misc/road.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="One Way Road" />
+                                 </tooltip></ToggleButton>
                            </children>
                            <padding>
                               <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
