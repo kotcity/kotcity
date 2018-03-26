@@ -167,7 +167,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         val locations = cityMap.cachedLocationsIn(node.coordinate)
         if (locations.count() > 0) {
             val building = locations.first().building
-            return building is Road
+            return building is Road && (building.dir == Direction.STATIONARY || building.dir == node.direction)
         }
         return false
     }
