@@ -356,6 +356,7 @@
                         <RadioMenuItem fx:id="fireCoverageMapMode" mnemonicParsing="false" text="Fire Coverage" toggleGroup="$mapMode" />
                         <RadioMenuItem fx:id="crimeMapMode" mnemonicParsing="false" text="Crime" toggleGroup="$mapMode" />
                         <RadioMenuItem fx:id="trafficMapMode" mnemonicParsing="false" text="Traffic" toggleGroup="$mapMode" />
+                        <RadioMenuItem fx:id="pollutionMapMode" mnemonicParsing="false" text="Pollution" toggleGroup="$mapMode" />
                         <Menu mnemonicParsing="false" text="Resources">
                           <items>
                               <RadioMenuItem fx:id="goldMapMode" mnemonicParsing="false" text="Gold" toggleGroup="$mapMode" />
