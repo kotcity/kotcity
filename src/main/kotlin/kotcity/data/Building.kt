@@ -348,7 +348,7 @@ class PoliceStation(cityMap: CityMap) : Building(cityMap) {
     override var description: String? = "Police Station"
 }
 
-class Road(cityMap: CityMap, val dir: Direction = Direction.STATIONARY) : Building(cityMap) {
+class Road(cityMap: CityMap, val direction: Direction = Direction.STATIONARY) : Building(cityMap) {
     override var width = 1
     override var height = 1
     override var borderColor: Color = Color.BLACK
