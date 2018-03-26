@@ -24,7 +24,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="760.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="760.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0">
          <children>
@@ -189,6 +189,17 @@
                                  </graphic>
                                  <tooltip>
                                     <Tooltip text="Road" />
+                                 </tooltip></ToggleButton>
+                              <ToggleButton fx:id="oneWayRoadButton" disable="true" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="file:assets/misc/road.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="One Way Road" />
                                  </tooltip></ToggleButton>
                            </children>
                            <padding>

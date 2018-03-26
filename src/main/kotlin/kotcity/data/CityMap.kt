@@ -8,6 +8,7 @@ import com.github.debop.javatimes.toDateTime
 import kotcity.automata.*
 import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
+import kotcity.pathfinding.Direction
 import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotcity.util.reorder
 import kotlinx.coroutines.experimental.async
@@ -363,18 +364,63 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return true
     }
 
-    fun buildRoad(from: BlockCoordinate, to: BlockCoordinate) {
+    fun buildRoad(from: BlockCoordinate, to: BlockCoordinate, isOneWay: Boolean = false) {
         roadBlocks(from, to).forEach { block ->
-            val newRoad = Road(this)
-            if (canBuildBuildingAt(newRoad, block, waterCheck = false)) {
+            val newRoad =
+                when (isOneWay) {
+                    false -> Road(this)
+                    true -> {
+                        buildOneWayRoad(from, to, block)
+                    }
+                }
+            val existingRoad = buildingLayer[block]
+            if ((existingRoad is Road) || canBuildBuildingAt(newRoad, block, waterCheck = false)) {
                 buildingLayer[block] = newRoad
                 // dezone under us...
                 zoneLayer.remove(block)
-            } else {
-                // debug("We have an overlap... not building!")
             }
         }
         updateBuildingIndex()
+    }
+
+    private fun buildOneWayRoad(from: BlockCoordinate, to: BlockCoordinate, block: BlockCoordinate): Road {
+        val dx = Math.abs(to.x - from.x)
+        val dy = Math.abs(to.y - from.y)
+        val isDxGreater = dx > dy
+        val isDyGreater = dy > dx
+        val left = buildingLayer[BlockCoordinate(block.x - 1, block.y)]
+        val right = buildingLayer[BlockCoordinate(block.x + 1, block.y)]
+        val above = buildingLayer[BlockCoordinate(block.x, block.y - 1)]
+        val below = buildingLayer[BlockCoordinate(block.x, block.y + 1)]
+        val dir =
+                if (isDxGreater && to.x > from.x) {
+                    if (above is Road || below is Road) {
+                        Direction.STATIONARY
+                    } else {
+                        Direction.EAST
+                    }
+                } else if (isDxGreater && to.x < from.x) {
+                    if (above is Road || below is Road) {
+                        Direction.STATIONARY
+                    } else {
+                        Direction.WEST
+                    }
+                } else if (isDyGreater && to.y > from.y) {
+                    if (left is Road || right is Road) {
+                        Direction.STATIONARY
+                    } else {
+                        Direction.SOUTH
+                    }
+                } else if (isDyGreater && to.y < from.y) {
+                    if (left is Road || right is Road) {
+                        Direction.STATIONARY
+                    } else {
+                        Direction.NORTH
+                    }
+                } else {
+                    Direction.STATIONARY
+                }
+        return Road(this, dir)
     }
 
     fun zone(type: Zone, from: BlockCoordinate, to: BlockCoordinate) {

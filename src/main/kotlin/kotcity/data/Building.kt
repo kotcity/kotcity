@@ -2,6 +2,7 @@ package kotcity.data
 
 import javafx.scene.paint.Color
 import kotcity.pathfinding.Path
+import kotcity.pathfinding.Direction
 import kotcity.util.randomElement
 import kotlin.reflect.KClass
 
@@ -347,7 +348,7 @@ class PoliceStation(cityMap: CityMap) : Building(cityMap) {
     override var description: String? = "Police Station"
 }
 
-class Road(cityMap: CityMap) : Building(cityMap) {
+class Road(cityMap: CityMap, val direction: Direction = Direction.STATIONARY) : Building(cityMap) {
     override var width = 1
     override var height = 1
     override var borderColor: Color = Color.BLACK
