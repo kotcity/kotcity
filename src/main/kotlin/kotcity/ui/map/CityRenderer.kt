@@ -423,58 +423,63 @@ class CityRenderer(
             val blockSize = blockSize()
             when (building) {
                 is Road -> {
-                    canvas.graphicsContext2D.fill = Color.BLACK
-                    canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
-
-                    val fontSize =
-                        when (zoom) {
-                            1.0 -> 4.0
-                            2.0 -> 8.0
-                            3.0 -> 12.0
-                            4.0 -> 20.0
-                            else -> 40.0
-                        }
-
-                    val offsetX =
-                        when (zoom) {
-                            1.0 -> 0.0
-                            2.0 -> 1.0
-                            3.0 -> 3.0
-                            4.0 -> 8.0
-                            else -> 15.0
-                        }
-
-                    val offsetY =
-                        when (zoom) {
-                            1.0 -> 1.0
-                            2.0 -> 1.0
-                            3.0 -> 4.0
-                            4.0 -> 10.0
-                            else -> 19.0
-                        }
-                    canvas.graphicsContext2D.fill = javafx.scene.paint.Color.WHITE
-                    canvas.graphicsContext2D.setFont(Font.font(fontSize))
-                    val blockX = tx * blockSize + offsetX
-                    val blockY = (ty + 1) * blockSize - offsetY
-                    when (building.dir) {
-                        Direction.STATIONARY -> {}
-                        Direction.NORTH -> {
-                            canvas.graphicsContext2D.fillText("↑", blockX, blockY)
-                        }
-                        Direction.SOUTH -> {
-                            canvas.graphicsContext2D.fillText("↓", blockX, blockY)
-                        }
-                        Direction.WEST -> {
-                            canvas.graphicsContext2D.fillText("←", blockX, blockY)
-                        }
-                        Direction.EAST -> {
-                            canvas.graphicsContext2D.fillText("→", blockX, blockY)
-                        }
-                    }
+                    drawRoad(tx, ty, blockSize, building)
                 }
                 else -> {
                     drawBuildingType(building, tx, ty)
                 }
+            }
+        }
+    }
+
+    private fun drawRoad(tx: Double, ty: Double, blockSize: Double, building: Road) {
+        canvas.graphicsContext2D.fill = Color.BLACK
+        canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
+
+        val fontSize =
+                when (zoom) {
+                    1.0 -> 4.0
+                    2.0 -> 8.0
+                    3.0 -> 12.0
+                    4.0 -> 20.0
+                    else -> 40.0
+                }
+
+        val offsetX =
+                when (zoom) {
+                    1.0 -> 0.0
+                    2.0 -> 1.0
+                    3.0 -> 3.0
+                    4.0 -> 8.0
+                    else -> 15.0
+                }
+
+        val offsetY =
+                when (zoom) {
+                    1.0 -> 1.0
+                    2.0 -> 1.0
+                    3.0 -> 4.0
+                    4.0 -> 10.0
+                    else -> 19.0
+                }
+        canvas.graphicsContext2D.fill = Color.WHITE
+        canvas.graphicsContext2D.font = Font.font(fontSize)
+        val blockX = tx * blockSize + offsetX
+        val blockY = (ty + 1) * blockSize - offsetY
+        when (building.direction) {
+            Direction.STATIONARY -> {
+            }
+            Direction.NORTH -> {
+                canvas.graphicsContext2D.fillText("↑", blockX, blockY)
+            }
+            Direction.SOUTH -> {
+                canvas.graphicsContext2D.fillText("↓", blockX, blockY)
+            }
+            Direction.WEST -> {
+                canvas.graphicsContext2D.fillText("←", blockX, blockY)
+            }
+            Direction.EAST -> {
+                canvas.graphicsContext2D.fillText("→", blockX, blockY)
             }
         }
     }
