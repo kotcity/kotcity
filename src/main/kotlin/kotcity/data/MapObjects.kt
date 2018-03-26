@@ -8,7 +8,7 @@ enum class TileType(val color: Color) {
 }
 
 enum class BuildingType {
-    ROAD, RESIDENTIAL, COMMERCIAL, INDUSTRIAL, POWER_LINE, POWER_PLANT, CIVIC
+    RAILROAD, ROAD, RESIDENTIAL, COMMERCIAL, INDUSTRIAL, POWER_LINE, POWER_PLANT, CIVIC
 }
 
 enum class Zone(val color: Color) {

@@ -11,7 +11,7 @@ enum class Direction {
 }
 
 enum class TransitType {
-    ROAD
+    RAILROAD, ROAD
 }
 
 data class NavigationNode(
@@ -137,11 +137,18 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             val locations = cityMap.cachedLocationsIn(current)
             if (locations.count() > 0) {
                 val building = locations.first().building
-                if (building is Road) {
-                    score -= 3
-                    score += cityMap.trafficLayer[current] ?: 0.0
-                } else {
-                    score += 10
+                when (building) {
+                    is Road -> {
+                        score -= 3
+                        score += cityMap.trafficLayer[current] ?: 0.0
+                    }
+                    is Railroad -> {
+                        score -= 5
+                        score += cityMap.trafficLayer[current] ?: 0.0
+                    }
+                    else -> {
+                        score += 10
+                    }
                 }
             }
             score

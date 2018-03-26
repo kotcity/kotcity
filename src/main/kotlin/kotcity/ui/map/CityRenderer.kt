@@ -302,6 +302,7 @@ class CityRenderer(
         mouseBlock?.let {
             if (mouseDown) {
                 when (gameFrame.activeTool) {
+                    Tool.RAILROAD -> drawRailroadBlueprint()
                     Tool.ROAD -> drawRoadBlueprint()
                     Tool.ONE_WAY_ROAD -> drawRoadBlueprint()
                     Tool.POWER_LINES -> drawRoadBlueprint()
@@ -320,6 +321,7 @@ class CityRenderer(
                     Tool.NUCLEAR_POWER_PLANT -> {
                         highlightCenteredBlocks(it, 4, 4)
                     }
+                    Tool.RAILROAD,
                     Tool.ROAD,
                     Tool.ONE_WAY_ROAD,
                     Tool.DEZONE,
@@ -337,6 +339,8 @@ class CityRenderer(
                     Tool.TOWN_WAREHOUSE -> {
                         it.let { highlightCenteredBlocks(it, 2, 2) }
                     }
+                    Tool.RAIL_DEPOT,
+                    Tool.TRAIN_STATION,
                     Tool.POLICE_STATION,
                     Tool.FIRE_STATION -> {
                         it.let { highlightCenteredBlocks(it, 3, 3) }
@@ -425,6 +429,9 @@ class CityRenderer(
                 is Road -> {
                     drawRoad(tx, ty, blockSize, building)
                 }
+                is Railroad -> {
+                    drawRailroad(tx, ty, blockSize, building)
+                }
                 else -> {
                     drawBuildingType(building, tx, ty)
                 }
@@ -432,8 +439,12 @@ class CityRenderer(
         }
     }
 
-    private fun drawRoad(tx: Double, ty: Double, blockSize: Double, building: Road) {
-        canvas.graphicsContext2D.fill = Color.BLACK
+    private fun drawRailroad(tx: Double, ty: Double, blockSize: Double, building: Railroad) {
+        drawRoad(tx, ty, blockSize, building, Color.GREY)
+    }
+
+    private fun drawRoad(tx: Double, ty: Double, blockSize: Double, building: Building, fillColor: Color = Color.BLACK) {
+        canvas.graphicsContext2D.fill = fillColor
         canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
 
         val fontSize =
@@ -466,20 +477,22 @@ class CityRenderer(
         canvas.graphicsContext2D.font = Font.font(fontSize)
         val blockX = tx * blockSize + offsetX
         val blockY = (ty + 1) * blockSize - offsetY
-        when (building.direction) {
-            Direction.STATIONARY -> {
-            }
-            Direction.NORTH -> {
-                canvas.graphicsContext2D.fillText("↑", blockX, blockY)
-            }
-            Direction.SOUTH -> {
-                canvas.graphicsContext2D.fillText("↓", blockX, blockY)
-            }
-            Direction.WEST -> {
-                canvas.graphicsContext2D.fillText("←", blockX, blockY)
-            }
-            Direction.EAST -> {
-                canvas.graphicsContext2D.fillText("→", blockX, blockY)
+        if (building is Road) {
+            when (building.direction) {
+                Direction.STATIONARY -> {
+                }
+                Direction.NORTH -> {
+                    canvas.graphicsContext2D.fillText("↑", blockX, blockY)
+                }
+                Direction.SOUTH -> {
+                    canvas.graphicsContext2D.fillText("↓", blockX, blockY)
+                }
+                Direction.WEST -> {
+                    canvas.graphicsContext2D.fillText("←", blockX, blockY)
+                }
+                Direction.EAST -> {
+                    canvas.graphicsContext2D.fillText("→", blockX, blockY)
+                }
             }
         }
     }
@@ -589,6 +602,45 @@ class CityRenderer(
             4.0 -> 32.0
             5.0 -> 64.0
             else -> 64.0
+        }
+    }
+
+    private fun drawRailroadBlueprint() {
+        // figure out if we are more horizontal or vertical away from origin point
+        canvas.graphicsContext2D.fill = Color.YELLOW
+        val startBlock = firstBlockPressed ?: return
+        val endBlock = mouseBlock ?: return
+        val x = startBlock.x
+        val y = startBlock.y
+        val x2 = endBlock.x
+        val y2 = endBlock.y
+
+        if (Math.abs(x - x2) > Math.abs(y - y2)) {
+            // building horizontally
+
+            val dx = Math.abs(x - x2) + 1
+            val startX = Math.min(x, x2)
+            fillBlocks(startX, y, dx, 1)
+
+            if (y != y2) {
+                // val endX = Math.max(x, x2)
+                val dy = Math.abs(y - y2) + 1
+                val startY = Math.min(y, y2)
+                fillBlocks(endBlock.x, startY, 1, dy)
+            }
+        } else {
+            // building vertically
+
+            val dy = Math.abs(y - y2) + 1
+            val startY = Math.min(y, y2)
+            fillBlocks(x, startY, 1, dy)
+
+            if (x != x2) {
+                // val endY = Math.max(y, y2)
+                val dx = Math.abs(x - x2) + 1
+                val startX = Math.min(x, x2)
+                fillBlocks(startX, endBlock.y, dx, 1)
+            }
         }
     }
 
