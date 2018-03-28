@@ -69,9 +69,9 @@ enum class Tool {
 }
 
 enum class GameSpeed(val tickPeriod: Long) {
-    SLOW(250),
-    MEDIUM(125),
-    FAST(50)
+    SLOW(150),
+    MEDIUM(50),
+    FAST(25)
 }
 
 class GameFrame : View(), Debuggable {
