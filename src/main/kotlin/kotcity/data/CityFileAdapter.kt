@@ -166,6 +166,8 @@ private fun readBuildingLayer(data: JsonObject, cityMap: CityMap) {
             val building = when (type) {
                 Road::class -> Road(cityMap)
                 Railroad::class -> Railroad(cityMap)
+                RailDepot::class -> RailDepot(cityMap)
+                TrainStation::class -> TrainStation(cityMap)
                 PowerPlant::class -> PowerPlant(it["variety"].asString, cityMap)
 
                 else -> throw RuntimeException("Unknown building: $it")
