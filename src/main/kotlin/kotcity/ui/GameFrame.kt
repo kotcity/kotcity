@@ -124,6 +124,7 @@ class GameFrame : View(), Debuggable {
     private val crimeMapMode: RadioMenuItem by fxid()
     private val trafficMapMode: RadioMenuItem by fxid()
     private val happinessMapMode: RadioMenuItem by fxid()
+    private val pollutionMapMode: RadioMenuItem by fxid()
 
     private val selectedToolLabel: Label by fxid()
     private val cityNameLabel: Label by fxid()
@@ -195,8 +196,6 @@ class GameFrame : View(), Debuggable {
 
         Platform.setImplicitExit(false)
 
-
-
         title = "$GAME_TITLE - ${cityMap.cityName}"
         cityNameLabel.text = "City: ${cityMap.cityName}"
 
@@ -228,6 +227,8 @@ class GameFrame : View(), Debuggable {
         this.cityMapCanvas.visibleBlockRange = visibleBlockRange
         trafficRenderer.visibleBlockRange = visibleBlockRange
         zotRenderer.visibleBlockRange = visibleBlockRange
+        // update the census...
+        cityMap.censusTaker.tick()
     }
 
     private fun setCanvasSize() {
@@ -380,6 +381,9 @@ class GameFrame : View(), Debuggable {
         }
         fireCoverageMapMode.setOnAction {
             setMapModes(MapMode.FIRE_COVERAGE)
+        }
+        pollutionMapMode.setOnAction {
+            setMapModes(MapMode.POLLUTION)
         }
         crimeMapMode.setOnAction {
             setMapModes(MapMode.CRIME)

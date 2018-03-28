@@ -80,11 +80,16 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
                     0.0
                 }
 
+                val pollutionAdjustment = if (cityMap.pollutionNearby(coordinate, 2) < 500) {
+                    -3.0
+                } else {
+                    0.0
+                }
 
                 desirabilityLayer[coordinate] = if (availableGoodsLongDistance == 0.0 && availableLabor == 0.0) {
                     0.0
                 } else {
-                    (availableGoodsShortDistance + availableGoodsMediumDistance + availableGoodsLongDistance + availableLabor + trafficAdjustment)
+                    (pollutionAdjustment + availableGoodsShortDistance + availableGoodsMediumDistance + availableGoodsLongDistance + availableLabor + trafficAdjustment)
                 }
 
             }
@@ -205,10 +210,16 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
                     0.0
                 }
 
+                val pollutionAdjustment = if (cityMap.pollutionNearby(coordinate, 2) < 500) {
+                    -3.0
+                } else {
+                    0.0
+                }
+
                 if (population == 0) {
                     desirabilityLayer[coordinate] = 0.1
                 } else {
-                    desirabilityLayer[coordinate] = (availableJobsShortDistance + availableJobsMediumDistance + availableJobsLongDistance + availableGoodsShortDistance + availableGoodsMediumDistance + trafficAdjustment)
+                    desirabilityLayer[coordinate] = (pollutionAdjustment + availableJobsShortDistance + availableJobsMediumDistance + availableJobsLongDistance + availableGoodsShortDistance + availableGoodsMediumDistance + trafficAdjustment)
                 }
 
             }

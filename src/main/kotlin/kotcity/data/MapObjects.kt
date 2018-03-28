@@ -17,4 +17,8 @@ enum class Zone(val color: Color) {
     INDUSTRIAL(Color.LIGHTGOLDENRODYELLOW)
 }
 
-data class Location(val coordinate: BlockCoordinate, val building: Building)
+data class Location(val cityMap: CityMap, val coordinate: BlockCoordinate, val building: Building) {
+    fun blocks(): List<BlockCoordinate> {
+        return cityMap.buildingBlocks(coordinate, building)
+    }
+}
