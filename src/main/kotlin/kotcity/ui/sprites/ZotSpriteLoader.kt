@@ -19,6 +19,7 @@ object ZotSpriteLoader {
             Zot.NO_GOODS -> "file:./assets/zots/no_goods.png"
             Zot.NO_WORKERS -> "file:./assets/zots/no_workers.png"
             Zot.UNHAPPY_NEIGHBORS -> "file:./assets/zots/unhappy_neighbors.png"
+            Zot.TOO_MUCH_POLLUTION -> "file:./assets/zots/too_much_pollution.png"
             else -> return null
         }
         return imageForFile(filename, width, height)

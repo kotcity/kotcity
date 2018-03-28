@@ -386,6 +386,13 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         updateBuildingIndex()
     }
 
+    fun pollutionNearby(coordinate: BlockCoordinate, radius: Int): Double {
+        val blocksToCheck = coordinate.neighbors(radius)
+        return blocksToCheck.map {
+            pollutionLayer[it] ?: 0.0
+        }.sum()
+    }
+
     private fun buildOneWayRoad(from: BlockCoordinate, to: BlockCoordinate, block: BlockCoordinate): Road {
         val dx = Math.abs(to.x - from.x)
         val dy = Math.abs(to.y - from.y)

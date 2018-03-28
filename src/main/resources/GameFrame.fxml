@@ -194,7 +194,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="file:assets/misc/road.png" />
+                                          <Image url="file:assets/misc/one_way_road.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>

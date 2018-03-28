@@ -24,7 +24,7 @@ class PollutionUpdater(val cityMap: CityMap): Debuggable {
                 blocksForBuilding.forEach {
                     val pollutionGenerated = if (location.building is Road) {
                         // each 100 cars generates 1 pollution...
-                        (cityMap.trafficLayer[location.coordinate] ?: 0.0 * 0.01)
+                        ((cityMap.trafficLayer[location.coordinate] ?: 0.0) * 0.01)
                     } else {
                         location.building.pollution
                     }
@@ -35,6 +35,7 @@ class PollutionUpdater(val cityMap: CityMap): Debuggable {
         }
     }
 
+
     private fun diffuse() {
         synchronized(cityMap.pollutionLayer) {
             val blocksWithPollution = cityMap.pollutionLayer.filterValues { it > 0.0 }
@@ -43,7 +44,7 @@ class PollutionUpdater(val cityMap: CityMap): Debuggable {
                 val neighbors = coordinate.neighbors(1)
                 neighbors.forEach {
                     // our neighbors pollution is the AVERAGE of (p * DIFFUSION_FACTOR) of us and the neighbor...
-                    cityMap.pollutionLayer[it] = listOf(cityMap.pollutionLayer[coordinate] ?: 0.0, (pollutionValue * DIFFUSION_FACTOR)).average()
+                    cityMap.pollutionLayer[it] = listOf(cityMap.pollutionLayer[it] ?: 0.0, (pollutionValue * DIFFUSION_FACTOR)).average()
                 }
             }
         }
@@ -54,7 +55,7 @@ class PollutionUpdater(val cityMap: CityMap): Debuggable {
 
             val blocksWithPollution = cityMap.pollutionLayer.filterValues { it > 0.0 }
             blocksWithPollution.keys.toList().forEach {
-                val newVal = cityMap.pollutionLayer[it] ?: 0.0 * EVAPORATION_FACTOR
+                val newVal = (cityMap.pollutionLayer[it] ?: 0.0) * EVAPORATION_FACTOR
                 // trim out anything with fractional pollution...
                 if (newVal < 1.0) {
                     cityMap.pollutionLayer.remove(it)

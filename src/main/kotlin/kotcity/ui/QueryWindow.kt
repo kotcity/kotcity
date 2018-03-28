@@ -5,10 +5,7 @@ import javafx.scene.control.TextArea
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
-import kotcity.data.BlockCoordinate
-import kotcity.data.CityMap
-import kotcity.data.Location
-import kotcity.data.Road
+import kotcity.data.*
 import kotcity.ui.sprites.BuildingSpriteLoader
 import tornadofx.View
 import kotlin.math.roundToInt
@@ -51,7 +48,7 @@ class QueryWindow : View() {
                 buffer.append("Crime: $crime %\n")
                 val policePresence = ((city.policePresenceLayer[coordinate] ?: 0.0) * 100).roundToInt()
                 buffer.append("Police Presence: $policePresence %\n")
-                val pollution = (city.pollutionLayer[coordinate] ?: 0.0)
+                val pollution = city.pollutionLayer[coordinate] ?: 0.0
                 buffer.append("Pollution: ${pollution.toInt()}\n")
 
                 buildingDescriptionArea.text = buffer.toString()
