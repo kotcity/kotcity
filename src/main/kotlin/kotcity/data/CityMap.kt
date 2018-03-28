@@ -258,7 +258,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 }
             }
 
-            if (hour == 0 || hour == 12) {
+            if (hour == 0 || hour == 6|| hour == 12 || hour == 18) {
                 timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
                 timeFunction("Constructing buildings") { constructor.tick() }
                 timeFunction("Performing upgrades") { upgrader.tick() }
@@ -288,6 +288,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
             timeFunction("Calculating fire coverage") { FireCoverageUpdater.update(self) }
             timeFunction("Calculating crime and police presence") { CrimeUpdater.update(self) }
+            timeFunction("Checking validity of contracts") { ContractChecker.checkContracts(self) }
         }
     }
 
