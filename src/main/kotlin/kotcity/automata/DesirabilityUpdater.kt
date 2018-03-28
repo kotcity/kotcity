@@ -217,7 +217,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
                 }
 
                 if (population == 0) {
-                    desirabilityLayer[coordinate] = 0.1
+                    desirabilityLayer[coordinate] = 10.0
                 } else {
                     desirabilityLayer[coordinate] = (pollutionAdjustment + availableJobsShortDistance + availableJobsMediumDistance + availableJobsLongDistance + availableGoodsShortDistance + availableGoodsMediumDistance + trafficAdjustment)
                 }

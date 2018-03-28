@@ -63,9 +63,9 @@ class Constructor(val cityMap: CityMap) : Debuggable {
     }
 
     private fun desirableZoneCount(zone: Zone): Int {
-        return cityMap.zoneLayer.keys.filter { cityMap.zoneLayer[it] == zone && cityMap.cachedLocationsIn(it).count() == 0 }.map { coordinate ->
+        return cityMap.zoneLayer.keys.filter { cityMap.zoneLayer[it] == zone && cityMap.cachedLocationsIn(it).count() == 0 }.mapNotNull { coordinate ->
             cityMap.desirabilityLayers.map { it[coordinate] ?: 0.0 }.max()
-        }.filterNotNull().filter { it > 0 }.count()
+        }.filter { it > 0 }.count()
     }
 
 

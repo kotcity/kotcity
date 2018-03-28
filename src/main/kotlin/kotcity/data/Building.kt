@@ -192,7 +192,7 @@ interface HasConcreteContacts : HasContracts {
 abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, HasConcreteContacts {
 
     companion object {
-        fun classByString(name: String?): KClass<out Building> {
+        fun classByString(name: String?): KClass<out Building>? {
             return when (name) {
                 "Residential" -> Residential::class
                 "Commercial" -> Commercial::class
@@ -201,7 +201,7 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
                 "Civic" -> Civic::class
                 "PowerPlant" -> PowerPlant::class
                 else -> {
-                    throw RuntimeException("We don't know how to lookup \"$name\"")
+                   null
                 }
             }
         }

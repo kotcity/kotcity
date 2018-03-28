@@ -53,7 +53,7 @@ class AssetManager(val cityMap: CityMap) {
     fun all(): List<LoadableBuilding> {
         return directories.map { dir ->
             assetsInDir(dir).mapNotNull { assetFile ->
-                val buildingJson = gson.fromJson<JsonElement>(FileReader(assetFile)).asJsonObject
+                val buildingJson = CityFileAdapter.gson.fromJson<JsonElement>(FileReader(assetFile)).asJsonObject
 
                 val buildingType = buildingJson["type"].nullString
 
@@ -85,7 +85,7 @@ class AssetManager(val cityMap: CityMap) {
         // ok we need to find the matching JSON file for this crap...
         val assetFile = findAsset(klass, name)
 
-        val buildingJson = gson.fromJson<JsonObject>(FileReader(assetFile))
+        val buildingJson = CityFileAdapter.gson.fromJson<JsonObject>(FileReader(assetFile))
 
         val lb : LoadableBuilding = when (klass) {
             Residential::class -> Residential(cityMap)
