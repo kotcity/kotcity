@@ -54,6 +54,9 @@ const val TICK_DELAY_AT_MOVE: Int = 1 // only render every tick when moving the 
 enum class Tool {
     BULLDOZE,
     QUERY, 
+    RAILROAD,
+    RAIL_DEPOT,
+    TRAIN_STATION,
     ROAD,
     ONE_WAY_ROAD,
     RESIDENTIAL_ZONE, INDUSTRIAL_ZONE,
@@ -89,6 +92,9 @@ class GameFrame : View(), Debuggable {
     private val cityMapCanvas: CityMapCanvas = CityMapCanvas()
 
     // BUTTONS
+    private val trainStationButton: ToggleButton by fxid()
+    private val railDepotButton: ToggleButton by fxid()
+    private val railroadButton: ToggleButton by fxid()
     private val roadButton: ToggleButton by fxid()
     private val oneWayRoadButton: ToggleButton by fxid()
     private val queryButton: ToggleButton by fxid()
@@ -322,6 +328,9 @@ class GameFrame : View(), Debuggable {
     }
 
     private fun bindButtons() {
+        railroadButton.setOnAction { activeTool = Tool.RAILROAD }
+        railDepotButton.setOnAction { activeTool = Tool.RAIL_DEPOT }
+        trainStationButton.setOnAction { activeTool = Tool.TRAIN_STATION }
         roadButton.setOnAction { activeTool = Tool.ROAD }
         oneWayRoadButton.setOnAction { activeTool = Tool.ONE_WAY_ROAD }
         queryButton.setOnAction { activeTool = Tool.QUERY }
@@ -508,6 +517,9 @@ class GameFrame : View(), Debuggable {
                 if (firstBlock != null && lastBlock != null) {
                     if (evt.button == MouseButton.PRIMARY) {
                         when (activeTool) {
+                            Tool.RAILROAD -> {
+                                map.buildRailroad(firstBlock, lastBlock)
+                            }
                             Tool.ROAD -> {
                                 map.buildRoad(firstBlock, lastBlock)
                             }
@@ -589,6 +601,12 @@ class GameFrame : View(), Debuggable {
                         Tool.TOWN_WAREHOUSE -> {
                             val townWarehouse = assetManager.buildingFor(Civic::class, "town_warehouse")
                             map.build(townWarehouse, BlockCoordinate(newX, newY))
+                        }
+                        Tool.TRAIN_STATION -> {
+                            map.build(TrainStation(map), BlockCoordinate(newX, newY))
+                        }
+                        Tool.RAIL_DEPOT -> {
+                            map.build(RailDepot(map), BlockCoordinate(newX, newY))
                         }
                         else -> {
                             // We handle the other tools on a different place

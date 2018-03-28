@@ -367,6 +367,32 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return true
     }
 
+    fun buildRailroad(from: BlockCoordinate, to: BlockCoordinate) {
+        val dx = Math.abs(from.x - to.x)
+        val dy = Math.abs(from.y - to.y)
+        val mid = 
+            if (dx > dy) {
+                BlockCoordinate(to.x, from.y)
+            } else {
+                BlockCoordinate(from.x, to.y)
+            }
+        buildRailroadLeg(from, mid)
+        buildRailroadLeg(mid, to)
+    }
+
+    fun buildRailroadLeg(from: BlockCoordinate, to: BlockCoordinate) {
+        roadBlocks(from, to).forEach { block ->
+            val railroad = Railroad(this)
+            val existingRoad = buildingLayer[block]
+            if (existingRoad is Road || existingRoad is Railroad || canBuildBuildingAt(railroad, block, waterCheck = false)) {
+                buildingLayer[block] = railroad
+                // dezone under us...
+                zoneLayer.remove(block)
+            }
+        }
+        updateBuildingIndex()
+    }
+
     fun buildRoad(from: BlockCoordinate, to: BlockCoordinate, isOneWay: Boolean = false) {
         roadBlocks(from, to).forEach { block ->
             val newRoad =
