@@ -19,13 +19,15 @@ Java 8+ is required. On Windows it will look for JRE and bring you to download p
 
 ## New in this version
 
-* buildings upgrade to level 2 now :)
-* reworked UI (@sabieber!)
+* pollution
+* one way roads
 
 ## Next up!
 
-* Pollution
+* Schools
+* Hospitals
 * Land value
+* Developer's Guide
 
 ## What is KotCity?
 
