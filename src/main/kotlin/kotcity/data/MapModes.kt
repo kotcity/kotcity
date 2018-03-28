@@ -10,5 +10,6 @@ enum class MapMode {
     TRAFFIC,
     HAPPINESS,
     FIRE_COVERAGE,
-    CRIME
+    CRIME,
+    POLLUTION
 }

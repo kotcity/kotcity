@@ -117,12 +117,14 @@ class AssetManager(val cityMap: CityMap) {
         lb.width = buildingJson["width"].asInt
         lb.height = buildingJson["height"].asInt
         lb.sprite = buildingJson["sprite"].asString
-        checkSprite(lb)
+        lb.pollution = buildingJson["pollution"].nullDouble ?: 0.0
         lb.description = buildingJson["description"].asString
         lb.level = buildingJson["level"].asInt
         if (buildingJson.has("upkeep")) {
             lb.upkeep = buildingJson["upkeep"].asInt
         }
+
+        checkSprite(lb)
         populateProduction(lb, buildingJson)
     }
 

@@ -218,6 +218,7 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
     open var upkeep: Int = 0
     open var happiness: Int = 0
     open var borderColor: Color = Color.PINK
+    open var pollution: Double = 0.0
 
     var zots = listOf<Zot>()
 
@@ -277,6 +278,7 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
             }
         }
     }
+
 }
 
 class Residential(override val cityMap: CityMap) : LoadableBuilding(cityMap) {

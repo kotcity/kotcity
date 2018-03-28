@@ -70,6 +70,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val fireCoverageLayer = mutableMapOf<BlockCoordinate, Double>()
     val crimeLayer = mutableMapOf<BlockCoordinate, Double>()
     val policePresenceLayer = mutableMapOf<BlockCoordinate, Double>()
+    val pollutionLayer = mutableMapOf<BlockCoordinate, Double>().withDefault { 0.0 }
     var trafficLayer = mutableMapOf<BlockCoordinate, Double>().withDefault { 0.0 }
     val desirabilityLayers = listOf(
         DesirabilityLayer(Zone.RESIDENTIAL, 1),
@@ -90,6 +91,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private val zotPopulator = ZotPopulator(this)
     private val happinessUpdater = HappinessUpdater(this)
     private val upgrader: Upgrader = Upgrader(this)
+    private val pollutionUpdater = PollutionUpdater(this)
 
     val nationalTradeEntity = NationalTradeEntity(this)
 
@@ -147,7 +149,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     fun eachLocation(callback: (Location) -> Unit) {
         buildingLayer.toList().forEach { entry ->
-            callback(Location(entry.first, entry.second))
+            callback(Location(this, entry.first, entry.second))
         }
     }
 
@@ -193,7 +195,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 val geometry = entry.geometry()
                 val building = entry.value()
                 if (geometry != null && building != null) {
-                    Location(BlockCoordinate(geometry.x1().toInt(), geometry.y1().toInt()), building)
+                    Location(this, BlockCoordinate(geometry.x1().toInt(), geometry.y1().toInt()), building)
                 } else {
                     null
                 }
@@ -251,6 +253,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 async { timeFunction("Taking census") { censusTaker.tick() } }
                 async { timeFunction("Populating Zots") { zotPopulator.tick() } }
                 async {
+                    timeFunction("Updating pollution...") { pollutionUpdater.tick() }
                     timeFunction("Updating happiness...") { happinessUpdater.tick() }
                 }
             }
@@ -381,6 +384,13 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
         }
         updateBuildingIndex()
+    }
+
+    fun pollutionNearby(coordinate: BlockCoordinate, radius: Int): Double {
+        val blocksToCheck = coordinate.neighbors(radius)
+        return blocksToCheck.map {
+            pollutionLayer[it] ?: 0.0
+        }.sum()
     }
 
     private fun buildOneWayRoad(from: BlockCoordinate, to: BlockCoordinate, block: BlockCoordinate): Road {
@@ -516,7 +526,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             it.value()?.let { building ->
                 val x = it.geometry().x1()
                 val y = it.geometry().y1()
-                Location(BlockCoordinate(x.toInt(), y.toInt()), building)
+                Location(this, BlockCoordinate(x.toInt(), y.toInt()), building)
             }
         }.toBlocking().toIterable().filterNotNull()
     }
@@ -528,7 +538,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             val building = it.value()
             val rectangle = it.geometry()
             if (building != null && rectangle != null) {
-                Location(BlockCoordinate(rectangle.x1().toInt(), rectangle.y1().toInt()), building)
+                Location(this, BlockCoordinate(rectangle.x1().toInt(), rectangle.y1().toInt()), building)
             } else {
                 null
             }
@@ -563,7 +573,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
         // now we also need the power lines that are here...
         powerLineLayer[block]?.let {
-            return filteredBuildings.plus(Location(block, it))
+            return filteredBuildings.plus(Location(this, block, it))
         }
         return filteredBuildings
     }
@@ -573,7 +583,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun locations(): List<Location> {
         synchronized(buildingLayer) {
             val sequence = buildingLayer.entries.iterator().asSequence()
-            return sequence.map { Location(it.key, it.value) }.toList()
+            return sequence.map { Location(this, it.key, it.value) }.toList()
         }
     }
 }

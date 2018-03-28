@@ -194,7 +194,7 @@
                                  <graphic>
                                     <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="file:assets/misc/road.png" />
+                                          <Image url="file:assets/misc/one_way_road.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -356,6 +356,7 @@
                         <RadioMenuItem fx:id="fireCoverageMapMode" mnemonicParsing="false" text="Fire Coverage" toggleGroup="$mapMode" />
                         <RadioMenuItem fx:id="crimeMapMode" mnemonicParsing="false" text="Crime" toggleGroup="$mapMode" />
                         <RadioMenuItem fx:id="trafficMapMode" mnemonicParsing="false" text="Traffic" toggleGroup="$mapMode" />
+                        <RadioMenuItem fx:id="pollutionMapMode" mnemonicParsing="false" text="Pollution" toggleGroup="$mapMode" />
                         <Menu mnemonicParsing="false" text="Resources">
                           <items>
                               <RadioMenuItem fx:id="goldMapMode" mnemonicParsing="false" text="Gold" toggleGroup="$mapMode" />

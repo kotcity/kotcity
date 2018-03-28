@@ -7,6 +7,7 @@
   "description": "Organic Market",
   "level": 2,
   "power_required": 2,
+  "pollution": 0,
   "production": {
     "consumes": {
       "labor": 3,

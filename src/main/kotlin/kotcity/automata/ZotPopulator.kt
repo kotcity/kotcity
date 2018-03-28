@@ -27,6 +27,8 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
         }
     }
 
+
+
     private fun updateIndustrial(location: Location): List<Zot> {
         val building = location.building
         val zotList = mutableListOf<Zot>()
@@ -50,6 +52,10 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
             zotList.add(Zot.NO_CUSTOMERS)
         }
 
+        if (cityMap.pollutionNearby(location.coordinate, Tunable.POLLUTION_RADIUS) > Tunable.POLLUTION_WARNING) {
+            zotList.add(Zot.TOO_MUCH_POLLUTION)
+        }
+
         return zotList
     }
 
@@ -71,8 +77,12 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
             zotList.add(Zot.NO_GOODS)
         }
 
-        if (cityMap.hasTrafficNearby(location.coordinate, 2, 5000)) {
+        if (cityMap.hasTrafficNearby(location.coordinate, Tunable.TRAFFIC_RADIUS, Tunable.MAX_TRAFFIC)) {
             zotList.add(Zot.TOO_MUCH_TRAFFIC)
+        }
+
+        if (cityMap.pollutionNearby(location.coordinate, Tunable.POLLUTION_RADIUS) > Tunable.POLLUTION_WARNING) {
+            zotList.add(Zot.TOO_MUCH_POLLUTION)
         }
 
         return zotList
