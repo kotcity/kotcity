@@ -101,7 +101,7 @@ class QueryWindow : View() {
         }
 
         if (buildings.any { it.building is Road }) {
-            buffer.append("Traffic: ${city.trafficLayer[coordinate]}\n")
+            buffer.append("Traffic: ${city.trafficLayer[coordinate] ?: 0.0}\n")
         }
     }
 
