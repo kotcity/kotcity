@@ -198,6 +198,9 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
                 "Commercial" -> Commercial::class
                 "Industrial" -> Industrial::class
                 "Road" -> Road::class
+                "Railroad" -> Railroad::class
+                "TrainStation" -> TrainStation::class
+                "RailDepot" -> RailDepot::class
                 "Civic" -> Civic::class
                 "PowerPlant" -> PowerPlant::class
                 else -> {
