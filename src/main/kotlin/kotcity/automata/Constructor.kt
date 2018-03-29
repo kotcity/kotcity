@@ -9,10 +9,6 @@ import kotcity.util.randomElement
 import java.util.*
 import kotlin.reflect.KClass
 
-fun<T: Any> T.getClass(): KClass<T> {
-    return javaClass.kotlin
-}
-
 class Constructor(val cityMap: CityMap) : Debuggable {
 
     private val assetManager = AssetManager(cityMap)

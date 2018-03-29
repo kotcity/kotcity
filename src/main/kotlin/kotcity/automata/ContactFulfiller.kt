@@ -167,7 +167,6 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
             }
         }
 
-
     }
 
     // TODO: this is most likely bugged...
@@ -203,10 +202,8 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
             cityMap.locations().randomElements(howMany)?.forEach { location ->
                 val buildings = cityMap.cachedLocationsIn(location.coordinate)
                 val blockAndBuilding = buildings.toList().randomElements(1)?.first()
-                if (blockAndBuilding != null) {
-                    val building = blockAndBuilding.building
-                    building.voidRandomContract()
-                }
+                val building = blockAndBuilding.building
+                building.voidRandomContract()
             }
         }
 
