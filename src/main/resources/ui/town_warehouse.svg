@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   viewBox="0 0 16.933333 16.933333"
+   version="1.1"
+   id="svg37"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   sodipodi:docname="town_warehouse.svg">
+  <defs
+     id="defs31" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.6"
+     inkscape:cx="5.5649995"
+     inkscape:cy="11.62652"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1680"
+     inkscape:window-height="1013"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata34">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-280.06667)">
+    <g
+       transform="matrix(0.59530216,0,0,0.59530216,1.3230407,281.38993)"
+       id="g6">
+      <g
+         id="g4">
+        <path
+           inkscape:connector-curvature="0"
+           d="M 23.964,3.32 C 23.957,3.301 23.945,3.286 23.936,3.268 23.917,3.233 23.896,3.199 23.87,3.169 23.855,3.152 23.838,3.138 23.821,3.123 23.793,3.099 23.762,3.078 23.729,3.061 23.708,3.05 23.688,3.04 23.665,3.032 23.652,3.027 23.641,3.018 23.627,3.015 l -11.5,-3 c -0.082,-0.021 -0.17,-0.021 -0.252,0 l -11.5,3 C 0.36,3.02 0.349,3.028 0.336,3.033 0.313,3.041 0.293,3.051 0.272,3.062 0.238,3.079 0.208,3.1 0.18,3.124 0.163,3.139 0.146,3.153 0.131,3.169 0.104,3.199 0.084,3.232 0.065,3.268 0.055,3.286 0.044,3.301 0.036,3.32 0.014,3.376 0,3.436 0,3.5 v 20 C 0,23.776 0.224,24 0.5,24 h 23 C 23.776,24 24,23.776 24,23.5 V 3.5 C 24,3.436 23.986,3.376 23.964,3.32 Z M 12,1.016 19.604,3 H 4.396 Z M 7,23 H 3 V 20 H 7 Z M 3,19 v -3 h 3 v 3 z m 10,4 h -3 v -3 h 3 z m 8,0 h -5 v -5 h 5 z m -3,-6 v -2 h 2 v 2 z m 5,6 H 22 V 17.5 C 22,17.224 21.776,17 21.5,17 H 21 V 14.5 C 21,14.224 20.776,14 20.5,14 h -3 C 17.224,14 17,14.224 17,14.5 V 17 H 15.5 C 15.224,17 15,17.224 15,17.5 V 23 H 14 V 19.5 C 14,19.224 13.776,19 13.5,19 h -4 C 9.224,19 9,19.224 9,19.5 V 23 H 8 V 19.5 C 8,19.224 7.776,19 7.5,19 H 7 V 15.5 C 7,15.224 6.776,15 6.5,15 h -4 C 2.224,15 2,15.224 2,15.5 V 23 H 1 V 11 H 23 Z M 23,10 H 1 V 7 H 23 Z M 23,6 H 1 V 4 h 22 z"
+           id="path2" />
+      </g>
+    </g>
+  </g>
+</svg>
