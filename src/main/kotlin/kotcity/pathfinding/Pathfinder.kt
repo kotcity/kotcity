@@ -228,6 +228,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                 if (!closedList.contains(node) && !openList.contains(node)) {
 
                     // if we are within 3 we can just skip around...
+                    // BUG: this means if we are super close we can just ignore roads...
                     if (distanceToGoal <= 2 || distanceFromStart <= 2) {
                         if (isGround(node) || destinations.contains(node.coordinate)) {
                             openList.add(node)
