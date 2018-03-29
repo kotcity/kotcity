@@ -293,12 +293,16 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     fun hasTrafficNearby(coordinate: BlockCoordinate, radius: Int, quantity: Int): Boolean {
+        val trafficCount = trafficNearby(coordinate, radius)
+        return trafficCount > quantity
+    }
+
+    fun trafficNearby(coordinate: BlockCoordinate, radius: Int): Int {
         val neighboringBlocks = coordinate.neighbors(radius)
         val nearbyRoads = neighboringBlocks.flatMap { cachedLocationsIn(it) }
-            .filter { it.building is Road }
+                .filter { it.building is Road }
 
-        val trafficCount = nearbyRoads.sumBy { trafficLayer[it.coordinate]?.toInt() ?: 0 }
-        return trafficCount > quantity
+        return nearbyRoads.sumBy { trafficLayer[it.coordinate]?.toInt() ?: 0 }
     }
 
     private fun timeFunction(desc: String, timedFunction: () -> Unit) {
@@ -366,6 +370,32 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
         }
         return true
+    }
+
+    fun buildRailroad(from: BlockCoordinate, to: BlockCoordinate) {
+        val dx = Math.abs(from.x - to.x)
+        val dy = Math.abs(from.y - to.y)
+        val mid = 
+            if (dx > dy) {
+                BlockCoordinate(to.x, from.y)
+            } else {
+                BlockCoordinate(from.x, to.y)
+            }
+        buildRailroadLeg(from, mid)
+        buildRailroadLeg(mid, to)
+    }
+
+    fun buildRailroadLeg(from: BlockCoordinate, to: BlockCoordinate) {
+        roadBlocks(from, to).forEach { block ->
+            val railroad = Railroad(this)
+            val existingRoad = buildingLayer[block]
+            if (existingRoad is Road || existingRoad is Railroad || canBuildBuildingAt(railroad, block, waterCheck = false)) {
+                buildingLayer[block] = railroad
+                // dezone under us...
+                zoneLayer.remove(block)
+            }
+        }
+        updateBuildingIndex()
     }
 
     fun buildRoad(from: BlockCoordinate, to: BlockCoordinate, isOneWay: Boolean = false) {

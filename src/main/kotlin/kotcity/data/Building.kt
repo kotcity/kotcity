@@ -198,6 +198,9 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
                 "Commercial" -> Commercial::class
                 "Industrial" -> Industrial::class
                 "Road" -> Road::class
+                "Railroad" -> Railroad::class
+                "TrainStation" -> TrainStation::class
+                "RailDepot" -> RailDepot::class
                 "Civic" -> Civic::class
                 "PowerPlant" -> PowerPlant::class
                 else -> {
@@ -350,11 +353,32 @@ class PoliceStation(cityMap: CityMap) : Building(cityMap) {
     override var description: String? = "Police Station"
 }
 
+class TrainStation(cityMap: CityMap) : Building(cityMap) {
+    override var width = 3
+    override var height = 3
+    override val powerRequired = 1
+    override var description: String? = "Train Station"
+}
+
+class RailDepot(cityMap: CityMap) : Building(cityMap) {
+    override var width = 3
+    override var height = 3
+    override val powerRequired = 1
+    override var description: String? = "Rail Depot"
+}
+
 class Road(cityMap: CityMap, val direction: Direction = Direction.STATIONARY) : Building(cityMap) {
     override var width = 1
     override var height = 1
     override var borderColor: Color = Color.BLACK
     override var description: String? = "Road"
+}
+
+class Railroad(cityMap: CityMap) : Building(cityMap) {
+    override var width = 1
+    override var height = 1
+    override var borderColor: Color = Color.GREY
+    override var description: String? = "Railroad"
 }
 
 class PowerLine(cityMap: CityMap) : Building(cityMap) {

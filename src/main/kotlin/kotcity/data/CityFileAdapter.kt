@@ -169,7 +169,9 @@ object CityFileAdapter: Debuggable {
                 val building = when (type) {
                     Road::class -> Road(cityMap)
                     PowerPlant::class -> PowerPlant(it["variety"].asString, cityMap)
-
+                    Railroad::class -> Railroad(cityMap)
+                    RailDepot::class -> RailDepot(cityMap)
+                    TrainStation::class -> TrainStation(cityMap)
                     else -> { debug("Unknown building: $it"); null }
                 }
                 if (building != null) {
