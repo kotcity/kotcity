@@ -16,16 +16,16 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
         // we will only kill some of what needs to go...
         val bankruptLocations = locationsToDestroy()
 
+        val bulldozedCounts = mutableMapOf<Zone, Int>().withDefault { 0 }
+        bulldozedCounts[Zone.RESIDENTIAL] = 0
+        bulldozedCounts[Zone.COMMERCIAL] = 0
+        bulldozedCounts[Zone.INDUSTRIAL] = 0
+
         if (bankruptLocations.isNotEmpty()) {
             val howManyNeedDestruction : Int = Math.floor(bankruptLocations.count() * 0.10).toInt().coerceIn(1 .. 15)
             debug("Blowing up $howManyNeedDestruction buildings...")
 
             val start = System.currentTimeMillis()
-
-            val bulldozedCounts = mutableMapOf<Zone, Int>().withDefault { 0 }
-            bulldozedCounts[Zone.RESIDENTIAL] = 0
-            bulldozedCounts[Zone.COMMERCIAL] = 0
-            bulldozedCounts[Zone.INDUSTRIAL] = 0
 
             bankruptLocations.shuffled().take(howManyNeedDestruction).forEach { location ->
                 if (System.currentTimeMillis() - start > 5000) {
@@ -37,8 +37,10 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
                 cityMap.bulldoze(location.coordinate, location.coordinate)
                 bulldozedCounts[zoneForBuilding(location.building::class)] = (bulldozedCounts[zoneForBuilding(location.building::class)] ?: 0) + 1
             }
-            updateBulldozedCount(bulldozedCounts)
+
         }
+
+        updateBulldozedCount(bulldozedCounts)
     }
 
     private fun updateBulldozedCount(bulldozeCounts: MutableMap<Zone, Int>) {

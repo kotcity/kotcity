@@ -41,7 +41,9 @@ data class Path(
         internal val nodes: List<NavigationNode> = emptyList()
 ) {
     // takes traffic and etc into consideration...
-    fun length(): Int = nodes.sumBy { it.score.toInt() }
+    fun totalScore(): Int = nodes.sumBy { it.score.toInt() }
+
+    fun length(): Int = nodes.size
 
     fun blocks(): List<BlockCoordinate> = nodes.map { it.coordinate }.toList()
     fun plus(otherPath: Path?): Path? {
@@ -68,7 +70,7 @@ data class Path(
 }
 
 class Pathfinder(val cityMap: CityMap) : Debuggable {
-    override var debug: Boolean = false
+    override var debug: Boolean = true
 
     private val cachedHeuristicPair = ::heuristic.cache()
     private val heuristicCache = cachedHeuristicPair.first
@@ -161,20 +163,24 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                 when (building) {
                     is Road -> {
                         score -= 3
-                        score += cityMap.trafficLayer[current] ?: 0.0
+                        score += (cityMap.trafficLayer[current] ?: 0.0)
                     }
                     is Railroad -> {
                         score -= 5
-                        score += cityMap.trafficLayer[current] ?: 0.0
+                        score += (cityMap.trafficLayer[current] ?: 0.0)
                     }
                     else -> {
-                        score += 10
+                        score += 10_000
                     }
                 }
+            } else {
+                // it is just blank ground
+                score += 10_000
             }
             score
-        }.min() ?: 100.0
+        }.min() ?: Double.MAX_VALUE
     }
+
 
     private fun manhattanDistance(start: BlockCoordinate, destination: BlockCoordinate): Double {
         return Math.abs(start.x - destination.x) + Math.abs(start.y - destination.y).toDouble()
@@ -219,6 +225,10 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         destinations: List<BlockCoordinate>
     ): Path? {
 
+        if (destinations.isEmpty()) {
+            throw RuntimeException("We cannot pathfind to an empty destination!")
+        }
+
         // let's find a road semi-nearby
         val nearbyBlocks = source.flatMap { it.neighbors(3) }.plus(source).distinct()
 
@@ -230,13 +240,22 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         }
 
         // bail out if we can't get to a road...
-        val pathToNearestRoad = shortestCastToRoad(source, nearbyRoads.map { it.coordinate }) ?: return null
+        val pathToNearestRoad = shortestCastToRoad(source, nearbyRoads.map { it.coordinate })
+        if (pathToNearestRoad == null) {
+            debug("Could not find a path to the nearest road!")
+            return null
+        }
 
         // OK... now our source is that first road tile...
-        val startRoad = pathToNearestRoad.blocks().first { cityMap.locationsAt(it).any {it.building is Road } }
+        val startRoad = pathToNearestRoad.blocks().last()
 
         // now try to go the rest of the way OR bail out...
-        val restOfTheWay = truePathfind(listOf(startRoad), destinations) ?: return null
+        val restOfTheWay = truePathfind(listOf(startRoad), destinations)
+        if (restOfTheWay == null) {
+            debug("Our source is $startRoad and destination is: ${destinations}")
+            debug("Now we can't find a path AFTER finding a road!")
+            return null
+        }
 
         return pathToNearestRoad.plus(restOfTheWay)
     }
@@ -255,7 +274,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
         val pathBlocks = mutableListOf(currentBlock)
 
-        repeat(maxLength - 1) {
+        repeat(maxLength) {
             currentBlock = currentBlock.plus(delta)
             pathBlocks.add(currentBlock)
         }
@@ -290,7 +309,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     }
 
     // so basically what we want to do here is start from each coordinate and project each way (N,S,E,W) and see if we hit a destination...
-    private fun shortestCastToRoad(source: List<BlockCoordinate>, map: List<BlockCoordinate>, maxLength: Int = 3): Path? {
+    private fun shortestCastToRoad(source: List<BlockCoordinate>, roadBlocks: List<BlockCoordinate>, maxLength: Int = 3): Path? {
         val paths = source.flatMap {
             listOf(
                     path(it, Direction.NORTH, maxLength),
@@ -301,9 +320,10 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         }.filterNotNull()
 
         // make sure these paths have a road in em...
-        val pathsWithRoad = paths.filter { it.blocks().any { cityMap.locationsAt(it).any { it.building is Road } } }
+        val pathsWithRoad = paths.filter { it.blocks().any { roadBlocks.contains(it) } }
 
         if (pathsWithRoad.isEmpty()) {
+            debug("Could not find any paths including road!")
             return null
         }
 
@@ -343,25 +363,30 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             openList.remove(activeNode)
             closedList.add(activeNode)
 
-            // look within 3 nodes of here... (we can jump 3 nodes...)
-            // TODO: if we are within 3 blocks we can disregard drivable nodes...
-            val distanceToGoal = destinations.map { activeNode.coordinate.distanceTo(it) }.min() ?: 999.0
-
             if (destinations.contains(activeNode.coordinate)) {
                 done = true
                 lastNode = activeNode
             }
+
+            // look within 3 nodes of here... (we can jump 3 nodes...)
+            // TODO: if we are within 3 blocks we can disregard drivable nodes...
+            val distanceToGoal = destinations.map { activeNode.coordinate.distanceTo(it) }.min() ?: 999.0
 
             // TODO: maybe pull out into lambda so we can re-use pathfinder...
             fun maybeAppendNode(node: NavigationNode) {
                 if (!closedList.contains(node) && !openList.contains(node)) {
                     // if we are within 3 we can just skip around...
                     // BUG: this means if we are super close we can just ignore roads...
+
+                    // TODO: this the problem... when we get close enough we gotta cast to the destination...
                     if (distanceToGoal <= 3) {
-                        if (isGround(node) || destinations.contains(node.coordinate)) {
-                            openList.add(node)
+
+                        val newNode = node.copy(score = cachedHeuristic(node.coordinate, destinations))
+
+                        if (isGround(newNode) || destinations.contains(newNode.coordinate)) {
+                            openList.add(newNode)
                         } else {
-                            closedList.add(node)
+                            closedList.add(newNode)
                         }
                     } else {
                         if (needsRoads) {

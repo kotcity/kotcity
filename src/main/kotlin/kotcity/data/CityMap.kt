@@ -132,13 +132,13 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         shipper.debug = false
         contractFulfiller.debug = false
         manufacturer.debug = false
-        constructor.debug = false
+        constructor.debug = true
         taxCollector.debug = false
         desirabilityUpdater.debug = false
         liquidator.debug = false
         zotPopulator.debug = false
         censusTaker.tick()
-        happinessUpdater.debug = true
+        happinessUpdater.debug = false
         upgrader.debug = true
         nationalTradeEntity.resetCounts()
 

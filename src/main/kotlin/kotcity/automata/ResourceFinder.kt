@@ -1,12 +1,11 @@
 package kotcity.automata
 
 import kotcity.data.*
+import kotcity.data.Tunable.MAX_RESOURCE_DISTANCE
 import kotcity.pathfinding.MAX_DISTANCE
 import kotcity.pathfinding.Path
 import kotcity.pathfinding.Pathfinder
 import kotcity.util.Debuggable
-
-const val MAX_RESOURCE_DISTANCE = 500
 
 class ResourceFinder(val cityMap: CityMap): Debuggable {
     override var debug = false
@@ -36,12 +35,11 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         }
 
         synchronized(buildingsWithResource) {
-            var shortestPath: Path? = null
+            var shortestPath: Path?
             var preferredTradeEntity: TradeEntity? = null
             var preferredPath: Path? = null
 
-            val destinationBlocks = buildingsWithResource.flatMap { cityMap.buildingBlocks(it.coordinate, it.building)}.distinct()
-            shortestPath = pathfinder.tripTo(sourceBlocks, destinationBlocks)
+            shortestPath = firstWithValidPath(sourceBlocks, buildingsWithResource)
 
             // OK! now if we got a path we want to find the building in the last block...
             shortestPath?.blocks()?.last()?.let {
@@ -72,6 +70,17 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         }
 
 
+    }
+
+    private fun firstWithValidPath(sourceBlocks: List<BlockCoordinate>, buildingsWithResource: List<Location>): Path? {
+        buildingsWithResource.forEach { destinationBuilding ->
+            val blocks = destinationBuilding.blocks()
+            val path = pathfinder.tripTo(sourceBlocks, blocks)
+            if (path != null) {
+                return path
+            }
+        }
+        return null
     }
 
     private var lastOutsidePathFailAt: Long = System.currentTimeMillis()
@@ -109,10 +118,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         }
 
         synchronized(buildingsWantingResource) {
-            var shortestPath: Path? = null
-
-            val destinationBlocks = buildingsWantingResource.flatMap { cityMap.buildingBlocks(it.coordinate, it.building)}.distinct()
-            shortestPath = pathfinder.tripTo(sourceBlocks, destinationBlocks)
+            var shortestPath: Path? = firstWithValidPath(sourceBlocks, buildingsWantingResource)
 
             // OK! now if we got a path we want to find the building in the last block...
             shortestPath?.let {shortestPath ->

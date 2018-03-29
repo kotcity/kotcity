@@ -10,7 +10,7 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
         cityMap.eachLocation { location ->
 
             // we gotta SKIP roads...
-            if (location.building !is Road) {
+            if (location.building !is Road && location.building !is Railroad) {
                 val newZots = when(location.building::class) {
                     Residential::class -> updateResidential(location)
                     Commercial::class -> updateCommercial(location)

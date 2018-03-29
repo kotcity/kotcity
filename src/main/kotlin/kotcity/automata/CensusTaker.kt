@@ -38,6 +38,12 @@ class ResourceCounts {
         }
     }
 
+    fun tradeBalance(tradeable: Tradeable): Int {
+        val supply = counts[Pair(CountType.SUPPLY, tradeable)] ?: 0
+        val demand = counts[Pair(CountType.DEMAND, tradeable)] ?: 0
+        return supply - demand
+    }
+
 }
 
 class CensusTaker(val cityMap: CityMap): Debuggable {
@@ -66,8 +72,6 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
                 listeners.forEach { it() }
             }
         }
-
-
     }
 
     private fun supplyAndDemand() {
@@ -81,6 +85,10 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
             }
         }
         this.resourceCounts = resourceCounts
+    }
+
+    fun tradeBalance(tradeable: Tradeable): Int {
+        return resourceCounts.tradeBalance(tradeable)
     }
 
     private val listeners = mutableListOf<() -> Unit>()
