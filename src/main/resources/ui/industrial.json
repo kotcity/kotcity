@@ -1,0 +1,19 @@
+{
+  "type": "industrial",
+  "width": 2,
+  "height": 2,
+  "name": "large_factory",
+  "sprite": "large_factory.png",
+  "description": "Large Manufacturing Plant",
+  "level": 1,
+  "power_required": 3,
+  "pollution": 8,
+  "production": {
+    "consumes": {
+      "labor": 5
+    },
+    "produces": {
+      "wholesale_goods": 100
+    }
+  }
+}

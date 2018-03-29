@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="256mm"
+   height="256mm"
+   viewBox="0 0 256 256"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   sodipodi:docname="coal_power_plant.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="30"
+     inkscape:cy="560"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1680"
+     inkscape:window-height="1013"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-41)">
+    <g
+       id="g3755"
+       transform="matrix(2.2149405,0,0,2.2149405,29.558077,58.252975)">
+      <path
+         id="path3751"
+         d="M 54.167,2.778 H 26.389 C 21.328,2.778 11.233,1.085 8.333,0 8.816,0.182 12.5,11.111 26.389,11.111 h 27.778 c 4.81,0 19.444,0 19.444,2.777 h 8.333 c 0,-11.11 -15.402,-11.11 -27.777,-11.11 z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path3753"
+         d="M 83.333,18.056 H 72.222 L 68.549,72.223 H 61.111 V 52.777 H 0 V 100 H 61.111 66.667 75 88.889 Z M 22.543,93.913 29.38,80.238 H 20.832 L 32.798,59.722 h 8.546 l -8.546,13.674 h 10.257 z"
+         inkscape:connector-curvature="0" />
+    </g>
+  </g>
+</svg>
