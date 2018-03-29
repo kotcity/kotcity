@@ -44,7 +44,7 @@
       <AnchorPane BorderPane.alignment="CENTER">
          <children>
             <BorderPane fx:id="mapPane" prefHeight="140.0" prefWidth="140.0" style="-fx-border-color: cccccc;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
-            <ScrollPane layoutX="140.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="0.0">
+            <ScrollPane fitToWidth="true" layoutX="140.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="0.0">
                <content>
                   <TabPane prefHeight="140.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" tabMinHeight="26.0" tabMinWidth="100.0">
                     <tabs>
