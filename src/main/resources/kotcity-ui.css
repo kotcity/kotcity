@@ -9,3 +9,7 @@
     -fx-pref-height: 32;
     -fx-pref-width: 32;
 }
+
+.toolbarScroll {
+    -fx-background-color: red;
+}

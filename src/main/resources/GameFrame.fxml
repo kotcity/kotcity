@@ -25,7 +25,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="521.0" stylesheets="@kotcity-ui.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="521.0" prefWidth="899.0" stylesheets="@kotcity-ui.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <AnchorPane prefHeight="286.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0">
          <children>
@@ -41,14 +41,13 @@
       </AnchorPane>
    </center>
    <bottom>
-      <AnchorPane BorderPane.alignment="CENTER">
-         <children>
-            <BorderPane fx:id="mapPane" prefHeight="140.0" prefWidth="140.0" style="-fx-border-color: cccccc;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
-            <ScrollPane fitToWidth="true" layoutX="140.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="0.0">
-               <content>
-                  <TabPane prefHeight="140.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" tabMinHeight="26.0" tabMinWidth="100.0">
-                    <tabs>
-                      <Tab text="Tools">
+      <BorderPane BorderPane.alignment="CENTER">
+         <center>
+            <TabPane prefHeight="140.0" prefWidth="716.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" tabMinHeight="26.0" tabMinWidth="100.0">
+              <tabs>
+                <Tab text="Tools">
+                     <content>
+                        <ScrollPane>
                            <content>
                               <HBox spacing="4.0">
                                  <children>
@@ -146,9 +145,13 @@
                                  </padding>
                               </HBox>
                            </content>
-                      </Tab>
-                      <Tab text="Basic">
+                        </ScrollPane>
+                     </content>
+                </Tab>
+                <Tab text="Basic">
 
+                                                               <content>
+                        <ScrollPane>
                            <content>
                               <HBox spacing="4.0">
                                  <children>
@@ -255,8 +258,12 @@
                                  </padding>
                               </HBox>
                            </content>
-                      </Tab>
-                        <Tab text="Power">
+                        </ScrollPane>
+                     </content>
+                </Tab>
+                  <Tab text="Power">
+                     <content>
+                        <ScrollPane>
                            <content>
                               <HBox spacing="4.0">
                                  <children>
@@ -302,9 +309,13 @@
                                  </padding>
                               </HBox>
                            </content>
-                        </Tab>
-                        <Tab text="Other" />
-                        <Tab text="Civic">
+                        </ScrollPane>
+                     </content>
+                  </Tab>
+                  <Tab text="Other" />
+                  <Tab text="Civic">
+                     <content>
+                        <ScrollPane>
                            <content>
                               <HBox spacing="4.0">
                                  <children>
@@ -374,19 +385,19 @@
                                  </padding>
                               </HBox>
                            </content>
-                        </Tab>
-                    </tabs>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                  </TabPane>
-               </content>
+                        </ScrollPane>
+                     </content>
+                  </Tab>
+              </tabs>
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
-            </ScrollPane>
-         </children>
-      </AnchorPane>
+            </TabPane>
+         </center>
+         <left>
+            <BorderPane fx:id="mapPane" prefHeight="140.0" prefWidth="140.0" style="-fx-border-color: cccccc;" BorderPane.alignment="CENTER" />
+         </left>
+      </BorderPane>
    </bottom>
    <top>
       <VBox BorderPane.alignment="CENTER">
