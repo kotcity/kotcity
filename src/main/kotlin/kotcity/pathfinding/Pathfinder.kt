@@ -38,12 +38,16 @@ data class NavigationNode(
 
 
 data class Path(
-    val nodes: List<NavigationNode> = emptyList()
+        private val nodes: List<NavigationNode> = emptyList()
 ) {
     // takes traffic and etc into consideration...
     fun length(): Int = nodes.sumBy { it.score.toInt() }
 
     fun blocks(): List<BlockCoordinate> = nodes.map { it.coordinate }.toList()
+    fun plus(otherPath: Path?): Path? {
+        val otherNodes = otherPath?.nodes?.toList() ?: return this
+        return Path(nodes.plus(otherNodes).distinct())
+    }
 }
 
 class Pathfinder(val cityMap: CityMap) : Debuggable {
@@ -191,19 +195,44 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
     private fun isGround(node: NavigationNode) = cityMap.groundLayer[node.coordinate]?.type == TileType.GROUND
 
+    // OK... the REAL way pathfinding works is we have to find ourselves a road first... if we don't step on a road
+    // our path isn't valid...
     fun tripTo(
         source: List<BlockCoordinate>,
         destinations: List<BlockCoordinate>
     ): Path? {
+
+        // let's find a road semi-nearby
+        val nearbyBlocks = source.flatMap { it.neighbors(3) }.plus(source).distinct()
+
+        var nearbyRoads = nearbyBlocks.flatMap { cityMap.locationsAt(it) }.filter { it.building is Road }
+
+        if (nearbyRoads.isEmpty()) {
+            return null
+        }
+
+        // bail out if we can't get to a road...
+        val pathToNearestRoad = truePathfind(source, nearbyRoads.map { it.coordinate }, needsRoads = false) ?: return null
+
+        // OK... now our source is that first road tile...
+        val startRoad = pathToNearestRoad.blocks().last()
+
+        // now try to go the rest of the way OR bail out...
+        val restOfTheWay = truePathfind(listOf(startRoad), destinations) ?: return null
+
+        return pathToNearestRoad.plus(restOfTheWay)
+    }
+
+    private fun truePathfind(source: List<BlockCoordinate>, destinations: List<BlockCoordinate>, needsRoads: Boolean = true): Path? {
         // switch these to list of navigation nodes...
         val openList = source.map {
             NavigationNode(
-                cityMap,
-                it,
-                null,
-                cachedHeuristic(it, destinations),
-                TransitType.ROAD,
-                Direction.STATIONARY
+                    cityMap,
+                    it,
+                    null,
+                    cachedHeuristic(it, destinations),
+                    TransitType.ROAD,
+                    Direction.STATIONARY
             )
         }.toMutableSet()
 
@@ -223,7 +252,6 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             // look within 3 nodes of here... (we can jump 3 nodes...)
             // TODO: if we are within 3 blocks we can disregard drivable nodes...
             val distanceToGoal = destinations.map { activeNode.coordinate.distanceTo(it) }.min() ?: 999.0
-            val distanceFromStart = source.map { activeNode.coordinate.distanceTo(it) }.min() ?: 999.0
 
             if (destinations.contains(activeNode.coordinate)) {
                 done = true
@@ -233,20 +261,28 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             // TODO: maybe pull out into lambda so we can re-use pathfinder...
             fun maybeAppendNode(node: NavigationNode) {
                 if (!closedList.contains(node) && !openList.contains(node)) {
-
                     // if we are within 3 we can just skip around...
                     // BUG: this means if we are super close we can just ignore roads...
-                    if (distanceToGoal <= 2 || distanceFromStart <= 2) {
+                    if (distanceToGoal <= 3) {
                         if (isGround(node) || destinations.contains(node.coordinate)) {
                             openList.add(node)
                         } else {
                             closedList.add(node)
                         }
                     } else {
-                        if (drivable(node) || destinations.contains(node.coordinate)) {
-                            openList.add(node)
+
+                        if (needsRoads) {
+                            if (drivable(node) || destinations.contains(node.coordinate)) {
+                                openList.add(node)
+                            } else {
+                                closedList.add(node)
+                            }
                         } else {
-                            closedList.add(node)
+                            if (destinations.contains(node.coordinate)) {
+                                openList.add(node)
+                            } else {
+                                closedList.add(node)
+                            }
                         }
                     }
                 }
@@ -255,45 +291,45 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             // ok figure out the dang neighbors...
             val north = BlockCoordinate(activeNode.coordinate.x, activeNode.coordinate.y - 1)
             val northNode = NavigationNode(
-                cityMap,
-                north,
-                activeNode,
-                activeNode.score + cachedHeuristic(north, destinations),
-                TransitType.ROAD,
-                Direction.NORTH
+                    cityMap,
+                    north,
+                    activeNode,
+                    activeNode.score + cachedHeuristic(north, destinations),
+                    TransitType.ROAD,
+                    Direction.NORTH
             )
             maybeAppendNode(northNode)
 
             val south = BlockCoordinate(activeNode.coordinate.x, activeNode.coordinate.y + 1)
             val southNode = NavigationNode(
-                cityMap,
-                south,
-                activeNode,
-                activeNode.score + cachedHeuristic(south, destinations),
-                TransitType.ROAD,
-                Direction.SOUTH
+                    cityMap,
+                    south,
+                    activeNode,
+                    activeNode.score + cachedHeuristic(south, destinations),
+                    TransitType.ROAD,
+                    Direction.SOUTH
             )
             maybeAppendNode(southNode)
 
             val east = BlockCoordinate(activeNode.coordinate.x + 1, activeNode.coordinate.y)
             val eastNode = NavigationNode(
-                cityMap,
-                east,
-                activeNode,
-                activeNode.score + cachedHeuristic(east, destinations),
-                TransitType.ROAD,
-                Direction.EAST
+                    cityMap,
+                    east,
+                    activeNode,
+                    activeNode.score + cachedHeuristic(east, destinations),
+                    TransitType.ROAD,
+                    Direction.EAST
             )
             maybeAppendNode(eastNode)
 
             val west = BlockCoordinate(activeNode.coordinate.x - 1, activeNode.coordinate.y)
             val westNode = NavigationNode(
-                cityMap,
-                west,
-                activeNode,
-                activeNode.score + cachedHeuristic(west, destinations),
-                TransitType.ROAD,
-                Direction.WEST
+                    cityMap,
+                    west,
+                    activeNode,
+                    activeNode.score + cachedHeuristic(west, destinations),
+                    TransitType.ROAD,
+                    Direction.WEST
             )
             maybeAppendNode(westNode)
         }

@@ -18,7 +18,7 @@ class PathfinderTest {
         pathfinder.purgeCaches()
         outsidePath = pathfinder.pathToOutside(listOf(BlockCoordinate(50, 50)))?.blocks()
         assertTrue(outsidePath != null, "Path to outside should not be null")
-        assertTrue(outsidePath?.count() == 51, "Path to outside should be 51 nodes!")
+        assertTrue(outsidePath?.count() == 51, "Path to outside should be 51 nodes! But it is actually ${outsidePath?.count()}")
     }
 
     @Test

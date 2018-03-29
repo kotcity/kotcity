@@ -385,7 +385,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         buildRailroadLeg(mid, to)
     }
 
-    fun buildRailroadLeg(from: BlockCoordinate, to: BlockCoordinate) {
+    private fun buildRailroadLeg(from: BlockCoordinate, to: BlockCoordinate) {
         roadBlocks(from, to).forEach { block ->
             val railroad = Railroad(this)
             val existingRoad = buildingLayer[block]
