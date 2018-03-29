@@ -201,6 +201,39 @@
                                  <tooltip>
                                     <Tooltip text="One Way Road" />
                                  </tooltip></ToggleButton>
+                              <ToggleButton fx:id="railroadButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="file:assets/transportation/trains/railroad_tool_button.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Railroad" />
+                                 </tooltip></ToggleButton>
+                              <ToggleButton fx:id="trainStationButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="file:assets/transportation/trains/train_station_icon.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Train Station" />
+                                 </tooltip></ToggleButton>
+                              <ToggleButton fx:id="railDepotButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" toggleGroup="$buildTools">
+                                 <graphic>
+                                    <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="file:assets/transportation/trains/rail_depot_icon.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Rail Depot" />
+                                 </tooltip></ToggleButton>
                            </children>
                            <padding>
                               <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
