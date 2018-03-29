@@ -38,7 +38,7 @@ data class NavigationNode(
 
 
 data class Path(
-        private val nodes: List<NavigationNode> = emptyList()
+        internal val nodes: List<NavigationNode> = emptyList()
 ) {
     // takes traffic and etc into consideration...
     fun length(): Int = nodes.sumBy { it.score.toInt() }
@@ -46,7 +46,24 @@ data class Path(
     fun blocks(): List<BlockCoordinate> = nodes.map { it.coordinate }.toList()
     fun plus(otherPath: Path?): Path? {
         val otherNodes = otherPath?.nodes?.toList() ?: return this
-        return Path(nodes.plus(otherNodes).distinct())
+
+        val firstOfOther = otherNodes.first()
+        // chop the first node off the other list...
+        // because we have to replace it with a parent that has the other list
+        // of nodes as a parent to preserve the chain...
+        val newFirst = NavigationNode(
+                firstOfOther.cityMap,
+                firstOfOther.coordinate,
+                nodes.last(),
+                firstOfOther.score,
+                firstOfOther.transitType,
+                firstOfOther.direction
+        )
+
+        // lop off the first one and shove our new one in there...
+        val newOtherNodes = listOf(newFirst).plus(otherNodes.drop(1))
+
+        return Path(nodes.plus(newOtherNodes).distinct())
     }
 }
 
@@ -205,22 +222,99 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         // let's find a road semi-nearby
         val nearbyBlocks = source.flatMap { it.neighbors(3) }.plus(source).distinct()
 
-        var nearbyRoads = nearbyBlocks.flatMap { cityMap.locationsAt(it) }.filter { it.building is Road }
+        val nearbyLocations = nearbyBlocks.flatMap { cityMap.locationsAt(it) }
+        val nearbyRoads = nearbyLocations.filter { it.building is Road }
 
         if (nearbyRoads.isEmpty()) {
             return null
         }
 
         // bail out if we can't get to a road...
-        val pathToNearestRoad = truePathfind(source, nearbyRoads.map { it.coordinate }, needsRoads = false) ?: return null
+        val pathToNearestRoad = shortestCastToRoad(source, nearbyRoads.map { it.coordinate }) ?: return null
 
         // OK... now our source is that first road tile...
-        val startRoad = pathToNearestRoad.blocks().last()
+        val startRoad = pathToNearestRoad.blocks().first { cityMap.locationsAt(it).any {it.building is Road } }
 
         // now try to go the rest of the way OR bail out...
         val restOfTheWay = truePathfind(listOf(startRoad), destinations) ?: return null
 
         return pathToNearestRoad.plus(restOfTheWay)
+    }
+
+    fun path(start: BlockCoordinate, direction: Direction, maxLength: Int): Path? {
+        val delta = when(direction) {
+            Direction.NORTH -> BlockCoordinate(0, -1)
+            Direction.SOUTH -> BlockCoordinate(0, 1)
+            Direction.EAST -> BlockCoordinate(1, 0)
+            Direction.WEST -> BlockCoordinate(-1, 0)
+            else -> {
+                return null
+            }
+        }
+        var currentBlock = start
+
+        val pathBlocks = mutableListOf(currentBlock)
+
+        repeat(maxLength - 1) {
+            currentBlock = currentBlock.plus(delta)
+            pathBlocks.add(currentBlock)
+        }
+
+        // convert to path with children set appropriately...
+        return Path(pathBlocks.mapIndexed { index, blockCoordinate ->
+            if (index == 0) {
+                makeNode(blockCoordinate, direction)
+            } else {
+                NavigationNode(
+                        cityMap,
+                        blockCoordinate,
+                        makeNode(pathBlocks[index - 1], direction),
+                        0.0,
+                        TransitType.ROAD,
+                        direction
+                )
+            }
+
+        })
+    }
+
+    private fun makeNode(blockCoordinate: BlockCoordinate, direction: Direction): NavigationNode {
+        return NavigationNode(
+                cityMap,
+                blockCoordinate,
+                null,
+                0.0,
+                TransitType.ROAD,
+                direction
+        )
+    }
+
+    // so basically what we want to do here is start from each coordinate and project each way (N,S,E,W) and see if we hit a destination...
+    private fun shortestCastToRoad(source: List<BlockCoordinate>, map: List<BlockCoordinate>, maxLength: Int = 3): Path? {
+        val paths = source.flatMap {
+            listOf(
+                    path(it, Direction.NORTH, maxLength),
+                    path(it, Direction.SOUTH, maxLength),
+                    path(it, Direction.EAST, maxLength),
+                    path(it, Direction.WEST, maxLength)
+            )
+        }.filterNotNull()
+
+        // make sure these paths have a road in em...
+        val pathsWithRoad = paths.filter { it.blocks().any { cityMap.locationsAt(it).any { it.building is Road } } }
+
+        if (pathsWithRoad.isEmpty()) {
+            return null
+        }
+
+        // ok now let's trim those paths...
+        // if we are on a road we don't care to look further...
+        val trimmedPaths = pathsWithRoad.map {
+            val newNodes = it.nodes.dropLastWhile { !cityMap.locationsAt(it.coordinate).any { it.building is Road } }
+            Path(newNodes)
+        }
+
+        return trimmedPaths.minBy { it.length() }
     }
 
     private fun truePathfind(source: List<BlockCoordinate>, destinations: List<BlockCoordinate>, needsRoads: Boolean = true): Path? {
@@ -270,7 +364,6 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                             closedList.add(node)
                         }
                     } else {
-
                         if (needsRoads) {
                             if (drivable(node) || destinations.contains(node.coordinate)) {
                                 openList.add(node)
