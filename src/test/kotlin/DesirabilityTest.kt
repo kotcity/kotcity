@@ -4,6 +4,7 @@ import kotcity.automata.Manufacturer
 import kotcity.automata.Shipper
 import kotcity.data.*
 import kotcity.data.AssetManager
+import kotcity.data.Tunable.DEFAULT_DESIRABILITY
 import kotcity.pathfinding.Pathfinder
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail

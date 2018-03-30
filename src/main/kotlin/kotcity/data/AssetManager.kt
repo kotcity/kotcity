@@ -150,7 +150,6 @@ class AssetManager(val cityMap: CityMap) {
                 }
             }
 
-
             if (production.has("produces")) {
                 production["produces"].asJsonObject?.let { produces ->
                     val names = produces.keys()

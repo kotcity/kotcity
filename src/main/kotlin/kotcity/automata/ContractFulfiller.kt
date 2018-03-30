@@ -210,9 +210,9 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         if (entitiesWithContracts().size > 100)
         {
             val howMany = 1
-            cityMap.locations().randomElements(howMany)?.forEach { location ->
+            cityMap.locations().randomElements(howMany).forEach { location ->
                 val buildings = cityMap.cachedLocationsIn(location.coordinate)
-                val blockAndBuilding = buildings.toList().randomElements(1)?.first()
+                val blockAndBuilding = buildings.toList().randomElements(1).first()
                 val building = blockAndBuilding.building
                 building.voidRandomContract()
             }
