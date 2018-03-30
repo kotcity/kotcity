@@ -18,11 +18,6 @@ class Shipper(val cityMap: CityMap): Debuggable {
                 // we only want to deal with "to" and not to ourself...
                 // we also don't SEND labor
 
-                // THIS TOP CASE is building SENDING something to another building
-                // if (contract.to.building() != building && contract.tradeable != Tradeable.LABOR) {
-                //    sendToOtherBuilding(contract, building)
-                // }
-
                 // let's try to "pull" what we need...
                 if (contract.to.building() == building && contract.tradeable != Tradeable.LABOR) {
                     val wasSuccessful = contract.execute()

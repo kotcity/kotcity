@@ -55,7 +55,7 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
         var newValue = 0.0
         newValue = hasLabor(location, newValue)
 
-        if (location.building.zots.contains(Zot.TOO_MUCH_POLLUTION)) {
+        if (location.building.zots.any { it.type == ZotType.TOO_MUCH_POLLUTION }) {
             newValue += Tunable.POLLUTION_HAPPINESS_PENALTY
         }
 
@@ -109,11 +109,11 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
         }
 
         // we get angry if there is too much traffic...
-        if (location.building.zots.contains(Zot.TOO_MUCH_TRAFFIC)) {
+        if (location.building.zots.any { it.type == ZotType.TOO_MUCH_TRAFFIC} ) {
             newValue -= 3.0
         }
 
-        if (location.building.zots.contains(Zot.TOO_MUCH_POLLUTION)) {
+        if (location.building.zots.any { it.type == ZotType.TOO_MUCH_POLLUTION} ) {
             newValue += Tunable.POLLUTION_HAPPINESS_PENALTY
         }
 

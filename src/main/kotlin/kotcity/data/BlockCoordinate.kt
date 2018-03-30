@@ -1,5 +1,7 @@
 package kotcity.data
 
+import kotcity.pathfinding.Direction
+import kotcity.pathfinding.Path
 import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotcity.util.intBetween
 import kotcity.util.reorder
@@ -57,5 +59,9 @@ data class BlockCoordinate(
 
     fun distanceTo(otherCoordinate: BlockCoordinate): Double {
         return Math.sqrt(((this.x - otherCoordinate.x) * (this.x - otherCoordinate.x) + (this.y - otherCoordinate.y) * (this.y - otherCoordinate.y)).toDouble())
+    }
+
+    fun plus(otherCoordinate: BlockCoordinate): BlockCoordinate {
+        return BlockCoordinate(x + otherCoordinate.x, y + otherCoordinate.y)
     }
 }

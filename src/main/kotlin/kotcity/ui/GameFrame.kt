@@ -447,6 +447,12 @@ class GameFrame : View(), Debuggable {
                     map.tick()
                     populationLabel.text = "Population: ${map.censusTaker.population}"
                     clockLabel.text = serializeDate(map.time)
+
+                    val resRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.LABOR))
+                    val comRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.GOODS))
+                    val indRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.WHOLESALE_GOODS))
+
+                    demandLabel.text = "R: $resRatio C: $comRatio I: $indRatio"
                 }
             }
         }
@@ -490,7 +496,7 @@ class GameFrame : View(), Debuggable {
             canvasPane.add(it)
             it.prefHeight(canvasPane.height - 20)
             it.prefWidth(canvasPane.width - 20)
-            debug("Zot canvas was added!")
+            debug("ZotType canvas was added!")
         }
 
         canvasPane.widthProperty().addListener { _, _, newValue ->

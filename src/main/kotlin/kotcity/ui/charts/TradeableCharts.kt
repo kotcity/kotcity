@@ -38,7 +38,7 @@ class SupplyDemandChart : View() {
         supplySeries.name = "Supply"
         demandSeries.name = "Demand"
 
-        barChart.data.addAll(supplySeries, demandSeries)
+        barChart.data.addAll(demandSeries, supplySeries)
 
         updateChart()
     }

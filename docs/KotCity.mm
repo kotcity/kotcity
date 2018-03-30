@@ -299,7 +299,7 @@
 <node TEXT="Priorities" POSITION="left" ID="ID_370008369" CREATED="1520825725156" MODIFIED="1520826087280">
 <icon BUILTIN="list"/>
 <edge COLOR="#00007c"/>
-<node TEXT="Finish zot renderer... not all zots should be shown at all times" ID="ID_205225688" CREATED="1520826537435" MODIFIED="1520826547542"/>
+<node TEXT="Finish zotType renderer... not all zots should be shown at all times" ID="ID_205225688" CREATED="1520826537435" MODIFIED="1520826547542"/>
 <node TEXT="Implement Building Happiness" ID="ID_1251484247" CREATED="1520825728996" MODIFIED="1520825853152"/>
 <node TEXT="Have unhappy buildings abandon themselves" ID="ID_762259705" CREATED="1520825736820" MODIFIED="1520825744167"/>
 <node TEXT="Implement pollution automata" ID="ID_1671268665" CREATED="1520826248406" MODIFIED="1520826252314"/>

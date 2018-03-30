@@ -22,7 +22,7 @@ class Upgrader(val cityMap: CityMap): Debuggable {
         if (lowestLevelEligable.isNotEmpty()) {
             debug("We have some buildings to upgrade!")
         }
-        lowestLevelEligable.randomElements(3).forEach { location ->
+        lowestLevelEligable.randomElements(1).forEach { location ->
             val oldLevel = location.building.level
             if (oldLevel < 5) {
                 val newLevel = oldLevel + 1

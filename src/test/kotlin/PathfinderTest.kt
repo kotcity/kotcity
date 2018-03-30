@@ -18,7 +18,7 @@ class PathfinderTest {
         pathfinder.purgeCaches()
         outsidePath = pathfinder.pathToOutside(listOf(BlockCoordinate(50, 50)))?.blocks()
         assertTrue(outsidePath != null, "Path to outside should not be null")
-        assertTrue(outsidePath?.count() == 51, "Path to outside should be 51 nodes!")
+        assertTrue(outsidePath?.count() == 51, "Path to outside should be 51 nodes! But it is actually ${outsidePath?.count()}")
     }
 
     @Test
@@ -47,11 +47,11 @@ class PathfinderTest {
         // build one way road branching off
         flatMap.buildRoad(branchStartBlock, branchEndBlock, true)
         pathfinder.purgeCaches()
-        assertTrue(pathfinder.tripTo(branchStartList, branchEndList)?.blocks()?.count() == 27, "Branch path length should be 27 nodes.")
+        assertTrue(pathfinder.tripTo(branchStartList, branchEndList)?.blocks()?.count() == 27, "Branch path totalScore should be 27 nodes.")
         assertTrue(pathfinder.tripTo(branchEndList, branchStartList) == null, "Branch path going wrong way should be null.")
 
         // Test turning right at crossroads works
-        assertTrue(pathfinder.tripTo(startList, branchEndList)?.blocks()?.count() == 51, "Main to branch path length should be 51 nodes.")
+        assertTrue(pathfinder.tripTo(startList, branchEndList)?.blocks()?.count() == 51, "Main to branch path totalScore should be 51 nodes.")
     }
 
     @Test fun tortureTest() {
@@ -82,8 +82,8 @@ class PathfinderTest {
         }
 
         val contractFulfiller = ContactFulfiller(flatMap)
-        contractFulfiller.debug = false
-        contractFulfiller.signContracts(false, maxMillis = 50000)
+        contractFulfiller.debug = true
+        contractFulfiller.signContracts(false, maxMillis = 50000, parallel = false)
 
         // now get all industrial zones... they MUST have all labor populated...
 
@@ -100,7 +100,6 @@ class PathfinderTest {
             }
         }
 
-        val needsLaborRatio = numberWithoutLabor / numberWithLabor
-        assertTrue(needsLaborRatio < 0.05, "Expected 95%+ labor fill rate but was $needsLaborRatio")
+        assertTrue(numberWithoutLabor == 0.0, "Expected 0 to need labor but $numberWithoutLabor still need it.")
     }
 }
