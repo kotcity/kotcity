@@ -5,6 +5,9 @@ import kotcity.pathfinding.Path
 import kotcity.pathfinding.Direction
 import kotcity.util.randomElement
 import kotlin.reflect.KClass
+import java.util.UUID
+
+
 
 interface HasInventory {
     fun balance(): Int
@@ -189,6 +192,11 @@ interface HasConcreteContacts : HasContracts {
     }
 }
 
+fun uuid(): String {
+    val uuid = UUID.randomUUID()
+    return uuid.toString()
+}
+
 abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, HasConcreteContacts {
 
     companion object {
@@ -217,6 +225,7 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
     open var sprite: String? = null
     open var description: String? = null
     var powered = false
+    val uuid = uuid()
     open val powerRequired = 0
     open var upkeep: Int = 0
     open var happiness: Int = 0
@@ -231,6 +240,17 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
     override val contracts: MutableList<Contract> = mutableListOf()
     var goodwill: Int = 0
     var level = 1
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Building) {
+            return false
+        }
+        return uuid == other.uuid
+    }
+
+    override fun toString(): String {
+        return "Building(class=${this.javaClass} uuid=$uuid)"
+    }
 
     fun zone(): Zone? {
         return when {
