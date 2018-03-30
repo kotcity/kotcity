@@ -1,5 +1,8 @@
+
+
 buildscript {
     ext.kotlin_version = '1.2.31'
+    ext.dokka_version = '0.9.16'
 
     repositories {
         mavenCentral()
@@ -10,6 +13,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:${dokka_version}"
     }
 }
 
@@ -24,6 +28,7 @@ apply plugin: 'kotlin'
 apply plugin: 'org.junit.platform.gradle.plugin'
 apply plugin: 'application'
 apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'org.jetbrains.dokka'
 
 mainClassName = "kotcity.ui.LaunchScreenKt"
 targetCompatibility = 1.8
@@ -73,6 +78,22 @@ jar {
         attributes 'Main-Class': 'kotcity.ui.LaunchScreenKt'
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+
+    linkMapping {
+        // Source directory
+        dir = "src/main/kotlin"
+
+        // URL showing where the source code can be accessed through the web browser
+        url = "https://github.com/kotcity/kotcity/blob/master/src/main/kotlin"
+
+        // Suffix which is used to append the line number to the URL. Use #L for GitHub
+        suffix = "#L"
+    }
 }
 
 junitPlatform {

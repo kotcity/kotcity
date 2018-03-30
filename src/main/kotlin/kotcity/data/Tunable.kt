@@ -8,4 +8,6 @@ object Tunable {
     const val POLLUTION_HAPPINESS_PENALTY = -5
     const val MAX_RESOURCE_DISTANCE = 1000
     const val MIN_ZOT_AGE: Int = 5
+    const val MAX_BUILDING_SIZE: Int = 4
+    const val DEFAULT_DESIRABILITY = 0.0
 }

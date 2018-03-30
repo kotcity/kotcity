@@ -53,31 +53,39 @@ class AssetManager(val cityMap: CityMap) {
     fun all(): List<LoadableBuilding> {
         return directories.map { dir ->
             assetsInDir(dir).mapNotNull { assetFile ->
-                val buildingJson = CityFileAdapter.gson.fromJson<JsonElement>(FileReader(assetFile)).asJsonObject
-
-                val buildingType = buildingJson["type"].nullString
-
-                val lb = if (buildingType != null) {
-                    val lb = when(buildingType) {
-                        "commercial" -> Commercial(cityMap)
-                        "residential" -> Residential(cityMap)
-                        "industrial" -> Industrial(cityMap)
-                        "civic" -> Civic(cityMap)
-                        else -> {
-                            throw RuntimeException("Unknown type: $buildingType")
-                        }
-                    }
-                    lb.name = buildingJson["name"].asString
-                    // OK let's populate the rest...
-                    populateBuildingData(lb, buildingJson)
-                    lb
-                } else {
-                    null
-                }
-                lb
+                loadFromFile(assetFile)
             }
 
         }.flatten()
+    }
+
+    /**
+     * Takes a given file and (possibly) returns a [LoadableBuilding]
+     * @param assetFile filename to load from
+     */
+    fun loadFromFile(assetFile: String): LoadableBuilding? {
+        val buildingJson = CityFileAdapter.gson.fromJson<JsonElement>(FileReader(assetFile)).asJsonObject
+
+        val buildingType = buildingJson["type"].nullString
+
+        val lb = if (buildingType != null) {
+            val lb = when (buildingType) {
+                "commercial" -> Commercial(cityMap)
+                "residential" -> Residential(cityMap)
+                "industrial" -> Industrial(cityMap)
+                "civic" -> Civic(cityMap)
+                else -> {
+                    throw RuntimeException("Unknown type: $buildingType")
+                }
+            }
+            lb.name = buildingJson["name"].asString
+            // OK let's populate the rest...
+            populateBuildingData(lb, buildingJson)
+            lb
+        } else {
+            null
+        }
+        return lb
     }
 
     fun buildingFor(klass: KClass<out Building>, name: String): Building {
@@ -149,7 +157,6 @@ class AssetManager(val cityMap: CityMap) {
                     }
                 }
             }
-
 
             if (production.has("produces")) {
                 production["produces"].asJsonObject?.let { produces ->

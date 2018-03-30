@@ -7,9 +7,13 @@ import kotcity.util.randomElement
 import kotlin.reflect.KClass
 import java.util.UUID
 
-
-
+/**
+ * Represents something in (or external) to the city that can have [Tradeable]s in its possession.
+ */
 interface HasInventory {
+    /**
+     * How much [Tradeable.MONEY] that the given thing has.
+     */
     fun balance(): Int
     fun addInventory(tradeable: Tradeable, quantity: Int): Int
     fun setInventory(tradeable: Tradeable, quantity: Int): Int
@@ -19,6 +23,11 @@ interface HasInventory {
     fun transferInventory(to: TradeEntity, tradeable: Tradeable, quantity: Int): Int
 }
 
+/**
+ * This is used for something in the [CityMap] that has REAL trackable inventory.
+ * The reason we have "[HasConcreteInventory]" and not is because the outside [NationalTradeEntity] does not REALLY have anything.
+ * It just pretends to.
+ */
 interface HasConcreteInventory : HasInventory {
     val inventory: Inventory
 
@@ -41,6 +50,9 @@ interface HasConcreteInventory : HasInventory {
         return 0
     }
 
+    /**
+     * Used to print a textual description of the [Tradeable]s that this thing has.
+     */
     override fun summarizeInventory(): String {
         val inventoryBuffer = StringBuffer()
         inventory.forEach { tradeable, qty ->
@@ -53,7 +65,14 @@ interface HasConcreteInventory : HasInventory {
         return inventory.quantity(tradeable)
     }
 
-    // TODO: implement partial fulfillment...
+    /**
+     * Send [Tradeable] to another [TradeEntity] but only if we actually have it
+     * @TODO implement partial fulfillment...
+     * @param to other [TradeEntity] to send to
+     * @param tradeable which [Tradeable] to transact in
+     * @param quantity how many [Tradeable] to send
+     * @return how many [Tradeable] were actually sent to [to]
+     */
     override fun transferInventory(to: TradeEntity, tradeable: Tradeable, quantity: Int): Int {
         if (inventory.has(tradeable, quantity)) {
             inventory.subtract(tradeable, quantity)
@@ -197,9 +216,17 @@ fun uuid(): String {
     return uuid.toString()
 }
 
+/**
+ * The basic unit of simulation in this game. Represents a building and all its attributes.
+ * We currently count [Road] as building as well as [PowerLine].
+ */
 abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, HasConcreteContacts {
 
     companion object {
+        /**
+         * Used by the [CityFileAdapter] to help turn the names in the datafiles to the actual classes.
+         * @param name name of Building
+         */
         fun classByString(name: String?): KClass<out Building>? {
             return when (name) {
                 "Residential" -> Residential::class
@@ -218,22 +245,83 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
         }
     }
 
+    /**
+     * Width in [BlockCoordinate] of the building
+     */
     abstract var width: Int
+
+    /**
+     * Height in [BlockCoordinate] of the building
+     */
     abstract var height: Int
+
+    /**
+     * Used for things like [PowerPlant] so we know what it is (coal/nuclear)
+     */
     open val variety: String? = null
+
+    /**
+     * Friendly name (eg. "Slummy apartment") of building
+     */
     open var name: String? = null
+
+    /**
+     * Filename of sprite asset used to paint this building (I guess maybe this should live in renderer?)
+     * @TODO This kind of violates my idea to keep sim / renderer / UI separate
+     */
     open var sprite: String? = null
+
+    /**
+     * Extended description of this building
+     */
     open var description: String? = null
+
+    /**
+     * true if we have power, false if not
+     */
     var powered = false
+
+    /**
+     * Unique ID of building
+     * @TODO do we even need this?
+     */
     val uuid = uuid()
+
+    /**
+     * How many units of power this building needs to be happy
+     */
     open val powerRequired = 0
+
+    /**
+     * Eventually, how much $$$ is required to keep this building going. Probably going to be used for civic buildings
+     * like town hall.
+     */
     open var upkeep: Int = 0
+
+    /**
+     * How happy the building is. This can be positive or negative.
+     */
     open var happiness: Int = 0
+
+    /**
+     * Default border color, used for rendering
+     * @TODO should probably move this to renderer... this does not need to live "in" a [Building]
+     */
     open var borderColor: Color = Color.PINK
+
+    /**
+     * How much pollution this building generates...
+     */
     open var pollution: Double = 0.0
 
+    /**
+     * List of [Zot] that this building suffers from. Populated by... [ZotPopulator]
+     */
     var zots = listOf<Zot>()
 
+    /**
+     * A list of [Tradeable] (with quantities) that this building consumes
+     */
     override val consumes: MutableMap<Tradeable, Int> = mutableMapOf()
     override val produces: MutableMap<Tradeable, Int> = mutableMapOf()
     override val inventory: Inventory = Inventory()

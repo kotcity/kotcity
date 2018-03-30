@@ -1,0 +1,18 @@
+{
+  "type": "residential",
+  "width": 1,
+  "height": 1,
+  "name": "cheap_house",
+  "sprite": "cheap_house.png",
+  "description": "Cheap House",
+  "level": 2,
+  "power_required": 2,
+  "production": {
+    "consumes": {
+      "goods": 3
+    },
+    "produces": {
+      "labor": 2
+    }
+  }
+}

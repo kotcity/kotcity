@@ -6,10 +6,10 @@ import com.github.davidmoten.rtree.geometry.Rectangle
 import com.github.debop.javatimes.plus
 import com.github.debop.javatimes.toDateTime
 import kotcity.automata.*
+import kotcity.data.Tunable.MAX_BUILDING_SIZE
 import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotcity.pathfinding.Direction
-import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotcity.util.reorder
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
@@ -19,8 +19,11 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-const val DEFAULT_DESIRABILITY = 0.0
 
+
+/**
+ * Just a utility class for hanging onto a rectangle of BlockCoordinates
+ */
 data class Corners(
     private val topLeft: BlockCoordinate,
     private val bottomRight: BlockCoordinate,
@@ -38,15 +41,30 @@ data class Corners(
     }
 }
 
+/**
+ * Represents a grid of "desirability values" that we store in the [CityMap]
+ */
 data class DesirabilityLayer(val zoneType: Zone, val level: Int) : QuantizedMap<Double>(1) {
     init {
         map = map.withDefault { 0.0 }
     }
 }
 
+/**
+ * A map representing the city. The map hangs on to [Building]s and [Location]s. The map is set up as a grid
+ * of [BlockCoordinate] and various layers hanging onto various values (desirability, crime, etc).
+ *
+ * @property width width in blocks of the city
+ * @property height height in blocks of the city
+ */
 data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     companion object {
+        /**
+         * Returns a totally flat map of the given size.
+         * @param width width in [BlockCoordinate]s
+         * @param height height in [BlockCoordinate]s
+         */
         fun flatMap(width: Int = 512, height: Int = 512): CityMap {
             val map = CityMap(width, height)
             // set all tiles to ground...
@@ -97,16 +115,36 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     private var doingHourly = false
 
+    /**
+     * Every time the [Liquidator] runs it will drop a count of bulldozed zones in here so we know
+     * how many get demolished.
+     */
     var bulldozedCounts = mutableMapOf<Zone, Int>().withDefault { 0 }
 
+    /**
+     * Current time in the simulation
+     */
     var time: Date
 
-    var debug = true
+    /**
+     * Should we print debug output or not?
+     */
+    var debug = false
 
-    // where we loaded OR saved this city to...
-    // used to determine save vs. save as...
+    /**
+     * where we loaded OR saved this city to...
+     * used to determine save vs. save as...
+     */
     var fileName: String? = null
+
+    /**
+     * Name of the city
+     */
     var cityName: String? = null
+
+    /**
+     * An "r-tree" that lets us do relatively fast lookups on buildings in our city
+     */
     private var buildingIndex = RTree.create<Building, Rectangle>()!!
 
     // OK! we will require one key per map cell
@@ -120,7 +158,15 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             durationValue = 15
         )
     )
+
+    /**
+     * Cache control object for locations.
+     */
     private val locationsInCache = locationsInCachePair.first
+    /**
+     * a cached version of [locationsIn]. This can be used when you want to do a fast lookup on a building
+     * but don't really care if you are wrong or not
+     */
     val cachedLocationsIn = locationsInCachePair.second
 
     fun debug(message: String) {
@@ -147,12 +193,18 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         time = simpleDateFormat.parse("2000-01-01 12:00:00")
     }
 
+    /**
+     * @param callback pass a function that we'll call and pass a location in
+     */
     fun eachLocation(callback: (Location) -> Unit) {
         buildingLayer.toList().forEach { entry ->
             callback(Location(this, entry.first, entry.second))
         }
     }
 
+    /**
+     * Purges spatial index of buildings...
+     */
     fun purgeRTree() {
         val idx = this.buildingIndex.entries().toBlocking().iterator
         idx.forEach {
@@ -160,18 +212,36 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
+    /**
+     * Returns the minimum and maximum heights on this map
+     * @return a pair of doubles: min and max elevation on the map
+     */
     fun elevations(): Pair<Double, Double> {
         val mapMinElevation = groundLayer.values.map { it.elevation }.min() ?: 0.0
         val mapMaxElevation = groundLayer.values.map { it.elevation }.max() ?: 0.0
         return Pair(mapMinElevation, mapMaxElevation)
     }
 
+    /**
+     * Takes a coordinate and a building and returns the "footprint" of the building.
+     * In other words, each block the building sits in.
+     *
+     * @param coordinate Coordinate of the building
+     * @param building The building
+     * @return a list of matching blocks
+     */
     fun buildingBlocks(coordinate: BlockCoordinate, building: Building): List<BlockCoordinate> {
         val xRange = coordinate.x..coordinate.x + (building.width - 1)
         val yRange = coordinate.y..coordinate.y + (building.height - 1)
         return xRange.flatMap { x -> yRange.map { BlockCoordinate(x, it) } }
     }
 
+    /**
+     * Pass it a start and and end block and it will return you a list of all the blocks in between, in a line.
+     * As the name indicates, we use this to figure out where to put roads.
+     * @param startBlock Start of the road
+     * @param endBlock End of the road
+     */
     private fun roadBlocks(startBlock: BlockCoordinate, endBlock: BlockCoordinate): MutableList<BlockCoordinate> {
         val blockList = mutableListOf<BlockCoordinate>()
         if (Math.abs(startBlock.x - endBlock.x) > Math.abs(startBlock.y - endBlock.y)) {
@@ -188,6 +258,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return blockList
     }
 
+    /**
+     * Does a spatial lookup at *coordinate* for a list of [Location]s
+     * @param coordinate coordinate to check
+     * @param distance max radius in blocks
+     */
     fun nearestBuildings(coordinate: BlockCoordinate, distance: Int = 10): List<Location> {
         val point = Geometries.point(coordinate.x.toFloat(), coordinate.y.toFloat())
         return buildingIndex.search(point, distance.toDouble())
@@ -202,7 +277,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }.toBlocking().toIterable().filterNotNull()
     }
 
-    // TODO: get smarter about index... we don't want to be rebuilding this all the time...
+    /**
+     * Updates the spatial index, enabling quick building lookups...
+     * @TODO get smarter about index... we don't want to be rebuilding this all the time...
+     */
     fun updateBuildingIndex() {
         var newIndex = RTree.star().create<Building, Rectangle>()
         buildingLayer.forEach { coordinate, building ->
@@ -219,8 +297,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         locationsInCache.invalidateAll()
     }
 
+    /**
+     * Suggests a filename to save the city as... it's based off the name of the city but made safe for filenames
+     */
     fun suggestedFilename() = Slug.makeSlug(cityName) + ".kcity"
 
+    /**
+     * Main game loop. The engine calls this every X milliseconds and various functions are run from here.
+     */
     fun tick() {
         time += 1000 * 60
         if (time.toDateTime().minuteOfHour == 0) {
@@ -235,6 +319,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
+    /**
+     * Things that we want done each game hour
+     * @param hour current hour that we are processing in military (24 hour) format... (0 .. 23)
+     */
     suspend fun hourlyTick(hour: Int) {
         try {
             doingHourly = true
@@ -276,6 +364,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
+    /**
+     * Used for things we want done once per day.
+     */
     private fun dailyTick() {
         val self = this
 
@@ -292,11 +383,22 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
+    /**
+     * Used to check traffic at a given coordinate with a certain radius
+     * @param coordinate coordinate to check at
+     * @param radius radius in blocks
+     * @param quantity quantity of traffic. Each one represents the traffic from one contract.
+     */
     fun hasTrafficNearby(coordinate: BlockCoordinate, radius: Int, quantity: Int): Boolean {
         val trafficCount = trafficNearby(coordinate, radius)
         return trafficCount > quantity
     }
 
+    /**
+     * Returns a count of traffic at the given coordinate and radius
+     * @param coordinate
+     * @param radius
+     */
     fun trafficNearby(coordinate: BlockCoordinate, radius: Int): Int {
         val neighboringBlocks = coordinate.neighbors(radius)
         val nearbyRoads = neighboringBlocks.flatMap { cachedLocationsIn(it) }
@@ -305,6 +407,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return nearbyRoads.sumBy { trafficLayer[it.coordinate]?.toInt() ?: 0 }
     }
 
+    /**
+     * A utility function that helps us to time various automata and functions.
+     * @param desc Description of the function (printed to console)
+     * @param timedFunction Actual function to invoke
+     */
     private fun timeFunction(desc: String, timedFunction: () -> Unit) {
         println("Beginning $desc...")
         val startMillis = System.currentTimeMillis()
@@ -314,6 +421,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         println("$desc calc took $totalTime millis")
     }
 
+    /**
+     * Look in a given rectangle and see if we have water...
+     * @param from top left [BlockCoordinate]
+     * @param to bottom right [BlockCoordinate]
+     */
     private fun waterFound(from: BlockCoordinate, to: BlockCoordinate): Boolean {
         var waterFound = false
         BlockCoordinate.iterate(from, to) {
@@ -325,6 +437,13 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return waterFound
     }
 
+    /**
+     * See if we can plop a new building on the map at the given coordinate
+     * @param newBuilding proposed building
+     * @param coordinate top left coordinate of building
+     * @param waterCheck if true, we will make sure we can't build this on water
+     * @return true if we can build here, false if not
+     */
     fun canBuildBuildingAt(newBuilding: Building, coordinate: BlockCoordinate, waterCheck: Boolean = true): Boolean {
 
         // OK... let's get nearby buildings to really cut this down...
@@ -372,6 +491,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return true
     }
 
+    /**
+     * Builds [Railroad] between the two supplied [BlockCoordinate]. Railroad can currently be built in an "L" shape.
+     * @see [buildRailroadLeg]
+     * @param from start [BlockCoordinate]
+     * @param to end [BlockCoordinate]
+     */
     fun buildRailroad(from: BlockCoordinate, to: BlockCoordinate) {
         val dx = Math.abs(from.x - to.x)
         val dy = Math.abs(from.y - to.y)
@@ -385,6 +510,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         buildRailroadLeg(mid, to)
     }
 
+    /**
+     * Builds a single segment of [Railroad]. Ends up being assembled into an "L" shape.
+     * @param from start [BlockCoordinate]
+     * @param to end [BlockCoordinate]
+     */
     private fun buildRailroadLeg(from: BlockCoordinate, to: BlockCoordinate) {
         roadBlocks(from, to).forEach { block ->
             val railroad = Railroad(this)
@@ -398,6 +528,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         updateBuildingIndex()
     }
 
+    /**
+     * Builds a (possibly) one-way road or standard road
+     * @param from start [BlockCoordinate]
+     * @param to end [BlockCoordinate]
+     * @param isOneWay if it's true, this is a one way road. The direction starts at [from] and goes to [to]
+     */
     fun buildRoad(from: BlockCoordinate, to: BlockCoordinate, isOneWay: Boolean = false) {
         roadBlocks(from, to).forEach { block ->
             val newRoad =
@@ -417,6 +553,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         updateBuildingIndex()
     }
 
+    /**
+     * Returns a count of pollution at the given [BlockCoordinate]
+     * @param coordinate coordinate to check
+     * @param radius radius in [BlockCoordinate]s to look at
+     */
     fun pollutionNearby(coordinate: BlockCoordinate, radius: Int): Double {
         val blocksToCheck = coordinate.neighbors(radius)
         return blocksToCheck.map {
@@ -424,6 +565,13 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }.sum()
     }
 
+    /**
+     * Builds a [Road] that is one-way
+     * @TODO why are we passing in [block] here? I need to look...
+     * @param from start [BlockCoordinate]
+     * @param to end [BlockCoordinate]
+     * @param block I am not sure
+     */
     private fun buildOneWayRoad(from: BlockCoordinate, to: BlockCoordinate, block: BlockCoordinate): Road {
         val dx = Math.abs(to.x - from.x)
         val dy = Math.abs(to.y - from.y)
@@ -464,6 +612,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return Road(this, dir)
     }
 
+    /**
+     * Designates a given area as a certain [Zone]
+     * @param type [Zone] to mark
+     * @param from top-left corner
+     * @param to bottom-right corner
+     */
     fun zone(type: Zone, from: BlockCoordinate, to: BlockCoordinate) {
         BlockCoordinate.iterate(from, to) {
             if (!waterFound(it, it)) {
@@ -474,6 +628,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
+    /**
+     * Plops the given [Building] at the given [BlockCoordinate]. Note the coordinate is the top-left
+     * of the building. We do check for collisions, hopefully preventing overlaps.
+     *
+     * @param building [Building] to put
+     * @param block [BlockCoordinate] of that building
+     * @param updateBuildingIndex if true, update the spatial index. We MAY not want to do this in a bulk scenario like map loading
+     */
     fun build(building: Building, block: BlockCoordinate, updateBuildingIndex: Boolean = true) {
         if (!canBuildBuildingAt(building, block)) {
             debug("We have an overlap! not building!")
@@ -492,6 +654,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
+    /**
+     * Bulldozes from the top left to the bottom right
+     * @param from top-left of bulldozed zone
+     * @param to bottom-right of bulldozed zone
+     */
     fun bulldoze(from: BlockCoordinate, to: BlockCoordinate) {
         synchronized(buildingLayer) {
             BlockCoordinate.iterate(from, to) { coordinate ->
@@ -521,20 +688,36 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         updateBuildingIndex()
     }
 
+    /**
+     * Used to store where oil, gold, etc are underneath the map. Not currently used.
+     * @TODO should I just rip this out?
+     * @param resourceName
+     * @param blockCoordinate
+     * @param resourceValue
+     */
     fun setResourceValue(resourceName: String, blockCoordinate: BlockCoordinate, resourceValue: Double) {
-        // make sure that fucker is set!
         if (resourceLayers[resourceName] == null) {
             resourceLayers[resourceName] = QuantizedMap(4)
         }
         resourceLayers[resourceName]?.put(blockCoordinate, resourceValue)
     }
 
+    /**
+     * Removes zoning designation from a rectangle of [BlockCoordinate]
+     * @param firstBlock top left
+     * @param lastBlock bottom right
+     */
     fun dezone(firstBlock: BlockCoordinate, lastBlock: BlockCoordinate) {
         BlockCoordinate.iterate(firstBlock, lastBlock) {
             zoneLayer.remove(it)
         }
     }
 
+    /**
+     * Builds a line of powerlines from [firstBlock] to [lastBlock]
+     * @param firstBlock first block of powerline
+     * @param lastBlock last block of powerline
+     */
     fun buildPowerline(firstBlock: BlockCoordinate, lastBlock: BlockCoordinate) {
         roadBlocks(firstBlock, lastBlock).forEach { block ->
             val newPowerLine = PowerLine(this)
@@ -544,6 +727,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
+    /**
+     * Returns a list of [Location]s in the provided rectangle of coordinates
+     * @return List of [Location]s that we found
+     * @param topLeft top left of rectangle
+     * @param bottomRight bottom right of rectangle
+     */
     fun locationsInRectangle(topLeft: BlockCoordinate, bottomRight: BlockCoordinate): List<Location> {
         val buildings = buildingIndex.search(
             Geometries.rectangle(
@@ -562,6 +751,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }.toBlocking().toIterable().filterNotNull()
     }
 
+    /**
+     * Returns a list of [Location]s that we found at the current coordinate
+     * @param coordinate coordinate to search at
+     */
     fun locationsAt(coordinate: BlockCoordinate): List<Location> {
         val point = Geometries.point(coordinate.x.toDouble(), coordinate.y.toDouble())
         val buildings = buildingIndex.search(point)
@@ -576,6 +769,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }.toBlocking().toIterable().filterNotNull()
     }
 
+    /**
+     * Returns 4 [BlockCoordinate] that represent each corner of a building. We use this for bounds checking
+     * @param building building to check
+     * @param block coordinate of building
+     */
     private fun buildingCorners(building: Building, block: BlockCoordinate): Corners {
         val buildingTopLeft = BlockCoordinate(block.x, block.y)
         val buildingBottomRight = BlockCoordinate(block.x + building.width - 1, block.y + building.height - 1)
@@ -586,7 +784,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return Corners(buildingTopLeft, buildingBottomRight, buildingTopRight, buildingBottomLeft)
     }
 
-    // TODO: this kind of sucks...
+    /**
+     * For a given [Building], runs through it and finds the coordinate
+     * @bug This is slow as hell...
+     * @param building [Building] to locate
+     */
     fun coordinatesForBuilding(building: Building): BlockCoordinate? {
         synchronized(buildingLayer) {
             return buildingLayer.toList().find {
@@ -595,6 +797,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
     }
 
+    /**
+     * Checks map at a given [BlockCoordinate] to return a list of [Location]s
+     * @param block coordinate to check at
+     */
     private fun locationsIn(block: BlockCoordinate): List<Location> {
         val nearestBuildings = nearestBuildings(block, MAX_BUILDING_SIZE + 1)
         val filteredBuildings = nearestBuildings.filter {
@@ -609,8 +815,16 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         return filteredBuildings
     }
 
+    /**
+     * We will probably end up having a desirabilty layer for each zone and each level... but I am not 100% sure yet
+     * @param type [Zone] type to get
+     * @param level level of matching desirability layer (1-5)
+     */
     fun desirabilityLayer(type: Zone, level: Int) = desirabilityLayers.find { it.level == level && it.zoneType == type }
 
+    /**
+     * Returns a massive list of all locations
+     */
     fun locations(): List<Location> {
         synchronized(buildingLayer) {
             val sequence = buildingLayer.entries.iterator().asSequence()
