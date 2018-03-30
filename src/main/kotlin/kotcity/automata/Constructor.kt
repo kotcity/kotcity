@@ -58,9 +58,9 @@ class Constructor(val cityMap: CityMap) : Debuggable {
     // the HIGHER the ratio the more we should try to build...
     private fun howManyToBuild(zoneType: Zone): Int {
 
-        val idealIndustrial = 1.0
+        val idealIndustrial = 0.85
         val idealResidential = 0.5
-        val idealCommercial = 1.0
+        val idealCommercial = 0.80
 
         return when (zoneType) {
             Zone.COMMERCIAL -> {
@@ -87,13 +87,5 @@ class Constructor(val cityMap: CityMap) : Debuggable {
         }
         return Math.ceil(delta / 0.05).toInt()
     }
-
-    private fun desirableZoneCount(zone: Zone): Int {
-        return cityMap.zoneLayer.keys.filter { cityMap.zoneLayer[it] == zone && cityMap.cachedLocationsIn(it).count() == 0 }.mapNotNull { coordinate ->
-            cityMap.desirabilityLayers.map { it[coordinate] ?: 0.0 }.max()
-        }.filter { it > 0 }.count()
-    }
-
-
 
 }
