@@ -65,11 +65,16 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
             building is Residential || building is Commercial || building is Industrial
         }.filter { location ->
             val noMoney = (location.building.quantityOnHand(Tradeable.MONEY) <= -50)
-            val isResidentialWithNoGoods = (location.building is Residential && location.building.quantityOnHand(Tradeable.GOODS) <= 0)
+            val isResidentialWithNoGoods = (location.building is Residential && hasNoGoodsZot(location.building))
 
             val outOfGoodwill = location.building.goodwill < -99
 
             noMoney || isResidentialWithNoGoods || outOfGoodwill
         }
+    }
+
+    private fun hasNoGoodsZot(building: Residential): Boolean {
+        val noGoodsZot = building.zots.find { it.type == ZotType.NO_GOODS && it.age > Tunable.MIN_ZOT_AGE}
+        return noGoodsZot != null
     }
 }

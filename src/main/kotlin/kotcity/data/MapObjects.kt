@@ -7,10 +7,6 @@ enum class TileType(val color: Color) {
     WATER(Color.DARKBLUE)
 }
 
-enum class BuildingType {
-    RAILROAD, ROAD, RESIDENTIAL, COMMERCIAL, INDUSTRIAL, POWER_LINE, POWER_PLANT, CIVIC
-}
-
 enum class Zone(val color: Color) {
     RESIDENTIAL(Color.DARKGREEN),
     COMMERCIAL(Color.DARKBLUE),

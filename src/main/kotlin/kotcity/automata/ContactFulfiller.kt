@@ -95,7 +95,11 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         synchronized(building) {
             building.consumes.forEach { tradeable, _ ->
                 var done = false
-                while (building.currentQuantityWanted(tradeable) > 0 && !done) {
+                val maxAttempts = 5
+                var currentAttempt = 0
+                while (building.currentQuantityWanted(tradeable) > 0 && !done && currentAttempt < maxAttempts) {
+
+                    currentAttempt += 1
 
                     val needsCount = building.currentQuantityWanted(tradeable)
                     debug("Building $building needs $needsCount $tradeable")
@@ -130,7 +134,10 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
 
             building.produces.forEach { tradeable, _ ->
                 var done = false
-                while (building.currentQuantityForSale(tradeable) > 0 && !done) {
+                val maxAttempts = 5
+                var currentAttempt = 0
+                while (building.currentQuantityForSale(tradeable) > 0 && !done && currentAttempt < maxAttempts) {
+                    currentAttempt += 1
                     // limit us to selling at most 33% of our output to a single source...
                     val forSaleCount = building.currentQuantityForSale(tradeable).coerceAtMost((building.producesQuantity(tradeable) / 3).coerceAtLeast(1))
                     debug("${building.description} trying to sell $forSaleCount $tradeable")
