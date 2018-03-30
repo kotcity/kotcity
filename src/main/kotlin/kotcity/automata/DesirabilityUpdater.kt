@@ -88,7 +88,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
                     val availableBuyingWholesaleGoodsMediumDistanceScore = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, mediumDistance)  * 0.1
                     val availableBuyingWholesaleGoodsLongDistanceScore = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, longDistance) * 0.1
                     val availableLaborScore = resourceFinder.quantityForSaleNearby(Tradeable.LABOR, coordinate, maxDistance)  * 0.1
-                    val trafficAdjustment = -(cityMap.trafficNearby(coordinate, 3) * 0.05)
+                    val trafficAdjustment = -( (cityMap.trafficNearby(coordinate, 3) * 0.05) / 2)
                     desirabilityLayer[coordinate] = if (cityMap.censusTaker.tradeBalance(Tradeable.WHOLESALE_GOODS) > 5) {
                         0.0
                     } else {
