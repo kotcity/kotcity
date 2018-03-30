@@ -1,4 +1,4 @@
-# KotCity 0.48
+# KotCity 0.49
 
 [![Build Status](https://semaphoreci.com/api/v1/kotcity/kotcity/branches/master/badge.svg)](https://semaphoreci.com/kotcity/kotcity) [![Build Status](https://travis-ci.org/kotcity/kotcity.svg?branch=master)](https://travis-ci.org/kotcity/kotcity)
 
@@ -19,8 +19,9 @@ Java 8+ is required. On Windows it will look for JRE and bring you to download p
 
 ## New in this version
 
-* pollution
-* one way roads
+* railways (kind of broken still! bear with me...)
+* better desirability calculation
+* more stable economy...
 
 ## Next up!
 
