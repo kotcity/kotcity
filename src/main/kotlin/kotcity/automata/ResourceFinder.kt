@@ -30,16 +30,17 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         // now we gotta make sure they got the resource...
         val buildingsWithResource = nearbyBuildings.filter { it.building.currentQuantityForSale(tradeable) >= quantity }
 
-        if (buildingsWithResource.isNotEmpty()) {
-            debug("We have ${buildingsWithResource.size} buildings to potentially buy $tradeable from...")
+        // we gotta order em by distance...
+        val sortedBuildingsWithResource = buildingsWithResource.sortedBy { location -> sourceBlocks.map { it.distanceTo(location.coordinate) }.min() }
+
+        if (sortedBuildingsWithResource.isNotEmpty()) {
+            debug("We have ${sortedBuildingsWithResource.size} buildings to potentially buy $tradeable from...")
         }
 
-        synchronized(buildingsWithResource) {
-            var shortestPath: Path?
+        synchronized(sortedBuildingsWithResource) {
+            var shortestPath: Path? = firstWithValidPath(sourceBlocks, sortedBuildingsWithResource)
             var preferredTradeEntity: TradeEntity? = null
             var preferredPath: Path? = null
-
-            shortestPath = firstWithValidPath(sourceBlocks, buildingsWithResource)
 
             // OK! now if we got a path we want to find the building in the last block...
             shortestPath?.blocks()?.last()?.let {
@@ -106,7 +107,6 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
         return null
     }
 
-    // TODO: find each path individually to each building...
     fun nearestBuyingTradeable(tradeable: Tradeable, sourceBlocks: List<BlockCoordinate>, maxDistance: Int = MAX_RESOURCE_DISTANCE): Pair<TradeEntity, Path>? {
         // OK... we need to find nearby buildings...
         val buildings = sourceBlocks.flatMap { cityMap.nearestBuildings(it, maxDistance) }.distinct()
@@ -117,8 +117,11 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
             debug("We have ${buildingsWantingResource.size} buildings to potentially sell $tradeable to...")
         }
 
-        synchronized(buildingsWantingResource) {
-            var shortestPath: Path? = firstWithValidPath(sourceBlocks, buildingsWantingResource)
+        // we gotta order em by distance...
+        val sortedBuildingsWantingResources = buildingsWantingResource.sortedBy { location -> sourceBlocks.map { it.distanceTo(location.coordinate) }.min() }
+
+        synchronized(sortedBuildingsWantingResources) {
+            var shortestPath: Path? = firstWithValidPath(sourceBlocks, sortedBuildingsWantingResources)
 
             // OK! now if we got a path we want to find the building in the last block...
             shortestPath?.let {shortestPath ->

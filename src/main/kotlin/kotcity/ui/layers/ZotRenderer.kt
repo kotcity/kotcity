@@ -9,10 +9,7 @@ import javafx.scene.canvas.GraphicsContext
 import javafx.scene.image.Image
 import javafx.scene.paint.Color
 import javafx.util.Duration
-import kotcity.data.BlockCoordinate
-import kotcity.data.CityMap
-import kotcity.data.Location
-import kotcity.data.Zot
+import kotcity.data.*
 import kotcity.ui.ResizableCanvas
 import kotcity.ui.map.CityRenderer
 import kotcity.ui.sprites.ZotSpriteLoader
@@ -36,7 +33,7 @@ class ZotRenderer(
     private var locationsWithZots = emptyList<Location>()
     private val zotRecalcInterval = 15000
 
-    private var zotForBuildingCache: LoadingCache<Location, Zot?> = Caffeine.newBuilder()
+    private var zotTypeForBuildingCache: LoadingCache<Location, Zot?> = Caffeine.newBuilder()
         .maximumSize(10000)
         .expireAfterWrite(15, TimeUnit.SECONDS)
         .build<Location, Zot?> { key -> key.building.zots.randomElement() }
@@ -126,10 +123,10 @@ class ZotRenderer(
     // OK we need a cache here so we only shoot back a few buildings
     private fun randomBuildingsWithZots(visibleBlockRange: Pair<BlockCoordinate, BlockCoordinate>): List<Location> {
         val buildingsInRectangle = cityMap.locationsInRectangle(visibleBlockRange.first, visibleBlockRange.second)
-        return buildingsInRectangle.filter { it.building.zots.isNotEmpty() }
+        return buildingsInRectangle.filter { it.building.zots.filter { it.age > Tunable.MIN_ZOT_AGE }.isNotEmpty() }
     }
 
     private fun randomZot(location: Location): Zot? {
-        return zotForBuildingCache[location]
+        return zotTypeForBuildingCache[location]
     }
 }

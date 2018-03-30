@@ -10,11 +10,11 @@
   "pollution": 0,
   "production": {
     "consumes": {
-      "labor": 3,
+      "labor": 2,
       "wholesale_goods": 10
     },
     "produces": {
-      "goods": 10
+      "goods": 12
     }
   }
 }

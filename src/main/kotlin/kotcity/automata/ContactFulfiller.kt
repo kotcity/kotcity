@@ -82,8 +82,6 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         }
 
 
-
-
     }
 
     private fun handleBuilding(entry: Location) {
@@ -99,11 +97,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                 var done = false
                 while (building.currentQuantityWanted(tradeable) > 0 && !done) {
 
-                    // we want to cap the max number we can get...
-                    val rawNeeds = building.consumesQuantity(tradeable)
-
-                    // we can only get 1/3 of our goods from any one place...
-                    val needsCount = building.currentQuantityWanted(tradeable).coerceAtMost((rawNeeds / 3).coerceAtLeast(1))
+                    val needsCount = building.currentQuantityWanted(tradeable)
                     debug("Building $building needs $needsCount $tradeable")
                     val bestSource: Pair<TradeEntity, Path>? = findNearbySource(buildingBlocks, tradeable, needsCount)
 
@@ -208,7 +202,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
 
         if (entitiesWithContracts().size > 100)
         {
-            val howMany = 5
+            val howMany = 1
             cityMap.locations().randomElements(howMany)?.forEach { location ->
                 val buildings = cityMap.cachedLocationsIn(location.coordinate)
                 val blockAndBuilding = buildings.toList().randomElements(1)?.first()

@@ -132,14 +132,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         shipper.debug = false
         contractFulfiller.debug = false
         manufacturer.debug = false
-        constructor.debug = true
+        constructor.debug = false
         taxCollector.debug = false
         desirabilityUpdater.debug = false
         liquidator.debug = false
         zotPopulator.debug = false
         censusTaker.tick()
         happinessUpdater.debug = false
-        upgrader.debug = true
+        upgrader.debug = false
         nationalTradeEntity.resetCounts()
 
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -243,8 +243,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             if (hour % 3 == 0) {
                 timeFunction("Calculating desirability") { desirabilityUpdater.update() }
                 timeFunction("Terminating random contracts") { contractFulfiller.terminateRandomContracts() }
-                withTimeout(5000, TimeUnit.MILLISECONDS) {
-                    timeFunction("Signing contracts") { contractFulfiller.signContracts() }
+                withTimeout(10000, TimeUnit.MILLISECONDS) {
+                    timeFunction("Signing contracts") { contractFulfiller.signContracts(true, 10000, true) }
                 }
                 timeFunction("Doing manufacturing") { manufacturer.tick() }
                 timeFunction("Shipping products") { shipper.tick() }

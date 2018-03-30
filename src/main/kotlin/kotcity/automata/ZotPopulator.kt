@@ -19,22 +19,40 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
                         mutableListOf()
                     }
                 }
-                val finalZots = newZots.plus(genericZots(location))
-                debug("Final zots for ${location.building} are $finalZots")
-                location.building.zots = finalZots
+                val finalNewZots = newZots.plus(genericZots(location))
+
+                val existingZots = location.building.zots
+                val combinedZots: List<Zot> = combineZots(existingZots, finalNewZots)
+                if (combinedZots.isNotEmpty()) {
+                    debug("New zots for building: $combinedZots")
+                }
+                location.building.zots = combinedZots
             }
 
         }
     }
 
-
+    private fun combineZots(existingZots: List<Zot>, newZots: List<Zot>): List<Zot> {
+        val summedZots = mutableListOf<Zot>()
+        newZots.forEach { newZot ->
+            val oldZot = existingZots.find { it.type == newZot.type }
+            if (oldZot == null) {
+                summedZots.add(newZot)
+            } else {
+                val summedZot = Zot(oldZot.type)
+                summedZot.age = oldZot.age + newZot.age
+                summedZots.add(summedZot)
+            }
+        }
+        return summedZots
+    }
 
     private fun updateIndustrial(location: Location): List<Zot> {
         val building = location.building
         val zotList = mutableListOf<Zot>()
 
         if (building.totalBeingBought(Tradeable.LABOR) == 0) {
-            zotList.add(Zot.NO_WORKERS)
+            zotList.add(Zot(ZotType.NO_WORKERS))
         }
 
         return zotList
@@ -45,15 +63,15 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
         val zotList = mutableListOf<Zot>()
 
         if (building.totalBeingBought(Tradeable.LABOR) == 0) {
-            zotList.add(Zot.NO_WORKERS)
+            zotList.add(Zot(ZotType.NO_WORKERS))
         }
 
         if (!cityMap.hasTrafficNearby(location.coordinate, 5, 50)) {
-            zotList.add(Zot.NO_CUSTOMERS)
+            zotList.add(Zot(ZotType.NO_CUSTOMERS))
         }
 
         if (cityMap.pollutionNearby(location.coordinate, Tunable.POLLUTION_RADIUS) > Tunable.POLLUTION_WARNING) {
-            zotList.add(Zot.TOO_MUCH_POLLUTION)
+            zotList.add(Zot(ZotType.TOO_MUCH_POLLUTION))
         }
 
         return zotList
@@ -63,7 +81,7 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
         val building = location.building
         val zotList = mutableListOf<Zot>()
         if (!building.powered) {
-            zotList.add(Zot.NO_POWER)
+            zotList.add(Zot(ZotType.NO_POWER))
         }
         return zotList
     }
@@ -74,15 +92,15 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
         val zotList = mutableListOf<Zot>()
 
         if (building.quantityOnHand(Tradeable.GOODS) <= 0) {
-            zotList.add(Zot.NO_GOODS)
+            zotList.add(Zot(ZotType.NO_GOODS))
         }
 
         if (cityMap.hasTrafficNearby(location.coordinate, Tunable.TRAFFIC_RADIUS, Tunable.MAX_TRAFFIC)) {
-            zotList.add(Zot.TOO_MUCH_TRAFFIC)
+            zotList.add(Zot(ZotType.TOO_MUCH_TRAFFIC))
         }
 
         if (cityMap.pollutionNearby(location.coordinate, Tunable.POLLUTION_RADIUS) > Tunable.POLLUTION_WARNING) {
-            zotList.add(Zot.TOO_MUCH_POLLUTION)
+            zotList.add(Zot(ZotType.TOO_MUCH_POLLUTION))
         }
 
         return zotList
