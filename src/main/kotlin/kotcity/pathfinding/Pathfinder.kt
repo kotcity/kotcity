@@ -76,12 +76,6 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     private val heuristicCache = cachedHeuristicPair.first
     private val cachedHeuristic = cachedHeuristicPair.second
 
-    private val cachedPathToOutsidePair = ::pathToOutside.cache()
-    val cachedPathToOutside = cachedPathToOutsidePair.second
-
-    private val cachedTripToPair = ::tripTo.cache()
-    val cachedTripTo = cachedTripToPair.second
-
     private val mapBorders: List<BlockCoordinate> by lazy {
         // I found this frustrating to write and this code
         // can probably be improved upon...
@@ -167,7 +161,8 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                     }
                     is Railroad -> {
                         score -= 5
-                        score += (cityMap.trafficLayer[current] ?: 0.0)
+                        // traffic is 10 times less bad on a train :)
+                        score += (cityMap.trafficLayer[current] ?: 0.0) / 10
                     }
                     else -> {
                         score += 10_000
@@ -226,7 +221,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     ): Path? {
 
         if (destinations.isEmpty()) {
-            throw RuntimeException("We cannot pathfind to an empty destination!")
+            throw RuntimeException("We cannot path find to an empty destination!")
         }
 
         // let's find a road semi-nearby
@@ -252,7 +247,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         // now try to go the rest of the way OR bail out...
         val restOfTheWay = truePathfind(listOf(startRoad), destinations)
         if (restOfTheWay == null) {
-            debug("Our source is $startRoad and destination is: ${destinations}")
+            debug("Our source is $startRoad and destination is: $destinations")
             debug("Now we can't find a path AFTER finding a road!")
             return null
         }

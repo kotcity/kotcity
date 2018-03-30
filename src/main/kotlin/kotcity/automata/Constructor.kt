@@ -3,11 +3,8 @@ package kotcity.automata
 import kotcity.automata.util.BuildingBuilder
 import kotcity.data.*
 import kotcity.data.AssetManager
-import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotcity.util.Debuggable
 import kotcity.util.randomElement
-import java.util.*
-import kotlin.reflect.KClass
 
 class Constructor(val cityMap: CityMap) : Debuggable {
 
@@ -24,43 +21,38 @@ class Constructor(val cityMap: CityMap) : Debuggable {
         zoneTypes.forEach { zoneType ->
             val howManyBuildings: Int = (desirableZoneCount(zoneType).toDouble() * 0.05).coerceIn(1.0..5.0).toInt()
 
-            val wasOverSupplied = oversupply(zoneType)
+            val shouldBuild = shouldBuild(zoneType)
 
-            if (wasOverSupplied) {
+            if (!shouldBuild) {
                 debug("$zoneType is oversupplied so not bothering to build...")
             }
 
-            // check for oversupply?
-            if (!wasOverSupplied) {
+            // check for shouldBuild?
+            if (shouldBuild) {
                 repeat(howManyBuildings, {
 
-                    val howManyBulldozed = cityMap.bulldozedCounts
-                    if (howManyBulldozed[zoneType] ?: 0 == 0) {
-                        val layer = cityMap.desirabilityLayer(zoneType, 1) ?: return
+                    val layer = cityMap.desirabilityLayer(zoneType, 1) ?: return
 
-                        // get the 10 best places... pick one randomly ....
-                        val blockAndScore = layer.entries().filter { isEmpty(it) }.filter { it.value > 0}.sortedByDescending { it.value }.take(10).randomElement()
-                        if (blockAndScore == null) {
-                            if (debug) {
-                                debug("Could not find most desirable $zoneType zone!")
-                            }
-                        } else {
-                            debug("We will be trying to build at ${blockAndScore.key} with desirability ${blockAndScore.value}")
-                            val coordinate = blockAndScore.key
-                            val desirability = blockAndScore.value
-                            // constructor only constructs level 1 buildings...
-                            val newBuilding = assetManager.findBuilding(zoneType, 1)
-                            if (newBuilding != null) {
-                                debug("The building to be attempted is: $newBuilding")
-                                // let's try like X times...
-                                buildingBuilder.tryToBuild(coordinate, newBuilding)
-                            } else {
-                                debug("Sorry, no building could be found for $zoneType and $desirability")
-                            }
-
+                    // get the 10 best places... pick one randomly ....
+                    val blockAndScore = layer.entries().filter { isEmpty(it) }.filter { it.value > 0}.sortedByDescending { it.value }.take(10).randomElement()
+                    if (blockAndScore == null) {
+                        if (debug) {
+                            debug("Could not find most desirable $zoneType zone!")
                         }
                     } else {
-                        debug("Some $zoneType were bulldozed, so we don't want to build any...")
+                        debug("We will be trying to build at ${blockAndScore.key} with desirability ${blockAndScore.value}")
+                        val coordinate = blockAndScore.key
+                        val desirability = blockAndScore.value
+                        // constructor only constructs level 1 buildings...
+                        val newBuilding = assetManager.findBuilding(zoneType, 1)
+                        if (newBuilding != null) {
+                            debug("The building to be attempted is: $newBuilding")
+                            // let's try like X times...
+                            buildingBuilder.tryToBuild(coordinate, newBuilding)
+                        } else {
+                            debug("Sorry, no building could be found for $zoneType and $desirability")
+                        }
+
                     }
 
                 })
@@ -70,17 +62,17 @@ class Constructor(val cityMap: CityMap) : Debuggable {
         }
     }
 
-    private fun oversupply(zoneType: Zone): Boolean {
+    private fun shouldBuild(zoneType: Zone): Boolean {
         when (zoneType) {
             Zone.COMMERCIAL ->
                 // OK... if we supply more GOODS than demand... don't bother building any commercial zones...
-                if (cityMap.censusTaker.tradeBalance(Tradeable.GOODS) > 5) {
+                if (cityMap.censusTaker.supplyRatio(Tradeable.GOODS) > 1.0) {
                     return true
                 }
-            Zone.INDUSTRIAL -> if (cityMap.censusTaker.tradeBalance(Tradeable.WHOLESALE_GOODS) > 5) {
+            Zone.INDUSTRIAL -> if (cityMap.censusTaker.supplyRatio(Tradeable.WHOLESALE_GOODS) > 1.0) {
                 return true
             }
-            Zone.RESIDENTIAL -> if (cityMap.censusTaker.tradeBalance(Tradeable.LABOR) > 5) {
+            Zone.RESIDENTIAL -> if (cityMap.censusTaker.supplyRatio(Tradeable.LABOR) > 0.8) {
                 return true
             }
         }

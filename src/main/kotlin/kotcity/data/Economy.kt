@@ -16,10 +16,10 @@ object Prices {
     fun priceForGoods(tradeable: Tradeable, quantity: Int): Int {
         return when (tradeable) {
             Tradeable.MONEY -> quantity * 1
-            Tradeable.GOODS -> quantity * 2
+            Tradeable.GOODS -> quantity * 5
             Tradeable.LABOR -> quantity * 1
             Tradeable.RAW_MATERIALS -> quantity * 1
-            Tradeable.WHOLESALE_GOODS -> quantity * 2
+            Tradeable.WHOLESALE_GOODS -> quantity * 3
         }
     }
 }

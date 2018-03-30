@@ -58,8 +58,8 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
                 val availableGoodsLongDistanceScore = resourceFinder.quantityWantedNearby(Tradeable.GOODS, coordinate, longDistance) * 0.1
                 val availableLaborScore = resourceFinder.quantityForSaleNearby(Tradeable.LABOR, coordinate, maxDistance) * 0.1
 
-                val trafficAdjustment = -(cityMap.trafficNearby(coordinate, 2) * 0.05)
-                val pollutionAdjustment = -(cityMap.pollutionNearby(coordinate, 2) * 0.05)
+                val trafficAdjustment = -(cityMap.trafficNearby(coordinate, 3) * 0.05)
+                val pollutionAdjustment = -(cityMap.pollutionNearby(coordinate, 3) * 0.05)
 
                 desirabilityLayer[coordinate] = if (cityMap.censusTaker.tradeBalance(Tradeable.GOODS) > 5) {
                     0.0
@@ -88,7 +88,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
                     val availableBuyingWholesaleGoodsMediumDistanceScore = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, mediumDistance)  * 0.1
                     val availableBuyingWholesaleGoodsLongDistanceScore = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, longDistance) * 0.1
                     val availableLaborScore = resourceFinder.quantityForSaleNearby(Tradeable.LABOR, coordinate, maxDistance)  * 0.1
-                    val trafficAdjustment = -(cityMap.trafficNearby(coordinate, 2) * 0.05)
+                    val trafficAdjustment = -(cityMap.trafficNearby(coordinate, 3) * 0.05)
                     desirabilityLayer[coordinate] = if (cityMap.censusTaker.tradeBalance(Tradeable.WHOLESALE_GOODS) > 5) {
                         0.0
                     } else {
@@ -157,8 +157,8 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
                 val availableGoodsMediumDistance = resourceFinder.quantityForSaleNearby(Tradeable.GOODS, coordinate, mediumDistance)
                 val availableGoodsMediumDistanceScore = availableGoodsMediumDistance * 0.1
 
-                val trafficAdjustment = -(cityMap.trafficNearby(coordinate, 2) * 0.05)
-                val pollutionAdjustment = -(cityMap.pollutionNearby(coordinate, 2) * 0.05)
+                val trafficAdjustment = -(cityMap.trafficNearby(coordinate, 3) * 0.05)
+                val pollutionAdjustment = -(cityMap.pollutionNearby(coordinate, 3) * 0.05)
 
                 if (population == 0) {
                     desirabilityLayer[coordinate] = 10.0

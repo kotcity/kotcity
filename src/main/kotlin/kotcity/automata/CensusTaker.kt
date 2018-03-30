@@ -44,6 +44,14 @@ class ResourceCounts {
         return supply - demand
     }
 
+    fun consumeCount(tradeable: Tradeable): Int {
+        return counts[Pair(CountType.DEMAND, tradeable)] ?: 0
+    }
+
+    fun supplyCount(tradeable: Tradeable): Int {
+        return counts[Pair(CountType.SUPPLY, tradeable)] ?: 0
+    }
+
 }
 
 class CensusTaker(val cityMap: CityMap): Debuggable {
@@ -89,6 +97,14 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
 
     fun tradeBalance(tradeable: Tradeable): Int {
         return resourceCounts.tradeBalance(tradeable)
+    }
+
+    fun supplyRatio(tradeable: Tradeable): Double {
+        // if we consume less than 10 total... create synthetic demand...
+        if (resourceCounts.consumeCount(tradeable) < 10.0) {
+            return 2.0
+        }
+        return resourceCounts.consumeCount(tradeable).toDouble() / resourceCounts.supplyCount(tradeable).toDouble()
     }
 
     private val listeners = mutableListOf<() -> Unit>()

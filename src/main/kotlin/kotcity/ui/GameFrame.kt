@@ -447,6 +447,12 @@ class GameFrame : View(), Debuggable {
                     map.tick()
                     populationLabel.text = "Population: ${map.censusTaker.population}"
                     clockLabel.text = serializeDate(map.time)
+
+                    val resRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.LABOR))
+                    val comRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.GOODS))
+                    val indRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.WHOLESALE_GOODS))
+
+                    demandLabel.text = "R: $resRatio C: $comRatio I: $indRatio"
                 }
             }
         }
