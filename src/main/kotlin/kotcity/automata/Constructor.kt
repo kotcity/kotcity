@@ -42,7 +42,6 @@ class Constructor(val cityMap: CityMap) : Debuggable {
                 // get the 10 best places... pick one randomly ....
                 val blockAndScore = layer.entries()
                         .filter { isEmpty(it) }
-                        .filter { it.value > 0}
                         .sortedByDescending { it.value }
                         .take(10)
                         .randomElement()
