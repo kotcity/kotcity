@@ -13,18 +13,38 @@ class BuildingBuilder(val cityMap: CityMap): Debuggable {
         var done = false
 
         while (tries < maxTries && !done) {
+            // TODO: fuzz to 50% of building width...
             val fuzzedCoordinate: BlockCoordinate = coordinate.fuzz()
 
-            val buildingBlocks = cityMap.buildingBlocks(fuzzedCoordinate, newBuilding)
+            val buildingZone: Zone? = findZoneForBuilding(newBuilding)
 
-            debug("Trying to build $newBuilding at $fuzzedCoordinate")
-            if (cityMap.canBuildBuildingAt(newBuilding, fuzzedCoordinate)) {
-                done = true
-                cityMap.build(newBuilding, fuzzedCoordinate)
+            if (buildingZone != null) {
+                val buildingBlocks = cityMap.buildingBlocks(fuzzedCoordinate, newBuilding)
+                val validToBuild: Boolean = checkFootprint(buildingZone, buildingBlocks)
+                if (validToBuild) {
+                    debug("Trying to build $newBuilding at $fuzzedCoordinate")
+                    if (cityMap.canBuildBuildingAt(newBuilding, fuzzedCoordinate)) {
+                        done = true
+                        cityMap.build(newBuilding, fuzzedCoordinate)
+                    }
+                }
             }
 
             tries++
 
+        }
+    }
+
+    private fun checkFootprint(buildingZone: Zone, buildingBlocks: List<BlockCoordinate>): Boolean {
+        return buildingBlocks.all { cityMap.zoneLayer[it] == buildingZone }
+    }
+
+    private fun findZoneForBuilding(newBuilding: Building): Zone? {
+        return when (newBuilding::class) {
+            Residential::class ->  Zone.RESIDENTIAL
+            Commercial::class -> Zone.COMMERCIAL
+            Industrial::class -> Zone.INDUSTRIAL
+            else -> null
         }
     }
 
