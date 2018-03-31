@@ -1,6 +1,6 @@
 package kotcity.data
 
-open class QuantizedMap<T>(val quantize: Int = 4) {
+open class QuantizedMap<T>(private val quantize: Int = 4) {
     protected var map: MutableMap<BlockCoordinate, T> = mutableMapOf()
 
     fun put(blockCoordinate: BlockCoordinate, value: T) {

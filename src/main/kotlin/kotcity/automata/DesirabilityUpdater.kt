@@ -39,8 +39,6 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
      */
     fun tick() {
         // let's tick the desirability...
-        debug("Bulldozed Counts: ${cityMap.bulldozedCounts}")
-
         val jobs = arrayListOf<Deferred<Unit>>()
 
         runBlocking {
@@ -199,11 +197,13 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
 
                         val landValueAdjustment = landValueAdjustment(coordinate)
 
-                        desirabilityLayer[coordinate] = (
-                            trafficAdjustment + pollutionAdjustment + availableJobsShortDistanceScore +
-                            availableJobsMediumDistanceScore + availableJobsLongDistanceScore +
-                            availableGoodsShortDistanceScore + availableGoodsMediumDistanceScore + landValueAdjustment
+                        val newResidentialValue = (
+                                trafficAdjustment + pollutionAdjustment + availableJobsShortDistanceScore +
+                                        availableJobsMediumDistanceScore + availableJobsLongDistanceScore +
+                                        availableGoodsShortDistanceScore + availableGoodsMediumDistanceScore + landValueAdjustment
                         )
+
+                        desirabilityLayer[coordinate] = newResidentialValue
                     }
 
                 }
