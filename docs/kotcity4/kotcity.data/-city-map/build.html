@@ -1,0 +1,23 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>CityMap.build - kotcity4</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kotcity4</a>&nbsp;/&nbsp;<a href="../index.html">kotcity.data</a>&nbsp;/&nbsp;<a href="index.html">CityMap</a>&nbsp;/&nbsp;<a href="./build.html">build</a><br/>
+<br/>
+<h1>build</h1>
+<a name="kotcity.data.CityMap$build(kotcity.data.Building, kotcity.data.BlockCoordinate, kotlin.Boolean)"></a>
+<code><span class="keyword">fun </span><span class="identifier">build</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$build(kotcity.data.Building, kotcity.data.BlockCoordinate, kotlin.Boolean)/building">building</span><span class="symbol">:</span>&nbsp;<a href="../-building/index.html"><span class="identifier">Building</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$build(kotcity.data.Building, kotcity.data.BlockCoordinate, kotlin.Boolean)/block">block</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$build(kotcity.data.Building, kotcity.data.BlockCoordinate, kotlin.Boolean)/updateBuildingIndex">updateBuildingIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;true<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Plops the given <a href="../-building/index.html">Building</a> at the given <a href="../-block-coordinate/index.html">BlockCoordinate</a>. Note the coordinate is the top-left
+of the building. We do check for collisions, hopefully preventing overlaps.</p>
+<h3>Parameters</h3>
+<p><a name="building"></a>
+<code>building</code> - <a href="../-building/index.html">Building</a> to put</p>
+<p><a name="block"></a>
+<code>block</code> - <a href="../-block-coordinate/index.html">BlockCoordinate</a> of that building</p>
+<p><a name="updateBuildingIndex"></a>
+<code>updateBuildingIndex</code> - if true, update the spatial index. We MAY not want to do this in a bulk scenario like map loading</p>
+</BODY>
+</HTML>
