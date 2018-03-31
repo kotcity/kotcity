@@ -41,10 +41,13 @@ class Constructor(val cityMap: CityMap) : Debuggable {
 
                 // get the 10 best places... pick one randomly ....
                 val blockAndScore = layer.entries()
+                        .filter { correctZoneType(zoneType, it.key) }
                         .filter { isEmpty(it) }
                         .sortedByDescending { it.value }
                         .take(10)
                         .randomElement()
+
+                // OK now have to make sure this is zoned right....
 
                 if (blockAndScore == null) {
                     if (debug) {
@@ -69,6 +72,10 @@ class Constructor(val cityMap: CityMap) : Debuggable {
             })
 
         }
+    }
+
+    private fun correctZoneType(zoneType: Zone, coordinate: BlockCoordinate): Boolean {
+        return cityMap.zoneLayer[coordinate] == zoneType
     }
 
     /**
