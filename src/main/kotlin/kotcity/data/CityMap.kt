@@ -329,7 +329,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             debug("Processing tick for: $hour:00")
 
             if (hour % 3 == 0) {
-                timeFunction("Calculating desirability") { desirabilityUpdater.update() }
+                timeFunction("Calculating desirability") { desirabilityUpdater.tick() }
                 timeFunction("Terminating random contracts") { contractFulfiller.terminateRandomContracts() }
                 withTimeout(10000, TimeUnit.MILLISECONDS) {
                     timeFunction("Signing contracts") { contractFulfiller.signContracts(true, 10000, true) }
@@ -634,7 +634,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      *
      * @param building [Building] to put
      * @param block [BlockCoordinate] of that building
-     * @param updateBuildingIndex if true, update the spatial index. We MAY not want to do this in a bulk scenario like map loading
+     * @param updateBuildingIndex if true, tick the spatial index. We MAY not want to do this in a bulk scenario like map loading
      */
     fun build(building: Building, block: BlockCoordinate, updateBuildingIndex: Boolean = true) {
         if (!canBuildBuildingAt(building, block)) {

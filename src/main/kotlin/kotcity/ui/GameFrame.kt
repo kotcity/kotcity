@@ -227,7 +227,7 @@ class GameFrame : View(), Debuggable {
         this.cityMapCanvas.visibleBlockRange = visibleBlockRange
         trafficRenderer.visibleBlockRange = visibleBlockRange
         zotRenderer.visibleBlockRange = visibleBlockRange
-        // update the census...
+        // tick the census...
         cityMap.censusTaker.tick()
     }
 

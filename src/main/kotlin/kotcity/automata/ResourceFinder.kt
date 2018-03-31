@@ -2,7 +2,6 @@ package kotcity.automata
 
 import kotcity.data.*
 import kotcity.data.Tunable.MAX_RESOURCE_DISTANCE
-import kotcity.pathfinding.MAX_DISTANCE
 import kotcity.pathfinding.Path
 import kotcity.pathfinding.Pathfinder
 import kotcity.util.Debuggable
@@ -124,12 +123,12 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
             var shortestPath: Path? = firstWithValidPath(sourceBlocks, sortedBuildingsWantingResources)
 
             // OK! now if we got a path we want to find the building in the last block...
-            shortestPath?.let { shortestPath ->
-                shortestPath.blocks()?.last()?.let {
+            shortestPath?.let { path ->
+                path.blocks().last().let {
                     val location = cityMap.locationsAt(it).firstOrNull()
                     if (location != null) {
                         if (location.building.currentQuantityWanted(tradeable) > 0) {
-                            return Pair(CityTradeEntity(it, location.building), shortestPath)
+                            return Pair(CityTradeEntity(it, location.building), path)
                         }
                     }
                 }

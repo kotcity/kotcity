@@ -1,10 +1,10 @@
 package kotcity.pathfinding
 
 import kotcity.data.*
+import kotcity.data.Tunable.MAX_RESOURCE_DISTANCE
+import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotcity.util.Debuggable
-
-const val MAX_DISTANCE = 50
 
 enum class Direction {
     NORTH, SOUTH, EAST, WEST, STATIONARY
@@ -113,7 +113,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         buildingFilter: (Building, Int) -> Boolean
     ): List<BlockCoordinate> {
         return start.flatMap { coordinate ->
-            val buildings = cityMap.nearestBuildings(coordinate, MAX_DISTANCE)
+            val buildings = cityMap.nearestBuildings(coordinate, MAX_RESOURCE_DISTANCE)
 
             buildings.filter {
                 val building = it.building

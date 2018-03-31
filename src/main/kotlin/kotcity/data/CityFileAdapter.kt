@@ -76,7 +76,7 @@ object CityFileAdapter: Debuggable {
 
                     cityMap.updateBuildingIndex()
 
-                    // now let's force update power...
+                    // now let's force tick power...
                     PowerCoverageUpdater.update(cityMap)
 
                     cityMap
