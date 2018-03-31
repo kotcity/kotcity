@@ -27,7 +27,6 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
 
     fun update() {
         // let's update the desirability...
-
         debug("Bulldozed Counts: ${cityMap.bulldozedCounts}")
 
         cityMap.desirabilityLayers.forEach { desirabilityLayer ->

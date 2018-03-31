@@ -124,7 +124,7 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
             var shortestPath: Path? = firstWithValidPath(sourceBlocks, sortedBuildingsWantingResources)
 
             // OK! now if we got a path we want to find the building in the last block...
-            shortestPath?.let {shortestPath ->
+            shortestPath?.let { shortestPath ->
                 shortestPath.blocks()?.last()?.let {
                     val location = cityMap.locationsAt(it).firstOrNull()
                     if (location != null) {
