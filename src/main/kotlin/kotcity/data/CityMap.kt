@@ -329,7 +329,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             debug("Processing tick for: $hour:00")
 
             if (hour % 3 == 0) {
-                timeFunction("Calculating desirability") { desirabilityUpdater.tick() }
                 timeFunction("Terminating random contracts") { contractFulfiller.terminateRandomContracts() }
                 withTimeout(10000, TimeUnit.MILLISECONDS) {
                     timeFunction("Signing contracts") { contractFulfiller.signContracts(true, 10000, true) }
@@ -375,6 +374,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         }
 
         async {
+            timeFunction("Calculating desirability") { desirabilityUpdater.tick() }
             timeFunction("Collect Taxes") { taxCollector.tick() }
             timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
             timeFunction("Calculating fire coverage") { FireCoverageUpdater.update(self) }
