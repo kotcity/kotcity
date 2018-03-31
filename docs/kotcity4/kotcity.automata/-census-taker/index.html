@@ -1,0 +1,103 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>CensusTaker - kotcity4</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kotcity4</a>&nbsp;/&nbsp;<a href="../index.html">kotcity.automata</a>&nbsp;/&nbsp;<a href="./index.html">CensusTaker</a><br/>
+<br/>
+<h1>CensusTaker</h1>
+<code><span class="keyword">class </span><span class="identifier">CensusTaker</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../kotcity.util/-debuggable/index.html"><span class="identifier">Debuggable</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">CensusTaker</span><span class="symbol">(</span><span class="identifier" id="kotcity.automata.CensusTaker$<init>(kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="city-map.html">cityMap</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">cityMap</span><span class="symbol">: </span><a href="../../kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="debug.html">debug</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">debug</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="population.html">population</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">population</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="resource-counts.html">resourceCounts</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">resourceCounts</span><span class="symbol">: </span><a href="../-resource-counts/index.html"><span class="identifier">ResourceCounts</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="add-update-listener.html">addUpdateListener</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addUpdateListener</span><span class="symbol">(</span><span class="identifier" id="kotcity.automata.CensusTaker$addUpdateListener(kotlin.Function0((kotlin.Unit)))/listener">listener</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="supply-ratio.html">supplyRatio</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">supplyRatio</span><span class="symbol">(</span><span class="identifier" id="kotcity.automata.CensusTaker$supplyRatio(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="tick.html">tick</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">tick</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="trade-balance.html">tradeBalance</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">tradeBalance</span><span class="symbol">(</span><span class="identifier" id="kotcity.automata.CensusTaker$tradeBalance(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inherited Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="../../kotcity.util/-debuggable/debug.html">debug</a></p>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">debug</span><span class="symbol">(</span><span class="identifier" id="kotcity.util.Debuggable$debug(kotlin.String)/message">message</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

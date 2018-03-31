@@ -1,0 +1,162 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>DesirabilityLayer - kotcity4</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kotcity4</a>&nbsp;/&nbsp;<a href="../index.html">kotcity.data</a>&nbsp;/&nbsp;<a href="./index.html">DesirabilityLayer</a><br/>
+<br/>
+<h1>DesirabilityLayer</h1>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">DesirabilityLayer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-quantized-map/index.html"><span class="identifier">QuantizedMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">&gt;</span></code>
+<p>Represents a grid of "desirability values" that we store in the <a href="../-city-map/index.html">CityMap</a></p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">DesirabilityLayer</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.DesirabilityLayer$<init>(kotcity.data.Zone, kotlin.Int)/zoneType">zoneType</span><span class="symbol">:</span>&nbsp;<a href="../-zone/index.html"><span class="identifier">Zone</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.DesirabilityLayer$<init>(kotcity.data.Zone, kotlin.Int)/level">level</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span></code>
+<p>Represents a grid of "desirability values" that we store in the <a href="../-city-map/index.html">CityMap</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="level.html">level</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">level</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="zone-type.html">zoneType</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">zoneType</span><span class="symbol">: </span><a href="../-zone/index.html"><span class="identifier">Zone</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inherited Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="../-quantized-map/map.html">map</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">map</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="../-quantized-map/index.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-quantized-map/quantize.html">quantize</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">quantize</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inherited Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="../-quantized-map/clear.html">clear</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">clear</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-quantized-map/clone.html">clone</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">clone</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-quantized-map/index.html"><span class="identifier">QuantizedMap</span></a><span class="symbol">&lt;</span><a href="../-quantized-map/index.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-quantized-map/count.html">count</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">count</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-quantized-map/entries.html">entries</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">entries</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-set/index.html"><span class="identifier">MutableSet</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/-mutable-entry/index.html"><span class="identifier">MutableEntry</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="../-quantized-map/index.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-quantized-map/for-each.html">forEach</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">forEach</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.QuantizedMap$forEach(kotlin.Function2((kotcity.data.BlockCoordinate, kotcity.data.QuantizedMap.T, kotlin.Unit)))/lambda">lambda</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">t</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="../-quantized-map/index.html#T"><span class="identifier">T</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-quantized-map/get.html">get</a></p>
+</td>
+<td>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">get</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.QuantizedMap$get(kotcity.data.BlockCoordinate)/blockCoordinate">blockCoordinate</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-quantized-map/index.html#T"><span class="identifier">T</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-quantized-map/keys.html">keys</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">keys</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-set/index.html"><span class="identifier">MutableSet</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-quantized-map/map.html">map</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">map</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.QuantizedMap$map(kotlin.Function1((kotlin.collections.Map.Entry((kotcity.data.BlockCoordinate, kotcity.data.QuantizedMap.T)), kotlin.Any)))/function">function</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/-entry/index.html"><span class="identifier">Entry</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="../-quantized-map/index.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-quantized-map/max-by.html">maxBy</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">maxBy</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.QuantizedMap$maxBy(kotlin.Function1((kotlin.collections.Map.Entry((kotcity.data.BlockCoordinate, kotcity.data.QuantizedMap.T)), kotlin.Double)))/function">function</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/-entry/index.html"><span class="identifier">Entry</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="../-quantized-map/index.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/-entry/index.html"><span class="identifier">Entry</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="../-quantized-map/index.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-quantized-map/put.html">put</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">put</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.QuantizedMap$put(kotcity.data.BlockCoordinate, kotcity.data.QuantizedMap.T)/blockCoordinate">blockCoordinate</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.QuantizedMap$put(kotcity.data.BlockCoordinate, kotcity.data.QuantizedMap.T)/value">value</span><span class="symbol">:</span>&nbsp;<a href="../-quantized-map/index.html#T"><span class="identifier">T</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-quantized-map/remove.html">remove</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">remove</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.QuantizedMap$remove(kotcity.data.BlockCoordinate)/blockCoordinate">blockCoordinate</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-quantized-map/set.html">set</a></p>
+</td>
+<td>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">set</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.QuantizedMap$set(kotcity.data.BlockCoordinate, kotcity.data.QuantizedMap.T)/blockCoordinate">blockCoordinate</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.QuantizedMap$set(kotcity.data.BlockCoordinate, kotcity.data.QuantizedMap.T)/value">value</span><span class="symbol">:</span>&nbsp;<a href="../-quantized-map/index.html#T"><span class="identifier">T</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-quantized-map/unquantized.html">unquantized</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">unquantized</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.QuantizedMap$unquantized(kotcity.data.BlockCoordinate)/coordinate">coordinate</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

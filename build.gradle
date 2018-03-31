@@ -82,7 +82,7 @@ jar {
 
 dokka {
     outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
+    outputDirectory = "docs"
 
     linkMapping {
         // Source directory

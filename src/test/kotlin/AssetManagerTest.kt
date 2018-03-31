@@ -1,16 +1,14 @@
 
 import junit.framework.Assert.assertNotNull
-import kotcity.data.CityMap
 import kotcity.data.AssetManager
+import kotcity.data.CityMap
 import org.junit.jupiter.api.Test
-import java.nio.file.Paths
 import java.io.File
-
 
 
 class AssetManagerTest {
     @Test
-    fun testassetManagerScan() {
+    fun testAssetManagerScan() {
         val flatMap = CityMap.flatMap(128, 128)
         val assetManager = AssetManager(flatMap)
         val resources = assetManager.findResources()

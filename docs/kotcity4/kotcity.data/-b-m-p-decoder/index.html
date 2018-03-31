@@ -1,0 +1,220 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>BMPDecoder - kotcity4</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kotcity4</a>&nbsp;/&nbsp;<a href="../index.html">kotcity.data</a>&nbsp;/&nbsp;<a href="./index.html">BMPDecoder</a><br/>
+<br/>
+<h1>BMPDecoder</h1>
+<code><span class="keyword">class </span><span class="identifier">BMPDecoder</span></code>
+<p>A decoder for Windows bitmap (.BMP) files.</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">BMPDecoder</span><span class="symbol">(</span><span class="symbol">)</span></code>
+<p>A decoder for Windows bitmap (.BMP) files.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="actual-colors-used.html">actualColorsUsed</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">actualColorsUsed</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="actual-size-of-bitmap.html">actualSizeOfBitmap</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">actualSizeOfBitmap</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="b.html">b</a></p>
+</td>
+<td>
+<code><span class="keyword">lateinit</span> <span class="keyword">var </span><span class="identifier">b</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="bitmap-offset.html">bitmapOffset</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">bitmapOffset</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="bits-per-pixel.html">bitsPerPixel</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">bitsPerPixel</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-short/index.html"><span class="identifier">Short</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="byte-data.html">byteData</a></p>
+</td>
+<td>
+<code><span class="keyword">lateinit</span> <span class="keyword">var </span><span class="identifier">byteData</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="compression.html">compression</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">compression</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="cur-pos.html">curPos</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">curPos</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="g.html">g</a></p>
+</td>
+<td>
+<code><span class="keyword">lateinit</span> <span class="keyword">var </span><span class="identifier">g</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="height.html">height</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">height</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="int-data.html">intData</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">intData</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html"><span class="identifier">IntArray</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="is.html">is</a></p>
+</td>
+<td>
+<code><span class="keyword">lateinit</span> <span class="keyword">var </span><span class="identifier">is</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/io/InputStream.html"><span class="identifier">InputStream</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="no-of-entries.html">noOfEntries</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">noOfEntries</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="r.html">r</a></p>
+</td>
+<td>
+<code><span class="keyword">lateinit</span> <span class="keyword">var </span><span class="identifier">r</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="scan-line-size.html">scanLineSize</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">scanLineSize</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="top-down.html">topDown</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">topDown</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="width.html">width</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">width</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="get-bitmap-header.html">getBitmapHeader</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getBitmapHeader</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="get-file-header.html">getFileHeader</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getFileHeader</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="get-palette.html">getPalette</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getPalette</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="get-pixel-data.html">getPixelData</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getPixelData</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="make-image-source.html">makeImageSource</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">makeImageSource</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/image/MemoryImageSource.html"><span class="identifier">MemoryImageSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="read.html">read</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">read</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.BMPDecoder$read(java.io.InputStream)/is">is</span><span class="symbol">:</span>&nbsp;<a href="http://docs.oracle.com/javase/6/docs/api/java/io/InputStream.html"><span class="identifier">InputStream</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="unpack.html">unpack</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">unpack</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.BMPDecoder$unpack(kotlin.ByteArray, kotlin.Int, kotlin.Int, kotlin.ByteArray, kotlin.Int, kotlin.Int)/rawData">rawData</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.BMPDecoder$unpack(kotlin.ByteArray, kotlin.Int, kotlin.Int, kotlin.ByteArray, kotlin.Int, kotlin.Int)/rawOffset">rawOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.BMPDecoder$unpack(kotlin.ByteArray, kotlin.Int, kotlin.Int, kotlin.ByteArray, kotlin.Int, kotlin.Int)/bpp">bpp</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.BMPDecoder$unpack(kotlin.ByteArray, kotlin.Int, kotlin.Int, kotlin.ByteArray, kotlin.Int, kotlin.Int)/byteData">byteData</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.BMPDecoder$unpack(kotlin.ByteArray, kotlin.Int, kotlin.Int, kotlin.ByteArray, kotlin.Int, kotlin.Int)/byteOffset">byteOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.BMPDecoder$unpack(kotlin.ByteArray, kotlin.Int, kotlin.Int, kotlin.ByteArray, kotlin.Int, kotlin.Int)/w">w</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="unpack24.html">unpack24</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">unpack24</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.BMPDecoder$unpack24(kotlin.ByteArray, kotlin.Int, kotlin.IntArray, kotlin.Int, kotlin.Int)/rawData">rawData</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.BMPDecoder$unpack24(kotlin.ByteArray, kotlin.Int, kotlin.IntArray, kotlin.Int, kotlin.Int)/rawOffset">rawOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.BMPDecoder$unpack24(kotlin.ByteArray, kotlin.Int, kotlin.IntArray, kotlin.Int, kotlin.Int)/intData">intData</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html"><span class="identifier">IntArray</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.BMPDecoder$unpack24(kotlin.ByteArray, kotlin.Int, kotlin.IntArray, kotlin.Int, kotlin.Int)/intOffset">intOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.BMPDecoder$unpack24(kotlin.ByteArray, kotlin.Int, kotlin.IntArray, kotlin.Int, kotlin.Int)/w">w</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="unpack32.html">unpack32</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">unpack32</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.BMPDecoder$unpack32(kotlin.ByteArray, kotlin.Int, kotlin.IntArray, kotlin.Int, kotlin.Int)/rawData">rawData</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.BMPDecoder$unpack32(kotlin.ByteArray, kotlin.Int, kotlin.IntArray, kotlin.Int, kotlin.Int)/rawOffset">rawOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.BMPDecoder$unpack32(kotlin.ByteArray, kotlin.Int, kotlin.IntArray, kotlin.Int, kotlin.Int)/intData">intData</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html"><span class="identifier">IntArray</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.BMPDecoder$unpack32(kotlin.ByteArray, kotlin.Int, kotlin.IntArray, kotlin.Int, kotlin.Int)/intOffset">intOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.BMPDecoder$unpack32(kotlin.ByteArray, kotlin.Int, kotlin.IntArray, kotlin.Int, kotlin.Int)/w">w</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

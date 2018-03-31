@@ -1,0 +1,454 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>CityMap - kotcity4</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kotcity4</a>&nbsp;/&nbsp;<a href="../index.html">kotcity.data</a>&nbsp;/&nbsp;<a href="./index.html">CityMap</a><br/>
+<br/>
+<h1>CityMap</h1>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">CityMap</span></code>
+<p>A map representing the city. The map hangs on to <a href="../-building/index.html">Building</a>s and <a href="../-location/index.html">Location</a>s. The map is set up as a grid
+of <a href="../-block-coordinate/index.html">BlockCoordinate</a> and various layers hanging onto various values (desirability, crime, etc).</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">CityMap</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$<init>(kotlin.Int, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;512<span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$<init>(kotlin.Int, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;512<span class="symbol">)</span></code>
+<p>A map representing the city. The map hangs on to <a href="../-building/index.html">Building</a>s and <a href="../-location/index.html">Location</a>s. The map is set up as a grid
+of <a href="../-block-coordinate/index.html">BlockCoordinate</a> and various layers hanging onto various values (desirability, crime, etc).</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="bulldozed-counts.html">bulldozedCounts</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">bulldozedCounts</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="../-zone/index.html"><span class="identifier">Zone</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">&gt;</span></code>
+<p>Every time the <a href="../../kotcity.automata/-liquidator/index.html">Liquidator</a> runs it will drop a count of bulldozed zones in here so we know
+how many get demolished.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="cached-locations-in.html">cachedLocationsIn</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">cachedLocationsIn</span><span class="symbol">: </span><span class="symbol">(</span><span class="identifier">block</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-location/index.html"><span class="identifier">Location</span></a><span class="symbol">&gt;</span></code>
+<p>a cached version of <a href="#">locationsIn</a>. This can be used when you want to do a fast lookup on a building
+but don't really care if you are wrong or not</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="census-taker.html">censusTaker</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">censusTaker</span><span class="symbol">: </span><a href="../../kotcity.automata/-census-taker/index.html"><span class="identifier">CensusTaker</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="city-name.html">cityName</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">cityName</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code>
+<p>Name of the city</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="crime-layer.html">crimeLayer</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">crimeLayer</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="debug.html">debug</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">debug</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code>
+<p>Should we print debug output or not?</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="desirability-layers.html">desirabilityLayers</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">desirabilityLayers</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-desirability-layer/index.html"><span class="identifier">DesirabilityLayer</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="file-name.html">fileName</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">fileName</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code>
+<p>where we loaded OR saved this city to...
+used to determine save vs. save as...</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="fire-coverage-layer.html">fireCoverageLayer</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">fireCoverageLayer</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="ground-layer.html">groundLayer</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">groundLayer</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="../-map-tile/index.html"><span class="identifier">MapTile</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="height.html">height</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">height</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code>
+<p>height in blocks of the city</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="national-trade-entity.html">nationalTradeEntity</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">nationalTradeEntity</span><span class="symbol">: </span><a href="../-national-trade-entity/index.html"><span class="identifier">NationalTradeEntity</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="police-presence-layer.html">policePresenceLayer</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">policePresenceLayer</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="pollution-layer.html">pollutionLayer</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">pollutionLayer</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="power-line-layer.html">powerLineLayer</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">powerLineLayer</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="../-building/index.html"><span class="identifier">Building</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="resource-layers.html">resourceLayers</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">resourceLayers</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-quantized-map/index.html"><span class="identifier">QuantizedMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="time.html">time</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">time</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/util/Date.html"><span class="identifier">Date</span></a></code>
+<p>Current time in the simulation</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="traffic-layer.html">trafficLayer</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">trafficLayer</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="width.html">width</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">width</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code>
+<p>width in blocks of the city</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="zone-layer.html">zoneLayer</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">zoneLayer</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="../-zone/index.html"><span class="identifier">Zone</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="build.html">build</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">build</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$build(kotcity.data.Building, kotcity.data.BlockCoordinate, kotlin.Boolean)/building">building</span><span class="symbol">:</span>&nbsp;<a href="../-building/index.html"><span class="identifier">Building</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$build(kotcity.data.Building, kotcity.data.BlockCoordinate, kotlin.Boolean)/block">block</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$build(kotcity.data.Building, kotcity.data.BlockCoordinate, kotlin.Boolean)/updateBuildingIndex">updateBuildingIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;true<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Plops the given <a href="../-building/index.html">Building</a> at the given <a href="../-block-coordinate/index.html">BlockCoordinate</a>. Note the coordinate is the top-left
+of the building. We do check for collisions, hopefully preventing overlaps.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="build-powerline.html">buildPowerline</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">buildPowerline</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$buildPowerline(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/firstBlock">firstBlock</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$buildPowerline(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/lastBlock">lastBlock</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Builds a line of powerlines from <a href="build-powerline.html#kotcity.data.CityMap$buildPowerline(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/firstBlock">firstBlock</a> to <a href="build-powerline.html#kotcity.data.CityMap$buildPowerline(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/lastBlock">lastBlock</a></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="build-railroad.html">buildRailroad</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">buildRailroad</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$buildRailroad(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/from">from</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$buildRailroad(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/to">to</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Builds <a href="../-railroad/index.html">Railroad</a> between the two supplied <a href="../-block-coordinate/index.html">BlockCoordinate</a>. Railroad can currently be built in an "L" shape.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="build-road.html">buildRoad</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">buildRoad</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$buildRoad(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate, kotlin.Boolean)/from">from</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$buildRoad(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate, kotlin.Boolean)/to">to</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$buildRoad(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate, kotlin.Boolean)/isOneWay">isOneWay</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Builds a (possibly) one-way road or standard road</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="building-blocks.html">buildingBlocks</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">buildingBlocks</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$buildingBlocks(kotcity.data.BlockCoordinate, kotcity.data.Building)/coordinate">coordinate</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$buildingBlocks(kotcity.data.BlockCoordinate, kotcity.data.Building)/building">building</span><span class="symbol">:</span>&nbsp;<a href="../-building/index.html"><span class="identifier">Building</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span></code>
+<p>Takes a coordinate and a building and returns the "footprint" of the building.
+In other words, each block the building sits in.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="bulldoze.html">bulldoze</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bulldoze</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$bulldoze(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/from">from</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$bulldoze(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/to">to</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Bulldozes from the top left to the bottom right</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="can-build-building-at.html">canBuildBuildingAt</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">canBuildBuildingAt</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$canBuildBuildingAt(kotcity.data.Building, kotcity.data.BlockCoordinate, kotlin.Boolean)/newBuilding">newBuilding</span><span class="symbol">:</span>&nbsp;<a href="../-building/index.html"><span class="identifier">Building</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$canBuildBuildingAt(kotcity.data.Building, kotcity.data.BlockCoordinate, kotlin.Boolean)/coordinate">coordinate</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$canBuildBuildingAt(kotcity.data.Building, kotcity.data.BlockCoordinate, kotlin.Boolean)/waterCheck">waterCheck</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;true<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code>
+<p>See if we can plop a new building on the map at the given coordinate</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="coordinates-for-building.html">coordinatesForBuilding</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">coordinatesForBuilding</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$coordinatesForBuilding(kotcity.data.Building)/building">building</span><span class="symbol">:</span>&nbsp;<a href="../-building/index.html"><span class="identifier">Building</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">?</span></code>
+<p>For a given <a href="../-building/index.html">Building</a>, runs through it and finds the coordinate</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="debug.html">debug</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">debug</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$debug(kotlin.String)/message">message</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="desirability-layer.html">desirabilityLayer</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">desirabilityLayer</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$desirabilityLayer(kotcity.data.Zone, kotlin.Int)/type">type</span><span class="symbol">:</span>&nbsp;<a href="../-zone/index.html"><span class="identifier">Zone</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$desirabilityLayer(kotcity.data.Zone, kotlin.Int)/level">level</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-desirability-layer/index.html"><span class="identifier">DesirabilityLayer</span></a><span class="symbol">?</span></code>
+<p>We will probably end up having a desirabilty layer for each zone and each level... but I am not 100% sure yet</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="dezone.html">dezone</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">dezone</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$dezone(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/firstBlock">firstBlock</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$dezone(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/lastBlock">lastBlock</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Removes zoning designation from a rectangle of <a href="../-block-coordinate/index.html">BlockCoordinate</a></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="each-location.html">eachLocation</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">eachLocation</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$eachLocation(kotlin.Function1((kotcity.data.Location, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="../-location/index.html"><span class="identifier">Location</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="elevations.html">elevations</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">elevations</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><span class="identifier">Pair</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">&gt;</span></code>
+<p>Returns the minimum and maximum heights on this map</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="has-traffic-nearby.html">hasTrafficNearby</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">hasTrafficNearby</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$hasTrafficNearby(kotcity.data.BlockCoordinate, kotlin.Int, kotlin.Int)/coordinate">coordinate</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$hasTrafficNearby(kotcity.data.BlockCoordinate, kotlin.Int, kotlin.Int)/radius">radius</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$hasTrafficNearby(kotcity.data.BlockCoordinate, kotlin.Int, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code>
+<p>Used to check traffic at a given coordinate with a certain radius</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="hourly-tick.html">hourlyTick</a></p>
+</td>
+<td>
+<code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">hourlyTick</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$hourlyTick(kotlin.Int)/hour">hour</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Things that we want done each game hour</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="locations.html">locations</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">locations</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-location/index.html"><span class="identifier">Location</span></a><span class="symbol">&gt;</span></code>
+<p>Returns a massive list of all locations</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="locations-at.html">locationsAt</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">locationsAt</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$locationsAt(kotcity.data.BlockCoordinate)/coordinate">coordinate</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-location/index.html"><span class="identifier">Location</span></a><span class="symbol">&gt;</span></code>
+<p>Returns a list of <a href="../-location/index.html">Location</a>s that we found at the current coordinate</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="locations-in-rectangle.html">locationsInRectangle</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">locationsInRectangle</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$locationsInRectangle(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/topLeft">topLeft</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$locationsInRectangle(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/bottomRight">bottomRight</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-location/index.html"><span class="identifier">Location</span></a><span class="symbol">&gt;</span></code>
+<p>Returns a list of <a href="../-location/index.html">Location</a>s in the provided rectangle of coordinates</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="nearest-buildings.html">nearestBuildings</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">nearestBuildings</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$nearestBuildings(kotcity.data.BlockCoordinate, kotlin.Int)/coordinate">coordinate</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$nearestBuildings(kotcity.data.BlockCoordinate, kotlin.Int)/distance">distance</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;10<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-location/index.html"><span class="identifier">Location</span></a><span class="symbol">&gt;</span></code>
+<p>Does a spatial lookup at <em>coordinate</em> for a list of <a href="../-location/index.html">Location</a>s</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="pollution-nearby.html">pollutionNearby</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">pollutionNearby</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$pollutionNearby(kotcity.data.BlockCoordinate, kotlin.Int)/coordinate">coordinate</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$pollutionNearby(kotcity.data.BlockCoordinate, kotlin.Int)/radius">radius</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></code>
+<p>Returns a count of pollution at the given <a href="../-block-coordinate/index.html">BlockCoordinate</a></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="purge-r-tree.html">purgeRTree</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">purgeRTree</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Purges spatial index of buildings...</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="set-resource-value.html">setResourceValue</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setResourceValue</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$setResourceValue(kotlin.String, kotcity.data.BlockCoordinate, kotlin.Double)/resourceName">resourceName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$setResourceValue(kotlin.String, kotcity.data.BlockCoordinate, kotlin.Double)/blockCoordinate">blockCoordinate</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$setResourceValue(kotlin.String, kotcity.data.BlockCoordinate, kotlin.Double)/resourceValue">resourceValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Used to store where oil, gold, etc are underneath the map. Not currently used.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="suggested-filename.html">suggestedFilename</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">suggestedFilename</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code>
+<p>Suggests a filename to save the city as... it's based off the name of the city but made safe for filenames</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="tick.html">tick</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">tick</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Main game loop. The engine calls this every X milliseconds and various functions are run from here.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="traffic-nearby.html">trafficNearby</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">trafficNearby</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$trafficNearby(kotcity.data.BlockCoordinate, kotlin.Int)/coordinate">coordinate</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$trafficNearby(kotcity.data.BlockCoordinate, kotlin.Int)/radius">radius</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code>
+<p>Returns a count of traffic at the given coordinate and radius</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="update-building-index.html">updateBuildingIndex</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">updateBuildingIndex</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Updates the spatial index, enabling quick building lookups...</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="zone.html">zone</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">zone</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$zone(kotcity.data.Zone, kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/type">type</span><span class="symbol">:</span>&nbsp;<a href="../-zone/index.html"><span class="identifier">Zone</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$zone(kotcity.data.Zone, kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/from">from</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$zone(kotcity.data.Zone, kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/to">to</span><span class="symbol">:</span>&nbsp;<a href="../-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Designates a given area as a certain <a href="../-zone/index.html">Zone</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="flat-map.html">flatMap</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">flatMap</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap.Companion$flatMap(kotlin.Int, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;512<span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap.Companion$flatMap(kotlin.Int, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;512<span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">CityMap</span></a></code>
+<p>Returns a totally flat map of the given size.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
