@@ -46,7 +46,7 @@ data class Corners(
  */
 data class DesirabilityLayer(val zoneType: Zone, val level: Int) : QuantizedMap<Double>(1) {
     init {
-        map = map.withDefault { 0.0 }
+        map = map.withDefault { Double.MIN_VALUE }
     }
 }
 

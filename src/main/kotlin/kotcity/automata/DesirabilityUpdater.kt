@@ -143,6 +143,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
         val keysToTrim = mutableListOf<BlockCoordinate>()
         desirabilityLayer.forEach { t, _ ->
             if (!zones.contains(t)) {
+                println("We have to trim $t because it is no longer a zone...")
                 keysToTrim.add(t)
             }
         }

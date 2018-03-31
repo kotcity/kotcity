@@ -20,26 +20,33 @@ class DesirabilityRenderer(private val cityRenderer: CityRenderer, private val c
         val (startBlock, endBlock) = cityRenderer.visibleBlockRange()
 
         BlockCoordinate.iterate(startBlock, endBlock) { coord ->
-            val desirabilityScores = cityMap.desirabilityLayers.map {
+            val desirabilityScores = cityMap.desirabilityLayers.mapNotNull {
                 it[coord]
             }
 
-            val maxDesirability = desirabilityScores.filterNotNull().max() ?: 0.0
+            val maxDesirability = 200.0
+            val minDesirability = -200.0
 
-            cityRenderer.apply {
-                val tx = coord.x - blockOffsetX
-                val ty = coord.y - blockOffsetY
-                val blockSize = blockSize()
-                canvas.graphicsContext2D.apply {
-                    fill = determineColor(maxDesirability)
-                    fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
+            if (maxDesirability != null && minDesirability != null) {
+                cityRenderer.apply {
+                    val tx = coord.x - blockOffsetX
+                    val ty = coord.y - blockOffsetY
+                    val blockSize = blockSize()
+                    canvas.graphicsContext2D.apply {
+                        val desirability = desirabilityScores.max()
+                        if (desirability != null) {
+                            fill = determineColor(desirability, minDesirability, maxDesirability)
+                            fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
+                        }
+                    }
                 }
             }
+
         }
     }
 
-    private fun determineColor(desirability: Double): Color {
-        val fraction = Algorithms.scale(desirability.coerceAtMost(DESIRABILITY_CAP), 0.00, DESIRABILITY_CAP, 0.0, 1.0)
+    private fun determineColor(desirability: Double, minDesirability: Double, maxDesirability: Double): Color {
+        val fraction = Algorithms.scale(desirability, minDesirability, maxDesirability, 0.0, 1.0)
         val newColor = NEGATIVE_COLOR.interpolate(POSITIVE_COLOR, fraction.toFloat())
         return Color(newColor.red, newColor.green, newColor.blue, 0.5)
     }
