@@ -1,0 +1,79 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>AssetManager - kotcity4</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kotcity4</a>&nbsp;/&nbsp;<a href="../index.html">kotcity.data</a>&nbsp;/&nbsp;<a href="./index.html">AssetManager</a><br/>
+<br/>
+<h1>AssetManager</h1>
+<code><span class="keyword">class </span><span class="identifier">AssetManager</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">AssetManager</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.AssetManager$<init>(kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="../-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="city-map.html">cityMap</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">cityMap</span><span class="symbol">: </span><a href="../-city-map/index.html"><span class="identifier">CityMap</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="all.html">all</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">all</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-loadable-building/index.html"><span class="identifier">LoadableBuilding</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="building-for.html">buildingFor</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">buildingFor</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.AssetManager$buildingFor(kotlin.reflect.KClass((kotcity.data.Building)), kotlin.String)/klass">klass</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><span class="identifier">KClass</span></a><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<a href="../-building/index.html"><span class="identifier">Building</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="kotcity.data.AssetManager$buildingFor(kotlin.reflect.KClass((kotcity.data.Building)), kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-building/index.html"><span class="identifier">Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="find-building.html">findBuilding</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findBuilding</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.AssetManager$findBuilding(kotcity.data.Zone, kotlin.Int)/zoneType">zoneType</span><span class="symbol">:</span>&nbsp;<a href="../-zone/index.html"><span class="identifier">Zone</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.AssetManager$findBuilding(kotcity.data.Zone, kotlin.Int)/level">level</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-building/index.html"><span class="identifier">Building</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="find-resources.html">findResources</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findResources</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="load-from-file.html">loadFromFile</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">loadFromFile</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.AssetManager$loadFromFile(kotlin.String)/assetFile">assetFile</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-loadable-building/index.html"><span class="identifier">LoadableBuilding</span></a><span class="symbol">?</span></code>
+<p>Takes a given file and (possibly) returns a <a href="../-loadable-building/index.html">LoadableBuilding</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -1,0 +1,25 @@
+$dokka.format:html
+$dokka.linkExtension:html
+$dokka.location:kotcity.memoization$cache(kotlin.Function1((kotcity.memoization.cache.A, kotcity.memoization.cache.R)), kotcity.memoization.CacheOptions)kotcity.memoization/kotlin.-function1/cache.html
+$dokka.location:kotcity.memoization$cache(kotlin.Function2((kotcity.memoization.cache.A, kotcity.memoization.cache.B, kotcity.memoization.cache.R)), kotcity.memoization.CacheOptions)kotcity.memoization/kotlin.-function2/cache.html
+$dokka.location:kotcity.memoization$cache(kotlin.Function3((kotcity.memoization.cache.A, kotcity.memoization.cache.B, kotcity.memoization.cache.C, kotcity.memoization.cache.R)), kotcity.memoization.CacheOptions)kotcity.memoization/kotlin.-function3/cache.html
+$dokka.location:kotcity.memoization$cache(kotlin.Function4((kotcity.memoization.cache.A, kotcity.memoization.cache.B, kotcity.memoization.cache.C, kotcity.memoization.cache.D, kotcity.memoization.cache.R)), kotcity.memoization.CacheOptions)kotcity.memoization/kotlin.-function4/cache.html
+$dokka.location:kotcity.memoization$cache(kotlin.Function5((kotcity.memoization.cache.A, kotcity.memoization.cache.B, kotcity.memoization.cache.C, kotcity.memoization.cache.D, kotcity.memoization.cache.E, kotcity.memoization.cache.R)), kotcity.memoization.CacheOptions)kotcity.memoization/kotlin.-function5/cache.html
+$dokka.location:kotcity.ui.map$step(kotlin.ranges.ClosedRange((kotlin.Double)), kotlin.Double)kotcity.ui.map/kotlin.ranges.-closed-range/step.html
+$dokka.location:kotcity.util$intBetween(java.util.Random, kotlin.Int, kotlin.Int)kotcity.util/java.util.-random/int-between.html
+$dokka.location:kotcity.util$randomElement(kotlin.collections.List((kotcity.util.randomElement.E)))kotcity.util/kotlin.collections.-list/random-element.html
+$dokka.location:kotcity.util$randomElements(kotlin.collections.List((kotcity.util.randomElements.E)), kotlin.Int)kotcity.util/kotlin.collections.-list/random-elements.html
+$dokka.location:kotcity.util$reorder(kotlin.ranges.IntRange)kotcity.util/kotlin.ranges.-int-range/reorder.html
+aballano.kotlinmemoization.tuples
+kotcity.automata
+kotcity.automata.util
+kotcity.data
+kotcity.memoization
+kotcity.noise
+kotcity.pathfinding
+kotcity.ui
+kotcity.ui.charts
+kotcity.ui.layers
+kotcity.ui.map
+kotcity.ui.sprites
+kotcity.util
