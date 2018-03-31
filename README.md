@@ -36,8 +36,11 @@ KotCity is a city simulator written in Kotlin inspired by the statistical city s
 
 ## Quick Start
 
-### Work on the code yourself...
+### How can I change the code or work on the project?
+
 View our [Developer's Guide](https://github.com/kotcity/kotcity/wiki/Developer's-Guide)
+
+[API Documentation](https://cdn.rawgit.com/kotcity/kotcity/6559c68e/docs/kotcity4/index.html)
 
 ### Command line-flow
 * Install JDK 1.8+.
