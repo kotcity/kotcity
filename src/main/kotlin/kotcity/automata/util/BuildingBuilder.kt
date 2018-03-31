@@ -1,7 +1,6 @@
 package kotcity.automata.util
 
 import kotcity.data.*
-import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotcity.util.Debuggable
 import java.util.*
 

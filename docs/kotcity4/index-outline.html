@@ -369,6 +369,7 @@
 <a href="docs/kotcity4/index"><a href="kotcity.data/-city-map/has-traffic-nearby.html"><span class="keyword">fun </span><span class="identifier">hasTrafficNearby</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$hasTrafficNearby(kotcity.data.BlockCoordinate, kotlin.Int, kotlin.Int)/coordinate">coordinate</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$hasTrafficNearby(kotcity.data.BlockCoordinate, kotlin.Int, kotlin.Int)/radius">radius</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$hasTrafficNearby(kotcity.data.BlockCoordinate, kotlin.Int, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-city-map/height.html"><span class="keyword">var </span><span class="identifier">height</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-city-map/hourly-tick.html"><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">hourlyTick</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$hourlyTick(kotlin.Int)/hour">hour</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.data/-city-map/land-value-layer.html"><span class="keyword">val </span><span class="identifier">landValueLayer</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">&gt;</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-city-map/locations.html"><span class="keyword">fun </span><span class="identifier">locations</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="kotcity.data/-location/index.html"><span class="identifier">Location</span></a><span class="symbol">&gt;</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-city-map/locations-at.html"><span class="keyword">fun </span><span class="identifier">locationsAt</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$locationsAt(kotcity.data.BlockCoordinate)/coordinate">coordinate</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="kotcity.data/-location/index.html"><span class="identifier">Location</span></a><span class="symbol">&gt;</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-city-map/locations-in-rectangle.html"><span class="keyword">fun </span><span class="identifier">locationsInRectangle</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$locationsInRectangle(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/topLeft">topLeft</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$locationsInRectangle(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/bottomRight">bottomRight</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="kotcity.data/-location/index.html"><span class="identifier">Location</span></a><span class="symbol">&gt;</span></a></a><br/>
@@ -611,7 +612,7 @@
 </BODY>
 </HTML>
 </ul>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-crime-renderer/index.html"><span class="keyword">class </span><span class="identifier">CrimeRenderer</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-crime-renderer/index.html"><span class="keyword">class </span><span class="identifier">CrimeRenderer</span></a></a><br/>
 <ul>
 <HTML>
 <HEAD>
@@ -620,11 +621,11 @@
 <link rel="stylesheet" href="../style.css">
 </HEAD>
 <BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-crime-renderer/-init-.html"><span class="identifier">CrimeRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.CrimeRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.map.CrimeRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-crime-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-crime-renderer/-n-e-u-t-r-a-l_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEUTRAL_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-crime-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-crime-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-crime-renderer/-init-.html"><span class="identifier">CrimeRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.CrimeRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.CrimeRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-crime-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-crime-renderer/-n-e-u-t-r-a-l_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEUTRAL_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-crime-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-crime-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
 </BODY>
 </HTML>
 </ul>
@@ -670,7 +671,7 @@
 </BODY>
 </HTML>
 </ul>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-desirability-renderer/index.html"><span class="keyword">class </span><span class="identifier">DesirabilityRenderer</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-desirability-renderer/index.html"><span class="keyword">class </span><span class="identifier">DesirabilityRenderer</span></a></a><br/>
 <ul>
 <HTML>
 <HEAD>
@@ -679,11 +680,11 @@
 <link rel="stylesheet" href="../style.css">
 </HEAD>
 <BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-desirability-renderer/-init-.html"><span class="identifier">DesirabilityRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.DesirabilityRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.map.DesirabilityRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-desirability-renderer/-d-e-s-i-r-a-b-i-l-i-t-y_-c-a-p.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">DESIRABILITY_CAP</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-desirability-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-desirability-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-desirability-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-desirability-renderer/-init-.html"><span class="identifier">DesirabilityRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.DesirabilityRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.DesirabilityRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-desirability-renderer/-d-e-s-i-r-a-b-i-l-i-t-y_-c-a-p.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">DESIRABILITY_CAP</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-desirability-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-desirability-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-desirability-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
 </BODY>
 </HTML>
 </ul>
@@ -699,7 +700,7 @@
 <a href="docs/kotcity4/index"><a href="kotcity.automata/-desirability-updater/-init-.html"><span class="identifier">DesirabilityUpdater</span><span class="symbol">(</span><span class="identifier" id="kotcity.automata.DesirabilityUpdater$<init>(kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.automata/-desirability-updater/city-map.html"><span class="keyword">val </span><span class="identifier">cityMap</span><span class="symbol">: </span><a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.automata/-desirability-updater/debug.html"><span class="keyword">var </span><span class="identifier">debug</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.automata/-desirability-updater/update.html"><span class="keyword">fun </span><span class="identifier">update</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.automata/-desirability-updater/tick.html"><span class="keyword">fun </span><span class="identifier">tick</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
 </BODY>
 </HTML>
 </ul>
@@ -737,7 +738,7 @@
 </BODY>
 </HTML>
 </ul>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-fire-coverage-renderer/index.html"><span class="keyword">class </span><span class="identifier">FireCoverageRenderer</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-fire-coverage-renderer/index.html"><span class="keyword">class </span><span class="identifier">FireCoverageRenderer</span></a></a><br/>
 <ul>
 <HTML>
 <HEAD>
@@ -746,10 +747,10 @@
 <link rel="stylesheet" href="../style.css">
 </HEAD>
 <BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-fire-coverage-renderer/-init-.html"><span class="identifier">FireCoverageRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.FireCoverageRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.map.FireCoverageRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-fire-coverage-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-fire-coverage-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-fire-coverage-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-fire-coverage-renderer/-init-.html"><span class="identifier">FireCoverageRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.FireCoverageRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.FireCoverageRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-fire-coverage-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-fire-coverage-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-fire-coverage-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
 </BODY>
 </HTML>
 </ul>
@@ -870,7 +871,7 @@
 </BODY>
 </HTML>
 </ul>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-happiness-renderer/index.html"><span class="keyword">class </span><span class="identifier">HappinessRenderer</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-happiness-renderer/index.html"><span class="keyword">class </span><span class="identifier">HappinessRenderer</span></a></a><br/>
 <ul>
 <HTML>
 <HEAD>
@@ -879,10 +880,10 @@
 <link rel="stylesheet" href="../style.css">
 </HEAD>
 <BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-happiness-renderer/-init-.html"><span class="identifier">HappinessRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.HappinessRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.map.HappinessRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-happiness-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-happiness-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-happiness-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-happiness-renderer/-init-.html"><span class="identifier">HappinessRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.HappinessRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.HappinessRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-happiness-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-happiness-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-happiness-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
 </BODY>
 </HTML>
 </ul>
@@ -1037,6 +1038,38 @@
 </BODY>
 </HTML>
 </ul>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-land-value-renderer/index.html"><span class="keyword">class </span><span class="identifier">LandValueRenderer</span></a></a><br/>
+<ul>
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Module Contents</title>
+<link rel="stylesheet" href="../style.css">
+</HEAD>
+<BODY>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-land-value-renderer/-init-.html"><span class="identifier">LandValueRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.LandValueRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.LandValueRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-land-value-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-land-value-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-land-value-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+</BODY>
+</HTML>
+</ul>
+<a href="docs/kotcity4/index"><a href="kotcity.automata/-land-value-updater/index.html"><span class="keyword">class </span><span class="identifier">LandValueUpdater</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="kotcity.util/-debuggable/index.html"><span class="identifier">Debuggable</span></a></a></a><br/>
+<ul>
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Module Contents</title>
+<link rel="stylesheet" href="../style.css">
+</HEAD>
+<BODY>
+<a href="docs/kotcity4/index"><a href="kotcity.automata/-land-value-updater/-init-.html"><span class="identifier">LandValueUpdater</span><span class="symbol">(</span><span class="identifier" id="kotcity.automata.LandValueUpdater$<init>(kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.automata/-land-value-updater/city-map.html"><span class="keyword">val </span><span class="identifier">cityMap</span><span class="symbol">: </span><a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.automata/-land-value-updater/debug.html"><span class="keyword">var </span><span class="identifier">debug</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.automata/-land-value-updater/tick.html"><span class="keyword">fun </span><span class="identifier">tick</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+</BODY>
+</HTML>
+</ul>
 <a href="docs/kotcity4/index"><a href="kotcity.ui/-launch-screen/index.html"><span class="keyword">class </span><span class="identifier">LaunchScreen</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">View</span></a></a><br/>
 <ul>
 <HTML>
@@ -1183,6 +1216,7 @@
 <a href="docs/kotcity4/index"><a href="kotcity.data/-map-mode/-f-i-r-e_-c-o-v-e-r-a-g-e.html"><span class="identifier">FIRE_COVERAGE</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-map-mode/-g-o-l-d.html"><span class="identifier">GOLD</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-map-mode/-h-a-p-p-i-n-e-s-s.html"><span class="identifier">HAPPINESS</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.data/-map-mode/-l-a-n-d_-v-a-l-u-e.html"><span class="identifier">LAND_VALUE</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-map-mode/-n-o-r-m-a-l.html"><span class="identifier">NORMAL</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-map-mode/-o-i-l.html"><span class="identifier">OIL</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-map-mode/-p-o-l-l-u-t-i-o-n.html"><span class="identifier">POLLUTION</span></a></a><br/>
@@ -1359,7 +1393,7 @@
 </BODY>
 </HTML>
 </ul>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-pollution-renderer/index.html"><span class="keyword">class </span><span class="identifier">PollutionRenderer</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-pollution-renderer/index.html"><span class="keyword">class </span><span class="identifier">PollutionRenderer</span></a></a><br/>
 <ul>
 <HTML>
 <HEAD>
@@ -1368,11 +1402,11 @@
 <link rel="stylesheet" href="../style.css">
 </HEAD>
 <BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-pollution-renderer/-init-.html"><span class="identifier">PollutionRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.PollutionRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.map.PollutionRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-pollution-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-pollution-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-pollution-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-pollution-renderer/scale-pollution.html"><span class="keyword">fun </span><span class="identifier">scalePollution</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.PollutionRenderer.Companion$scalePollution(kotlin.Double)/pollution">pollution</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-pollution-renderer/-init-.html"><span class="identifier">PollutionRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.PollutionRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.PollutionRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-pollution-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-pollution-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-pollution-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-pollution-renderer/scale-pollution.html"><span class="keyword">fun </span><span class="identifier">scalePollution</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.PollutionRenderer.Companion$scalePollution(kotlin.Double)/pollution">pollution</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
 </BODY>
 </HTML>
 </ul>
@@ -1843,6 +1877,23 @@
 </BODY>
 </HTML>
 </ul>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-animation-renderer/index.html"><span class="keyword">class </span><span class="identifier">TrafficAnimationRenderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="kotcity.util/-debuggable/index.html"><span class="identifier">Debuggable</span></a></a></a><br/>
+<ul>
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Module Contents</title>
+<link rel="stylesheet" href="../style.css">
+</HEAD>
+<BODY>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-animation-renderer/-init-.html"><span class="identifier">TrafficAnimationRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.TrafficAnimationRenderer$<init>(kotcity.data.CityMap, kotcity.ui.map.CityRenderer, kotcity.ui.ResizableCanvas)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.TrafficAnimationRenderer$<init>(kotcity.data.CityMap, kotcity.ui.map.CityRenderer, kotcity.ui.ResizableCanvas)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.TrafficAnimationRenderer$<init>(kotcity.data.CityMap, kotcity.ui.map.CityRenderer, kotcity.ui.ResizableCanvas)/trafficCanvas">trafficCanvas</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui/-resizable-canvas/index.html"><span class="identifier">ResizableCanvas</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-animation-renderer/debug.html"><span class="keyword">var </span><span class="identifier">debug</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-animation-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-animation-renderer/stop.html"><span class="keyword">fun </span><span class="identifier">stop</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-animation-renderer/visible-block-range.html"><span class="keyword">var </span><span class="identifier">visibleBlockRange</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><span class="identifier">Pair</span></a><span class="symbol">&lt;</span><a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></a></a><br/>
+</BODY>
+</HTML>
+</ul>
 <a href="docs/kotcity4/index"><a href="kotcity.automata/-traffic-calculator/index.html"><span class="keyword">class </span><span class="identifier">TrafficCalculator</span></a></a><br/>
 <ul>
 <HTML>
@@ -1858,7 +1909,7 @@
 </BODY>
 </HTML>
 </ul>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/index.html"><span class="keyword">class </span><span class="identifier">TrafficRenderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="kotcity.util/-debuggable/index.html"><span class="identifier">Debuggable</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/index.html"><span class="keyword">class </span><span class="identifier">TrafficRenderer</span></a></a><br/>
 <ul>
 <HTML>
 <HEAD>
@@ -1867,28 +1918,11 @@
 <link rel="stylesheet" href="../style.css">
 </HEAD>
 <BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/-init-.html"><span class="identifier">TrafficRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.TrafficRenderer$<init>(kotcity.data.CityMap, kotcity.ui.map.CityRenderer, kotcity.ui.ResizableCanvas)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.TrafficRenderer$<init>(kotcity.data.CityMap, kotcity.ui.map.CityRenderer, kotcity.ui.ResizableCanvas)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.TrafficRenderer$<init>(kotcity.data.CityMap, kotcity.ui.map.CityRenderer, kotcity.ui.ResizableCanvas)/trafficCanvas">trafficCanvas</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui/-resizable-canvas/index.html"><span class="identifier">ResizableCanvas</span></a><span class="symbol">)</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/debug.html"><span class="keyword">var </span><span class="identifier">debug</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/-init-.html"><span class="identifier">TrafficRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.TrafficRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.TrafficRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/-t-r-a-f-f-i-c_-c-a-p.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">TRAFFIC_CAP</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/stop.html"><span class="keyword">fun </span><span class="identifier">stop</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/visible-block-range.html"><span class="keyword">var </span><span class="identifier">visibleBlockRange</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><span class="identifier">Pair</span></a><span class="symbol">&lt;</span><a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></a></a><br/>
-</BODY>
-</HTML>
-</ul>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-traffic-renderer/index.html"><span class="keyword">class </span><span class="identifier">TrafficRenderer</span></a></a><br/>
-<ul>
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>Module Contents</title>
-<link rel="stylesheet" href="../style.css">
-</HEAD>
-<BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-traffic-renderer/-init-.html"><span class="identifier">TrafficRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.TrafficRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.map.TrafficRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-traffic-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-traffic-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-traffic-renderer/-t-r-a-f-f-i-c_-c-a-p.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">TRAFFIC_CAP</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-traffic-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
 </BODY>
 </HTML>
 </ul>
@@ -1934,6 +1968,7 @@
 <BODY>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-tunable/-d-e-f-a-u-l-t_-d-e-s-i-r-a-b-i-l-i-t-y.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">DEFAULT_DESIRABILITY</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-tunable/-m-a-x_-b-u-i-l-d-i-n-g_-s-i-z-e.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MAX_BUILDING_SIZE</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.data/-tunable/-m-a-x_-l-a-n-d_-v-a-l-u-e.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MAX_LAND_VALUE</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-tunable/-m-a-x_-r-e-s-o-u-r-c-e_-d-i-s-t-a-n-c-e.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MAX_RESOURCE_DISTANCE</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-tunable/-m-a-x_-t-r-a-f-f-i-c.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MAX_TRAFFIC</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-tunable/-m-i-n_-z-o-t_-a-g-e.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MIN_ZOT_AGE</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></a></a><br/>
@@ -2313,7 +2348,7 @@
 <a href="docs/kotcity4/index"><a href="kotcity.automata/-desirability-updater/-init-.html"><span class="identifier">DesirabilityUpdater</span><span class="symbol">(</span><span class="identifier" id="kotcity.automata.DesirabilityUpdater$<init>(kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.automata/-desirability-updater/city-map.html"><span class="keyword">val </span><span class="identifier">cityMap</span><span class="symbol">: </span><a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.automata/-desirability-updater/debug.html"><span class="keyword">var </span><span class="identifier">debug</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.automata/-desirability-updater/update.html"><span class="keyword">fun </span><span class="identifier">update</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.automata/-desirability-updater/tick.html"><span class="keyword">fun </span><span class="identifier">tick</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
 </BODY>
 </HTML>
 </ul>
@@ -2362,7 +2397,6 @@
 </BODY>
 </HTML>
 </ul>
-<a href="docs/kotcity4/index"><a href="kotcity.automata/-h-e-a-v-y_-t-r-a-f-f-i-c.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">HEAVY_TRAFFIC</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.automata/-happiness-updater/index.html"><span class="keyword">class </span><span class="identifier">HappinessUpdater</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="kotcity.util/-debuggable/index.html"><span class="identifier">Debuggable</span></a></a></a><br/>
 <ul>
 <HTML>
@@ -2376,6 +2410,22 @@
 <a href="docs/kotcity4/index"><a href="kotcity.automata/-happiness-updater/city-map.html"><span class="keyword">val </span><span class="identifier">cityMap</span><span class="symbol">: </span><a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.automata/-happiness-updater/debug.html"><span class="keyword">var </span><span class="identifier">debug</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.automata/-happiness-updater/tick.html"><span class="keyword">fun </span><span class="identifier">tick</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+</BODY>
+</HTML>
+</ul>
+<a href="docs/kotcity4/index"><a href="kotcity.automata/-land-value-updater/index.html"><span class="keyword">class </span><span class="identifier">LandValueUpdater</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="kotcity.util/-debuggable/index.html"><span class="identifier">Debuggable</span></a></a></a><br/>
+<ul>
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Module Contents</title>
+<link rel="stylesheet" href="../style.css">
+</HEAD>
+<BODY>
+<a href="docs/kotcity4/index"><a href="kotcity.automata/-land-value-updater/-init-.html"><span class="identifier">LandValueUpdater</span><span class="symbol">(</span><span class="identifier" id="kotcity.automata.LandValueUpdater$<init>(kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.automata/-land-value-updater/city-map.html"><span class="keyword">val </span><span class="identifier">cityMap</span><span class="symbol">: </span><a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.automata/-land-value-updater/debug.html"><span class="keyword">var </span><span class="identifier">debug</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.automata/-land-value-updater/tick.html"><span class="keyword">fun </span><span class="identifier">tick</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
 </BODY>
 </HTML>
 </ul>
@@ -2395,7 +2445,6 @@
 </BODY>
 </HTML>
 </ul>
-<a href="docs/kotcity4/index"><a href="kotcity.automata/-m-e-d-i-u-m_-t-r-a-f-f-i-c.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MEDIUM_TRAFFIC</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.automata/-manufacturer/index.html"><span class="keyword">class </span><span class="identifier">Manufacturer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="kotcity.util/-debuggable/index.html"><span class="identifier">Debuggable</span></a></a></a><br/>
 <ul>
 <HTML>
@@ -2802,6 +2851,7 @@
 <a href="docs/kotcity4/index"><a href="kotcity.data/-city-map/has-traffic-nearby.html"><span class="keyword">fun </span><span class="identifier">hasTrafficNearby</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$hasTrafficNearby(kotcity.data.BlockCoordinate, kotlin.Int, kotlin.Int)/coordinate">coordinate</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$hasTrafficNearby(kotcity.data.BlockCoordinate, kotlin.Int, kotlin.Int)/radius">radius</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$hasTrafficNearby(kotcity.data.BlockCoordinate, kotlin.Int, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-city-map/height.html"><span class="keyword">var </span><span class="identifier">height</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-city-map/hourly-tick.html"><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">hourlyTick</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$hourlyTick(kotlin.Int)/hour">hour</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.data/-city-map/land-value-layer.html"><span class="keyword">val </span><span class="identifier">landValueLayer</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">&gt;</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-city-map/locations.html"><span class="keyword">fun </span><span class="identifier">locations</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="kotcity.data/-location/index.html"><span class="identifier">Location</span></a><span class="symbol">&gt;</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-city-map/locations-at.html"><span class="keyword">fun </span><span class="identifier">locationsAt</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$locationsAt(kotcity.data.BlockCoordinate)/coordinate">coordinate</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="kotcity.data/-location/index.html"><span class="identifier">Location</span></a><span class="symbol">&gt;</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-city-map/locations-in-rectangle.html"><span class="keyword">fun </span><span class="identifier">locationsInRectangle</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.CityMap$locationsInRectangle(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/topLeft">topLeft</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.CityMap$locationsInRectangle(kotcity.data.BlockCoordinate, kotcity.data.BlockCoordinate)/bottomRight">bottomRight</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="kotcity.data/-location/index.html"><span class="identifier">Location</span></a><span class="symbol">&gt;</span></a></a><br/>
@@ -3150,6 +3200,7 @@
 <a href="docs/kotcity4/index"><a href="kotcity.data/-map-mode/-f-i-r-e_-c-o-v-e-r-a-g-e.html"><span class="identifier">FIRE_COVERAGE</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-map-mode/-g-o-l-d.html"><span class="identifier">GOLD</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-map-mode/-h-a-p-p-i-n-e-s-s.html"><span class="identifier">HAPPINESS</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.data/-map-mode/-l-a-n-d_-v-a-l-u-e.html"><span class="identifier">LAND_VALUE</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-map-mode/-n-o-r-m-a-l.html"><span class="identifier">NORMAL</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-map-mode/-o-i-l.html"><span class="identifier">OIL</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-map-mode/-p-o-l-l-u-t-i-o-n.html"><span class="identifier">POLLUTION</span></a></a><br/>
@@ -3508,6 +3559,7 @@
 <BODY>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-tunable/-d-e-f-a-u-l-t_-d-e-s-i-r-a-b-i-l-i-t-y.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">DEFAULT_DESIRABILITY</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-tunable/-m-a-x_-b-u-i-l-d-i-n-g_-s-i-z-e.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MAX_BUILDING_SIZE</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.data/-tunable/-m-a-x_-l-a-n-d_-v-a-l-u-e.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MAX_LAND_VALUE</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-tunable/-m-a-x_-r-e-s-o-u-r-c-e_-d-i-s-t-a-n-c-e.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MAX_RESOURCE_DISTANCE</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-tunable/-m-a-x_-t-r-a-f-f-i-c.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MAX_TRAFFIC</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.data/-tunable/-m-i-n_-z-o-t_-a-g-e.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MIN_ZOT_AGE</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></a></a><br/>
@@ -3730,7 +3782,6 @@
 </BODY>
 </HTML>
 </ul>
-<a href="docs/kotcity4/index"><a href="kotcity.pathfinding/-m-a-x_-d-i-s-t-a-n-c-e.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MAX_DISTANCE</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.pathfinding/-navigation-node/index.html"><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">NavigationNode</span></a></a><br/>
 <ul>
 <HTML>
@@ -4112,7 +4163,7 @@
 <link rel="stylesheet" href="../style.css">
 </HEAD>
 <BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/index.html"><span class="keyword">class </span><span class="identifier">TrafficRenderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="kotcity.util/-debuggable/index.html"><span class="identifier">Debuggable</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-crime-renderer/index.html"><span class="keyword">class </span><span class="identifier">CrimeRenderer</span></a></a><br/>
 <ul>
 <HTML>
 <HEAD>
@@ -4121,11 +4172,127 @@
 <link rel="stylesheet" href="../style.css">
 </HEAD>
 <BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/-init-.html"><span class="identifier">TrafficRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.TrafficRenderer$<init>(kotcity.data.CityMap, kotcity.ui.map.CityRenderer, kotcity.ui.ResizableCanvas)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.TrafficRenderer$<init>(kotcity.data.CityMap, kotcity.ui.map.CityRenderer, kotcity.ui.ResizableCanvas)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.TrafficRenderer$<init>(kotcity.data.CityMap, kotcity.ui.map.CityRenderer, kotcity.ui.ResizableCanvas)/trafficCanvas">trafficCanvas</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui/-resizable-canvas/index.html"><span class="identifier">ResizableCanvas</span></a><span class="symbol">)</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/debug.html"><span class="keyword">var </span><span class="identifier">debug</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-crime-renderer/-init-.html"><span class="identifier">CrimeRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.CrimeRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.CrimeRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-crime-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-crime-renderer/-n-e-u-t-r-a-l_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEUTRAL_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-crime-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-crime-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+</BODY>
+</HTML>
+</ul>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-desirability-renderer/index.html"><span class="keyword">class </span><span class="identifier">DesirabilityRenderer</span></a></a><br/>
+<ul>
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Module Contents</title>
+<link rel="stylesheet" href="../style.css">
+</HEAD>
+<BODY>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-desirability-renderer/-init-.html"><span class="identifier">DesirabilityRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.DesirabilityRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.DesirabilityRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-desirability-renderer/-d-e-s-i-r-a-b-i-l-i-t-y_-c-a-p.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">DESIRABILITY_CAP</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-desirability-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-desirability-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-desirability-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+</BODY>
+</HTML>
+</ul>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-fire-coverage-renderer/index.html"><span class="keyword">class </span><span class="identifier">FireCoverageRenderer</span></a></a><br/>
+<ul>
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Module Contents</title>
+<link rel="stylesheet" href="../style.css">
+</HEAD>
+<BODY>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-fire-coverage-renderer/-init-.html"><span class="identifier">FireCoverageRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.FireCoverageRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.FireCoverageRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-fire-coverage-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-fire-coverage-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-fire-coverage-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+</BODY>
+</HTML>
+</ul>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-happiness-renderer/index.html"><span class="keyword">class </span><span class="identifier">HappinessRenderer</span></a></a><br/>
+<ul>
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Module Contents</title>
+<link rel="stylesheet" href="../style.css">
+</HEAD>
+<BODY>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-happiness-renderer/-init-.html"><span class="identifier">HappinessRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.HappinessRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.HappinessRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-happiness-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-happiness-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-happiness-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+</BODY>
+</HTML>
+</ul>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-land-value-renderer/index.html"><span class="keyword">class </span><span class="identifier">LandValueRenderer</span></a></a><br/>
+<ul>
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Module Contents</title>
+<link rel="stylesheet" href="../style.css">
+</HEAD>
+<BODY>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-land-value-renderer/-init-.html"><span class="identifier">LandValueRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.LandValueRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.LandValueRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-land-value-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-land-value-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-land-value-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+</BODY>
+</HTML>
+</ul>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-pollution-renderer/index.html"><span class="keyword">class </span><span class="identifier">PollutionRenderer</span></a></a><br/>
+<ul>
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Module Contents</title>
+<link rel="stylesheet" href="../style.css">
+</HEAD>
+<BODY>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-pollution-renderer/-init-.html"><span class="identifier">PollutionRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.PollutionRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.PollutionRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-pollution-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-pollution-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-pollution-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-pollution-renderer/scale-pollution.html"><span class="keyword">fun </span><span class="identifier">scalePollution</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.PollutionRenderer.Companion$scalePollution(kotlin.Double)/pollution">pollution</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
+</BODY>
+</HTML>
+</ul>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-animation-renderer/index.html"><span class="keyword">class </span><span class="identifier">TrafficAnimationRenderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="kotcity.util/-debuggable/index.html"><span class="identifier">Debuggable</span></a></a></a><br/>
+<ul>
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Module Contents</title>
+<link rel="stylesheet" href="../style.css">
+</HEAD>
+<BODY>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-animation-renderer/-init-.html"><span class="identifier">TrafficAnimationRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.TrafficAnimationRenderer$<init>(kotcity.data.CityMap, kotcity.ui.map.CityRenderer, kotcity.ui.ResizableCanvas)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.TrafficAnimationRenderer$<init>(kotcity.data.CityMap, kotcity.ui.map.CityRenderer, kotcity.ui.ResizableCanvas)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.TrafficAnimationRenderer$<init>(kotcity.data.CityMap, kotcity.ui.map.CityRenderer, kotcity.ui.ResizableCanvas)/trafficCanvas">trafficCanvas</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui/-resizable-canvas/index.html"><span class="identifier">ResizableCanvas</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-animation-renderer/debug.html"><span class="keyword">var </span><span class="identifier">debug</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-animation-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-animation-renderer/stop.html"><span class="keyword">fun </span><span class="identifier">stop</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-animation-renderer/visible-block-range.html"><span class="keyword">var </span><span class="identifier">visibleBlockRange</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><span class="identifier">Pair</span></a><span class="symbol">&lt;</span><a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></a></a><br/>
+</BODY>
+</HTML>
+</ul>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/index.html"><span class="keyword">class </span><span class="identifier">TrafficRenderer</span></a></a><br/>
+<ul>
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Module Contents</title>
+<link rel="stylesheet" href="../style.css">
+</HEAD>
+<BODY>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/-init-.html"><span class="identifier">TrafficRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.layers.TrafficRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.layers.TrafficRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
+<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/-t-r-a-f-f-i-c_-c-a-p.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">TRAFFIC_CAP</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/stop.html"><span class="keyword">fun </span><span class="identifier">stop</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.layers/-traffic-renderer/visible-block-range.html"><span class="keyword">var </span><span class="identifier">visibleBlockRange</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><span class="identifier">Pair</span></a><span class="symbol">&lt;</span><a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></a></a><br/>
 </BODY>
 </HTML>
 </ul>
@@ -4206,107 +4373,6 @@
 <a href="docs/kotcity4/index"><a href="kotcity.ui.map/-city-renderer/show-routes-for.html"><span class="keyword">var </span><span class="identifier">showRoutesFor</span><span class="symbol">: </span><a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">?</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.ui.map/-city-renderer/visible-block-range.html"><span class="keyword">fun </span><span class="identifier">visibleBlockRange</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.CityRenderer$visibleBlockRange(kotlin.Int)/padding">padding</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><span class="identifier">Pair</span></a><span class="symbol">&lt;</span><a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">,</span>&nbsp;<a href="kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span></a></a><br/>
 <a href="docs/kotcity4/index"><a href="kotcity.ui.map/-city-renderer/zoom.html"><span class="keyword">var </span><span class="identifier">zoom</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
-</BODY>
-</HTML>
-</ul>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-crime-renderer/index.html"><span class="keyword">class </span><span class="identifier">CrimeRenderer</span></a></a><br/>
-<ul>
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>Module Contents</title>
-<link rel="stylesheet" href="../style.css">
-</HEAD>
-<BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-crime-renderer/-init-.html"><span class="identifier">CrimeRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.CrimeRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.map.CrimeRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-crime-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-crime-renderer/-n-e-u-t-r-a-l_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEUTRAL_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-crime-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><span class="identifier">Color</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-crime-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
-</BODY>
-</HTML>
-</ul>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-desirability-renderer/index.html"><span class="keyword">class </span><span class="identifier">DesirabilityRenderer</span></a></a><br/>
-<ul>
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>Module Contents</title>
-<link rel="stylesheet" href="../style.css">
-</HEAD>
-<BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-desirability-renderer/-init-.html"><span class="identifier">DesirabilityRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.DesirabilityRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.map.DesirabilityRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-desirability-renderer/-d-e-s-i-r-a-b-i-l-i-t-y_-c-a-p.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">DESIRABILITY_CAP</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-desirability-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-desirability-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-desirability-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
-</BODY>
-</HTML>
-</ul>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-fire-coverage-renderer/index.html"><span class="keyword">class </span><span class="identifier">FireCoverageRenderer</span></a></a><br/>
-<ul>
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>Module Contents</title>
-<link rel="stylesheet" href="../style.css">
-</HEAD>
-<BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-fire-coverage-renderer/-init-.html"><span class="identifier">FireCoverageRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.FireCoverageRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.map.FireCoverageRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-fire-coverage-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-fire-coverage-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-fire-coverage-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
-</BODY>
-</HTML>
-</ul>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-happiness-renderer/index.html"><span class="keyword">class </span><span class="identifier">HappinessRenderer</span></a></a><br/>
-<ul>
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>Module Contents</title>
-<link rel="stylesheet" href="../style.css">
-</HEAD>
-<BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-happiness-renderer/-init-.html"><span class="identifier">HappinessRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.HappinessRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.map.HappinessRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-happiness-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-happiness-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-happiness-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
-</BODY>
-</HTML>
-</ul>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-m-a-x_-b-u-i-l-d-i-n-g_-s-i-z-e.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MAX_BUILDING_SIZE</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-pollution-renderer/index.html"><span class="keyword">class </span><span class="identifier">PollutionRenderer</span></a></a><br/>
-<ul>
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>Module Contents</title>
-<link rel="stylesheet" href="../style.css">
-</HEAD>
-<BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-pollution-renderer/-init-.html"><span class="identifier">PollutionRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.PollutionRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.map.PollutionRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-pollution-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-pollution-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-pollution-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-pollution-renderer/scale-pollution.html"><span class="keyword">fun </span><span class="identifier">scalePollution</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.PollutionRenderer.Companion$scalePollution(kotlin.Double)/pollution">pollution</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
-</BODY>
-</HTML>
-</ul>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-traffic-renderer/index.html"><span class="keyword">class </span><span class="identifier">TrafficRenderer</span></a></a><br/>
-<ul>
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>Module Contents</title>
-<link rel="stylesheet" href="../style.css">
-</HEAD>
-<BODY>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-traffic-renderer/-init-.html"><span class="identifier">TrafficRenderer</span><span class="symbol">(</span><span class="identifier" id="kotcity.ui.map.TrafficRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityRenderer">cityRenderer</span><span class="symbol">:</span>&nbsp;<a href="kotcity.ui.map/-city-renderer/index.html"><span class="identifier">CityRenderer</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.ui.map.TrafficRenderer$<init>(kotcity.ui.map.CityRenderer, kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-traffic-renderer/-n-e-g-a-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">NEGATIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-traffic-renderer/-p-o-s-i-t-i-v-e_-c-o-l-o-r.html"><span class="keyword">val </span><span class="identifier">POSITIVE_COLOR</span><span class="symbol">: </span><a href="http://docs.oracle.com/javase/6/docs/api/java/awt/Color.html"><span class="identifier">Color</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-traffic-renderer/-t-r-a-f-f-i-c_-c-a-p.html"><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">TRAFFIC_CAP</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></a></a><br/>
-<a href="docs/kotcity4/index"><a href="kotcity.ui.map/-traffic-renderer/render.html"><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></a></a><br/>
 </BODY>
 </HTML>
 </ul>

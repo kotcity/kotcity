@@ -85,6 +85,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val zoneLayer = mutableMapOf<BlockCoordinate, Zone>()
     val powerLineLayer = mutableMapOf<BlockCoordinate, Building>()
     val resourceLayers = mutableMapOf<String, QuantizedMap<Double>>()
+    val landValueLayer = mutableMapOf<BlockCoordinate, Double>().withDefault { 0.0 }
     val fireCoverageLayer = mutableMapOf<BlockCoordinate, Double>()
     val crimeLayer = mutableMapOf<BlockCoordinate, Double>()
     val policePresenceLayer = mutableMapOf<BlockCoordinate, Double>()
@@ -110,6 +111,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private val happinessUpdater = HappinessUpdater(this)
     private val upgrader: Upgrader = Upgrader(this)
     private val pollutionUpdater = PollutionUpdater(this)
+    private val landValueUpdater = LandValueUpdater(this)
 
     val nationalTradeEntity = NationalTradeEntity(this)
 
@@ -171,7 +173,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     fun debug(message: String) {
         if (!debug) return
-        println("Map: $message")
+        println("CityMap: $message")
     }
 
     init {
@@ -183,9 +185,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         desirabilityUpdater.debug = false
         liquidator.debug = false
         zotPopulator.debug = false
-        censusTaker.tick()
         happinessUpdater.debug = false
         upgrader.debug = false
+        landValueUpdater.debug = false
+
+        censusTaker.tick()
         nationalTradeEntity.resetCounts()
 
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -355,6 +359,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 debug("Processing tick for end of day...")
                 dailyTick()
             }
+
         } catch (e: Exception) {
             println("WARNING! Error during hourly: ${e.message}")
             e.printStackTrace()
@@ -375,11 +380,24 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
         async {
             timeFunction("Calculating desirability") { desirabilityUpdater.tick() }
+        }
+
+        async {
             timeFunction("Collect Taxes") { taxCollector.tick() }
             timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
+        }
+
+        async {
             timeFunction("Calculating fire coverage") { FireCoverageUpdater.update(self) }
             timeFunction("Calculating crime and police presence") { CrimeUpdater.update(self) }
+        }
+
+        async {
             timeFunction("Checking validity of contracts") { ContractChecker.checkContracts(self) }
+        }
+
+        async {
+            timeFunction("Update land value") { landValueUpdater.tick() }
         }
     }
 

@@ -1,8 +1,9 @@
-package kotcity.ui.map
+package kotcity.ui.layers
 
 import javafx.scene.paint.Color
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
+import kotcity.ui.map.CityRenderer
 import kotcity.util.interpolate
 
 class FireCoverageRenderer(private val cityRenderer: CityRenderer, private val cityMap: CityMap) {

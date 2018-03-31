@@ -423,6 +423,7 @@
                         </RadioMenuItem>
                         <RadioMenuItem fx:id="happinessMapMode" mnemonicParsing="false" text="Happiness" toggleGroup="$mapMode" />
                         <RadioMenuItem fx:id="desirabilityMapMode" mnemonicParsing="false" text="Desirability" toggleGroup="$mapMode" />
+                        <RadioMenuItem fx:id="landValueMapMode" mnemonicParsing="false" text="Land Value" toggleGroup="$mapMode" />
                         <RadioMenuItem fx:id="fireCoverageMapMode" mnemonicParsing="false" text="Fire Coverage" toggleGroup="$mapMode" />
                         <RadioMenuItem fx:id="crimeMapMode" mnemonicParsing="false" text="Crime" toggleGroup="$mapMode" />
                         <RadioMenuItem fx:id="trafficMapMode" mnemonicParsing="false" text="Traffic" toggleGroup="$mapMode" />

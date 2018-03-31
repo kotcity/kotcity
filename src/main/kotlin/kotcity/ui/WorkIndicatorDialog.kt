@@ -23,15 +23,11 @@ import java.util.function.Consumer
 import java.util.function.ToIntFunction
 
 /**
- * Public domain. Use as you like. No warranties.
+ * Used to show a spinner when we are doing some work...
  * P = Input parameter type. Given to the closure as parameter. Return type is always Integer.
  * (cc) @imifos
  */
-class WorkIndicatorDialog<in P>
-/**
- *
- */
-(owner: Window, label: String) {
+class WorkIndicatorDialog<in P>(owner: Window, label: String) {
 
     private var animationWorker: Task<*>? = null
     private var taskWorker: Task<Int>? = null
@@ -117,9 +113,9 @@ class WorkIndicatorDialog<in P>
         animationWorker?.let {
             progressIndicator.progressProperty().bind(it.progressProperty())
 
-//            it.messageProperty().addListener({ observable, oldValue, newValue ->
-//                // Do something when the animation value ticker has changed
-//            })
+            it.messageProperty().addListener({ observable, oldValue, newValue ->
+                // Do something when the animation value ticker has changed
+            })
 
             Thread(animationWorker).start()
         }

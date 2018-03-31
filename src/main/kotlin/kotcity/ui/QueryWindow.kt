@@ -38,9 +38,9 @@ class QueryWindow : View() {
 
                 // let's get that desirability...
                 val desirability = city.desirabilityLayers.maxBy { it[coordinate] ?: 0.0 }?.get(coordinate) ?: 0.0
-                buffer.append("Desirability: $desirability\n")
+                buffer.append("Desirability: ${desirability.roundToInt()}\n")
                 buffer.append("Elevation: ${city.groundLayer[coordinate]?.elevation}\n")
-                buffer.append("Land Value: ???\n")
+                buffer.append("Land Value: $${(city.landValueLayer[coordinate] ?: 0.0).roundToInt()}\n")
 
                 val coverage = ((city.fireCoverageLayer[coordinate] ?: 0.0) * 100).roundToInt()
                 buffer.append("Fire Coverage: $coverage %\n")
