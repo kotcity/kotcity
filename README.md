@@ -2,9 +2,9 @@
 
 [![Build Status](https://semaphoreci.com/api/v1/kotcity/kotcity/branches/master/badge.svg)](https://semaphoreci.com/kotcity/kotcity) [![Build Status](https://travis-ci.org/kotcity/kotcity.svg?branch=master)](https://travis-ci.org/kotcity/kotcity)
 
-## WARNING!
+## ⚠⚠⚠ WARNING! WARNING! WARNING! ⚠⚠⚠
 
-This is _pre alpha_ software with super obvious bugs, rough edges etc. In the spirit of "release early and release often", I am posting the code. This project is far from done but I prefer to get the code out there to be used by whomever. Disagree with the project? Fork it :)
+This is _pre-alpha_ software with super obvious bugs, rough edges etc. In the spirit of "release early and release often", I am posting the code. This project is far from done but I prefer to get the code out there to be used by whomever. Disagree with the project? Fork it :)
 
 ## Obligatory Screenshot
 ![KotCity Screenshot](screenshot.gif?raw=true "Screenshot of the game's UI and an example city")
@@ -36,7 +36,13 @@ KotCity is a city simulator written in Kotlin inspired by the statistical city s
 
 ## Quick Start
 
-Be on the lookout for super easy to install package soon... until then...
+### How can I change the code or work on the project?
+
+View our [Developer's Guide](https://github.com/kotcity/kotcity/wiki/Developer's-Guide)
+
+[API Documentation](https://cdn.rawgit.com/kotcity/kotcity/6559c68e/docs/kotcity4/index.html)
+
+### Command line-flow
 * Install JDK 1.8+.
 * Clone the project.
 * Run Gradle using ./gradlew run.
