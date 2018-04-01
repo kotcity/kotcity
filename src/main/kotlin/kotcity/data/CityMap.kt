@@ -46,7 +46,7 @@ data class Corners(
  */
 data class DesirabilityLayer(val zoneType: Zone, val level: Int) : QuantizedMap<Double>(1) {
     init {
-        map = map.withDefault { Double.MIN_VALUE }
+        map = map.withDefault { Double.NEGATIVE_INFINITY }
     }
 }
 
@@ -180,7 +180,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         shipper.debug = false
         contractFulfiller.debug = false
         manufacturer.debug = false
-        constructor.debug = false
+        constructor.debug = true
         taxCollector.debug = false
         desirabilityUpdater.debug = false
         liquidator.debug = false
@@ -334,14 +334,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
             if (hour % 3 == 0) {
                 timeFunction("Terminating random contracts") { contractFulfiller.terminateRandomContracts() }
-                withTimeout(10000, TimeUnit.MILLISECONDS) {
-                    timeFunction("Signing contracts") { contractFulfiller.signContracts(true, 10000, true) }
+                withTimeout(5000, TimeUnit.MILLISECONDS) {
+                    timeFunction("Signing contracts") { contractFulfiller.signContracts(true, 5000, true) }
                 }
                 timeFunction("Doing manufacturing") { manufacturer.tick() }
                 timeFunction("Shipping products") { shipper.tick() }
                 timeFunction("Consuming goods") { goodsConsumer.tick() }
                 timeFunction("Generating traffic") { trafficCalculator.tick() }
-                async { timeFunction("Taking census") { censusTaker.tick() } }
+
                 async { timeFunction("Populating Zots") { zotPopulator.tick() } }
                 async {
                     timeFunction("Updating pollution...") { pollutionUpdater.tick() }
@@ -350,9 +350,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
 
             if (hour == 0 || hour == 6|| hour == 12 || hour == 18) {
+                timeFunction("Taking census (to calculate demand)") { censusTaker.tick() }
                 timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
                 timeFunction("Constructing buildings") { constructor.tick() }
                 timeFunction("Performing upgrades") { upgrader.tick() }
+                timeFunction("Taking census again (to account for new demand...)") { censusTaker.tick() }
             }
 
             if (hour == 0) {
@@ -684,6 +686,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                     powerLineLayer.remove(coordinate)
                 }
                 val buildings = locationsIn(coordinate)
+
+                // BUG: I strongly suspect this doesn't work...
+                // TODO: fix this...
                 // now kill all those contracts...
                 buildings.forEach {
                     buildingLayer.values.forEach { otherBuilding ->

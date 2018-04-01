@@ -31,7 +31,12 @@ class LandValueUpdater(val cityMap: CityMap): Debuggable {
         allZoneCoordinates().forEach {
             val howMuchMoney = nearbyWealth(it)
             val landValue = Algorithms.scale(howMuchMoney.toDouble(), 0.0, maxLandValue.toDouble(), 0.0, Tunable.MAX_LAND_VALUE)
-            cityMap.landValueLayer[it] = landValue
+            if (landValue == Double.NaN) {
+                cityMap.landValueLayer[it] = 0.0
+            } else {
+                cityMap.landValueLayer[it] = landValue
+            }
+
         }
 
         // try to clean it now...
