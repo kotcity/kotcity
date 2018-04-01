@@ -15,20 +15,24 @@ This is _pre-alpha_ software with super obvious bugs, rough edges etc. In the sp
 
 Java 8+ is required. On Windows it will look for JRE and bring you to download page if you don't have it.
 
-(note, on Ubuntu do apt-get install openjfx)
+(note, on Ubuntu do "apt-get install openjfx")
 
 ## New in this version
 
-* railways (kind of broken still! bear with me...)
-* better desirability calculation
+* Land value
+* better desirability calculation (including land value!)
 * more stable economy...
+* Lower CPU usage (optimizations to desirability updater)
+* Misc bugfixes
+
+## Broken in this version
+
+* railways (kind of broken still! bear with me...)
 
 ## Next up!
 
 * Schools
 * Hospitals
-* Land value
-* Developer's Guide
 
 ## What is KotCity?
 
@@ -90,13 +94,12 @@ You can contribute buildings (see assets directory), ideas for the game, help wi
 * As-you-want map size (Can your PC handle 100km^2? Go for it!).
 * Power plants and coverage.
 * Dynamic economy where goods, services and labor are exchanged.
-* Happiness
 
 ## Future Plans
 
 To make a game that "takes over" from SimCity 4. We have a loooooong way to go:
-* Implement land values.
-* Bus and rail and stations.
+* Bus stations.
+* Functioning rail :)
 * More types of power plant (hydro, wind, etc).
 * Create buildings that use resources under the ground (coal, etc).
 * Implement "module upgrade" system from SimCity 2013 (upgrades to power plants etc).
