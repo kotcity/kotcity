@@ -99,9 +99,9 @@ class Constructor(val cityMap: CityMap) : Debuggable {
      */
     private fun howManyToBuild(zoneType: Zone): Int {
 
-        val idealIndustrial = 0.85
-        val idealResidential = 0.5
-        val idealCommercial = 0.80
+        val idealIndustrial = 0.80
+        val idealCommercial = 0.75
+        val idealResidential = 0.70
 
         return when (zoneType) {
             Zone.COMMERCIAL -> {
