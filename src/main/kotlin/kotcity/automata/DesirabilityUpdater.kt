@@ -70,7 +70,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
 
             jobs += async {
                 if (!pathFinder.nearbyRoad(listOf(coordinate))) {
-                    desirabilityLayer[coordinate] = 0.0
+                    desirabilityLayer[coordinate] = Double.MIN_VALUE
                 } else {
                     val availableGoodsShortDistanceScore = resourceFinder.quantityWantedNearby(Tradeable.GOODS, coordinate, shortDistance) * 0.1
                     val availableGoodsMediumDistanceScore = resourceFinder.quantityWantedNearby(Tradeable.GOODS, coordinate, mediumDistance) * 0.1
@@ -114,7 +114,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
             jobs += async {
                 // if we aren't near a road we are not desirable...
                 if (!pathFinder.nearbyRoad(listOf(coordinate))) {
-                    desirabilityLayer[coordinate] = 0.0
+                    desirabilityLayer[coordinate] = Double.MIN_VALUE
                 } else {
                     val availableBuyingWholesaleGoodsShortDistanceScore = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, shortDistance) * 0.1
                     val availableBuyingWholesaleGoodsMediumDistanceScore = resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, mediumDistance)  * 0.1
@@ -169,7 +169,7 @@ class DesirabilityUpdater(val cityMap: CityMap): Debuggable {
             jobs += async {
 
                 if (!pathFinder.nearbyRoad(listOf(coordinate))) {
-                    desirabilityLayer[coordinate] = 0.0
+                    desirabilityLayer[coordinate] = Double.MIN_VALUE
                 } else {
 
                     // if we have less than 20 people we just want to live here...

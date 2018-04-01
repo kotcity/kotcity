@@ -52,10 +52,8 @@ class Upgrader(val cityMap: CityMap): Debuggable {
         var tries = 0
         while (tries < maxTries) {
             debug("Trying a fuzzed location!")
-            // TODO: we CANNOT fuzz!! we need to make sure the new building shares at least
-            // ONE coordinate with the old building...
-            // this is mega WRONG
-            val fuzzedCoordinate = coordinate.fuzz()
+
+            val fuzzedCoordinate = coordinate.fuzz((newBuilding.width / 2).coerceAtLeast(1))
 
             val oldCoordinate = location.coordinate
 

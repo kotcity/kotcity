@@ -43,6 +43,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
                 val blockAndScore = layer.entries()
                         .filter { correctZoneType(zoneType, it.key) }
                         .filter { isEmpty(it) }
+                        .filter { it.value > Double.MIN_VALUE }
                         .sortedByDescending { it.value }
                         .take(10)
                         .randomElement()

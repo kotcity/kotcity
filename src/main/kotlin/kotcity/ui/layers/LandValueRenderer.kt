@@ -29,7 +29,7 @@ class LandValueRenderer(private val cityRenderer: CityRenderer, private val city
                     val scaledLandValue = Algorithms.scale(landValue, 0.0, Tunable.MAX_LAND_VALUE, 0.0, 1.0)
 
                     val landValueColor = NEGATIVE_COLOR.interpolate(POSITIVE_COLOR, scaledLandValue)
-                    fill = Color(landValueColor.red, landValueColor.green, landValueColor.blue, 0.5)
+                    fill = Color(landValueColor.red, landValueColor.green, landValueColor.blue, 0.8)
                     fillRect(dX, dY, blockSize(), blockSize())
                 }
             }

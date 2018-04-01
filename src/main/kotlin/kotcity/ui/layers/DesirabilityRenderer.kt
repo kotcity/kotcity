@@ -48,6 +48,6 @@ class DesirabilityRenderer(private val cityRenderer: CityRenderer, private val c
     private fun determineColor(desirability: Double, minDesirability: Double, maxDesirability: Double): Color {
         val fraction = Algorithms.scale(desirability, minDesirability, maxDesirability, 0.0, 1.0)
         val newColor = NEGATIVE_COLOR.interpolate(POSITIVE_COLOR, fraction.toFloat())
-        return Color(newColor.red, newColor.green, newColor.blue, 0.5)
+        return Color(newColor.red, newColor.green, newColor.blue, 0.8)
     }
 }
