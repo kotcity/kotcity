@@ -19,10 +19,10 @@ class Constructor(val cityMap: CityMap) : Debuggable {
 
     /**
      * Makes sure this spot is empty...
-     * @param entry
+     * @param coordinate coordinate to check...
      */
-    private fun isEmpty(entry: MutableMap.MutableEntry<BlockCoordinate, Double>): Boolean {
-        return cityMap.cachedLocationsIn(entry.key).count() == 0
+    private fun isEmpty(coordinate: BlockCoordinate): Boolean {
+        return cityMap.cachedLocationsIn(coordinate).count() == 0
     }
 
     /**
@@ -39,33 +39,44 @@ class Constructor(val cityMap: CityMap) : Debuggable {
 
                 val layer = cityMap.desirabilityLayer(zoneType, 1) ?: return
 
-                // get the 10 best places... pick one randomly ....
-                val blockAndScore = layer.entries()
-                        .filter { correctZoneType(zoneType, it.key) }
-                        .filter { isEmpty(it) }
-                        .filter { it.value > Double.MIN_VALUE }
-                        .sortedByDescending { it.value }
+                val totalInLayer = layer.keys().size
+
+                // let's extract the blocks we should check... basically it is anywhere where desirability is off the floor...
+                val potentialLocations = layer.entries().filter { it.value > Double.NEGATIVE_INFINITY }.map { it.key }
+
+                val emptyBlocks = potentialLocations.filter { isEmpty(it) }
+
+                val withCorrectZoneType = emptyBlocks.filter { correctZoneType(zoneType, it) }
+
+                // now let's join back up with desirability...
+                val byDesirabilityScore = withCorrectZoneType
+                        .map { Pair(it, layer[it]) }
+                        .sortedByDescending { it.second }
+                        .map { it.first }
+
+                val bestLocation = byDesirabilityScore
                         .take(10)
                         .randomElement()
 
                 // OK now have to make sure this is zoned right....
-
-                if (blockAndScore == null) {
+                if (bestLocation == null) {
                     if (debug) {
                         debug("Could not find most desirable $zoneType zone!")
+                        debug("Total entries in desirability layer: $totalInLayer")
+                        debug("Potential locations: ${potentialLocations.size}")
+                        debug("Empty blocks: ${emptyBlocks.size}")
+                        debug("With correct zone type: ${withCorrectZoneType.size}")
                     }
                 } else {
-                    debug("We will be trying to build at ${blockAndScore.key} with desirability ${blockAndScore.value}")
-                    val coordinate = blockAndScore.key
-                    val desirability = blockAndScore.value
+                    debug("We will be trying to build at $bestLocation")
                     // constructor only constructs level 1 buildings...
                     val newBuilding = assetManager.findBuilding(zoneType, 1)
                     if (newBuilding != null) {
                         debug("The building to be attempted is: $newBuilding")
                         // let's try like X times...
-                        buildingBuilder.tryToBuild(coordinate, newBuilding)
+                        buildingBuilder.tryToBuild(bestLocation, newBuilding)
                     } else {
-                        debug("Sorry, no building could be found for $zoneType and $desirability")
+                        debug("Sorry, no building could be found for $zoneType at $bestLocation")
                     }
 
                 }
