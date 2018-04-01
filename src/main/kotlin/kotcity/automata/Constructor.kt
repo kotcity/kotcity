@@ -101,7 +101,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
 
         val idealIndustrial = 0.80
         val idealCommercial = 0.75
-        val idealResidential = 0.70
+        val idealResidential = 0.65
 
         return when (zoneType) {
             Zone.COMMERCIAL -> {

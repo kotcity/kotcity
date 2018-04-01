@@ -176,6 +176,7 @@ class GameFrame : View(), Debuggable {
         super.onDock()
         currentWindow?.sizeToScene()
         currentWindow?.centerOnScreen()
+        currentStage?.isMaximized = true
 
         // BUG: why doesn't this work???
         this.currentWindow?.setOnCloseRequest {

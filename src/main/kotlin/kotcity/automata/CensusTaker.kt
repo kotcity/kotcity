@@ -109,7 +109,12 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
         if (resourceCounts.consumeCount(tradeable) < 10.0) {
             return 2.0
         }
-        return resourceCounts.consumeCount(tradeable).toDouble() / resourceCounts.supplyCount(tradeable).toDouble()
+        val result = resourceCounts.consumeCount(tradeable).toDouble() / resourceCounts.supplyCount(tradeable).toDouble()
+        // if it's infinite... it's just 2.0!
+        if (result == Double.NEGATIVE_INFINITY || result == Double.POSITIVE_INFINITY) {
+            return 2.0
+        }
+        return result
     }
 
     /**
