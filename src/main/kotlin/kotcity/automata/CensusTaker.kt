@@ -11,6 +11,9 @@ enum class CountType {
     DEMAND
 }
 
+/**
+ * Stores supply/demand stats, used by charts and so forth.
+ */
 data class EconomyReport(
         val tradeable: Tradeable,
         val supply: Int,
@@ -38,12 +41,6 @@ class ResourceCounts {
         }
     }
 
-    fun tradeBalance(tradeable: Tradeable): Int {
-        val supply = counts[Pair(CountType.SUPPLY, tradeable)] ?: 0
-        val demand = counts[Pair(CountType.DEMAND, tradeable)] ?: 0
-        return supply - demand
-    }
-
     fun consumeCount(tradeable: Tradeable): Int {
         return counts[Pair(CountType.DEMAND, tradeable)] ?: 0
     }
@@ -54,6 +51,10 @@ class ResourceCounts {
 
 }
 
+/**
+ * Used to figure out population and economy stats by CityMap...
+ * @param cityMap the map we are concerned with...
+ */
 class CensusTaker(val cityMap: CityMap): Debuggable {
     override var debug: Boolean = false
     var population = 0
@@ -62,10 +63,19 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
     fun tick() {
         calculatePopulation()
         supplyAndDemand()
+
+        // poke anyone listening to us...
+        if (listeners.count() > 0) {
+            runLater {
+                listeners.forEach { it() }
+            }
+        }
     }
 
+    /**
+     * Loop over each residential building and count the labor...
+     */
     private fun calculatePopulation() {
-        // loop over each residential building and count the labor...
         var tempPop = 0
         cityMap.locations().forEach { location ->
             val building = location.building
@@ -75,11 +85,6 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
             }
         }
         population = tempPop
-        if (listeners.count() > 0) {
-            runLater {
-                listeners.forEach { it() }
-            }
-        }
     }
 
     private fun supplyAndDemand() {
@@ -95,10 +100,10 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
         this.resourceCounts = resourceCounts
     }
 
-    fun tradeBalance(tradeable: Tradeable): Int {
-        return resourceCounts.tradeBalance(tradeable)
-    }
-
+    /**
+     * Returns the ratio of SUPPLY to DEMAND... in other words... the higher the number the more we want this [Tradeable]
+     * @param tradeable the [Tradeable] in question
+     */
     fun supplyRatio(tradeable: Tradeable): Double {
         // if we consume less than 10 total... create synthetic demand...
         if (resourceCounts.consumeCount(tradeable) < 10.0) {
@@ -107,8 +112,15 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
         return resourceCounts.consumeCount(tradeable).toDouble() / resourceCounts.supplyCount(tradeable).toDouble()
     }
 
+    /**
+     * A list of callbacks that we will invoke when we update our stats...
+     */
     private val listeners = mutableListOf<() -> Unit>()
 
+    /**
+     * Used by the UI... adds a callback to us. When pop is updated we will call this function...
+     * @param listener the callback (that we will call) :)
+     */
     fun addUpdateListener(listener: () -> Unit) {
         this.listeners.add(listener)
     }
