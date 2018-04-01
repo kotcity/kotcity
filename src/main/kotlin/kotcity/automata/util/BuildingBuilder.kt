@@ -14,7 +14,7 @@ class BuildingBuilder(val cityMap: CityMap): Debuggable {
 
         while (tries < maxTries && !done) {
             // TODO: fuzz to 50% of building width...
-            val fuzzedCoordinate: BlockCoordinate = coordinate.fuzz((newBuilding.width / 2).coerceAtLeast(1))
+            val fuzzedCoordinate: BlockCoordinate = coordinate.fuzz((newBuilding.width))
 
             val buildingZone: Zone? = findZoneForBuilding(newBuilding)
 

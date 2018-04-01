@@ -35,7 +35,7 @@ data class BlockCoordinate(
 
     /**
      * Used when we want to place something at a coordinate, but not exactly. It returns a coordinate as far away as
-     * [MAX_BUILDING_SIZE]
+     * [amount]
      */
     fun fuzz(amount: Int): BlockCoordinate {
         val randX = random.intBetween(-amount, amount)

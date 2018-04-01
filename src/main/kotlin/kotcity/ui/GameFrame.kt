@@ -468,7 +468,7 @@ class GameFrame : View(), Debuggable {
     private fun confirmQuit() {
         val alert = Alert(AlertType.CONFIRMATION)
         alert.title = "Are you sure you want to quit?"
-        alert.headerText = "Confirm your action."
+        alert.headerText = "Confirm your action!"
         alert.contentText = quitMessages.randomElement()
         alert.dialogPane.minHeight = Region.USE_PREF_SIZE
 
