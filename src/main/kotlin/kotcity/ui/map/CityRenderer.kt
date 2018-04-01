@@ -7,14 +7,14 @@ import javafx.scene.paint.Color
 import javafx.scene.text.Font;
 import kotcity.data.*
 import kotcity.data.MapMode.*
+import kotcity.data.Tunable.MAX_BUILDING_SIZE
 import kotcity.pathfinding.Direction
 import kotcity.ui.*
+import kotcity.ui.layers.*
 import kotcity.ui.sprites.BuildingSpriteLoader
 import kotcity.util.reorder
 import tornadofx.runLater
 
-const val MAX_BUILDING_SIZE = 4
-// the coal power plant is the biggest...
 
 class CityRenderer(
     private val gameFrame: GameFrame,
@@ -35,6 +35,7 @@ class CityRenderer(
     private val trafficRenderer = TrafficRenderer(this, cityMap)
     private val desirabilityRenderer = DesirabilityRenderer(this, cityMap)
     private val pollutionRenderer = PollutionRenderer(this, cityMap)
+    private val landValueRenderer = LandValueRenderer(this, cityMap)
 
     var blockOffsetX: Double = 0.0
         set(value) {
@@ -235,6 +236,7 @@ class CityRenderer(
             TRAFFIC -> trafficRenderer.render()
             HAPPINESS -> happinessRenderer.render()
             POLLUTION -> pollutionRenderer.render()
+            LAND_VALUE -> landValueRenderer.render()
             NORMAL -> {
                 // We don't have to render anything special when in normal mode
             }
@@ -501,10 +503,8 @@ class CityRenderer(
         val height = building.height * blockSize
         drawBuildingBorder(building, tx, ty, width, height, blockSize)
 
+        // introduce a little padding to the image...
         val shrink = blockSize * 0.10
-
-        // OK... fucking THINK here...
-        // blocksize will be like 64...
 
         val imgWidth = (building.width * blockSize) - (shrink * 2)
         val imgHeight = (building.height * blockSize) - (shrink * 2)
@@ -656,7 +656,6 @@ class CityRenderer(
             // building horizontally
             // now fuck around with y2 so it's at the same level as y1
             // y2 = y
-
             if (x < x2) {
                 fillBlocks(x, y, Math.abs(x - x2) + 1, 1)
             } else {
@@ -666,7 +665,6 @@ class CityRenderer(
             // building vertically
             // now fuck around with x2 so it's at the same level as x1
             // x2 = x
-
             if (y < y2) {
                 fillBlocks(x, y, 1, Math.abs(y - y2) + 1)
             } else {

@@ -1,9 +1,10 @@
-package kotcity.ui.map
+package kotcity.ui.layers
 
 import javafx.scene.paint.Color
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
 import kotcity.ui.Algorithms
+import kotcity.ui.map.CityRenderer
 import kotcity.util.interpolate
 
 class HappinessRenderer(private val cityRenderer: CityRenderer, private val cityMap: CityMap) {

@@ -1,6 +1,6 @@
 package kotcity.data
 
-import kotcity.ui.map.MAX_BUILDING_SIZE
+import kotcity.data.Tunable.MAX_BUILDING_SIZE
 import kotcity.util.intBetween
 import kotcity.util.reorder
 import java.util.*
@@ -38,7 +38,7 @@ data class BlockCoordinate(
      * [MAX_BUILDING_SIZE]
      */
     fun fuzz(): BlockCoordinate {
-        val randX = random.intBetween(-Tunable.MAX_BUILDING_SIZE, MAX_BUILDING_SIZE)
+        val randX = random.intBetween(-MAX_BUILDING_SIZE, MAX_BUILDING_SIZE)
         val randY = random.intBetween(-MAX_BUILDING_SIZE, MAX_BUILDING_SIZE)
         return BlockCoordinate(x + randX, y + randY)
     }

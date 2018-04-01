@@ -10,4 +10,5 @@ object Tunable {
     const val MIN_ZOT_AGE: Int = 5
     const val MAX_BUILDING_SIZE: Int = 4
     const val DEFAULT_DESIRABILITY = 0.0
+    const val MAX_LAND_VALUE: Double = 256000.0
 }

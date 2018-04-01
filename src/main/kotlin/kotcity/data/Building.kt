@@ -31,6 +31,9 @@ interface HasInventory {
 interface HasConcreteInventory : HasInventory {
     val inventory: Inventory
 
+    /**
+     * @return how much money the building has
+     */
     override fun balance(): Int {
         return inventory.quantity(Tradeable.MONEY)
     }
@@ -61,13 +64,17 @@ interface HasConcreteInventory : HasInventory {
         return inventoryBuffer.toString()
     }
 
+    /**
+     * How many of the [Tradeable] that we have in our inventory
+     * @param tradeable the tradeable to query
+     */
     override fun quantityOnHand(tradeable: Tradeable): Int {
         return inventory.quantity(tradeable)
     }
 
     /**
      * Send [Tradeable] to another [TradeEntity] but only if we actually have it
-     * @TODO implement partial fulfillment...
+     * @TODO implement partial fulfillment... in other words maybe we can get less than we ask for... instead of all or nothing
      * @param to other [TradeEntity] to send to
      * @param tradeable which [Tradeable] to transact in
      * @param quantity how many [Tradeable] to send

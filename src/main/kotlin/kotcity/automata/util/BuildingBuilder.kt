@@ -1,9 +1,7 @@
 package kotcity.automata.util
 
 import kotcity.data.*
-import kotcity.ui.map.MAX_BUILDING_SIZE
 import kotcity.util.Debuggable
-import java.util.*
 
 class BuildingBuilder(val cityMap: CityMap): Debuggable {
     override var debug: Boolean = false
@@ -13,40 +11,42 @@ class BuildingBuilder(val cityMap: CityMap): Debuggable {
     fun tryToBuild(coordinate: BlockCoordinate, newBuilding: Building) {
         var tries = 0
         var done = false
-        val layer: DesirabilityLayer = layerForBuilding(newBuilding) ?: return
+
         while (tries < maxTries && !done) {
+            // TODO: fuzz to 50% of building width...
             val fuzzedCoordinate: BlockCoordinate = coordinate.fuzz()
 
-            // ok... desirability STILL has to be above 0...
-            val buildingBlocks = cityMap.buildingBlocks(fuzzedCoordinate, newBuilding)
-            // ok, each proposed block has to have desirability > 0
-            val desirabilityScores = buildingBlocks.map { layer[it] ?: 0.0 }
+            val buildingZone: Zone? = findZoneForBuilding(newBuilding)
 
-            val acceptableDesirability = desirabilityScores.all { it > 0.0 }
-
-            if (acceptableDesirability) {
-                debug("Trying to build $newBuilding at $fuzzedCoordinate")
-                if (cityMap.canBuildBuildingAt(newBuilding, fuzzedCoordinate)) {
-                    done = true
-                    cityMap.build(newBuilding, fuzzedCoordinate)
+            if (buildingZone != null) {
+                val buildingBlocks = cityMap.buildingBlocks(fuzzedCoordinate, newBuilding)
+                val validToBuild: Boolean = checkFootprint(buildingZone, buildingBlocks)
+                if (validToBuild) {
+                    debug("Trying to build $newBuilding at $fuzzedCoordinate")
+                    if (cityMap.canBuildBuildingAt(newBuilding, fuzzedCoordinate)) {
+                        done = true
+                        cityMap.build(newBuilding, fuzzedCoordinate)
+                    }
                 }
-            } else {
-                debug("$fuzzedCoordinate didn't have any desirable blocks...")
             }
+
             tries++
 
         }
     }
 
-    private fun layerForBuilding(building: Building): DesirabilityLayer? {
-        return when (building::class) {
-            Residential::class -> cityMap.desirabilityLayer(Zone.RESIDENTIAL, building.level)
-            Commercial::class -> cityMap.desirabilityLayer(Zone.COMMERCIAL, building.level)
-            Industrial::class -> cityMap.desirabilityLayer(Zone.INDUSTRIAL, building.level)
-            else -> {
-                null
-            }
+    private fun checkFootprint(buildingZone: Zone, buildingBlocks: List<BlockCoordinate>): Boolean {
+        return buildingBlocks.all { cityMap.zoneLayer[it] == buildingZone }
+    }
+
+    private fun findZoneForBuilding(newBuilding: Building): Zone? {
+        return when (newBuilding::class) {
+            Residential::class ->  Zone.RESIDENTIAL
+            Commercial::class -> Zone.COMMERCIAL
+            Industrial::class -> Zone.INDUSTRIAL
+            else -> null
         }
     }
+
 
 }
