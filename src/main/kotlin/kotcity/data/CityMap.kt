@@ -686,6 +686,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                     powerLineLayer.remove(coordinate)
                 }
                 val buildings = locationsIn(coordinate)
+
+                // BUG: I strongly suspect this doesn't work...
+                // TODO: fix this...
                 // now kill all those contracts...
                 buildings.forEach {
                     buildingLayer.values.forEach { otherBuilding ->
