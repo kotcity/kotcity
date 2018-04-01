@@ -33,6 +33,7 @@ class LaunchScreen : View() {
         super.onDock()
         currentWindow?.sizeToScene()
         currentWindow?.centerOnScreen()
+        currentStage?.requestFocus()
     }
 
     fun newCityPressed() {
