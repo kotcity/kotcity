@@ -59,7 +59,7 @@ class DesirabilityTest {
         }
 
         // ok now let's make sure the desirability is actually kosher...
-        desirabilityUpdater.update()
+        desirabilityUpdater.tick()
 
         listOf(Zone.INDUSTRIAL, Zone.RESIDENTIAL, Zone.COMMERCIAL).forEach { zt ->
             var nonDefaultFound = false
@@ -85,7 +85,7 @@ class DesirabilityTest {
         cf.signContracts(shuffled = false, maxMillis = 5000)
 
         // ok now let's make sure the desirability is actually kosher...
-        desirabilityUpdater.update()
+        desirabilityUpdater.tick()
 
         assertTrue(slum.currentQuantityForSale(Tradeable.LABOR) != oldSlumValue || slum2.currentQuantityForSale(Tradeable.LABOR) != oldSlum2Value, "Expected labor available to change...")
         assertTrue(factory.totalBeingBought(Tradeable.LABOR) != oldFactoryValue || cornerStore.totalBeingBought(Tradeable.LABOR) != oldCornerStoreValue, "Expected consumed labor to change...")

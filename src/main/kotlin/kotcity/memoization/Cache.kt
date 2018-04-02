@@ -5,7 +5,6 @@ import aballano.kotlinmemoization.tuples.Quintuple
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
-import java.time.Duration
 import java.util.concurrent.TimeUnit
 
 data class CacheOptions(

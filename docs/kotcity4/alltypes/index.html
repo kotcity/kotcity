@@ -144,6 +144,8 @@ of <a href="../kotcity.data/-block-coordinate/index.html">BlockCoordinate</a> an
 <td>
 <a href="../kotcity.automata/-constructor/index.html">kotcity.automata.Constructor</a></td>
 <td>
+<p>Constructor is responsible for looking at the city... seeing what the demand is for each type
+of zone and then attempting to place them in the most desirable spots...</p>
 </td>
 </tr>
 <tr>
@@ -179,7 +181,7 @@ of <a href="../kotcity.data/-block-coordinate/index.html">BlockCoordinate</a> an
 </tr>
 <tr>
 <td>
-<a href="../kotcity.ui.map/-crime-renderer/index.html">kotcity.ui.map.CrimeRenderer</a></td>
+<a href="../kotcity.ui.layers/-crime-renderer/index.html">kotcity.ui.layers.CrimeRenderer</a></td>
 <td>
 </td>
 </tr>
@@ -204,7 +206,7 @@ of <a href="../kotcity.data/-block-coordinate/index.html">BlockCoordinate</a> an
 </tr>
 <tr>
 <td>
-<a href="../kotcity.ui.map/-desirability-renderer/index.html">kotcity.ui.map.DesirabilityRenderer</a></td>
+<a href="../kotcity.ui.layers/-desirability-renderer/index.html">kotcity.ui.layers.DesirabilityRenderer</a></td>
 <td>
 </td>
 </tr>
@@ -212,6 +214,8 @@ of <a href="../kotcity.data/-block-coordinate/index.html">BlockCoordinate</a> an
 <td>
 <a href="../kotcity.automata/-desirability-updater/index.html">kotcity.automata.DesirabilityUpdater</a></td>
 <td>
+<p>This class is responsible for going over each zoned tile and figuring out the "Desirability score"... in other words
+how badly people want to live there...</p>
 </td>
 </tr>
 <tr>
@@ -228,7 +232,7 @@ of <a href="../kotcity.data/-block-coordinate/index.html">BlockCoordinate</a> an
 </tr>
 <tr>
 <td>
-<a href="../kotcity.ui.map/-fire-coverage-renderer/index.html">kotcity.ui.map.FireCoverageRenderer</a></td>
+<a href="../kotcity.ui.layers/-fire-coverage-renderer/index.html">kotcity.ui.layers.FireCoverageRenderer</a></td>
 <td>
 </td>
 </tr>
@@ -306,7 +310,7 @@ of <a href="../kotcity.data/-block-coordinate/index.html">BlockCoordinate</a> an
 </tr>
 <tr>
 <td>
-<a href="../kotcity.ui.map/-happiness-renderer/index.html">kotcity.ui.map.HappinessRenderer</a></td>
+<a href="../kotcity.ui.layers/-happiness-renderer/index.html">kotcity.ui.layers.HappinessRenderer</a></td>
 <td>
 </td>
 </tr>
@@ -365,6 +369,18 @@ It just pretends to.</p>
 <tr>
 <td>
 <a href="../kotcity.ui/-kotcity-styles/index.html">kotcity.ui.KotcityStyles</a></td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../kotcity.ui.layers/-land-value-renderer/index.html">kotcity.ui.layers.LandValueRenderer</a></td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../kotcity.automata/-land-value-updater/index.html">kotcity.automata.LandValueUpdater</a></td>
 <td>
 </td>
 </tr>
@@ -479,7 +495,7 @@ It just pretends to.</p>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.ui.map/-pollution-renderer/index.html">kotcity.ui.map.PollutionRenderer</a></td>
+<a href="../kotcity.ui.layers/-pollution-renderer/index.html">kotcity.ui.layers.PollutionRenderer</a></td>
 <td>
 </td>
 </tr>
@@ -650,6 +666,12 @@ It just pretends to.</p>
 </tr>
 <tr>
 <td>
+<a href="../kotcity.ui.layers/-traffic-animation-renderer/index.html">kotcity.ui.layers.TrafficAnimationRenderer</a></td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
 <a href="../kotcity.automata/-traffic-calculator/index.html">kotcity.automata.TrafficCalculator</a></td>
 <td>
 </td>
@@ -657,12 +679,6 @@ It just pretends to.</p>
 <tr>
 <td>
 <a href="../kotcity.ui.layers/-traffic-renderer/index.html">kotcity.ui.layers.TrafficRenderer</a></td>
-<td>
-</td>
-</tr>
-<tr>
-<td>
-<a href="../kotcity.ui.map/-traffic-renderer/index.html">kotcity.ui.map.TrafficRenderer</a></td>
 <td>
 </td>
 </tr>
@@ -694,7 +710,7 @@ It just pretends to.</p>
 <td>
 <a href="../kotcity.ui/-work-indicator-dialog/index.html">kotcity.ui.WorkIndicatorDialog</a></td>
 <td>
-<p>Public domain. Use as you like. No warranties.
+<p>Used to show a spinner when we are doing some work...
 P = Input parameter type. Given to the closure as parameter. Return type is always Integer.
 (cc) @imifos</p>
 </td>

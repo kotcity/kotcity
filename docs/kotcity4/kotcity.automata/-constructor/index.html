@@ -9,6 +9,11 @@
 <br/>
 <h1>Constructor</h1>
 <code><span class="keyword">class </span><span class="identifier">Constructor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../kotcity.util/-debuggable/index.html"><span class="identifier">Debuggable</span></a></code>
+<p>Constructor is responsible for looking at the city... seeing what the demand is for each type
+of zone and then attempting to place them in the most desirable spots...</p>
+<h3>Parameters</h3>
+<p><a name="cityMap"></a>
+<code>cityMap</code> - the map to operate on</p>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -17,7 +22,10 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">Constructor</span><span class="symbol">(</span><span class="identifier" id="kotcity.automata.Constructor$<init>(kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">Constructor</span><span class="symbol">(</span><span class="identifier" id="kotcity.automata.Constructor$<init>(kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></code>
+<p>Constructor is responsible for looking at the city... seeing what the demand is for each type
+of zone and then attempting to place them in the most desirable spots...</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -29,7 +37,9 @@
 <p><a href="city-map.html">cityMap</a></p>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">cityMap</span><span class="symbol">: </span><a href="../../kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">cityMap</span><span class="symbol">: </span><a href="../../kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a></code>
+<p>the map to operate on</p>
+</td>
 </tr>
 <tr>
 <td>
@@ -48,7 +58,9 @@
 <p><a href="tick.html">tick</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">tick</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">tick</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>loop over each <a href="../../kotcity.data/-zone/index.html">Zone</a> and figure out how many buildings to plop and then actually plop them...</p>
+</td>
 </tr>
 </tbody>
 </table>

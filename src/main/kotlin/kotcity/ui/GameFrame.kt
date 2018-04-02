@@ -12,10 +12,9 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.StackPane
 import javafx.stage.FileChooser
 import javafx.stage.Stage
-import javafx.stage.WindowEvent
 import kotcity.data.*
 import kotcity.ui.charts.SupplyDemandChart
-import kotcity.ui.layers.TrafficRenderer
+import kotcity.ui.layers.TrafficAnimationRenderer
 import kotcity.ui.layers.ZotRenderer
 import kotcity.ui.map.CityMapCanvas
 import kotcity.ui.map.CityRenderer
@@ -31,7 +30,6 @@ import kotlin.concurrent.timerTask
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Alert
 import javafx.scene.layout.Region
-import javafx.util.Duration
 import kotcity.util.randomElement
 
 
@@ -125,6 +123,7 @@ class GameFrame : View(), Debuggable {
     private val trafficMapMode: RadioMenuItem by fxid()
     private val happinessMapMode: RadioMenuItem by fxid()
     private val pollutionMapMode: RadioMenuItem by fxid()
+    private val landValueMapMode: RadioMenuItem by fxid()
 
     private val selectedToolLabel: Label by fxid()
     private val cityNameLabel: Label by fxid()
@@ -159,7 +158,7 @@ class GameFrame : View(), Debuggable {
 
     private lateinit var map: CityMap
     private var cityRenderer: CityRenderer? = null
-    private var trafficRenderer: TrafficRenderer? = null
+    private var trafficRenderer: TrafficAnimationRenderer? = null
     private var zotRenderer: ZotRenderer? = null
 
     private val quitMessages = listOf(
@@ -177,6 +176,7 @@ class GameFrame : View(), Debuggable {
         super.onDock()
         currentWindow?.sizeToScene()
         currentWindow?.centerOnScreen()
+        currentStage?.isMaximized = true
 
         // BUG: why doesn't this work???
         this.currentWindow?.setOnCloseRequest {
@@ -206,7 +206,7 @@ class GameFrame : View(), Debuggable {
 
         // allocate new ones...
         val cityRenderer = CityRenderer(this, cityCanvas, cityMap)
-        val trafficRenderer = TrafficRenderer(cityMap, cityRenderer, trafficCanvas)
+        val trafficRenderer = TrafficAnimationRenderer(cityMap, cityRenderer, trafficCanvas)
         val zotRenderer = ZotRenderer(cityMap, cityRenderer, zotCanvas)
 
         // now stand em up...
@@ -227,7 +227,7 @@ class GameFrame : View(), Debuggable {
         this.cityMapCanvas.visibleBlockRange = visibleBlockRange
         trafficRenderer.visibleBlockRange = visibleBlockRange
         zotRenderer.visibleBlockRange = visibleBlockRange
-        // update the census...
+        // tick the census...
         cityMap.censusTaker.tick()
     }
 
@@ -394,6 +394,9 @@ class GameFrame : View(), Debuggable {
         happinessMapMode.setOnAction {
             setMapModes(MapMode.HAPPINESS)
         }
+        landValueMapMode.setOnAction {
+            setMapModes(MapMode.LAND_VALUE)
+        }
     }
 
     fun loadCityPressed() {
@@ -466,7 +469,7 @@ class GameFrame : View(), Debuggable {
     private fun confirmQuit() {
         val alert = Alert(AlertType.CONFIRMATION)
         alert.title = "Are you sure you want to quit?"
-        alert.headerText = "Confirm your action."
+        alert.headerText = "Confirm your action!"
         alert.contentText = quitMessages.randomElement()
         alert.dialogPane.minHeight = Region.USE_PREF_SIZE
 
