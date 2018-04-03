@@ -235,7 +235,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return false
     }
 
-    fun coordIsRailroad(coordinate: BlockCoordinate): Boolean {
+    private fun coordIsRailroad(coordinate: BlockCoordinate): Boolean {
         val locations = cityMap.cachedLocationsIn(coordinate)
         val building = if (locations.isEmpty()) null else locations.first().building
         return !locations.isEmpty() && (building is Railroad || building is RailroadCrossing)
@@ -299,7 +299,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return pathToNearestRoad.plus(restOfTheWay)
     }
 
-    fun directionToBlockDelta(direction: Direction): BlockCoordinate {
+    private fun directionToBlockDelta(direction: Direction): BlockCoordinate {
         return when(direction) {
             Direction.NORTH -> BlockCoordinate(0, -1)
             Direction.SOUTH -> BlockCoordinate(0, 1)
@@ -309,17 +309,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         }
     }
 
-    fun isBlockRailroad(coordinate: BlockCoordinate): Boolean {
-        cityMap.locationsIn(coordinate).map {
-            when (it.building) {
-                is Railroad, is RailroadCrossing -> return true
-                else -> Unit
-            }
-        }
-        return false
-    }
-
-    fun isBuildingAt(coordinate: BlockCoordinate, clazz: KClass<*>): Boolean {
+    private fun isBuildingAt(coordinate: BlockCoordinate, clazz: KClass<*>): Boolean {
         cityMap.locationsIn(coordinate).map {
             if (clazz.isInstance(it.building)) {
                 return true
@@ -328,7 +318,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return false
     }
 
-    fun path(start: BlockCoordinate, direction: Direction, maxLength: Int): Path? {
+    private fun path(start: BlockCoordinate, direction: Direction, maxLength: Int): Path? {
         val delta = directionToBlockDelta(direction)
         var currentBlock = start
 
