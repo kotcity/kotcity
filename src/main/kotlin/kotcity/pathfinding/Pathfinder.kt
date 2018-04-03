@@ -7,14 +7,23 @@ import kotcity.util.Debuggable
 
 const val MAX_DISTANCE = 50
 
+/**
+ * Direction of travel of node in found paths.
+ */
 enum class Direction {
     NORTH, SOUTH, EAST, WEST, STATIONARY
 }
 
+/**
+ * Type of node in found paths.
+ */
 enum class TransitType {
     RAILROAD, ROAD
 }
 
+/**
+ * Node in found paths.
+ */
 data class NavigationNode(
     val cityMap: CityMap,
     val coordinate: BlockCoordinate,
@@ -42,12 +51,24 @@ data class NavigationNode(
 data class Path(
         internal val nodes: List<NavigationNode> = emptyList()
 ) {
-    // takes traffic and etc into consideration...
+    /**
+     * Total heuristic score of the nodes in this Path.
+     */
     fun totalScore(): Int = nodes.sumBy { it.score.toInt() }
 
+    /**
+     * Total length of this Path.
+     */
     fun length(): Int = nodes.size
 
+    /**
+     * List of coordinates in this Path.
+     */
     fun blocks(): List<BlockCoordinate> = nodes.map { it.coordinate }.toList()
+
+    /**
+     * Append another Path to the end of this Path
+     */
     fun plus(otherPath: Path?): Path? {
         val otherNodes = otherPath?.nodes?.toList() ?: return this
 
