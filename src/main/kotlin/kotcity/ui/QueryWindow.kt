@@ -36,8 +36,7 @@ class QueryWindow : View() {
                     buffer.append("Zone: $it\n")
                 }
 
-                val district = city.districtsLayer[coordinate] ?: city.districts[0]
-                buffer.append("District: ${district.name}\n")
+                buffer.append("District: ${city.districtAt(coordinate).name}\n")
 
                 // let's get that desirability...
                 val residentialDesirability =

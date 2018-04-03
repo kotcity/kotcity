@@ -800,6 +800,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     /**
+     * Returns the [District] that we found at the current coordinate
+     * @param coordinate the coordinate to search at
+     */
+    fun districtAt(coordinate: BlockCoordinate) = districtsLayer[coordinate] ?: districts[0]
+
+    /**
      * Returns 4 [BlockCoordinate] that represent each corner of a building. We use this for bounds checking
      * @param building building to check
      * @param block coordinate of building
