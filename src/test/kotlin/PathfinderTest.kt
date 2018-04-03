@@ -102,4 +102,65 @@ class PathfinderTest {
 
         assertTrue(numberWithoutLabor == 0.0, "Expected 0 to need labor but $numberWithoutLabor still need it.")
     }
+
+    @Test
+    fun testRailroadsNoStations() {
+        val aBlock = BlockCoordinate(10, 10)
+        val bBlock = BlockCoordinate(20, 10)
+
+        val flatMap = CityMap.flatMap(100, 100)
+        val pathfinder = Pathfinder(flatMap)
+        pathfinder.debug = true
+
+        flatMap.buildRailroad(aBlock, bBlock)
+
+        pathfinder.purgeCaches()
+
+        val trip = pathfinder.tripTo(listOf(aBlock), listOf(bBlock))
+        assertTrue(trip == null, "Path from a to b should not exist.")
+    }
+
+    @Test
+    fun testRailroadsWithStartStation() {
+        val aBlock = BlockCoordinate(10, 10)
+        val bBlock = BlockCoordinate(20, 10)
+        val oneBelowStart = aBlock.plus(BlockCoordinate(0, 1))
+        val twoBelowStart = aBlock.plus(BlockCoordinate(0, 2))
+
+        val flatMap = CityMap.flatMap(100, 100)
+        val pathfinder = Pathfinder(flatMap)
+        pathfinder.debug = true
+
+        flatMap.buildRoad(twoBelowStart, twoBelowStart)
+        flatMap.buildRailroad(aBlock, bBlock)
+        flatMap.build(TrainStation(flatMap), oneBelowStart)
+
+        pathfinder.purgeCaches()
+
+        val trip = pathfinder.tripTo(listOf(twoBelowStart), listOf(bBlock))
+        assertTrue(trip == null, "Path from a to b should not exist.")
+    }
+
+    @Test
+    fun testRailroadsWithStartAndEndStations() {
+        val aBlock = BlockCoordinate(10, 10)
+        val oneBelowStart = aBlock.plus(BlockCoordinate(0, 1))
+        val twoBelowStart = aBlock.plus(BlockCoordinate(0, 2))
+        val bBlock = BlockCoordinate(20, 10)
+        val oneBelowEnd = bBlock.plus(BlockCoordinate(0, 1))
+
+        val flatMap = CityMap.flatMap(100, 100)
+        val pathfinder = Pathfinder(flatMap)
+        pathfinder.debug = true
+
+        flatMap.buildRoad(twoBelowStart, twoBelowStart)
+        flatMap.buildRailroad(aBlock, bBlock)
+        flatMap.build(TrainStation(flatMap), oneBelowStart)
+        flatMap.build(TrainStation(flatMap), oneBelowEnd)
+
+        pathfinder.purgeCaches()
+
+        val trip = pathfinder.tripTo(listOf(twoBelowStart), listOf(oneBelowEnd))
+        assertTrue(trip?.blocks()?.count() == 14, "Path from a to b should be length 14.")
+    }
 }

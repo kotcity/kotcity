@@ -539,7 +539,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         roadBlocks(from, to).forEach { block ->
             val railroad = Railroad(this)
             val existingRoad = buildingLayer[block]
-            if (existingRoad is Road || existingRoad is Railroad || canBuildBuildingAt(railroad, block, waterCheck = false)) {
+            if (existingRoad is Road || existingRoad is RailroadCrossing) {
+                buildingLayer[block] = RailroadCrossing(this)
+                // dezone under us...
+                zoneLayer.remove(block)
+            } else if (existingRoad is Railroad || canBuildBuildingAt(railroad, block, waterCheck = false)) {
                 buildingLayer[block] = railroad
                 // dezone under us...
                 zoneLayer.remove(block)
@@ -824,7 +828,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * Checks map at a given [BlockCoordinate] to return a list of [Location]s
      * @param block coordinate to check at
      */
-    private fun locationsIn(block: BlockCoordinate): List<Location> {
+    fun locationsIn(block: BlockCoordinate): List<Location> {
         val nearestBuildings = nearestBuildings(block, MAX_BUILDING_SIZE + 1)
         val filteredBuildings = nearestBuildings.filter {
             val coordinate = it.coordinate

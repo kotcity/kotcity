@@ -1,26 +1,37 @@
 package kotcity.pathfinding
 
 import kotcity.data.*
-import kotcity.data.Tunable.MAX_RESOURCE_DISTANCE
-import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
+import kotlin.reflect.KClass
 import kotcity.util.Debuggable
 
+const val MAX_DISTANCE = 50
+
+/**
+ * Direction of travel of node in found paths.
+ */
 enum class Direction {
     NORTH, SOUTH, EAST, WEST, STATIONARY
 }
 
+/**
+ * Type of node in found paths.
+ */
 enum class TransitType {
     RAILROAD, ROAD
 }
 
+/**
+ * Node in found paths.
+ */
 data class NavigationNode(
     val cityMap: CityMap,
     val coordinate: BlockCoordinate,
     val parent: NavigationNode?,
     val score: Double,
     val transitType: TransitType = TransitType.ROAD,
-    val direction: Direction
+    val direction: Direction,
+    val isOnRail: Boolean
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -37,15 +48,32 @@ data class NavigationNode(
 }
 
 
+/**
+ * Path of nodes, with conveniece methods.
+ *
+ * @nodes list of nodes along a path
+ */
 data class Path(
         internal val nodes: List<NavigationNode> = emptyList()
 ) {
-    // takes traffic and etc into consideration...
+    /**
+     * Total heuristic score of the nodes in this Path.
+     */
     fun totalScore(): Int = nodes.sumBy { it.score.toInt() }
 
+    /**
+     * Total length of this Path.
+     */
     fun length(): Int = nodes.size
 
+    /**
+     * List of coordinates in this Path.
+     */
     fun blocks(): List<BlockCoordinate> = nodes.map { it.coordinate }.toList()
+
+    /**
+     * Append another Path to the end of this Path
+     */
     fun plus(otherPath: Path?): Path? {
         val otherNodes = otherPath?.nodes?.toList() ?: return this
 
@@ -59,7 +87,8 @@ data class Path(
                 nodes.last(),
                 firstOfOther.score,
                 firstOfOther.transitType,
-                firstOfOther.direction
+                firstOfOther.direction,
+                firstOfOther.isOnRail
         )
 
         // lop off the first one and shove our new one in there...
@@ -69,6 +98,11 @@ data class Path(
     }
 }
 
+/**
+ * Find paths within the CityMap parameter.
+ *
+ * @cityMap to search for paths
+ */
 class Pathfinder(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = true
 
@@ -97,6 +131,9 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         borderBlocks.toList()
     }
 
+    /**
+     * Purges the cached results for the heuristic method.
+     */
     fun purgeCaches() {
         heuristicCache.invalidateAll()
     }
@@ -113,7 +150,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         buildingFilter: (Building, Int) -> Boolean
     ): List<BlockCoordinate> {
         return start.flatMap { coordinate ->
-            val buildings = cityMap.nearestBuildings(coordinate, MAX_RESOURCE_DISTANCE)
+            val buildings = cityMap.nearestBuildings(coordinate, MAX_DISTANCE)
 
             buildings.filter {
                 val building = it.building
@@ -132,6 +169,9 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         }
     }
 
+    /**
+     * Gets path to nearest labor for sale.
+     */
     fun pathToNearestLabor(start: List<BlockCoordinate>, quantity: Int = 1): Path? {
         val nearest = findNearestTrade(start, quantity) { building, _ ->
             building.currentQuantityForSale(Tradeable.LABOR) >= quantity
@@ -139,6 +179,9 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return tripTo(start, nearest)
     }
 
+    /**
+     * Gets path to nearest wanted labor tradeable.
+     */
     fun pathToNearestJob(start: List<BlockCoordinate>, quantity: Int = 1): Path? {
         val nearest = findNearestTrade(start, quantity) { building, _ ->
             building.currentQuantityWanted(Tradeable.LABOR) >= quantity
@@ -181,6 +224,9 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return Math.abs(start.x - destination.x) + Math.abs(start.y - destination.y).toDouble()
     }
 
+    /**
+     * Find if a road block is within distance.
+     */
     fun nearbyRoad(sourceBlocks: List<BlockCoordinate>, distance: Int = 4): Boolean {
         sourceBlocks.forEach {
             val nearbyRoads = cityMap.nearestBuildings(it, distance).filter { it.building is Road }
@@ -209,6 +255,26 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             return building is Road && (building.direction == Direction.STATIONARY || building.direction != oppositeDir(node.direction))
         }
         return false
+    }
+
+    private fun coordIsRailroad(coordinate: BlockCoordinate): Boolean {
+        val locations = cityMap.cachedLocationsIn(coordinate)
+        val building = if (locations.isEmpty()) null else locations.first().building
+        return !locations.isEmpty() && (building is Railroad || building is RailroadCrossing)
+    }
+
+    private fun canGoViaTrain(fromCoordinate: BlockCoordinate, toCoordinate: BlockCoordinate): Boolean {
+
+        fun isRailBuilding(coordinate: BlockCoordinate): Boolean {
+            return isBuildingAt(coordinate, RailDepot::class) || isBuildingAt(coordinate, TrainStation::class)
+        }
+
+        val isSourceRail = coordIsRailroad(fromCoordinate)
+        val isTargetRail = coordIsRailroad(toCoordinate)
+        val isEnteringRail = isRailBuilding(fromCoordinate) && isTargetRail
+        val isTargetStation = isRailBuilding(toCoordinate)
+
+        return isTargetStation || isSourceRail && isTargetRail || isEnteringRail // || isExitingRail
     }
 
     private fun isGround(node: NavigationNode) = cityMap.groundLayer[node.coordinate]?.type == TileType.GROUND
@@ -255,16 +321,27 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return pathToNearestRoad.plus(restOfTheWay)
     }
 
-    fun path(start: BlockCoordinate, direction: Direction, maxLength: Int): Path? {
-        val delta = when(direction) {
+    private fun directionToBlockDelta(direction: Direction): BlockCoordinate {
+        return when(direction) {
             Direction.NORTH -> BlockCoordinate(0, -1)
             Direction.SOUTH -> BlockCoordinate(0, 1)
-            Direction.EAST -> BlockCoordinate(1, 0)
-            Direction.WEST -> BlockCoordinate(-1, 0)
-            else -> {
-                return null
+            Direction.EAST  -> BlockCoordinate(1, 0)
+            Direction.WEST  -> BlockCoordinate(-1, 0)
+            Direction.STATIONARY -> BlockCoordinate(0, 0)
+        }
+    }
+
+    private fun isBuildingAt(coordinate: BlockCoordinate, clazz: KClass<*>): Boolean {
+        cityMap.locationsIn(coordinate).map {
+            if (clazz.isInstance(it.building)) {
+                return true
             }
         }
+        return false
+    }
+
+    private fun path(start: BlockCoordinate, direction: Direction, maxLength: Int): Path? {
+        val delta = directionToBlockDelta(direction)
         var currentBlock = start
 
         val pathBlocks = mutableListOf(currentBlock)
@@ -285,7 +362,8 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                         makeNode(pathBlocks[index - 1], direction),
                         0.0,
                         TransitType.ROAD,
-                        direction
+                        direction,
+                        false
                 )
             }
 
@@ -299,7 +377,8 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                 null,
                 0.0,
                 TransitType.ROAD,
-                direction
+                direction,
+                false
         )
     }
 
@@ -341,7 +420,8 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                     null,
                     cachedHeuristic(it, destinations),
                     TransitType.ROAD,
-                    Direction.STATIONARY
+                    Direction.STATIONARY,
+                    false
             )
         }.toMutableSet()
 
@@ -358,7 +438,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             openList.remove(activeNode)
             closedList.add(activeNode)
 
-            if (destinations.contains(activeNode.coordinate)) {
+            if (destinations.contains(activeNode.coordinate) && !coordIsRailroad(activeNode.coordinate)) {
                 done = true
                 lastNode = activeNode
             }
@@ -385,13 +465,13 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                         }
                     } else {
                         if (needsRoads) {
-                            if (drivable(node) || destinations.contains(node.coordinate)) {
+                            if (canGoViaTrain(activeNode.coordinate, node.coordinate) || drivable(node) || destinations.contains(node.coordinate)) {
                                 openList.add(node)
                             } else {
                                 closedList.add(node)
                             }
                         } else {
-                            if (destinations.contains(node.coordinate)) {
+                            if (destinations.contains(node.coordinate) || canGoViaTrain(activeNode.coordinate, node.coordinate)) {
                                 openList.add(node)
                             } else {
                                 closedList.add(node)
@@ -401,50 +481,21 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                 }
             }
 
-            // ok figure out the dang neighbors...
-            val north = BlockCoordinate(activeNode.coordinate.x, activeNode.coordinate.y - 1)
-            val northNode = NavigationNode(
-                    cityMap,
-                    north,
-                    activeNode,
-                    activeNode.score + cachedHeuristic(north, destinations),
-                    TransitType.ROAD,
-                    Direction.NORTH
-            )
-            maybeAppendNode(northNode)
-
-            val south = BlockCoordinate(activeNode.coordinate.x, activeNode.coordinate.y + 1)
-            val southNode = NavigationNode(
-                    cityMap,
-                    south,
-                    activeNode,
-                    activeNode.score + cachedHeuristic(south, destinations),
-                    TransitType.ROAD,
-                    Direction.SOUTH
-            )
-            maybeAppendNode(southNode)
-
-            val east = BlockCoordinate(activeNode.coordinate.x + 1, activeNode.coordinate.y)
-            val eastNode = NavigationNode(
-                    cityMap,
-                    east,
-                    activeNode,
-                    activeNode.score + cachedHeuristic(east, destinations),
-                    TransitType.ROAD,
-                    Direction.EAST
-            )
-            maybeAppendNode(eastNode)
-
-            val west = BlockCoordinate(activeNode.coordinate.x - 1, activeNode.coordinate.y)
-            val westNode = NavigationNode(
-                    cityMap,
-                    west,
-                    activeNode,
-                    activeNode.score + cachedHeuristic(west, destinations),
-                    TransitType.ROAD,
-                    Direction.WEST
-            )
-            maybeAppendNode(westNode)
+            for (direction in listOf(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST)) {
+                // ok figure out the dang neighbors...
+                val delta = directionToBlockDelta(direction)
+                val nextBlock = activeNode.coordinate.plus(delta)
+                val nextNode = NavigationNode(
+                        cityMap,
+                        nextBlock,
+                        activeNode,
+                        activeNode.score + cachedHeuristic(nextBlock, destinations),
+                        TransitType.ROAD,
+                        direction,
+                        false
+                )
+                maybeAppendNode(nextNode)
+            }
         }
 
         return lastNode?.let {
