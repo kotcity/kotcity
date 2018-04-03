@@ -48,6 +48,11 @@ data class NavigationNode(
 }
 
 
+/**
+ * Path of nodes, with conveniece methods.
+ *
+ * @nodes list of nodes along a path
+ */
 data class Path(
         internal val nodes: List<NavigationNode> = emptyList()
 ) {
@@ -93,6 +98,11 @@ data class Path(
     }
 }
 
+/**
+ * Find paths within the CityMap parameter.
+ *
+ * @cityMap to search for paths
+ */
 class Pathfinder(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = true
 
@@ -121,6 +131,9 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         borderBlocks.toList()
     }
 
+    /**
+     * Purges the cached results for the heuristic method.
+     */
     fun purgeCaches() {
         heuristicCache.invalidateAll()
     }
@@ -156,6 +169,9 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         }
     }
 
+    /**
+     * Gets path to nearest labor for sale.
+     */
     fun pathToNearestLabor(start: List<BlockCoordinate>, quantity: Int = 1): Path? {
         val nearest = findNearestTrade(start, quantity) { building, _ ->
             building.currentQuantityForSale(Tradeable.LABOR) >= quantity
@@ -163,6 +179,9 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return tripTo(start, nearest)
     }
 
+    /**
+     * Gets path to nearest wanted labor tradeable.
+     */
     fun pathToNearestJob(start: List<BlockCoordinate>, quantity: Int = 1): Path? {
         val nearest = findNearestTrade(start, quantity) { building, _ ->
             building.currentQuantityWanted(Tradeable.LABOR) >= quantity
@@ -205,6 +224,9 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return Math.abs(start.x - destination.x) + Math.abs(start.y - destination.y).toDouble()
     }
 
+    /**
+     * Find if a road block is within distance.
+     */
     fun nearbyRoad(sourceBlocks: List<BlockCoordinate>, distance: Int = 4): Boolean {
         sourceBlocks.forEach {
             val nearbyRoads = cityMap.nearestBuildings(it, distance).filter { it.building is Road }
