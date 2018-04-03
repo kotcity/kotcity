@@ -19,8 +19,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-
-
 /**
  * Just a utility class for hanging onto a rectangle of BlockCoordinates
  */
@@ -91,10 +89,15 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val policePresenceLayer = mutableMapOf<BlockCoordinate, Double>()
     val pollutionLayer = mutableMapOf<BlockCoordinate, Double>().withDefault { 0.0 }
     var trafficLayer = mutableMapOf<BlockCoordinate, Double>().withDefault { 0.0 }
+    val districtsLayer = mutableMapOf<BlockCoordinate, District>()
     val desirabilityLayers = listOf(
         DesirabilityLayer(Zone.RESIDENTIAL, 1),
         DesirabilityLayer(Zone.COMMERCIAL, 1),
         DesirabilityLayer(Zone.INDUSTRIAL, 1)
+    )
+
+    val districts = mutableListOf(
+        District("Central district")
     )
 
     private val constructor = Constructor(this)
@@ -349,7 +352,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 }
             }
 
-            if (hour == 0 || hour == 6|| hour == 12 || hour == 18) {
+            if (hour == 0 || hour == 6 || hour == 12 || hour == 18) {
                 timeFunction("Taking census (to calculate demand)") { censusTaker.tick() }
                 timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
                 timeFunction("Constructing buildings") { constructor.tick() }
@@ -422,7 +425,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun trafficNearby(coordinate: BlockCoordinate, radius: Int): Int {
         val neighboringBlocks = coordinate.neighbors(radius)
         val nearbyRoads = neighboringBlocks.flatMap { cachedLocationsIn(it) }
-                .filter { it.building is Road }
+            .filter { it.building is Road }
 
         return nearbyRoads.sumBy { trafficLayer[it.coordinate]?.toInt() ?: 0 }
     }
@@ -520,7 +523,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun buildRailroad(from: BlockCoordinate, to: BlockCoordinate) {
         val dx = Math.abs(from.x - to.x)
         val dy = Math.abs(from.y - to.y)
-        val mid = 
+        val mid =
             if (dx > dy) {
                 BlockCoordinate(to.x, from.y)
             } else {
@@ -606,33 +609,33 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val above = buildingLayer[BlockCoordinate(block.x, block.y - 1)]
         val below = buildingLayer[BlockCoordinate(block.x, block.y + 1)]
         val dir =
-                if (isDxGreater && to.x > from.x) {
-                    if (above is Road || below is Road) {
-                        Direction.STATIONARY
-                    } else {
-                        Direction.EAST
-                    }
-                } else if (isDxGreater && to.x < from.x) {
-                    if (above is Road || below is Road) {
-                        Direction.STATIONARY
-                    } else {
-                        Direction.WEST
-                    }
-                } else if (isDyGreater && to.y > from.y) {
-                    if (left is Road || right is Road) {
-                        Direction.STATIONARY
-                    } else {
-                        Direction.SOUTH
-                    }
-                } else if (isDyGreater && to.y < from.y) {
-                    if (left is Road || right is Road) {
-                        Direction.STATIONARY
-                    } else {
-                        Direction.NORTH
-                    }
-                } else {
+            if (isDxGreater && to.x > from.x) {
+                if (above is Road || below is Road) {
                     Direction.STATIONARY
+                } else {
+                    Direction.EAST
                 }
+            } else if (isDxGreater && to.x < from.x) {
+                if (above is Road || below is Road) {
+                    Direction.STATIONARY
+                } else {
+                    Direction.WEST
+                }
+            } else if (isDyGreater && to.y > from.y) {
+                if (left is Road || right is Road) {
+                    Direction.STATIONARY
+                } else {
+                    Direction.SOUTH
+                }
+            } else if (isDyGreater && to.y < from.y) {
+                if (left is Road || right is Road) {
+                    Direction.STATIONARY
+                } else {
+                    Direction.NORTH
+                }
+            } else {
+                Direction.STATIONARY
+            }
         return Road(this, dir)
     }
 
