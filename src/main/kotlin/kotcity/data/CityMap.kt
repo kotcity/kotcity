@@ -837,7 +837,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * Checks map at a given [BlockCoordinate] to return a list of [Location]s
      * @param block coordinate to check at
      */
-    fun locationsIn(block: BlockCoordinate): List<Location> {
+    private fun locationsIn(block: BlockCoordinate): List<Location> {
         val nearestBuildings = nearestBuildings(block, MAX_BUILDING_SIZE + 1)
         val filteredBuildings = nearestBuildings.filter {
             val coordinate = it.coordinate
