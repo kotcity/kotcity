@@ -73,6 +73,13 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+test {
+    testLogging {
+        // Make sure output from standard out or error is shown in Gradle output.
+        showStandardStreams = true
+    }
+}
+
 jar {
     manifest {
         attributes 'Main-Class': 'kotcity.ui.LaunchScreenKt'
