@@ -4,7 +4,7 @@ import javafx.scene.Cursor
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
-import javafx.scene.text.Font;
+import javafx.scene.text.Font
 import kotcity.data.*
 import kotcity.data.MapMode.*
 import kotcity.data.Tunable.MAX_BUILDING_SIZE
@@ -309,6 +309,8 @@ class CityRenderer(
                     Tool.RESIDENTIAL_ZONE,
                     Tool.COMMERCIAL_ZONE,
                     Tool.INDUSTRIAL_ZONE,
+                    Tool.ASSIGN_DISTRICT,
+                    Tool.CLEAR_DISTRICT,
                     Tool.DEZONE,
                     Tool.BULLDOZE -> firstBlockPressed?.let { first ->
                         highlightBlocks(first, it)
@@ -332,8 +334,10 @@ class CityRenderer(
                     Tool.COMMERCIAL_ZONE,
                     Tool.INDUSTRIAL_ZONE,
                     Tool.RESIDENTIAL_ZONE,
+                    Tool.ASSIGN_DISTRICT,
+                    Tool.CLEAR_DISTRICT,
                     Tool.ROUTES -> {
-                        it.let { highlightBlocks(it, it) }
+                        it.let { highlightBlock(it) }
                     }
                     Tool.JOB_CENTER,
                     Tool.TOWN_WAREHOUSE -> {
@@ -557,6 +561,12 @@ class CityRenderer(
             }
         }
     }
+
+    private fun drawDistricts() {
+        // TODO render
+    }
+
+    private fun highlightBlock(coordinate: BlockCoordinate) = highlightBlock(coordinate.x, coordinate.y)
 
     private fun highlightBlock(x: Int, y: Int) {
         canvas.graphicsContext2D.fill = Color(Color.MAGENTA.red, Color.MAGENTA.green, Color.MAGENTA.blue, 0.50)

@@ -25,7 +25,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="521.0" prefWidth="899.0" stylesheets="@kotcity-ui.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="521.0" prefWidth="899.0" stylesheets="@kotcity-ui.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <AnchorPane prefHeight="286.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0">
          <children>
@@ -312,7 +312,44 @@
                         </ScrollPane>
                      </content>
                   </Tab>
-                  <Tab text="Other" />
+                  <Tab text="Other">
+                     <content>
+                        <ScrollPane>
+                           <content>
+                              <HBox spacing="4.0">
+                                 <children>
+                                    <ToggleButton fx:id="assignDistrictButton" contentDisplay="BOTTOM" graphicTextGap="0.0" mnemonicParsing="false" styleClass="toolbarButton" text="Assign District" toggleGroup="$buildTools">
+                                       <graphic>
+                                          <ImageView fitHeight="40.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@ui/district.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <tooltip>
+                                          <Tooltip text="Coal Power Plant" />
+                                       </tooltip>
+                                    </ToggleButton>
+                                    <ToggleButton fx:id="clearDistrictButton" contentDisplay="BOTTOM" graphicTextGap="0.0" mnemonicParsing="false" styleClass="toolbarButton" text="Clear District" toggleGroup="$buildTools">
+                                       <graphic>
+                                          <ImageView fitHeight="40.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@ui/clear_district.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <tooltip>
+                                          <Tooltip text="Nuclear Power Plant" />
+                                       </tooltip>
+                                    </ToggleButton>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                 </padding>
+                              </HBox>
+                           </content>
+                        </ScrollPane>
+                     </content></Tab>
                   <Tab text="Civic">
                      <content>
                         <ScrollPane>

@@ -89,16 +89,15 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val policePresenceLayer = mutableMapOf<BlockCoordinate, Double>()
     val pollutionLayer = mutableMapOf<BlockCoordinate, Double>().withDefault { 0.0 }
     var trafficLayer = mutableMapOf<BlockCoordinate, Double>().withDefault { 0.0 }
-    val districtsLayer = mutableMapOf<BlockCoordinate, District>()
+    val districtLayer = mutableMapOf<BlockCoordinate, District>()
     val desirabilityLayers = listOf(
         DesirabilityLayer(Zone.RESIDENTIAL, 1),
         DesirabilityLayer(Zone.COMMERCIAL, 1),
         DesirabilityLayer(Zone.INDUSTRIAL, 1)
     )
 
-    val districts = mutableListOf(
-        District("Central district")
-    )
+    val mainDistrict = District("Central district")
+    val districts = mutableListOf(mainDistrict)
 
     private val constructor = Constructor(this)
     private val contractFulfiller = ContactFulfiller(this)
@@ -452,13 +451,15 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private fun waterFound(from: BlockCoordinate, to: BlockCoordinate): Boolean {
         var waterFound = false
         BlockCoordinate.iterate(from, to) {
-            if (groundLayer[it]?.type == TileType.WATER) {
+            if (isWaterAt(it)) {
                 waterFound = true
                 // TODO exit iteration early
             }
         }
         return waterFound
     }
+
+    private fun isWaterAt(coordinate: BlockCoordinate) = groundLayer[coordinate]?.type == TileType.WATER
 
     /**
      * See if we can plop a new building on the map at the given coordinate
@@ -647,11 +648,33 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      */
     fun zone(type: Zone, from: BlockCoordinate, to: BlockCoordinate) {
         BlockCoordinate.iterate(from, to) {
-            if (!waterFound(it, it)) {
+            if (!isWaterAt(it)) {
                 if (locationsIn(it).count() == 0) {
                     zoneLayer[it] = type
                 }
             }
+        }
+    }
+
+    /**
+     * Designates a given area as a certain [District]
+     * @param district [District] to assign
+     * @param from top-left corner
+     * @param to bottom-right corner
+     */
+    fun assignDistrict(district: District, from: BlockCoordinate, to: BlockCoordinate) {
+        BlockCoordinate.iterate(from, to) {
+            val oldDistrict = districtAt(it)
+            if (oldDistrict != mainDistrict) {
+                oldDistrict.blocks.remove(it)
+                if (oldDistrict.blocks.isEmpty()) {
+                    districts.remove(oldDistrict)
+                }
+            }
+            if (district != mainDistrict) {
+                district.blocks.add(it)
+            }
+            districtLayer[it] = district
         }
     }
 
@@ -729,7 +752,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         if (resourceLayers[resourceName] == null) {
             resourceLayers[resourceName] = QuantizedMap(4)
         }
-        resourceLayers[resourceName]?.put(blockCoordinate, resourceValue)
+        resourceLayers[resourceName]?.set(blockCoordinate, resourceValue)
     }
 
     /**
@@ -803,7 +826,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * Returns the [District] that we found at the current coordinate
      * @param coordinate the coordinate to search at
      */
-    fun districtAt(coordinate: BlockCoordinate) = districtsLayer[coordinate] ?: districts[0]
+    fun districtAt(coordinate: BlockCoordinate) = districtLayer[coordinate] ?: mainDistrict
 
     /**
      * Returns 4 [BlockCoordinate] that represent each corner of a building. We use this for bounds checking
