@@ -43,3 +43,5 @@ internal fun java.awt.Color.interpolate(other: java.awt.Color, fraction: Float):
 internal fun Int.toColorFraction() = this * 1f / 255f
 
 fun Random.intBetween(from: Int, to: Int) = nextInt(to - from) + from
+
+fun Random.color() = Color(nextDouble(), nextDouble(), nextDouble(), 1.0)
