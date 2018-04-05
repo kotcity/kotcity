@@ -36,7 +36,6 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
             debug("We have ${sortedBuildingsWithResource.size} buildings to potentially buy $tradeable from...")
         }
 
-        synchronized(sortedBuildingsWithResource) {
             var shortestPath: Path? = firstWithValidPath(sourceBlocks, sortedBuildingsWithResource)
             var preferredTradeEntity: TradeEntity? = null
             var preferredPath: Path? = null
@@ -67,8 +66,6 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
             }
 
             return null
-        }
-
 
     }
 
@@ -84,7 +81,6 @@ class ResourceFinder(val cityMap: CityMap): Debuggable {
     }
 
     private var lastOutsidePathFailAt: Long = System.currentTimeMillis()
-
 
     private fun possiblePathToOutside(tradeable: Tradeable, quantity: Int, sourceBlocks: List<BlockCoordinate>): Pair<TradeEntity, Path>? {
         // OK what we want to do here is don't try and get a trip to the outside all the time...

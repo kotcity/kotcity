@@ -3,7 +3,7 @@
   "width": 1,
   "height": 1,
   "name": "slum2",
-  "sprite": "slum2.png",
+  "sprite": "slum2.svg",
   "description": "Slummy Apartment",
   "level": 1,
   "power_required": 1,

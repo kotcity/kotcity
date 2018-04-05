@@ -3,7 +3,7 @@
   "width": 1,
   "height": 1,
   "name": "small_factory",
-  "sprite": "small_factory.png",
+  "sprite": "small_factory.svg",
   "description": "Small Manufacturing Plant",
   "level": 1,
   "power_required": 1,

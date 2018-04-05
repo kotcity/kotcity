@@ -3,7 +3,7 @@
   "width": 2,
   "height": 2,
   "name": "large_factory",
-  "sprite": "large_factory.png",
+  "sprite": "large_factory.svg",
   "description": "Large Manufacturing Plant",
   "level": 1,
   "power_required": 3,

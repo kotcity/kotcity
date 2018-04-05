@@ -512,7 +512,7 @@ class CityRenderer(
         BuildingSpriteLoader.spriteForBuildingType(building, imgWidth, imgHeight).let { img ->
             val ix = (tx * blockSize) + shrink
             val iy = (ty * blockSize) + shrink
-            canvas.graphicsContext2D.drawImage(img, ix, iy)
+            canvas.graphicsContext2D.drawImage(img, ix, iy, imgWidth, imgHeight)
         }
     }
 

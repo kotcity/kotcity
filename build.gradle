@@ -63,6 +63,26 @@ dependencies {
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.0-M4'
     // Enable use of the JUnitPlatform Runner within the IDE
     testCompile 'org.junit.platform:junit-platform-runner:1.0.0-M4'
+
+    // https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder
+    compile group: 'org.apache.xmlgraphics', name: 'batik-transcoder', version: '1.9'
+
+    // https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-batik
+    compile group: 'com.twelvemonkeys.imageio', name: 'imageio-batik', version: '3.3.2'
+
+    // https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-svg-dom
+    compile group: 'org.apache.xmlgraphics', name: 'batik-svg-dom', version: '1.9.1'
+
+    // https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-anim
+    compile group: 'org.apache.xmlgraphics', name: 'batik-anim', version: '1.9.1'
+
+    // https://mvnrepository.com/artifact/org.apache.xmlgraphics/fop
+    compile group: 'org.apache.xmlgraphics', name: 'fop', version: '2.2'
+
+    // https://mvnrepository.com/artifact/org.apache.xmlgraphics/xmlgraphics-commons
+    compile group: 'org.apache.xmlgraphics', name: 'xmlgraphics-commons', version: '2.2'
+
+
 }
 
 compileKotlin {

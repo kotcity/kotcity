@@ -3,7 +3,7 @@
   "width": 1,
   "height": 1,
   "name": "cheap_house",
-  "sprite": "cheap_house.png",
+  "sprite": "cheap_house.svg",
   "description": "Cheap House",
   "level": 2,
   "power_required": 2,

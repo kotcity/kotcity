@@ -3,7 +3,7 @@
   "width": 1,
   "height": 1,
   "name": "corner_store",
-  "sprite": "corner_store.png",
+  "sprite": "corner_store.svg",
   "description": "Corner Store",
   "level": 1,
   "power_required": 1,

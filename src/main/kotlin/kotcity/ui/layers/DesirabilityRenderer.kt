@@ -27,17 +27,15 @@ class DesirabilityRenderer(private val cityRenderer: CityRenderer, private val c
             val maxDesirability = 200.0
             val minDesirability = -200.0
 
-            if (maxDesirability != null && minDesirability != null) {
-                cityRenderer.apply {
-                    val tx = coord.x - blockOffsetX
-                    val ty = coord.y - blockOffsetY
-                    val blockSize = blockSize()
-                    canvas.graphicsContext2D.apply {
-                        val desirability = desirabilityScores.max()
-                        if (desirability != null) {
-                            fill = determineColor(desirability, minDesirability, maxDesirability)
-                            fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
-                        }
+            cityRenderer.apply {
+                val tx = coord.x - blockOffsetX
+                val ty = coord.y - blockOffsetY
+                val blockSize = blockSize()
+                canvas.graphicsContext2D.apply {
+                    val desirability = desirabilityScores.max()
+                    if (desirability != null) {
+                        fill = determineColor(desirability, minDesirability, maxDesirability)
+                        fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
                     }
                 }
             }
