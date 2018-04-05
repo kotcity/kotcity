@@ -25,16 +25,32 @@ data class BlockCoordinate(
          * Used to call a function on rectangle of [BlockCoordinate]s
          * @param from top-left corner to start from
          * @param to bottom-right corner to end at
-         * @param callback function that we should call, passing in the current [BlockCoordinate]
+         * @param callback function that we should call, passing in the current [BlockCoordinate] and returning if the iteration should be continued
          */
-        fun iterate(from: BlockCoordinate, to: BlockCoordinate, callback: (BlockCoordinate) -> Unit) {
+        fun iterate(from: BlockCoordinate, to: BlockCoordinate, callback: (BlockCoordinate) -> Boolean) {
             val xRange = (from.x..to.x).reorder()
             val yRange = (from.y..to.y).reorder()
             for (x in xRange) {
                 for (y in yRange) {
-                    callback(BlockCoordinate(x, y))
+                    if (!callback(BlockCoordinate(x, y))) {
+                        // Allow for exiting the iteration early
+                        return
+                    }
                 }
             }
+        }
+
+        /**
+         * Used to call a function on rectangle of [BlockCoordinate]s
+         * @param from top-left corner to start from
+         * @param to bottom-right corner to end at
+         * @param callback function that we should call, passing in the current [BlockCoordinate]
+         */
+        fun iterateAll(from: BlockCoordinate, to: BlockCoordinate, callback: (BlockCoordinate) -> Unit) {
+            iterate(from, to, {
+                callback(it)
+                true
+            })
         }
     }
 
@@ -95,7 +111,7 @@ data class BlockCoordinate(
         val coordinates = mutableListOf<BlockCoordinate>()
         for (i in y - radius..y + radius) {
             val di2 = (i - y) * (i - y)
-            // iterate through all y-coordinates
+            // iterateAll through all y-coordinates
             for (j in x - radius..x + radius) {
                 // test if in-circle
                 if ((j - x) * (j - x) + di2 <= (radius * radius)) {

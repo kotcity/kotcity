@@ -452,8 +452,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         BlockCoordinate.iterate(from, to) {
             if (isWaterAt(it)) {
                 waterFound = true
-                // TODO exit iteration early
+                return@iterate false
             }
+            return@iterate true
         }
         return waterFound
     }
@@ -646,7 +647,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * @param to bottom-right corner
      */
     fun zone(type: Zone, from: BlockCoordinate, to: BlockCoordinate) {
-        BlockCoordinate.iterate(from, to) {
+        BlockCoordinate.iterateAll(from, to) {
             if (!isWaterAt(it)) {
                 if (locationsIn(it).count() == 0) {
                     zoneLayer[it] = type
@@ -662,7 +663,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * @param to bottom-right corner
      */
     fun assignDistrict(district: District, from: BlockCoordinate, to: BlockCoordinate) {
-        BlockCoordinate.iterate(from, to) {
+        BlockCoordinate.iterateAll(from, to) {
             val oldDistrict = districtAt(it)
             if (oldDistrict != mainDistrict) {
                 oldDistrict.blocks.remove(it)
@@ -710,14 +711,13 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      */
     fun bulldoze(from: BlockCoordinate, to: BlockCoordinate) {
         synchronized(buildingLayer) {
-            BlockCoordinate.iterate(from, to) { coordinate ->
+            BlockCoordinate.iterateAll(from, to) { coordinate ->
                 synchronized(powerLineLayer) {
                     powerLineLayer.remove(coordinate)
                 }
                 val buildings = locationsIn(coordinate)
 
-                // BUG: I strongly suspect this doesn't work...
-                // TODO: fix this...
+                // FIXME: I strongly suspect this doesn't work...
                 // now kill all those contracts...
                 buildings.forEach {
                     buildingLayer.values.forEach { otherBuilding ->
@@ -760,7 +760,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * @param lastBlock bottom right
      */
     fun dezone(firstBlock: BlockCoordinate, lastBlock: BlockCoordinate) {
-        BlockCoordinate.iterate(firstBlock, lastBlock) {
+        BlockCoordinate.iterateAll(firstBlock, lastBlock) {
             zoneLayer.remove(it)
         }
     }

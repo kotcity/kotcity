@@ -4,7 +4,7 @@ import kotcity.data.*
 import kotcity.util.Debuggable
 import kotcity.util.randomElements
 
-class Upgrader(val cityMap: CityMap): Debuggable {
+class Upgrader(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = false
 
     val assetManager = AssetManager(cityMap)
@@ -70,7 +70,12 @@ class Upgrader(val cityMap: CityMap): Debuggable {
 
     }
 
-    private fun ensureOverlap(oldBuilding: Building, oldCoordinate: BlockCoordinate, newBuilding: Building, newCoordinate: BlockCoordinate): Boolean {
+    private fun ensureOverlap(
+        oldBuilding: Building,
+        oldCoordinate: BlockCoordinate,
+        newBuilding: Building,
+        newCoordinate: BlockCoordinate
+    ): Boolean {
         val oldBuildingBlocks = cityMap.buildingBlocks(oldCoordinate, oldBuilding)
         val newBuildingBlocks = cityMap.buildingBlocks(newCoordinate, newBuilding)
         return oldBuildingBlocks.any { newBuildingBlocks.contains(it) }
@@ -81,7 +86,7 @@ class Upgrader(val cityMap: CityMap): Debuggable {
         debug("The building will consume blocks: $proposedFootprint")
         // OK... now look at each block... the level has to be BENEATH us
         val emptyOrLower = proposedFootprint.all { emptyOrLowerLevelThan(it, newBuilding.level) }
-        val sameZone =  proposedFootprint.all { sameZoneType(it, newBuilding.zone()) }
+        val sameZone = proposedFootprint.all { sameZoneType(it, newBuilding.zone()) }
         if (sameZone || emptyOrLower) {
             debug("We found a great location!")
             // we must bulldoze all the buildings in the proposed footprint...
@@ -126,7 +131,7 @@ class Upgrader(val cityMap: CityMap): Debuggable {
 data class BlockRange(private val topLeft: BlockCoordinate, private val bottomRight: BlockCoordinate) {
     fun blocks(): List<BlockCoordinate> {
         val blocks = mutableListOf<BlockCoordinate>()
-        BlockCoordinate.iterate(topLeft, bottomRight) {
+        BlockCoordinate.iterateAll(topLeft, bottomRight) {
             blocks.add(it)
         }
         return blocks

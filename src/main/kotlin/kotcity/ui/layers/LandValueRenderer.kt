@@ -18,7 +18,7 @@ class LandValueRenderer(private val cityRenderer: CityRenderer, private val city
     fun render() {
         val (startBlock, endBlock) = cityRenderer.visibleBlockRange()
 
-        BlockCoordinate.iterate(startBlock, endBlock) { coordinate ->
+        BlockCoordinate.iterateAll(startBlock, endBlock) { coordinate ->
             val landValue = cityMap.landValueLayer[coordinate] ?: 0.0
             cityRenderer.apply {
                 val dX = (coordinate.x - blockOffsetX) * blockSize()

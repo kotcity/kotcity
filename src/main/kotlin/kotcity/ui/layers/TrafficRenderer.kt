@@ -1,8 +1,7 @@
 package kotcity.ui.layers
 
 import javafx.scene.paint.Color
-import kotcity.data.BlockCoordinate
-import kotcity.data.BlockCoordinate.Companion.iterate
+import kotcity.data.BlockCoordinate.Companion.iterateAll
 import kotcity.data.CityMap
 import kotcity.data.Road
 import kotcity.ui.Algorithms
@@ -21,7 +20,7 @@ class TrafficRenderer(private val cityRenderer: CityRenderer, private val cityMa
     fun render() {
         val (startBlock, endBlock) = cityRenderer.visibleBlockRange()
 
-        iterate(startBlock, endBlock) { coord ->
+        iterateAll(startBlock, endBlock) { coord ->
             val traffic = cityMap.trafficLayer[coord] ?: 0.0
 
             val hasRoad = cityMap.cachedLocationsIn(coord).any { it.building is Road }

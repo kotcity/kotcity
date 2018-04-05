@@ -259,7 +259,7 @@ class CityRenderer(
         // now get only ones on screen...
 
         val (startBlock, endBlock) = visibleBlockRange()
-        BlockCoordinate.iterate(startBlock, endBlock) { blockCoordinate ->
+        BlockCoordinate.iterateAll(startBlock, endBlock) { blockCoordinate ->
             if (blocksWithPath.contains(blockCoordinate)) {
                 highlightBlock(blockCoordinate.x, blockCoordinate.y)
             }
@@ -285,10 +285,9 @@ class CityRenderer(
 
         val layer = resourceLayer(this.mapMode) ?: return
 
-        BlockCoordinate.iterate(startBlock, endBlock) { coord ->
-            val tile = layer[coord]
-            tile?.let {
-                if (tile > 0.5) {
+        BlockCoordinate.iterateAll(startBlock, endBlock) { coord ->
+            layer[coord]?.let {
+                if (it > 0.5) {
                     val tx = coord.x - blockOffsetX
                     val ty = coord.y - blockOffsetY
                     val blockSize = blockSize()
@@ -399,7 +398,7 @@ class CityRenderer(
     private fun visibleBlocks(padding: Int = 0): MutableList<BlockCoordinate> {
         val blockList = mutableListOf<BlockCoordinate>()
         val (from, to) = visibleBlockRange(padding = padding)
-        BlockCoordinate.iterate(from, to) {
+        BlockCoordinate.iterateAll(from, to) {
             blockList.add(it)
         }
         return blockList

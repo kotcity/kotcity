@@ -16,7 +16,7 @@ class FireCoverageRenderer(private val cityRenderer: CityRenderer, private val c
     fun render() {
         val (startBlock, endBlock) = cityRenderer.visibleBlockRange()
 
-        BlockCoordinate.iterate(startBlock, endBlock) { coord ->
+        BlockCoordinate.iterateAll(startBlock, endBlock) { coord ->
             val coverageScore = cityMap.fireCoverageLayer[coord] ?: 0.0
             cityRenderer.apply {
                 val dX = (coord.x - blockOffsetX) * blockSize()
