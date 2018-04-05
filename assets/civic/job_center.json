@@ -3,7 +3,7 @@
   "width": 2,
   "height": 2,
   "name": "job_center",
-  "sprite": "job_center.png",
+  "sprite": "job_center.svg",
   "description": "Government Job Center",
   "level": 1,
   "power_required": 1,

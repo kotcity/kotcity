@@ -3,7 +3,7 @@
   "width": 2,
   "height": 2,
   "name": "supermarket",
-  "sprite": "supermarket.png",
+  "sprite": "supermarket.svg",
   "description": "Supermarket",
   "level": 1,
   "power_required": 3,

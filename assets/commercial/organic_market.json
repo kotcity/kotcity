@@ -3,7 +3,7 @@
   "width": 1,
   "height": 1,
   "name": "organic_market",
-  "sprite": "organic_market.png",
+  "sprite": "organic_market.svg",
   "description": "Organic Market",
   "level": 2,
   "power_required": 2,
