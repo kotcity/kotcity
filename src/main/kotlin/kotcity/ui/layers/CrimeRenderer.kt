@@ -16,7 +16,7 @@ class CrimeRenderer(private val cityRenderer: CityRenderer, private val cityMap:
     fun render() {
         val (startBlock, endBlock) = cityRenderer.visibleBlockRange()
 
-        BlockCoordinate.iterate(startBlock, endBlock) { coord ->
+        BlockCoordinate.iterateAll(startBlock, endBlock) { coord ->
             val crimeScore = cityMap.crimeLayer[coord] ?: 0.0
             val presenceScore = cityMap.policePresenceLayer[coord] ?: 0.0
             cityRenderer.apply {

@@ -36,18 +36,23 @@ class QueryWindow : View() {
                     buffer.append("Zone: $it\n")
                 }
 
+                buffer.append("District: ${city.districtAt(coordinate).name}\n")
+
                 // let's get that desirability...
-                val residentialDesirability = city.desirabilityLayers.find { it.zoneType == Zone.RESIDENTIAL }?.get(coordinate)
+                val residentialDesirability =
+                    city.desirabilityLayers.find { it.zoneType == Zone.RESIDENTIAL }?.get(coordinate)
                 if (residentialDesirability != null) {
                     buffer.append("Residential Desirability: ${residentialDesirability.toInt()}\n")
                 }
 
-                val commercialDesirability = city.desirabilityLayers.find { it.zoneType == Zone.COMMERCIAL }?.get(coordinate)
+                val commercialDesirability =
+                    city.desirabilityLayers.find { it.zoneType == Zone.COMMERCIAL }?.get(coordinate)
                 if (commercialDesirability != null) {
                     buffer.append("Commercial Desirability: ${commercialDesirability.toInt()}\n")
                 }
 
-                val industrialDesirability = city.desirabilityLayers.find { it.zoneType == Zone.INDUSTRIAL }?.get(coordinate)
+                val industrialDesirability =
+                    city.desirabilityLayers.find { it.zoneType == Zone.INDUSTRIAL }?.get(coordinate)
                 if (industrialDesirability != null) {
                     buffer.append("Industrial Desirability: ${industrialDesirability.toInt()}\n")
                 }

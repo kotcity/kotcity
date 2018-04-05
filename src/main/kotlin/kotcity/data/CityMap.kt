@@ -19,8 +19,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-
-
 /**
  * Just a utility class for hanging onto a rectangle of BlockCoordinates
  */
@@ -91,11 +89,15 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     val policePresenceLayer = mutableMapOf<BlockCoordinate, Double>()
     val pollutionLayer = mutableMapOf<BlockCoordinate, Double>().withDefault { 0.0 }
     var trafficLayer = mutableMapOf<BlockCoordinate, Double>().withDefault { 0.0 }
+    val districtLayer = mutableMapOf<BlockCoordinate, District>()
     val desirabilityLayers = listOf(
         DesirabilityLayer(Zone.RESIDENTIAL, 1),
         DesirabilityLayer(Zone.COMMERCIAL, 1),
         DesirabilityLayer(Zone.INDUSTRIAL, 1)
     )
+
+    val mainDistrict = District("Central district")
+    val districts = mutableListOf(mainDistrict)
 
     private val constructor = Constructor(this)
     private val contractFulfiller = ContactFulfiller(this)
@@ -310,7 +312,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * Main game loop. The engine calls this every X milliseconds and various functions are run from here.
      */
     fun tick() {
-        time += 1000 * 60
+        time += 60_000
         if (time.toDateTime().minuteOfHour == 0) {
             val hour = time.toDateTime().hourOfDay
             launch {
@@ -349,7 +351,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 }
             }
 
-            if (hour == 0 || hour == 6|| hour == 12 || hour == 18) {
+            if (hour == 0 || hour == 6 || hour == 12 || hour == 18) {
                 timeFunction("Taking census (to calculate demand)") { censusTaker.tick() }
                 timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
                 timeFunction("Constructing buildings") { constructor.tick() }
@@ -361,7 +363,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 debug("Processing tick for end of day...")
                 dailyTick()
             }
-
         } catch (e: Exception) {
             println("WARNING! Error during hourly: ${e.message}")
             e.printStackTrace()
@@ -422,7 +423,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun trafficNearby(coordinate: BlockCoordinate, radius: Int): Int {
         val neighboringBlocks = coordinate.neighbors(radius)
         val nearbyRoads = neighboringBlocks.flatMap { cachedLocationsIn(it) }
-                .filter { it.building is Road }
+            .filter { it.building is Road }
 
         return nearbyRoads.sumBy { trafficLayer[it.coordinate]?.toInt() ?: 0 }
     }
@@ -449,13 +450,16 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private fun waterFound(from: BlockCoordinate, to: BlockCoordinate): Boolean {
         var waterFound = false
         BlockCoordinate.iterate(from, to) {
-            if (groundLayer[it]?.type == TileType.WATER) {
+            if (isWaterAt(it)) {
                 waterFound = true
-                // TODO exit iteration early
+                return@iterate false
             }
+            return@iterate true
         }
         return waterFound
     }
+
+    private fun isWaterAt(coordinate: BlockCoordinate) = groundLayer[coordinate]?.type == TileType.WATER
 
     /**
      * See if we can plop a new building on the map at the given coordinate
@@ -520,7 +524,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun buildRailroad(from: BlockCoordinate, to: BlockCoordinate) {
         val dx = Math.abs(from.x - to.x)
         val dy = Math.abs(from.y - to.y)
-        val mid = 
+        val mid =
             if (dx > dy) {
                 BlockCoordinate(to.x, from.y)
             } else {
@@ -601,38 +605,38 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val dy = Math.abs(to.y - from.y)
         val isDxGreater = dx > dy
         val isDyGreater = dy > dx
-        val left = buildingLayer[BlockCoordinate(block.x - 1, block.y)]
-        val right = buildingLayer[BlockCoordinate(block.x + 1, block.y)]
-        val above = buildingLayer[BlockCoordinate(block.x, block.y - 1)]
-        val below = buildingLayer[BlockCoordinate(block.x, block.y + 1)]
+        val left = buildingLayer[block.left]
+        val right = buildingLayer[block.right]
+        val above = buildingLayer[block.top]
+        val below = buildingLayer[block.bottom]
         val dir =
-                if (isDxGreater && to.x > from.x) {
-                    if (above is Road || below is Road) {
-                        Direction.STATIONARY
-                    } else {
-                        Direction.EAST
-                    }
-                } else if (isDxGreater && to.x < from.x) {
-                    if (above is Road || below is Road) {
-                        Direction.STATIONARY
-                    } else {
-                        Direction.WEST
-                    }
-                } else if (isDyGreater && to.y > from.y) {
-                    if (left is Road || right is Road) {
-                        Direction.STATIONARY
-                    } else {
-                        Direction.SOUTH
-                    }
-                } else if (isDyGreater && to.y < from.y) {
-                    if (left is Road || right is Road) {
-                        Direction.STATIONARY
-                    } else {
-                        Direction.NORTH
-                    }
-                } else {
+            if (isDxGreater && to.x > from.x) {
+                if (above is Road || below is Road) {
                     Direction.STATIONARY
+                } else {
+                    Direction.EAST
                 }
+            } else if (isDxGreater && to.x < from.x) {
+                if (above is Road || below is Road) {
+                    Direction.STATIONARY
+                } else {
+                    Direction.WEST
+                }
+            } else if (isDyGreater && to.y > from.y) {
+                if (left is Road || right is Road) {
+                    Direction.STATIONARY
+                } else {
+                    Direction.SOUTH
+                }
+            } else if (isDyGreater && to.y < from.y) {
+                if (left is Road || right is Road) {
+                    Direction.STATIONARY
+                } else {
+                    Direction.NORTH
+                }
+            } else {
+                Direction.STATIONARY
+            }
         return Road(this, dir)
     }
 
@@ -643,12 +647,34 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * @param to bottom-right corner
      */
     fun zone(type: Zone, from: BlockCoordinate, to: BlockCoordinate) {
-        BlockCoordinate.iterate(from, to) {
-            if (!waterFound(it, it)) {
+        BlockCoordinate.iterateAll(from, to) {
+            if (!isWaterAt(it)) {
                 if (locationsIn(it).count() == 0) {
                     zoneLayer[it] = type
                 }
             }
+        }
+    }
+
+    /**
+     * Designates a given area as a certain [District]
+     * @param district [District] to assign
+     * @param from top-left corner
+     * @param to bottom-right corner
+     */
+    fun assignDistrict(district: District, from: BlockCoordinate, to: BlockCoordinate) {
+        BlockCoordinate.iterateAll(from, to) {
+            val oldDistrict = districtAt(it)
+            if (oldDistrict != mainDistrict) {
+                oldDistrict.blocks.remove(it)
+                if (oldDistrict.blocks.isEmpty()) {
+                    districts.remove(oldDistrict)
+                }
+            }
+            if (district != mainDistrict) {
+                district.blocks.add(it)
+            }
+            districtLayer[it] = district
         }
     }
 
@@ -685,14 +711,13 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      */
     fun bulldoze(from: BlockCoordinate, to: BlockCoordinate) {
         synchronized(buildingLayer) {
-            BlockCoordinate.iterate(from, to) { coordinate ->
+            BlockCoordinate.iterateAll(from, to) { coordinate ->
                 synchronized(powerLineLayer) {
                     powerLineLayer.remove(coordinate)
                 }
                 val buildings = locationsIn(coordinate)
 
-                // BUG: I strongly suspect this doesn't work...
-                // TODO: fix this...
+                // FIXME: I strongly suspect this doesn't work...
                 // now kill all those contracts...
                 buildings.forEach {
                     buildingLayer.values.forEach { otherBuilding ->
@@ -726,7 +751,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         if (resourceLayers[resourceName] == null) {
             resourceLayers[resourceName] = QuantizedMap(4)
         }
-        resourceLayers[resourceName]?.put(blockCoordinate, resourceValue)
+        resourceLayers[resourceName]?.set(blockCoordinate, resourceValue)
     }
 
     /**
@@ -735,7 +760,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * @param lastBlock bottom right
      */
     fun dezone(firstBlock: BlockCoordinate, lastBlock: BlockCoordinate) {
-        BlockCoordinate.iterate(firstBlock, lastBlock) {
+        BlockCoordinate.iterateAll(firstBlock, lastBlock) {
             zoneLayer.remove(it)
         }
     }
@@ -795,6 +820,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
         }.toBlocking().toIterable().filterNotNull()
     }
+
+    /**
+     * Returns the [District] that we found at the current coordinate
+     * @param coordinate the coordinate to search at
+     */
+    fun districtAt(coordinate: BlockCoordinate) = districtLayer[coordinate] ?: mainDistrict
 
     /**
      * Returns 4 [BlockCoordinate] that represent each corner of a building. We use this for bounds checking

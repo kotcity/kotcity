@@ -23,7 +23,7 @@ class PollutionRenderer(private val cityRenderer: CityRenderer, private val city
     fun render() {
         val (startBlock, endBlock) = cityRenderer.visibleBlockRange()
 
-        BlockCoordinate.iterate(startBlock, endBlock) { coord ->
+        BlockCoordinate.iterateAll(startBlock, endBlock) { coord ->
             val pollutionValue = cityMap.pollutionLayer[coord] ?: 0.0
             if (pollutionValue > 0.0) {
                 cityRenderer.apply {

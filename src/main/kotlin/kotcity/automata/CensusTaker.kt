@@ -15,10 +15,10 @@ enum class CountType {
  * Stores supply/demand stats, used by charts and so forth.
  */
 data class EconomyReport(
-        val tradeable: Tradeable,
-        val supply: Int,
-        val demand: Int,
-        val balance: Int
+    val tradeable: Tradeable,
+    val supply: Int,
+    val demand: Int,
+    val balance: Int
 )
 
 class ResourceCounts {
@@ -41,24 +41,24 @@ class ResourceCounts {
         }
     }
 
-    fun consumeCount(tradeable: Tradeable): Int {
-        return counts[Pair(CountType.DEMAND, tradeable)] ?: 0
-    }
+    fun consumeCount(tradeable: Tradeable) = counts[Pair(CountType.DEMAND, tradeable)] ?: 0
 
-    fun supplyCount(tradeable: Tradeable): Int {
-        return counts[Pair(CountType.SUPPLY, tradeable)] ?: 0
-    }
-
+    fun supplyCount(tradeable: Tradeable) = counts[Pair(CountType.SUPPLY, tradeable)] ?: 0
 }
 
 /**
  * Used to figure out population and economy stats by CityMap...
  * @param cityMap the map we are concerned with...
  */
-class CensusTaker(val cityMap: CityMap): Debuggable {
+class CensusTaker(val cityMap: CityMap) : Debuggable {
+
     override var debug: Boolean = false
     var population = 0
     var resourceCounts: ResourceCounts = ResourceCounts()
+    /**
+     * A list of callbacks that we will invoke when we update our stats...
+     */
+    private val listeners = mutableListOf<() -> Unit>()
 
     fun tick() {
         calculatePopulation()
@@ -109,7 +109,8 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
         if (resourceCounts.consumeCount(tradeable) < 10.0) {
             return 2.0
         }
-        val result = resourceCounts.consumeCount(tradeable).toDouble() / resourceCounts.supplyCount(tradeable).toDouble()
+        val result =
+            resourceCounts.consumeCount(tradeable).toDouble() / resourceCounts.supplyCount(tradeable).toDouble()
         // if it's infinite... it's just 2.0!
         if (result == Double.NEGATIVE_INFINITY || result == Double.POSITIVE_INFINITY) {
             return 2.0
@@ -118,15 +119,8 @@ class CensusTaker(val cityMap: CityMap): Debuggable {
     }
 
     /**
-     * A list of callbacks that we will invoke when we update our stats...
-     */
-    private val listeners = mutableListOf<() -> Unit>()
-
-    /**
      * Used by the UI... adds a callback to us. When pop is updated we will call this function...
      * @param listener the callback (that we will call) :)
      */
-    fun addUpdateListener(listener: () -> Unit) {
-        this.listeners.add(listener)
-    }
+    fun addUpdateListener(listener: () -> Unit) = this.listeners.add(listener)
 }

@@ -2,7 +2,6 @@ package kotcity.automata
 
 import kotcity.automata.util.BuildingBuilder
 import kotcity.data.*
-import kotcity.data.AssetManager
 import kotcity.util.Debuggable
 import kotcity.util.randomElement
 
@@ -21,9 +20,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
      * Makes sure this spot is empty...
      * @param coordinate coordinate to check...
      */
-    private fun isEmpty(coordinate: BlockCoordinate): Boolean {
-        return cityMap.cachedLocationsIn(coordinate).count() == 0
-    }
+    private fun isEmpty(coordinate: BlockCoordinate) = cityMap.cachedLocationsIn(coordinate).count() == 0
 
     /**
      * loop over each [Zone] and figure out how many buildings to plop and then actually plop them...
@@ -51,13 +48,13 @@ class Constructor(val cityMap: CityMap) : Debuggable {
 
                 // now let's join back up with desirability...
                 val byDesirabilityScore = withCorrectZoneType
-                        .map { Pair(it, layer[it]) }
-                        .sortedByDescending { it.second }
-                        .map { it.first }
+                    .map { Pair(it, layer[it]) }
+                    .sortedByDescending { it.second }
+                    .map { it.first }
 
                 val bestLocation = byDesirabilityScore
-                        .take(10)
-                        .randomElement()
+                    .take(10)
+                    .randomElement()
 
                 // OK now have to make sure this is zoned right....
                 if (bestLocation == null) {
@@ -79,17 +76,12 @@ class Constructor(val cityMap: CityMap) : Debuggable {
                     } else {
                         debug("Sorry, no building could be found for $zoneType at $bestLocation")
                     }
-
                 }
-
             })
-
         }
     }
 
-    private fun correctZoneType(zoneType: Zone, coordinate: BlockCoordinate): Boolean {
-        return cityMap.zoneLayer[coordinate] == zoneType
-    }
+    private fun correctZoneType(zoneType: Zone, coordinate: BlockCoordinate) = cityMap.zoneLayer[coordinate] == zoneType
 
     /**
      * So basically, we have the ideal ratio of how much to "supply" the city with.
@@ -132,8 +124,6 @@ class Constructor(val cityMap: CityMap) : Debuggable {
         if (delta < 0.0) {
             return 0
         }
-
         return Math.ceil(delta / 0.05).toInt()
     }
-
 }

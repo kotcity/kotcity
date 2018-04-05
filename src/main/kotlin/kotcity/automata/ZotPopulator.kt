@@ -3,7 +3,7 @@ package kotcity.automata
 import kotcity.data.*
 import kotcity.util.Debuggable
 
-class ZotPopulator(val cityMap: CityMap): Debuggable {
+class ZotPopulator(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = false
 
     fun tick() {
@@ -11,7 +11,7 @@ class ZotPopulator(val cityMap: CityMap): Debuggable {
 
             // we gotta SKIP roads...
             if (location.building !is Road && location.building !is Railroad) {
-                val newZots = when(location.building::class) {
+                val newZots = when (location.building::class) {
                     Residential::class -> updateResidential(location)
                     Commercial::class -> updateCommercial(location)
                     Industrial::class -> updateIndustrial(location)

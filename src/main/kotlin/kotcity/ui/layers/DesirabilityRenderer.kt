@@ -19,7 +19,7 @@ class DesirabilityRenderer(private val cityRenderer: CityRenderer, private val c
     fun render() {
         val (startBlock, endBlock) = cityRenderer.visibleBlockRange()
 
-        BlockCoordinate.iterate(startBlock, endBlock) { coord ->
+        BlockCoordinate.iterateAll(startBlock, endBlock) { coord ->
             val desirabilityScores = cityMap.desirabilityLayers.mapNotNull {
                 it[coord]
             }

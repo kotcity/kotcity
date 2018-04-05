@@ -18,7 +18,7 @@ class HappinessRenderer(private val cityRenderer: CityRenderer, private val city
         val blockSize = cityRenderer.blockSize()
         val (startBlock, endBlock) = cityRenderer.visibleBlockRange()
 
-        BlockCoordinate.iterate(startBlock, endBlock) { coordinate ->
+        BlockCoordinate.iterateAll(startBlock, endBlock) { coordinate ->
             // gotta get buildings at this coordinate...
             val locations = cityMap.locationsAt(coordinate)
             val happiness = locations.maxBy { it.building.happiness }?.building?.happiness ?: 0

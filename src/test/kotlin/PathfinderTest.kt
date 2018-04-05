@@ -124,8 +124,8 @@ class PathfinderTest {
     fun testRailroadsWithStartStation() {
         val aBlock = BlockCoordinate(10, 10)
         val bBlock = BlockCoordinate(20, 10)
-        val oneBelowStart = aBlock.plus(BlockCoordinate(0, 1))
-        val twoBelowStart = aBlock.plus(BlockCoordinate(0, 2))
+        val oneBelowStart = aBlock.bottom
+        val twoBelowStart = oneBelowStart.bottom
 
         val flatMap = CityMap.flatMap(100, 100)
         val pathfinder = Pathfinder(flatMap)
@@ -144,10 +144,10 @@ class PathfinderTest {
     @Test
     fun testRailroadsWithStartAndEndStations() {
         val aBlock = BlockCoordinate(10, 10)
-        val oneBelowStart = aBlock.plus(BlockCoordinate(0, 1))
-        val twoBelowStart = aBlock.plus(BlockCoordinate(0, 2))
+        val oneBelowStart = aBlock.bottom
+        val twoBelowStart = oneBelowStart.bottom
         val bBlock = BlockCoordinate(20, 10)
-        val oneBelowEnd = bBlock.plus(BlockCoordinate(0, 1))
+        val oneBelowEnd = bBlock.bottom
 
         val flatMap = CityMap.flatMap(100, 100)
         val pathfinder = Pathfinder(flatMap)

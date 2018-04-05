@@ -5,10 +5,12 @@ import javafx.application.Application
 import javafx.application.Platform
 import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType
+import javafx.scene.control.ButtonType
 import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.BorderPane
+import javafx.scene.layout.Region
 import javafx.scene.layout.StackPane
 import javafx.stage.FileChooser
 import javafx.stage.Stage
@@ -19,6 +21,7 @@ import kotcity.ui.layers.ZotRenderer
 import kotcity.ui.map.CityMapCanvas
 import kotcity.ui.map.CityRenderer
 import kotcity.util.Debuggable
+import kotcity.util.randomElement
 import tornadofx.App
 import tornadofx.View
 import tornadofx.find
@@ -27,10 +30,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.timerTask
-import javafx.scene.control.ButtonType
-import javafx.scene.control.Alert
-import javafx.scene.layout.Region
-import kotcity.util.randomElement
 
 
 object Algorithms {
@@ -51,7 +50,7 @@ const val TICK_DELAY_AT_MOVE: Int = 1 // only render every tick when moving the 
 
 enum class Tool {
     BULLDOZE,
-    QUERY, 
+    QUERY,
     RAILROAD,
     RAIL_DEPOT,
     TRAIN_STATION,
@@ -66,7 +65,9 @@ enum class Tool {
     TOWN_WAREHOUSE,
     FIRE_STATION,
     POLICE_STATION,
-    ROUTES, RECENTER
+    ROUTES, RECENTER,
+    ASSIGN_DISTRICT,
+    CLEAR_DISTRICT
 }
 
 enum class GameSpeed(val tickPeriod: Long) {
@@ -110,6 +111,8 @@ class GameFrame : View(), Debuggable {
     private val policeStationButton: ToggleButton by fxid()
     private val routesButton: ToggleButton by fxid()
     private val recenterButton: ToggleButton by fxid()
+    private val assignDistrictButton: ToggleButton by fxid()
+    private val clearDistrictButton: ToggleButton by fxid()
 
     // cityMap modes...
     private val normalMapMode: RadioMenuItem by fxid()
@@ -162,14 +165,11 @@ class GameFrame : View(), Debuggable {
     private var zotRenderer: ZotRenderer? = null
 
     private val quitMessages = listOf(
-            "You want to quit?\n" + "Then, thou hast lost an eighth!",
-            "Don't go now, there's a\n" +
-            "dimensional shambler waiting\n" +
-            "at the DOS prompt!",
-            "Get outta here and go back to your boring programs.",
-            "Are you sure you want to quit this great game?",
-            "You're trying to say you like DOS\n" +
-                    "better than me, right? "
+        "You want to quit?\nThen, thou hast lost an eighth!",
+        "Don't go now, there's a\ndimensional shambler waiting\nat the DOS prompt!",
+        "Get outta here and go back to your boring programs.",
+        "Are you sure you want to quit this great game?",
+        "You're trying to say you like DOS\nbetter than me, right? "
     )
 
     override fun onDock() {
@@ -178,7 +178,7 @@ class GameFrame : View(), Debuggable {
         currentWindow?.centerOnScreen()
         currentStage?.isMaximized = true
 
-        // BUG: why doesn't this work???
+        // FIXME: why doesn't this work???
         this.currentWindow?.setOnCloseRequest {
             it.consume()
             confirmQuit()
@@ -348,6 +348,8 @@ class GameFrame : View(), Debuggable {
         fireStationButton.setOnAction { activeTool = Tool.FIRE_STATION }
         policeStationButton.setOnAction { activeTool = Tool.POLICE_STATION }
         routesButton.setOnAction { activeTool = Tool.ROUTES }
+        assignDistrictButton.setOnAction { activeTool = Tool.ASSIGN_DISTRICT }
+        clearDistrictButton.setOnAction { activeTool = Tool.CLEAR_DISTRICT }
         supplyDemandMenuItem.setOnAction {
             val supplyDemandChart = find(SupplyDemandChart::class)
             supplyDemandChart.census = cityMapCanvas.map?.censusTaker
@@ -540,6 +542,15 @@ class GameFrame : View(), Debuggable {
                             Tool.RESIDENTIAL_ZONE -> map.zone(Zone.RESIDENTIAL, firstBlock, lastBlock)
                             Tool.COMMERCIAL_ZONE -> map.zone(Zone.COMMERCIAL, firstBlock, lastBlock)
                             Tool.INDUSTRIAL_ZONE -> map.zone(Zone.INDUSTRIAL, firstBlock, lastBlock)
+                            Tool.ASSIGN_DISTRICT -> {
+                                var district = map.districtAt(firstBlock)
+                                if (district == map.mainDistrict) {
+                                    district = District("District ${map.districts.size}")
+                                    map.districts.add(district)
+                                }
+                                map.assignDistrict(district, firstBlock, lastBlock)
+                            }
+                            Tool.CLEAR_DISTRICT -> map.assignDistrict(map.mainDistrict, firstBlock, lastBlock)
                             Tool.RECENTER -> it.panMap(firstBlock)
                             Tool.DEZONE -> map.dezone(firstBlock, lastBlock)
                             Tool.QUERY -> {
@@ -559,7 +570,6 @@ class GameFrame : View(), Debuggable {
                     }
                 }
             }
-
         }
 
         root.requestFocus()

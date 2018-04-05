@@ -80,9 +80,7 @@ class TrafficAnimationRenderer(
         }
     }
 
-    fun stop() {
-        timelineX.stop()
-    }
+    fun stop() = timelineX.stop()
 
     private fun drawTrafficImage(g2d: GraphicsContext, coordinate: BlockCoordinate) {
         // g2d.fill = Color(Color.MAGENTA.red, Color.MAGENTA.green, Color.MAGENTA.blue, 0.50)
@@ -98,21 +96,11 @@ class TrafficAnimationRenderer(
         }
     }
 
-    private fun verticalRoad(coordinate: BlockCoordinate): Boolean {
-        val top = BlockCoordinate(coordinate.x, coordinate.y - 1)
-        val bottom = BlockCoordinate(coordinate.x, coordinate.y + 1)
-        return (hasRoad(top) || hasRoad(bottom))
-    }
+    private fun verticalRoad(coordinate: BlockCoordinate) = hasRoad(coordinate.top) || hasRoad(coordinate.bottom)
 
-    private fun horizontalRoad(coordinate: BlockCoordinate): Boolean {
-        val left = BlockCoordinate(coordinate.x - 1, coordinate.y)
-        val right = BlockCoordinate(coordinate.x + 1, coordinate.y)
-        return (hasRoad(left) || hasRoad(right))
-    }
+    private fun horizontalRoad(coordinate: BlockCoordinate) = hasRoad(coordinate.left) || hasRoad(coordinate.right)
 
-    private fun hasRoad(coordinate: BlockCoordinate): Boolean {
-        return cityMap.cachedLocationsIn(coordinate).any { it.building is Road }
-    }
+    private fun hasRoad(coordinate: BlockCoordinate) = cityMap.cachedLocationsIn(coordinate).any { it.building is Road }
 
     private fun drawVertical(image: Image, g2d: GraphicsContext, coordinate: BlockCoordinate) {
         val tx = coordinate.x - cityRenderer.blockOffsetX

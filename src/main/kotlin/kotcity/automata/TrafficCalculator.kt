@@ -10,8 +10,8 @@ class TrafficCalculator(val cityMap: CityMap) {
             location.building.contracts.flatMap {
                 it.path?.blocks()?.map { blockCoordinate -> Pair(blockCoordinate, it.quantity) } ?: emptyList()
             }.forEach {
-                        val coordinate = it.first
-                        val volume = it.second
+                val coordinate = it.first
+                val volume = it.second
                 newTrafficLayer[coordinate] = (newTrafficLayer[coordinate] ?: 0.0) + volume
             }
         }

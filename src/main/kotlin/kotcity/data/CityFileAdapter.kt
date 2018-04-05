@@ -147,7 +147,7 @@ object CityFileAdapter: Debuggable {
                     val x = it["x"].asInt
                     val y = it["y"].asInt
                     val value = it["value"].asDouble
-                    desirabilityLayer.put(BlockCoordinate(x, y), value)
+                    desirabilityLayer[BlockCoordinate(x, y)] = value
                 }
             }
         }
