@@ -37,8 +37,7 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
                 it.building.goodwill += zoneHappiness.toInt()
                 it.building.goodwill.coerceIn(-100..100)
 
-                // TODO: we will probably have some generic ones too... like fire coverage
-                // crime... pollution... etc.
+                // TODO: we will probably have some generic ones too... like fire coverage crime... pollution... etc.
                 location.building.happiness = zoneHappiness.toInt()
             }
         }
@@ -109,11 +108,11 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
         }
 
         // we get angry if there is too much traffic...
-        if (location.building.zots.any { it.type == ZotType.TOO_MUCH_TRAFFIC} ) {
+        if (location.building.zots.any { it.type == ZotType.TOO_MUCH_TRAFFIC }) {
             newValue -= 3.0
         }
 
-        if (location.building.zots.any { it.type == ZotType.TOO_MUCH_POLLUTION} ) {
+        if (location.building.zots.any { it.type == ZotType.TOO_MUCH_POLLUTION }) {
             newValue += Tunable.POLLUTION_HAPPINESS_PENALTY
         }
 

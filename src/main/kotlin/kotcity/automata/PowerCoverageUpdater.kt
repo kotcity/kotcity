@@ -1,10 +1,11 @@
 package kotcity.automata
 
-import kotcity.data.*
+import kotcity.data.BlockCoordinate
+import kotcity.data.CityMap
+import kotcity.data.PowerPlant
 
 object PowerCoverageUpdater {
     fun update(map: CityMap) {
-
         // OK we gotta find all the power plants on the cityMap...
         val powerPlants = map.locations().filter { location ->
             location.building is PowerPlant
@@ -31,6 +32,5 @@ object PowerCoverageUpdater {
         map.locations().forEach { location ->
             location.building.powered = gridmap.containsKey(location.coordinate)
         }
-
     }
 }

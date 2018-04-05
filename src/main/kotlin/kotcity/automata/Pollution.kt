@@ -8,7 +8,7 @@ import kotcity.util.Debuggable
 private const val EVAPORATION_FACTOR = 0.90
 private const val DIFFUSION_FACTOR = 0.90
 
-class PollutionUpdater(val cityMap: CityMap): Debuggable {
+class PollutionUpdater(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = false
 
     fun tick() {
@@ -35,7 +35,6 @@ class PollutionUpdater(val cityMap: CityMap): Debuggable {
         }
     }
 
-
     private fun diffuse() {
         synchronized(cityMap.pollutionLayer) {
             val blocksWithPollution = cityMap.pollutionLayer.filterValues { it > 0.0 }
@@ -44,7 +43,8 @@ class PollutionUpdater(val cityMap: CityMap): Debuggable {
                 val neighbors = coordinate.neighbors(1)
                 neighbors.forEach {
                     // our neighbors pollution is the AVERAGE of (p * DIFFUSION_FACTOR) of us and the neighbor...
-                    cityMap.pollutionLayer[it] = listOf(cityMap.pollutionLayer[it] ?: 0.0, (pollutionValue * DIFFUSION_FACTOR)).average()
+                    cityMap.pollutionLayer[it] =
+                            listOf(cityMap.pollutionLayer[it] ?: 0.0, (pollutionValue * DIFFUSION_FACTOR)).average()
                 }
             }
         }
@@ -62,9 +62,7 @@ class PollutionUpdater(val cityMap: CityMap): Debuggable {
                 } else {
                     cityMap.pollutionLayer[it] = newVal
                 }
-
             }
         }
     }
-
 }

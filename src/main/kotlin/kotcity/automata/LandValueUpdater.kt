@@ -6,15 +6,12 @@ import kotcity.data.Tunable
 import kotcity.ui.Algorithms
 import kotcity.util.Debuggable
 
-class LandValueUpdater(val cityMap: CityMap): Debuggable {
+class LandValueUpdater(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = false
 
-    private fun allZoneCoordinates(): List<BlockCoordinate> {
-        return cityMap.zoneLayer.keys.toList()
-    }
+    private fun allZoneCoordinates() = cityMap.zoneLayer.keys.toList()
 
     fun tick() {
-
         // find the min and max
         var maxLandValue = 0
 
@@ -30,13 +27,13 @@ class LandValueUpdater(val cityMap: CityMap): Debuggable {
         // ok... now we gotta loop AGAIN except now we can compare ourselves against min / max...
         allZoneCoordinates().forEach {
             val howMuchMoney = nearbyWealth(it)
-            val landValue = Algorithms.scale(howMuchMoney.toDouble(), 0.0, maxLandValue.toDouble(), 0.0, Tunable.MAX_LAND_VALUE)
+            val landValue =
+                Algorithms.scale(howMuchMoney.toDouble(), 0.0, maxLandValue.toDouble(), 0.0, Tunable.MAX_LAND_VALUE)
             if (landValue == Double.NaN) {
                 cityMap.landValueLayer[it] = 0.0
             } else {
                 cityMap.landValueLayer[it] = landValue
             }
-
         }
 
         // try to clean it now...
@@ -46,7 +43,6 @@ class LandValueUpdater(val cityMap: CityMap): Debuggable {
                 cityMap.landValueLayer.remove(coordinate)
             }
         }
-
     }
 
     /**

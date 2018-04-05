@@ -5,10 +5,10 @@ import kotcity.data.CityMap
 import kotcity.data.PowerPlant
 
 class PowerCoverageAutomata(
-        coordinate: BlockCoordinate,
-        powerPlant: PowerPlant,
-        private val gridMap: MutableMap<BlockCoordinate, PowerCoverageAutomata>,
-        val map: CityMap
+    coordinate: BlockCoordinate,
+    powerPlant: PowerPlant,
+    private val gridMap: MutableMap<BlockCoordinate, PowerCoverageAutomata>,
+    val map: CityMap
 ) {
 
     private val openList = mutableSetOf<BlockCoordinate>()
@@ -19,12 +19,7 @@ class PowerCoverageAutomata(
         powerAvailable = powerPlant.powerGenerated
     }
 
-    fun done(): Boolean {
-        if (powerAvailable <= 0) {
-            return true
-        }
-        return openList.isEmpty()
-    }
+    fun done() = if (powerAvailable > 0) openList.isEmpty() else true
 
     fun tick() {
         if (done()) {

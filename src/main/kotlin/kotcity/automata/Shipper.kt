@@ -3,7 +3,7 @@ package kotcity.automata
 import kotcity.data.*
 import kotcity.util.Debuggable
 
-class Shipper(val cityMap: CityMap): Debuggable {
+class Shipper(val cityMap: CityMap) : Debuggable {
 
     override var debug = false
 
@@ -51,5 +51,4 @@ class Shipper(val cityMap: CityMap): Debuggable {
             }
         }
     }
-
 }
