@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="64"
-   height="64"
-   viewBox="0 0 16.933333 16.933334"
+   width="256"
+   height="256"
+   viewBox="0 0 67.733332 67.733336"
    version="1.1"
    id="svg144"
-   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   inkscape:version="0.92+devel (unknown)"
    sodipodi:docname="slum1.svg"
    inkscape:export-filename="/data/home/josh/kotcity4/src/main/resources/assets/residential/slum1.png"
    inkscape:export-xdpi="96"
@@ -29,17 +29,18 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8"
-     inkscape:cx="-136.44465"
-     inkscape:cy="2.3296207"
+     inkscape:cx="60.238394"
+     inkscape:cy="135.32235"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      units="px"
-     inkscape:window-width="1808"
-     inkscape:window-height="991"
-     inkscape:window-x="112"
+     inkscape:window-width="3200"
+     inkscape:window-height="1637"
+     inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     inkscape:document-rotation="0" />
   <metadata
      id="metadata141">
     <rdf:RDF>
@@ -56,9 +57,9 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-280.06665)">
+     transform="translate(0,-229.26665)">
     <g
-       transform="matrix(0.14055303,0,0,0.14055303,1.6323245,280.08426)"
+       transform="matrix(0.64263124,0,0,0.64263124,1.7980825,224.21332)"
        id="g114">
       <path
          style="fill:#000000"

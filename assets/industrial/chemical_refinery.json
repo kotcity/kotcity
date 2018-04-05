@@ -3,7 +3,7 @@
   "width": 2,
   "height": 2,
   "name": "chemical_refinery",
-  "sprite": "chemical_refinery.png",
+  "sprite": "chemical_refinery.svg",
   "description": "Chemical Refinery",
   "level": 2,
   "power_required": 5,

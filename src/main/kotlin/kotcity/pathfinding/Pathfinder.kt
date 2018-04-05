@@ -332,7 +332,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     }
 
     private fun isBuildingAt(coordinate: BlockCoordinate, clazz: KClass<*>): Boolean {
-        cityMap.cachedLocationsIn(coordinate).map {
+        cityMap.cachedLocationsIn(coordinate).forEach {
             if (clazz.isInstance(it.building)) {
                 return true
             }

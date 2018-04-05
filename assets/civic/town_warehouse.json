@@ -3,7 +3,7 @@
   "width": 2,
   "height": 2,
   "name": "town_warehouse",
-  "sprite": "town_warehouse.png",
+  "sprite": "town_warehouse.svg",
   "description": "Town Warehouse",
   "level": 1,
   "power_required": 1,
