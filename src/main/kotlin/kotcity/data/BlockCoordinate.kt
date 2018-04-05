@@ -66,22 +66,26 @@ data class BlockCoordinate(
     /**
      * Returns the neighboring cell directly above this cell
      */
-    fun top(): BlockCoordinate = BlockCoordinate(x, y - 1)
+    val top: BlockCoordinate
+        get() = BlockCoordinate(x, y - 1)
 
     /**
      * Returns the neighboring cell directly below this cell
      */
-    fun bottom(): BlockCoordinate = BlockCoordinate(x, y + 1)
+    val bottom: BlockCoordinate
+        get() = BlockCoordinate(x, y + 1)
 
     /**
      * Returns the neighboring cell directly to the left of this cell
      */
-    fun left(): BlockCoordinate = BlockCoordinate(x - 1, y)
+    val left: BlockCoordinate
+        get() = BlockCoordinate(x - 1, y)
 
     /**
      * Returns the neighboring cell directly to the right of this cell
      */
-    fun right(): BlockCoordinate = BlockCoordinate(x + 1, y)
+    val right: BlockCoordinate
+        get() = BlockCoordinate(x + 1, y)
 
     /**
      * Returns a circle-ish area of [BlockCoordinate]s around us to the given radius
@@ -112,10 +116,9 @@ data class BlockCoordinate(
 
     /**
      * Adds two [BlockCoordinate] together vector style. like -> v1.x + v2.x, v1.y + v2.y
-     * @param otherCoordinate the other coordinate
+     * @param other the other coordinate
      * @return a new coordinate based on the sum of each of the xy
      */
-    fun plus(otherCoordinate: BlockCoordinate): BlockCoordinate {
-        return BlockCoordinate(x + otherCoordinate.x, y + otherCoordinate.y)
-    }
+    operator fun plus(other: BlockCoordinate): BlockCoordinate =
+        BlockCoordinate(x + other.x, y + other.y)
 }

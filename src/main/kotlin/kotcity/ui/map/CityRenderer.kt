@@ -597,16 +597,16 @@ class CityRenderer(
 
                 // We draw a border around the edges of the district in a predefined color
                 gc.stroke = district.color
-                if (cityMap.districtLayer[coordinate.top()] != district) {
+                if (cityMap.districtLayer[coordinate.top] != district) {
                     gc.strokeLine(left, top, right, top)
                 }
-                if (cityMap.districtLayer[coordinate.bottom()] != district) {
+                if (cityMap.districtLayer[coordinate.bottom] != district) {
                     gc.strokeLine(left, bottom, right, bottom)
                 }
-                if (cityMap.districtLayer[coordinate.left()] != district) {
+                if (cityMap.districtLayer[coordinate.left] != district) {
                     gc.strokeLine(left, top, left, bottom)
                 }
-                if (cityMap.districtLayer[coordinate.right()] != district) {
+                if (cityMap.districtLayer[coordinate.right] != district) {
                     gc.strokeLine(right, top, right, bottom)
                 }
             }

@@ -312,7 +312,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * Main game loop. The engine calls this every X milliseconds and various functions are run from here.
      */
     fun tick() {
-        time += 1000 * 60
+        time += 60_000
         if (time.toDateTime().minuteOfHour == 0) {
             val hour = time.toDateTime().hourOfDay
             launch {
@@ -363,7 +363,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 debug("Processing tick for end of day...")
                 dailyTick()
             }
-
         } catch (e: Exception) {
             println("WARNING! Error during hourly: ${e.message}")
             e.printStackTrace()
@@ -605,10 +604,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val dy = Math.abs(to.y - from.y)
         val isDxGreater = dx > dy
         val isDyGreater = dy > dx
-        val left = buildingLayer[BlockCoordinate(block.x - 1, block.y)]
-        val right = buildingLayer[BlockCoordinate(block.x + 1, block.y)]
-        val above = buildingLayer[BlockCoordinate(block.x, block.y - 1)]
-        val below = buildingLayer[BlockCoordinate(block.x, block.y + 1)]
+        val left = buildingLayer[block.left]
+        val right = buildingLayer[block.right]
+        val above = buildingLayer[block.top]
+        val below = buildingLayer[block.bottom]
         val dir =
             if (isDxGreater && to.x > from.x) {
                 if (above is Road || below is Road) {

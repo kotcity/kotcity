@@ -347,7 +347,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         val pathBlocks = mutableListOf(currentBlock)
 
         repeat(maxLength) {
-            currentBlock = currentBlock.plus(delta)
+            currentBlock += delta
             pathBlocks.add(currentBlock)
         }
 
@@ -484,7 +484,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             for (direction in listOf(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST)) {
                 // ok figure out the dang neighbors...
                 val delta = directionToBlockDelta(direction)
-                val nextBlock = activeNode.coordinate.plus(delta)
+                val nextBlock = activeNode.coordinate + delta
                 val nextNode = NavigationNode(
                         cityMap,
                         nextBlock,
