@@ -46,7 +46,7 @@ fun serializeDate(date: Date): String {
 }
 
 const val DRAW_GRID = false
-const val TICK_DELAY_AT_REST: Int = 5 // only render every 5 ticks... (framerate limiter)
+const val TICK_DELAY_AT_REST: Int = 7 // only render every 7 ticks... (framerate limiter)
 const val TICK_DELAY_AT_MOVE: Int = 1 // only render every tick when moving the camera around
 
 enum class Tool {
