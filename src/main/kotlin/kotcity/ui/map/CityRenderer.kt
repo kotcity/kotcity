@@ -562,10 +562,19 @@ class CityRenderer(
                 // figure out fill color...
                 val tx = coordinate.x - blockOffsetX
                 val ty = coordinate.y - blockOffsetY
-                val shadyColor = Color(zone.color.red, zone.color.green, zone.color.blue, 0.4)
+                val color = zoneColor(zone)
+                val shadyColor = Color(color.red, color.green, color.blue, 0.4)
                 canvas.graphicsContext2D.fill = shadyColor
                 canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
             }
+        }
+    }
+
+    private fun zoneColor(zone: Zone): Color {
+        return when (zone) {
+            Zone.RESIDENTIAL -> Color.DARKGREEN
+            Zone.COMMERCIAL -> Color.DARKBLUE
+            Zone.INDUSTRIAL -> Color.LIGHTGOLDENRODYELLOW
         }
     }
 

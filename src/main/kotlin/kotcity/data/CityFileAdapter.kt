@@ -13,7 +13,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-object CityFileAdapter: Debuggable {
+object CityFileAdapter : Debuggable {
     override var debug: Boolean = false
 
     private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -29,66 +29,65 @@ object CityFileAdapter: Debuggable {
     }
 
     val gson: Gson = GsonBuilder()
-            .registerTypeAdapter<CityMap> {
+        .registerTypeAdapter<CityMap> {
 
-                serialize {
-                    /*
-                        it.type: Type to serialize from
-                        it.context: GSon context
-                        it.src : Object to serialize
-                    */
-                    val data = JsonObject()
-                    val map = it.src
-                    data["height"] = map.height
-                    data["width"] = map.width
-                    data["cityName"] = map.cityName
-                    data["time"] = serializeDate(map.time)
-                    writeZoneLayer(data, it)
-                    writeGroundLayer(data, it)
-                    writeResourceLayers(data, it)
-                    writeBuildingLayer(data, it)
-                    writePowerlineLayer(data, it)
-                    writeDesirabilityLayers(data, it)
-                    writeContracts(data, it)
-                    data
-                }
-
-                deserialize {
-                    /*
-                        it.type: Type to deserialize to
-                        it.context: GSon context
-                        it.json : JsonElement to deserialize from
-                    */
-                    val cityMap = CityMap(512, 512)
-                    val data = it.json.asJsonObject
-                    cityMap.height = data["height"].asInt
-                    cityMap.width = data["width"].asInt
-                    cityMap.cityName = data["cityName"].asString
-                    cityMap.time = parseDate(data["time"].asString)
-                    readGroundTiles(data, cityMap)
-                    readBuildingLayer(data, cityMap)
-                    cityMap.updateBuildingIndex()
-                    readPowerlineLayer(data, cityMap)
-                    readZoneLayer(data, cityMap)
-                    readResourceLayers(data, cityMap)
-                    readDesirabilityLayers(data, cityMap)
-                    readContracts(data, cityMap)
-
-                    cityMap.updateBuildingIndex()
-
-                    // now let's force tick power...
-                    PowerCoverageUpdater.update(cityMap)
-
-                    cityMap
-                }
-
-                createInstances {
-                    CityMap(512, 512)
-                }
-
+            serialize {
+                /*
+                    it.type: Type to serialize from
+                    it.context: GSon context
+                    it.src : Object to serialize
+                */
+                val data = JsonObject()
+                val map = it.src
+                data["height"] = map.height
+                data["width"] = map.width
+                data["cityName"] = map.cityName
+                data["time"] = serializeDate(map.time)
+                writeZoneLayer(data, it)
+                writeGroundLayer(data, it)
+                writeResourceLayers(data, it)
+                writeBuildingLayer(data, it)
+                writePowerlineLayer(data, it)
+                writeDesirabilityLayers(data, it)
+                writeContracts(data, it)
+                data
             }
-            .setPrettyPrinting()
-            .create()
+
+            deserialize {
+                /*
+                    it.type: Type to deserialize to
+                    it.context: GSon context
+                    it.json : JsonElement to deserialize from
+                */
+                val cityMap = CityMap(512, 512)
+                val data = it.json.asJsonObject
+                cityMap.height = data["height"].asInt
+                cityMap.width = data["width"].asInt
+                cityMap.cityName = data["cityName"].asString
+                cityMap.time = parseDate(data["time"].asString)
+                readGroundTiles(data, cityMap)
+                readBuildingLayer(data, cityMap)
+                cityMap.updateBuildingIndex()
+                readPowerlineLayer(data, cityMap)
+                readZoneLayer(data, cityMap)
+                readResourceLayers(data, cityMap)
+                readDesirabilityLayers(data, cityMap)
+                readContracts(data, cityMap)
+
+                cityMap.updateBuildingIndex()
+
+                // now let's force tick power...
+                PowerCoverageUpdater.update(cityMap)
+
+                cityMap
+            }
+
+            createInstances {
+                CityMap(512, 512)
+            }
+        }
+        .setPrettyPrinting()
+        .create()
 
     private fun readResourceLayers(data: JsonObject, cityMap: CityMap) {
         data["resourceLayers"]?.asJsonObject?.forEach { layerName, jsonElement ->
@@ -99,7 +98,6 @@ object CityFileAdapter: Debuggable {
                 val value = it["value"].asDouble
                 cityMap.setResourceValue(layerName, BlockCoordinate(x, y), value)
             }
-
         }
     }
 
@@ -121,18 +119,18 @@ object CityFileAdapter: Debuggable {
         }
     }
 
-    fun writeDesirabilityLayers(data: JsonObject, it: SerializerArg<CityMap>) {
+    private fun writeDesirabilityLayers(data: JsonObject, it: SerializerArg<CityMap>) {
         data["desirabilityLayers"] = it.src.desirabilityLayers.map { desirabilityLayer ->
             jsonObject(
-                    "type" to desirabilityLayer.zoneType.toString(),
-                    "level" to desirabilityLayer.level,
-                    "values" to desirabilityLayer.entries().map {
-                        jsonObject(
-                                "x" to it.key.x,
-                                "y" to it.key.y,
-                                "value" to it.value
-                        )
-                    }.toJsonArray()
+                "type" to desirabilityLayer.zoneType.toString(),
+                "level" to desirabilityLayer.level,
+                "values" to desirabilityLayer.entries().map {
+                    jsonObject(
+                        "x" to it.key.x,
+                        "y" to it.key.y,
+                        "value" to it.value
+                    )
+                }.toJsonArray()
             )
         }.toJsonArray()
     }
@@ -172,7 +170,9 @@ object CityFileAdapter: Debuggable {
                     Railroad::class -> Railroad(cityMap)
                     RailDepot::class -> RailDepot(cityMap)
                     TrainStation::class -> TrainStation(cityMap)
-                    else -> { debug("Unknown building: $it"); null }
+                    else -> {
+                        debug("Unknown building: $it"); null
+                    }
                 }
                 if (building != null) {
                     cityMap.build(building, BlockCoordinate(x, y), updateBuildingIndex = false)
@@ -202,7 +202,7 @@ object CityFileAdapter: Debuggable {
         }.toJsonArray()
     }
 
-    fun readContracts(data: JsonObject, cityMap: CityMap) {
+    private fun readContracts(data: JsonObject, cityMap: CityMap) {
         if (data.has("contracts")) {
             val pathfinder = Pathfinder(cityMap)
             val contractData = data["contracts"].asJsonArray
@@ -216,32 +216,38 @@ object CityFileAdapter: Debuggable {
 
                 if (fromBuildings.count() == 0) {
                     println("Error during contact loading! Cannot find source building at $from")
-                } else if (toBuildings.count() == 0) {
+                    return@forEach
+                }
+                if (toBuildings.count() == 0) {
                     println("Error during contact loading! Cannot find source building at $to")
-                } else {
-                    val fromBuilding = fromBuildings.first()
-                    val toBuilding = toBuildings.first()
-                    val tradeable = Tradeable.valueOf(contractObj["tradeable"].asString)
-                    val quantity = contractObj["quantity"].asInt
-                    // val newContract = Contract(fromBuilding, toBuilding, tradeable, quantity)
-
-                    val path = pathfinder.tripTo(listOf(from), listOf(to))
-                    if (path != null) {
-                        toBuilding.building.createContract(CityTradeEntity(fromBuilding.coordinate, fromBuilding.building), tradeable, quantity, path)
-                    } else {
-                        println("Error during contract loading! Can't find path!")
-                    }
+                    return@forEach
                 }
 
+                val fromBuilding = fromBuildings.first()
+                val toBuilding = toBuildings.first()
+                val tradeable = Tradeable.valueOf(contractObj["tradeable"].asString)
+                val quantity = contractObj["quantity"].asInt
 
+                val path = pathfinder.tripTo(listOf(from), listOf(to))
 
+                if (path == null) {
+                    println("Error during contract loading! Can't find path!")
+                    return@forEach
+                }
+
+                toBuilding.building.createContract(
+                    CityTradeEntity(
+                        fromBuilding.coordinate,
+                        fromBuilding.building
+                    ), tradeable, quantity, path
+                )
             }
         }
     }
 
     private fun writeContracts(data: JsonObject, it: SerializerArg<CityMap>) {
         if (it.src.locations().count() > 0) {
-            data["contracts"] = it.src.locations().mapNotNull { location->
+            data["contracts"] = it.src.locations().mapNotNull { location ->
                 val building = location.building
                 if (building.contracts.count() == 0) {
                     null
@@ -249,18 +255,17 @@ object CityFileAdapter: Debuggable {
                     building.contracts.mapNotNull { contract ->
                         if (contract.from is CityTradeEntity && contract.to is CityTradeEntity) {
                             jsonObject(
-                                    "to_x" to contract.to.coordinate.x,
-                                    "to_y" to contract.to.coordinate.y,
-                                    "from_x" to contract.from.coordinate.x,
-                                    "from_y" to contract.from.coordinate.y,
-                                    "tradeable" to contract.tradeable.toString(),
-                                    "quantity" to contract.quantity
+                                "to_x" to contract.to.coordinate.x,
+                                "to_y" to contract.to.coordinate.y,
+                                "from_x" to contract.from.coordinate.x,
+                                "from_y" to contract.from.coordinate.y,
+                                "tradeable" to contract.tradeable.toString(),
+                                "quantity" to contract.quantity
                             )
                         } else {
                             println("We are trading with outside... not writing!")
                             null
                         }
-
                     }.toJsonArray()
                 }
             }.flatten().toJsonArray()
@@ -275,9 +280,9 @@ object CityFileAdapter: Debuggable {
             val type = building::class.simpleName
 
             val buildingObj = mutableMapOf(
-                    "x" to x,
-                    "y" to y,
-                    "type" to type
+                "x" to x,
+                "y" to y,
+                "type" to type
             )
 
             building.name?.let {
@@ -306,11 +311,11 @@ object CityFileAdapter: Debuggable {
                 val resource = JsonObject()
                 // println("OK... dumping ${it.key.x},${it.key.y} with ${it.value}")
                 resource.putAll(
-                        mapOf(
-                                "x" to it.key.x,
-                                "y" to it.key.y,
-                                "value" to it.value
-                        )
+                    mapOf(
+                        "x" to it.key.x,
+                        "y" to it.key.y,
+                        "value" to it.value
+                    )
                 )
                 resource
             }
@@ -326,10 +331,10 @@ object CityFileAdapter: Debuggable {
             val x = entry.key.x
             val y = entry.key.y
             jsonObject(
-                    "x" to x,
-                    "y" to y,
-                    "elevation" to entry.value.elevation,
-                    "type" to entry.value.type.toString()
+                "x" to x,
+                "y" to y,
+                "elevation" to entry.value.elevation,
+                "type" to entry.value.type.toString()
             )
         }.toJsonArray()
     }
@@ -340,9 +345,9 @@ object CityFileAdapter: Debuggable {
             val y = entry.key.y
             val zone = entry.value
             jsonObject(
-                    "type" to zone.toString(),
-                    "x" to x,
-                    "y" to y
+                "type" to zone.toString(),
+                "x" to x,
+                "y" to y
             )
         }.toJsonArray()
     }
@@ -371,5 +376,4 @@ object CityFileAdapter: Debuggable {
         city.fileName = file.absoluteFile.toString()
         return city
     }
-
 }

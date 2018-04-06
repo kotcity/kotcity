@@ -1,21 +1,11 @@
 package kotcity.data
 
+import kotcity.util.eachPixel
 import java.awt.Color
-import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 
 class BMPImporter {
-
-    private fun BufferedImage.eachPixel(callback: (BlockCoordinate, Color) -> Unit) {
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                val pixel = getRGB(x, y)
-                callback(BlockCoordinate(x, y), Color(pixel, true))
-            }
-        }
-    }
-
     /**
      * Generates a map by loading the bitmap image file at the provided path and using the color value of each pixel
      * for determining the terrain elevation.
@@ -32,11 +22,8 @@ class BMPImporter {
         val newMap = CityMap(size, size)
         image.eachPixel { coordinate: BlockCoordinate, color: Color ->
             val elevation = color.red.toDouble()
-            if (elevation < 83) {
-                newMap.groundLayer[coordinate] = MapTile(TileType.WATER, elevation)
-            } else {
-                newMap.groundLayer[coordinate] = MapTile(TileType.GROUND, elevation)
-            }
+            val type = if (elevation < 83) TileType.WATER else TileType.GROUND
+            newMap.groundLayer[coordinate] = MapTile(type, elevation)
         }
         return newMap
     }

@@ -2,12 +2,17 @@ package kotcity.ui
 
 import javafx.scene.paint.Color
 import kotcity.data.MapTile
+import kotcity.data.TileType
 
 class ColorAdjuster(private val mapMinElevation: Double, private val mapMaxElevation: Double) {
     fun colorForTile(tile: MapTile): Color {
         // this next line maps the elevations from -0.5 to 0.5 so we don't get
         // weird looking colors....
-        return adjustColor(tile.elevation, tile.type.color)
+        val color = when (tile.type) {
+            TileType.GROUND -> Color.rgb(37, 96, 37)
+            TileType.WATER -> Color.DARKBLUE
+        }
+        return adjustColor(tile.elevation, color)
     }
 
     private fun adjustColor(elevation: Double, color: Color): Color {

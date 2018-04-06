@@ -3,25 +3,21 @@
  */
 package kotcity.data
 
-import javafx.scene.paint.Color
-
 /**
  * Represents if we have ground or water
  */
-enum class TileType(val color: Color) {
-    GROUND(Color.rgb(37, 96, 37)),
-    WATER(Color.DARKBLUE)
+enum class TileType {
+    GROUND,
+    WATER
 }
 
 /**
  * Type of zone, R/C/I
- * @param color Color to render as...
- * @TODO why should we have color in this simulator detail? This is probably best moved to renderer.
  */
-enum class Zone(val color: Color) {
-    RESIDENTIAL(Color.DARKGREEN),
-    COMMERCIAL(Color.DARKBLUE),
-    INDUSTRIAL(Color.LIGHTGOLDENRODYELLOW)
+enum class Zone {
+    RESIDENTIAL,
+    COMMERCIAL,
+    INDUSTRIAL
 }
 
 /**
@@ -31,7 +27,6 @@ enum class Zone(val color: Color) {
  * @param building building we are referring to
  */
 data class Location(val cityMap: CityMap, val coordinate: BlockCoordinate, val building: Building) {
-
     /**
      * Returns the "footprint" of the building in [BlockCoordinate]s
      */
