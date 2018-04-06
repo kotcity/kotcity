@@ -1,6 +1,7 @@
 package kotcity.util
 
 import javafx.scene.paint.Color
+import java.awt.image.BufferedImage
 import java.util.*
 
 /**
@@ -45,3 +46,13 @@ internal fun Int.toColorFraction() = this * 1f / 255f
 fun Random.intBetween(from: Int, to: Int) = nextInt(to - from) + from
 
 fun Random.color() = Color(nextDouble(), nextDouble(), nextDouble(), 1.0)
+
+fun BufferedImage.resize(width: Int, height: Int): BufferedImage {
+    val tmp = getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH)
+    val resizedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+    resizedImage.createGraphics().apply {
+        drawImage(tmp, 0, 0, null)
+        dispose()
+    }
+    return resizedImage
+}
