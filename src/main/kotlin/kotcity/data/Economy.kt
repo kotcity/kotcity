@@ -1,6 +1,5 @@
 package kotcity.data
 
-import com.github.debop.kodatimes.dateTimeFromJson
 import kotcity.pathfinding.Path
 import kotcity.util.Debuggable
 

@@ -8,20 +8,6 @@ import kotcity.ui.ColorAdjuster
 import kotcity.ui.ResizableCanvas
 import java.util.concurrent.TimeUnit
 
-// this is for iterating through ranges of doubles...
-// used it before but not now apparently...
-infix fun ClosedRange<Double>.step(step: Double): Iterable<Double> {
-    require(start.isFinite())
-    require(endInclusive.isFinite())
-    require(step > 0.0) { "Step must be positive, was: $step." }
-    val sequence = generateSequence(start) { previous ->
-        if (previous == Double.POSITIVE_INFINITY) return@generateSequence null
-        val next = previous + step
-        if (next > endInclusive) null else next
-    }
-    return sequence.asIterable()
-}
-
 class CityMapCanvas : ResizableCanvas() {
     var map: CityMap? = null
         set(value) {

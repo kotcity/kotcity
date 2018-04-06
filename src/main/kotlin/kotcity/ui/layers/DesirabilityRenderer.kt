@@ -10,8 +10,6 @@ import kotcity.util.interpolate
 class DesirabilityRenderer(private val cityRenderer: CityRenderer, private val cityMap: CityMap) {
 
     companion object {
-        const val DESIRABILITY_CAP: Double = 200.0
-
         val NEGATIVE_COLOR: java.awt.Color = java.awt.Color.RED
         val POSITIVE_COLOR: java.awt.Color = java.awt.Color.GREEN
     }
