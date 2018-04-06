@@ -1,8 +1,5 @@
 .toolbarButton {
    -fx-pref-height: 20px;
-   -fx-pref-width: 95px;
-   -fx-max-height: 20px;
-   -fx-max-width: 95px;
 }
 
 .toolbarButton > .image-view {
