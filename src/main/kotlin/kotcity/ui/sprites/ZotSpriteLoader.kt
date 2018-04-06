@@ -6,7 +6,7 @@ import kotcity.data.Zot
 import kotcity.data.ZotType
 import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
-import kotcity.ui.sprites.BufferedImageUtils.resize
+import kotcity.util.resize
 import java.io.File
 import javax.imageio.ImageIO
 
@@ -33,7 +33,7 @@ object ZotSpriteLoader {
     private fun uncachedImageForFile(filename: String, width: Double, height: Double): Image {
         try {
             val bufferedImage = ImageIO.read(File(filename))
-            return SwingFXUtils.toFXImage(resize(bufferedImage, width.toInt(), height.toInt()), null) as Image
+            return SwingFXUtils.toFXImage(bufferedImage.resize(width.toInt(), height.toInt()), null) as Image
         } catch (imgException: javax.imageio.IIOException) {
             println("Could not read: $filename")
             throw imgException
