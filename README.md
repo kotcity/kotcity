@@ -1,4 +1,4 @@
-# KotCity 0.49.1 (🐇 Easter Edition 🐇)
+# KotCity 0.49.2 (🐇 Post-Easter Edition 🐇)
 
 [![Build Status](https://semaphoreci.com/api/v1/kotcity/kotcity/branches/master/badge.svg)](https://semaphoreci.com/kotcity/kotcity) [![Build Status](https://travis-ci.org/kotcity/kotcity.svg?branch=master)](https://travis-ci.org/kotcity/kotcity)
 
@@ -19,15 +19,21 @@ Java 8+ is required. On Windows it will look for JRE and bring you to download p
 
 ## New in this version
 
-* Land value
-* better desirability calculation (including land value!)
-* more stable economy...
-* Lower CPU usage (optimizations to desirability updater)
-* Misc bugfixes
+* Districts by @sabieber, initial version, more features to come!
+* performance improvements by @sabieber
+* Improved UI (added some nice labels)
+* Vector Graphic (SVG) assets are now supported!
+* Some fixes to railway (still buggy, but getting better!)
+* railways by @moonpatroller 
 
-## Broken in this version
+## Known bugs
 
-* railways (kind of broken still! bear with me...)
+* Railway navigation might be a little fluky, we are working on it.
+* All the other bugs :)
+
+## Unknown bugs
+
+* None
 
 ## Next up!
 
