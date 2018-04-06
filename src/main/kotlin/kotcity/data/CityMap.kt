@@ -667,12 +667,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             val oldDistrict = districtAt(it)
             if (oldDistrict != mainDistrict) {
                 oldDistrict.blocks.remove(it)
+                oldDistrict.clearCorners()
                 if (oldDistrict.blocks.isEmpty()) {
                     districts.remove(oldDistrict)
                 }
             }
             if (district != mainDistrict) {
                 district.blocks.add(it)
+                oldDistrict.clearCorners()
             }
             districtLayer[it] = district
         }

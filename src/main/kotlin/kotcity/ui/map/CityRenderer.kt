@@ -36,6 +36,7 @@ class CityRenderer(
     private val desirabilityRenderer = DesirabilityRenderer(this, cityMap)
     private val pollutionRenderer = PollutionRenderer(this, cityMap)
     private val landValueRenderer = LandValueRenderer(this, cityMap)
+    private val districtRenderer = DistrictRenderer(this, cityMap)
 
     var blockOffsetX: Double = 0.0
         set(value) {
@@ -220,8 +221,8 @@ class CityRenderer(
 
         drawMap()
         drawZones()
-        drawDistricts()
         drawBuildings()
+        districtRenderer.render()
 
         if (gameFrame.activeTool == Tool.ROUTES) {
             showRoutesFor?.let {
@@ -564,50 +565,6 @@ class CityRenderer(
                 val shadyColor = Color(zone.color.red, zone.color.green, zone.color.blue, 0.4)
                 canvas.graphicsContext2D.fill = shadyColor
                 canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
-            }
-        }
-    }
-
-    private fun drawDistricts() {
-        if (zoom > 2) {
-            // We only want to render the districts when zoomed out so they dont obstruct the view too much
-            return
-        }
-        val blockSize = blockSize()
-        val gc = canvas.graphicsContext2D
-        gc.fill = Color.gray(1.0, 0.1)
-        gc.lineWidth = 2.0
-        visibleBlocks().forEach { coordinate ->
-            cityMap.districtLayer[coordinate]?.let { district ->
-                if (district == cityMap.mainDistrict) {
-                    // We only want to render districts the player created and not the default one
-                    return@let
-                }
-                val tx = coordinate.x - blockOffsetX
-                val ty = coordinate.y - blockOffsetY
-
-                // We highlight the are of the district in a very fainted gray
-                gc.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
-
-                val left = tx * blockSize
-                val right = tx * blockSize + blockSize - gc.lineWidth
-                val top = ty * blockSize
-                val bottom = ty * blockSize + blockSize - gc.lineWidth
-
-                // We draw a border around the edges of the district in a predefined color
-                gc.stroke = district.color
-                if (cityMap.districtLayer[coordinate.top] != district) {
-                    gc.strokeLine(left, top, right, top)
-                }
-                if (cityMap.districtLayer[coordinate.bottom] != district) {
-                    gc.strokeLine(left, bottom, right, bottom)
-                }
-                if (cityMap.districtLayer[coordinate.left] != district) {
-                    gc.strokeLine(left, top, left, bottom)
-                }
-                if (cityMap.districtLayer[coordinate.right] != district) {
-                    gc.strokeLine(right, top, right, bottom)
-                }
             }
         }
     }
