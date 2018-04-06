@@ -1,10 +1,13 @@
 package kotcity.ui.map
 
+import javafx.geometry.VPos
 import javafx.scene.Cursor
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
+import javafx.scene.text.FontSmoothingType
+import javafx.scene.text.TextAlignment
 import kotcity.data.*
 import kotcity.data.MapMode.*
 import kotcity.data.Tunable.MAX_BUILDING_SIZE
@@ -577,12 +580,15 @@ class CityRenderer(
         val gc = canvas.graphicsContext2D
         gc.fill = Color.gray(1.0, 0.1)
         gc.lineWidth = 2.0
+        val visibleDistricts = mutableSetOf<District>()
         visibleBlocks().forEach { coordinate ->
             cityMap.districtLayer[coordinate]?.let { district ->
                 if (district == cityMap.mainDistrict) {
                     // We only want to render districts the player created and not the default one
                     return@let
                 }
+                visibleDistricts.add(district)
+
                 val tx = coordinate.x - blockOffsetX
                 val ty = coordinate.y - blockOffsetY
 
@@ -609,6 +615,32 @@ class CityRenderer(
                     gc.strokeLine(right, top, right, bottom)
                 }
             }
+        }
+        visibleDistricts.forEach {
+            var topLeft = it.topLeft ?: it.blocks.first()
+            var bottomRight = it.bottomRight ?: it.blocks.last()
+
+            if (it.topLeft == null && it.bottomRight == null) {
+                it.blocks.forEach {
+                    if (it.x <= topLeft.x && it.y <= topLeft.y) {
+                        topLeft = it
+                    } else if (it.x >= bottomRight.x && it.y >= bottomRight.y) {
+                        bottomRight = it
+                    }
+                }
+                it.topLeft = topLeft
+                it.bottomRight = bottomRight
+            }
+
+            val x = ((topLeft.x + bottomRight.x) / 2) - blockOffsetX
+            val y = ((topLeft.y + bottomRight.y) / 2) - blockOffsetY
+
+            gc.fill = it.color
+            gc.textAlign = TextAlignment.CENTER
+            gc.textBaseline = VPos.CENTER
+            gc.font = Font.font(16.0)
+            gc.fontSmoothingType = FontSmoothingType.LCD
+            gc.fillText(it.name, x * blockSize, y * blockSize)
         }
     }
 
