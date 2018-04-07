@@ -14,6 +14,7 @@ import kotcity.ui.layers.*
 import kotcity.ui.sprites.BuildingSpriteLoader
 import kotcity.util.reorder
 import tornadofx.runLater
+import kotlin.math.pow
 
 
 class CityRenderer(
@@ -28,6 +29,12 @@ class CityRenderer(
             field = value
             panMap(oldCenter)
         }
+
+    private fun arcWidth() = zoom * zoom
+
+    private fun borderWidth() = zoom / 2
+
+    fun blockSize() = 2.0.pow(zoom + 1)
 
     private val happinessRenderer = HappinessRenderer(this, cityMap)
     private val fireCoverageRenderer = FireCoverageRenderer(this, cityMap)
@@ -584,42 +591,6 @@ class CityRenderer(
         val ty = y - blockOffsetY
         val blockSize = blockSize()
         canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
-    }
-
-    private fun arcWidth(): Double {
-        return when (zoom) {
-            1.0 -> 1.0
-            2.0 -> 5.0
-            3.0 -> 10.0
-            4.0 -> 15.0
-            5.0 -> 25.0
-            else -> 1.0
-        }
-    }
-
-    private fun borderWidth(): Double {
-        return when (zoom) {
-            1.0 -> 0.5
-            2.0 -> 1.0
-            3.0 -> 2.0
-            4.0 -> 3.0
-            5.0 -> 4.0
-            else -> 1.0
-        }
-    }
-
-    // each block should = 10 meters, square...
-    // 64 pixels = 10 meters
-    fun blockSize(): Double {
-        // return (this.zoom * 64)
-        return when (zoom) {
-            1.0 -> 4.0
-            2.0 -> 8.0
-            3.0 -> 16.0
-            4.0 -> 32.0
-            5.0 -> 64.0
-            else -> 64.0
-        }
     }
 
     private fun drawRailroadBlueprint() {
