@@ -590,7 +590,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                     }
                 }
             val existingRoad = buildingLayer[block]
-            if (existingRoad is Road || canBuildBuildingAt(newRoad, block, waterCheck = false)) {
+            if (existingRoad is Railroad || existingRoad is RailroadCrossing) {
+                buildingLayer[block] = RailroadCrossing(this)
+                // dezone under us...
+                zoneLayer.remove(block)
+            } else if (existingRoad is Road || canBuildBuildingAt(newRoad, block, waterCheck = false)) {
                 buildingLayer[block] = newRoad
                 // dezone under us...
                 zoneLayer.remove(block)
