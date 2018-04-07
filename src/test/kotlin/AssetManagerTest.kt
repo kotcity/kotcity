@@ -1,7 +1,6 @@
-
-import junit.framework.Assert.assertNotNull
 import kotcity.data.AssetManager
 import kotcity.data.CityMap
+import org.junit.Assert.assertNotNull
 import org.junit.jupiter.api.Test
 import java.io.File
 
