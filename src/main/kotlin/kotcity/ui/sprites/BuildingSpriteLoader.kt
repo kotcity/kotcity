@@ -1,27 +1,13 @@
 package kotcity.ui.sprites
 
+import javafx.embed.swing.SwingFXUtils
 import javafx.scene.image.Image
 import kotcity.data.*
 import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
-import javafx.embed.swing.SwingFXUtils
-import javax.imageio.ImageIO
-import java.awt.image.BufferedImage
+import kotcity.util.resize
 import java.io.File
-
-object BufferedImageUtils {
-    fun resize(img: BufferedImage, newW: Int, newH: Int): BufferedImage {
-        val tmp = img.getScaledInstance(newW, newH, java.awt.Image.SCALE_SMOOTH)
-        val dimg = BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB)
-
-        val g2d = dimg.createGraphics()
-        g2d.drawImage(tmp, 0, 0, null)
-        g2d.dispose()
-
-        return dimg
-    }
-}
-
+import javax.imageio.ImageIO
 
 object BuildingSpriteLoader {
 
@@ -34,13 +20,13 @@ object BuildingSpriteLoader {
     )
     private val imageForFile = imageForFileCachePair.second
 
-    fun spriteForBuildingType(building: Building, width: Double, height: Double) =
+    fun spriteForBuildingType(building: Building, width: Int, height: Int) =
         imageForFile(filename(building), width, height)
 
-    private fun uncachedImageForFile(filename: String, width: Double, height: Double): Image {
+    private fun uncachedImageForFile(filename: String, width: Int, height: Int): Image {
         try {
             val bufferedImage = ImageIO.read(File(filename))
-            return SwingFXUtils.toFXImage(BufferedImageUtils.resize(bufferedImage, width.toInt(), height.toInt()), null) as Image
+            return SwingFXUtils.toFXImage(bufferedImage.resize(width, height), null) as Image
         } catch (imgException: javax.imageio.IIOException) {
             println("Could not read: $filename")
             throw imgException
@@ -69,6 +55,5 @@ object BuildingSpriteLoader {
             building.variety == "nuclear" -> "./assets/utility/nuclear_power_plant.png"
             else -> throw RuntimeException("Unknown power plant variety: ${building.variety}")
         }
-
     }
 }

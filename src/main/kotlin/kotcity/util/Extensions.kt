@@ -1,6 +1,8 @@
 package kotcity.util
 
 import javafx.scene.paint.Color
+import kotcity.data.BlockCoordinate
+import java.awt.image.BufferedImage
 import java.util.*
 
 /**
@@ -45,3 +47,22 @@ internal fun Int.toColorFraction() = this * 1f / 255f
 fun Random.intBetween(from: Int, to: Int) = nextInt(to - from) + from
 
 fun Random.color() = Color(nextDouble(), nextDouble(), nextDouble(), 1.0)
+
+fun BufferedImage.resize(width: Int, height: Int): BufferedImage {
+    val tmp = getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH)
+    val resizedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+    resizedImage.createGraphics().apply {
+        drawImage(tmp, 0, 0, null)
+        dispose()
+    }
+    return resizedImage
+}
+
+fun BufferedImage.eachPixel(callback: (BlockCoordinate, java.awt.Color) -> Unit) {
+    for (x in 0 until width) {
+        for (y in 0 until height) {
+            val pixel = getRGB(x, y)
+            callback(BlockCoordinate(x, y), java.awt.Color(pixel, true))
+        }
+    }
+}

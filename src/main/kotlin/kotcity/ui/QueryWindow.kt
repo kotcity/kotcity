@@ -103,7 +103,7 @@ class QueryWindow : View() {
             val filename = "file:./assets/misc/unknown.png"
             buildingImageView.image = Image(filename, 64.0, 64.0, true, false)
         } else {
-            buildingImageView.image = BuildingSpriteLoader.spriteForBuildingType(building, 64.0, 64.0)
+            buildingImageView.image = BuildingSpriteLoader.spriteForBuildingType(building, 64, 64)
         }
 
         building.summarizeContracts().apply {

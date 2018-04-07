@@ -12,7 +12,9 @@ class MapGenerator {
     private val rng = Random()
     var seaLevel = 0.0
 
-    fun round(value: Double, places: Int): Double {
+    private val resources = listOf("oil", "coal", "gold", "soil")
+
+    private fun round(value: Double, places: Int): Double {
         if (places < 0) throw IllegalArgumentException()
 
         var bd = BigDecimal(value)
@@ -59,7 +61,6 @@ class MapGenerator {
     }
 
     private fun addResources(seed: Long, map: CityMap) {
-
         val f1 = 2.0
         val f2 = 10.0
         val f3 = 20
@@ -67,16 +68,12 @@ class MapGenerator {
 
         val baseLine = 0.0
 
-        listOf("oil", "coal", "gold", "soil").forEachIndexed { n, resourceName ->
-            val noiseGen = OpenSimplexNoise(1+seed+n)
+        resources.forEachIndexed { n, resourceName ->
+            val noiseGen = OpenSimplexNoise(1 + seed + n)
             repeat(map.width) { x ->
                 repeat(map.height) { y ->
-
-                    //   double nx = x/width - 0.5, ny = y/height - 0.5;
                     val nx = (x.toDouble() / map.width.toDouble()) - 0.5
                     val ny = (y.toDouble() / map.height.toDouble()) - 0.5
-
-                    // val randomTile = noiseGen.eval(nx * freq, ny * freq)
 
                     val n1 = (1.0 * noiseGen.eval(f1 * nx, f1 * ny))
                     val n2 = (0.5 * noiseGen.eval(f2 * nx, f2 * ny))
@@ -86,21 +83,10 @@ class MapGenerator {
 
                     resourceValue = pow(resourceValue, exp)
 
-//                    if (x == 0 && y == 0) {
-//                        println("nx: $nx, ny: $ny")
-//                        println("n1: $n1, n2: $n2, n3: $n3")
-//                        println("Our resource value is: $resourceValue")
-//                    }
-
-                    // println("Sea level is: $seaLevel")
-
                     resourceValue = round(resourceValue - baseLine, 2)
-                    // println("OK, setting $x,$y to $resourceValue in $resourceName")
                     map.setResourceValue(resourceName, BlockCoordinate(x, y), resourceValue)
                 }
             }
         }
-
     }
-
 }

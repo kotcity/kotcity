@@ -1,6 +1,9 @@
 package kotcity.data
 
-import com.github.salomonbrys.kotson.*
+import com.github.salomonbrys.kotson.fromJson
+import com.github.salomonbrys.kotson.keys
+import com.github.salomonbrys.kotson.nullDouble
+import com.github.salomonbrys.kotson.nullString
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import kotcity.ui.sprites.BuildingSpriteLoader
@@ -11,18 +14,19 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.stream.Collectors.toList
+import kotlin.collections.set
 import kotlin.reflect.KClass
 
 class AssetManager(val cityMap: CityMap) {
 
-    private val directories = listOf("residential", "commercial", "industrial", "civic")
+    private val directories = listOf(
+        "residential",
+        "commercial",
+        "industrial",
+        "civic"
+    )
 
-    fun findResources(): List<String> {
-        // OK now let's find the files in each...
-        return directories.map { dir ->
-            assetsInDir(dir)
-        }.flatten()
-    }
+    fun findResources() = directories.map { dir -> assetsInDir(dir) }.flatten()
 
     // TODO: use desirability later...
     fun findBuilding(zoneType: Zone, level: Int): Building? {
@@ -43,21 +47,14 @@ class AssetManager(val cityMap: CityMap) {
 
         val path = Paths.get("./assets/$dir/")
         return Files.walk(path)
-                .filter { it: Path? ->
-                    it?.let { matcher.matches(it.fileName) } ?: false
-                }
-                .collect(toList())
-                .map({ it.toAbsolutePath().toString() })
-    }
-
-    fun all(): List<LoadableBuilding> {
-        return directories.map { dir ->
-            assetsInDir(dir).mapNotNull { assetFile ->
-                loadFromFile(assetFile)
+            .filter { it: Path? ->
+                it?.let { matcher.matches(it.fileName) } ?: false
             }
-
-        }.flatten()
+            .map({ it.toAbsolutePath().toString() })
+            .collect(toList())
     }
+
+    fun all() = directories.map { dir -> assetsInDir(dir).mapNotNull { loadFromFile(it) } }.flatten()
 
     /**
      * Takes a given file and (possibly) returns a [LoadableBuilding]
@@ -66,49 +63,39 @@ class AssetManager(val cityMap: CityMap) {
     fun loadFromFile(assetFile: String): LoadableBuilding? {
         val buildingJson = CityFileAdapter.gson.fromJson<JsonElement>(FileReader(assetFile)).asJsonObject
 
-        val buildingType = buildingJson["type"].nullString
+        val buildingType = buildingJson["type"].nullString ?: return null
 
-        val lb = if (buildingType != null) {
-            val lb = when (buildingType) {
-                "commercial" -> Commercial(cityMap)
-                "residential" -> Residential(cityMap)
-                "industrial" -> Industrial(cityMap)
-                "civic" -> Civic(cityMap)
-                else -> {
-                    throw RuntimeException("Unknown type: $buildingType")
-                }
-            }
-            lb.name = buildingJson["name"].asString
-            // OK let's populate the rest...
-            populateBuildingData(lb, buildingJson)
-            lb
-        } else {
-            null
+        val building = when (buildingType) {
+            "commercial" -> Commercial(cityMap)
+            "residential" -> Residential(cityMap)
+            "industrial" -> Industrial(cityMap)
+            "civic" -> Civic(cityMap)
+            else -> throw RuntimeException("Unknown type: $buildingType")
         }
-        return lb
+        building.name = buildingJson["name"].asString
+        // OK let's populate the rest...
+        populateBuildingData(building, buildingJson)
+        return building
     }
 
-    fun buildingFor(klass: KClass<out Building>, name: String): Building {
-
+    fun buildingFor(klass: KClass<out Building>, name: String): LoadableBuilding {
         // ok we need to find the matching JSON file for this crap...
         val assetFile = findAsset(klass, name)
 
         val buildingJson = CityFileAdapter.gson.fromJson<JsonObject>(FileReader(assetFile))
 
-        val lb : LoadableBuilding = when (klass) {
+        val building = when (klass) {
             Residential::class -> Residential(cityMap)
             Commercial::class -> Commercial(cityMap)
             Industrial::class -> Industrial(cityMap)
             Civic::class -> Civic(cityMap)
-            else -> {
-                throw RuntimeException("I don't know how to instantiate $klass")
-            }
+            else -> throw RuntimeException("I don't know how to instantiate $klass")
         }
 
-        lb.name = name
+        building.name = name
         // OK let's populate the rest...
-        populateBuildingData(lb, buildingJson)
-        return lb
+        populateBuildingData(building, buildingJson)
+        return building
     }
 
     private fun findAsset(klass: KClass<out Building>, name: String): String {
@@ -121,52 +108,49 @@ class AssetManager(val cityMap: CityMap) {
         }
     }
 
-    private fun populateBuildingData(lb: LoadableBuilding, buildingJson: JsonObject) {
-        lb.width = buildingJson["width"].asInt
-        lb.height = buildingJson["height"].asInt
-        lb.sprite = buildingJson["sprite"].asString
-        lb.pollution = buildingJson["pollution"].nullDouble ?: 0.0
-        lb.description = buildingJson["description"].asString
-        lb.level = buildingJson["level"].asInt
-        if (buildingJson.has("upkeep")) {
-            lb.upkeep = buildingJson["upkeep"].asInt
+    private fun populateBuildingData(building: LoadableBuilding, json: JsonObject) {
+        building.width = json["width"].asInt
+        building.height = json["height"].asInt
+        building.sprite = json["sprite"].asString
+        building.pollution = json["pollution"].nullDouble ?: 0.0
+        building.description = json["description"].asString
+        building.level = json["level"].asInt
+        if (json.has("upkeep")) {
+            building.upkeep = json["upkeep"].asInt
         }
 
-        checkSprite(lb)
-        populateProduction(lb, buildingJson)
+        checkSprite(building)
+        populateProduction(building, json)
     }
 
-    private fun checkSprite(loadableBuilding: LoadableBuilding) {
-        if (loadableBuilding.sprite == null || loadableBuilding.sprite == "") {
-            throw RuntimeException("Could not load sprite for $loadableBuilding")
+    private fun checkSprite(building: LoadableBuilding) {
+        if (building.sprite == null || building.sprite == "") {
+            throw RuntimeException("Could not load sprite for $building")
         }
-        BuildingSpriteLoader.filename(loadableBuilding)
+        BuildingSpriteLoader.filename(building)
     }
 
-    private fun populateProduction(lb: LoadableBuilding, buildingJson: JsonObject) {
-        if (! buildingJson.has("production")) {
+    private fun populateProduction(building: LoadableBuilding, json: JsonObject) {
+        if (!json.has("production")) {
             return
         }
-        buildingJson["production"].asJsonObject?.let { production ->
-
+        json["production"].asJsonObject?.let { production ->
             if (production.has("consumes")) {
                 production["consumes"].asJsonObject?.let { consumes ->
                     val names = consumes.keys()
                     names.forEach { name ->
-                        lb.consumes[Tradeable.valueOf(name.toUpperCase())] = consumes[name].asInt
+                        building.consumes[Tradeable.valueOf(name.toUpperCase())] = consumes[name].asInt
                     }
                 }
             }
-
             if (production.has("produces")) {
                 production["produces"].asJsonObject?.let { produces ->
                     val names = produces.keys()
                     names.forEach { name ->
-                        lb.produces[Tradeable.valueOf(name.toUpperCase())] = produces[name].asInt
+                        building.produces[Tradeable.valueOf(name.toUpperCase())] = produces[name].asInt
                     }
                 }
             }
-
         }
     }
 }

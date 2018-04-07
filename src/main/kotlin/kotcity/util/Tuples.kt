@@ -18,10 +18,10 @@ import java.io.Serializable
  * @property fourth Fourth value.
  */
 data class Quadruple<out A, out B, out C, out D>(
-        val first: A,
-        val second: B,
-        val third: C,
-        val fourth: D
+    val first: A,
+    val second: B,
+    val third: C,
+    val fourth: D
 ) : Serializable {
 
     /**
@@ -47,16 +47,15 @@ data class Quadruple<out A, out B, out C, out D>(
  * @property fourth Fourth value.
  * @property fifth Fifth value.
  */
-public data class Quintuple<out A, out B, out C, out D, out E>(
-        public val first: A,
-        public val second: B,
-        public val third: C,
-        public val fourth: D,
-        public val fifth: E
+data class Quintuple<out A, out B, out C, out D, out E>(
+    val first: A,
+    val second: B,
+    val third: C,
+    val fourth: D,
+    val fifth: E
 ) : Serializable {
-
     /**
      * Returns string representation of the [Quadruple] including its [first], [second], [third], [fourth] and [fifth] values.
      */
-    public override fun toString(): String = "($first, $second, $third, $fourth, $fifth)"
+    override fun toString(): String = "($first, $second, $third, $fourth, $fifth)"
 }
