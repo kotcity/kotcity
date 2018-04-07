@@ -21,8 +21,8 @@ class LandValueRenderer(private val cityRenderer: CityRenderer, private val city
         BlockCoordinate.iterateAll(startBlock, endBlock) { coordinate ->
             val landValue = cityMap.landValueLayer[coordinate] ?: 0.0
             cityRenderer.apply {
-                val dX = (coordinate.x - blockOffsetX) * blockSize()
-                val dY = (coordinate.y - blockOffsetY) * blockSize()
+                val dX = (coordinate.x - blockOffsetX) * blockSize
+                val dY = (coordinate.y - blockOffsetY) * blockSize
                 canvas.graphicsContext2D.apply {
 
                     // OK we gotta scale between min and max...
@@ -30,7 +30,7 @@ class LandValueRenderer(private val cityRenderer: CityRenderer, private val city
 
                     val landValueColor = NEGATIVE_COLOR.interpolate(POSITIVE_COLOR, scaledLandValue)
                     fill = Color(landValueColor.red, landValueColor.green, landValueColor.blue, 0.8)
-                    fillRect(dX, dY, blockSize(), blockSize())
+                    fillRect(dX, dY, blockSize, blockSize)
                 }
             }
         }

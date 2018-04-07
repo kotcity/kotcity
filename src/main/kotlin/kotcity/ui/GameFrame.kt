@@ -247,8 +247,8 @@ class GameFrame : View(), Debuggable {
         horizontalScroll.min = 0.0
         verticalScroll.min = 0.0
 
-        val canvasBlockWidth = cityRenderer?.canvasBlockWidth() ?: 0
-        val canvasBlockHeight = cityRenderer?.canvasBlockHeight() ?: 0
+        val canvasBlockWidth = cityRenderer?.canvasBlockWidth ?: 0
+        val canvasBlockHeight = cityRenderer?.canvasBlockHeight ?: 0
         horizontalScroll.max = map.width - canvasBlockWidth - 1.0
         verticalScroll.max = map.height - canvasBlockHeight - 1.0
 

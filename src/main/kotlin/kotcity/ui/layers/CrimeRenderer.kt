@@ -20,13 +20,13 @@ class CrimeRenderer(private val cityRenderer: CityRenderer, private val cityMap:
             val crimeScore = cityMap.crimeLayer[coord] ?: 0.0
             val presenceScore = cityMap.policePresenceLayer[coord] ?: 0.0
             cityRenderer.apply {
-                val dX = (coord.x - blockOffsetX) * blockSize()
-                val dY = (coord.y - blockOffsetY) * blockSize()
+                val dX = (coord.x - blockOffsetX) * blockSize
+                val dY = (coord.y - blockOffsetY) * blockSize
                 canvas.graphicsContext2D.apply {
                     val crimeColor = NEUTRAL_COLOR.interpolate(NEGATIVE_COLOR, crimeScore)
                     val presenceColor = NEUTRAL_COLOR.interpolate(POSITIVE_COLOR, presenceScore)
                     fill = crimeColor.interpolate(presenceColor, 0.5)
-                    fillRect(dX, dY, blockSize(), blockSize())
+                    fillRect(dX, dY, blockSize, blockSize)
                 }
             }
         }

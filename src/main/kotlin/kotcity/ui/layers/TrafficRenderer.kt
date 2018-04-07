@@ -29,7 +29,7 @@ class TrafficRenderer(private val cityRenderer: CityRenderer, private val cityMa
                 cityRenderer.apply {
                     val tx = coord.x - blockOffsetX
                     val ty = coord.y - blockOffsetY
-                    val blockSize = blockSize()
+                    val blockSize = blockSize
                     canvas.graphicsContext2D.apply {
                         fill = determineColor(traffic)
                         fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)

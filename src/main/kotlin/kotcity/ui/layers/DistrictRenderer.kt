@@ -18,7 +18,7 @@ class DistrictRenderer(private val renderer: CityRenderer, private val map: City
             return
         }
         val (startBlock, endBlock) = renderer.visibleBlockRange()
-        val blockSize = renderer.blockSize()
+        val blockSize = renderer.blockSize
         val visibleDistricts = mutableSetOf<District>()
 
         val gc = renderer.canvas.graphicsContext2D

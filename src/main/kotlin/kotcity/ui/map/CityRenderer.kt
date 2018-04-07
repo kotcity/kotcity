@@ -30,11 +30,15 @@ class CityRenderer(
             panMap(oldCenter)
         }
 
-    private fun arcWidth() = zoom * zoom
+    private val arcWidth get() = zoom * zoom
 
-    private fun borderWidth() = zoom / 2
+    private val borderWidth get() = zoom / 2
 
-    fun blockSize() = 2.0.pow(zoom + 1)
+    val blockSize get() = 2.0.pow(zoom + 1)
+
+    val canvasBlockHeight get() = (canvas.height / blockSize).toInt()
+
+    val canvasBlockWidth get() = (canvas.width / blockSize).toInt()
 
     private val happinessRenderer = HappinessRenderer(this, cityMap)
     private val fireCoverageRenderer = FireCoverageRenderer(this, cityMap)
@@ -47,12 +51,12 @@ class CityRenderer(
 
     var blockOffsetX: Double = 0.0
         set(value) {
-            val newValue = value.coerceIn(0.0..(cityMap.width - canvasBlockWidth() - 1.0))
+            val newValue = value.coerceIn(0.0..(cityMap.width - canvasBlockWidth - 1.0))
             field = newValue
         }
     var blockOffsetY: Double = 0.0
         set(value) {
-            val newValue = value.coerceIn(0.0..(cityMap.height - canvasBlockHeight() - 1.0))
+            val newValue = value.coerceIn(0.0..(cityMap.height - canvasBlockHeight - 1.0))
             field = newValue
         }
 
@@ -76,16 +80,12 @@ class CityRenderer(
         colorAdjuster = ColorAdjuster(mapMinElevation, mapMaxElevation)
     }
 
-    fun canvasBlockHeight() = (canvas.height / blockSize()).toInt()
-
-    fun canvasBlockWidth() = (canvas.width / blockSize()).toInt()
-
     // awkward... we need padding to get building off the screen...
     fun visibleBlockRange(padding: Int = 0): Pair<BlockCoordinate, BlockCoordinate> {
         val startBlockX = blockOffsetX.toInt() - padding
         val startBlockY = blockOffsetY.toInt() - padding
-        var endBlockX = startBlockX + canvasBlockWidth() + padding
-        var endBlockY = startBlockY + canvasBlockHeight() + padding
+        var endBlockX = startBlockX + canvasBlockWidth + padding
+        var endBlockY = startBlockY + canvasBlockHeight + padding
 
         endBlockX = Math.min(endBlockX, cityMap.width)
         endBlockY = Math.min(endBlockY, cityMap.height)
@@ -116,8 +116,8 @@ class CityRenderer(
     private fun firePanChanged() = this.panListeners.forEach { it(this.visibleBlockRange()) }
 
     private fun centerBlock(): BlockCoordinate {
-        val centerX = blockOffsetX + (canvasBlockWidth() / 2)
-        val centerY = blockOffsetY + (canvasBlockHeight() / 2)
+        val centerX = blockOffsetX + (canvasBlockWidth / 2)
+        val centerY = blockOffsetY + (canvasBlockHeight / 2)
         return BlockCoordinate(centerX.toInt(), centerY.toInt())
     }
 
@@ -126,7 +126,7 @@ class CityRenderer(
 
     private fun mouseToBlock(mouseX: Double, mouseY: Double): BlockCoordinate {
         // OK... this should be pretty easy...
-        val blockSize = blockSize()
+        val blockSize = blockSize
         val blockX = (mouseX / blockSize).toInt()
         val blockY = (mouseY / blockSize).toInt()
 
@@ -186,7 +186,7 @@ class CityRenderer(
     private fun drawMap() {
         // we got that cityMap...
         val (startBlock, endBlock) = visibleBlockRange()
-        val blockSize = blockSize()
+        val blockSize = blockSize
 
         val xRange = (startBlock.x..endBlock.x)
         val yRange = (startBlock.y..endBlock.y)
@@ -298,7 +298,7 @@ class CityRenderer(
                 if (it > 0.5) {
                     val tx = coord.x - blockOffsetX
                     val ty = coord.y - blockOffsetY
-                    val blockSize = blockSize()
+                    val blockSize = blockSize
                     canvas.graphicsContext2D.fill = Color.LIGHTGOLDENRODYELLOW
                     canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
                 }
@@ -436,7 +436,7 @@ class CityRenderer(
             val building = location.building
             val tx = coordinate.x - blockOffsetX
             val ty = coordinate.y - blockOffsetY
-            val blockSize = blockSize()
+            val blockSize = blockSize
             when (building) {
                 is Road -> drawRoad(tx, ty, blockSize, building)
                 is Railroad -> drawRailroad(tx, ty, blockSize, building)
@@ -513,7 +513,7 @@ class CityRenderer(
     }
 
     private fun drawBuildingType(building: Building, tx: Double, ty: Double) {
-        val blockSize = blockSize()
+        val blockSize = blockSize
         val width = building.width * blockSize
         val height = building.height * blockSize
         drawBuildingBorder(building, tx, ty, width, height, blockSize)
@@ -543,8 +543,8 @@ class CityRenderer(
             return
         }
         // this looks like shit when we are zoomed way out...
-        val arcSize = arcWidth()
-        canvas.graphicsContext2D.lineWidth = borderWidth()
+        val arcSize = arcWidth
+        canvas.graphicsContext2D.lineWidth = borderWidth
         // we want to inset the stroke...
         val splitFactor = 40.0
         val sx = (tx * blockSize) + (width / splitFactor)
@@ -560,7 +560,7 @@ class CityRenderer(
     }
 
     private fun drawZones() {
-        val blockSize = blockSize()
+        val blockSize = blockSize
         visibleBlocks().forEach { coordinate ->
             cityMap.zoneLayer[coordinate]?.let { zone ->
                 // figure out fill color...
@@ -589,7 +589,7 @@ class CityRenderer(
         // gotta translate here...
         val tx = x - blockOffsetX
         val ty = y - blockOffsetY
-        val blockSize = blockSize()
+        val blockSize = blockSize
         canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
     }
 
