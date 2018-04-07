@@ -431,22 +431,19 @@ class CityRenderer(
             val ty = coordinate.y - blockOffsetY
             val blockSize = blockSize()
             when (building) {
-                is Road -> {
-                    drawRoad(tx, ty, blockSize, building)
-                }
-                is Railroad -> {
-                    drawRailroad(tx, ty, blockSize, building)
-                }
-                else -> {
-                    drawBuildingType(building, tx, ty)
-                }
+                is Road -> drawRoad(tx, ty, blockSize, building)
+                is Railroad -> drawRailroad(tx, ty, blockSize, building)
+                is RailroadCrossing -> drawRailroadCrossing(tx, ty, blockSize, building)
+                else -> drawBuildingType(building, tx, ty)
             }
         }
     }
 
-    private fun drawRailroad(tx: Double, ty: Double, blockSize: Double, building: Railroad) {
+    private fun drawRailroad(tx: Double, ty: Double, blockSize: Double, building: Railroad) =
         drawRoad(tx, ty, blockSize, building, Color.GREY)
-    }
+
+    private fun drawRailroadCrossing(tx: Double, ty: Double, blockSize: Double, building: RailroadCrossing) =
+        drawRoad(tx, ty, blockSize, building, Color.web("#424242"))
 
     private fun drawRoad(
         tx: Double,
