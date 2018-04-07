@@ -676,21 +676,29 @@ class CityRenderer(
 
         if (Math.abs(x - x2) > Math.abs(y - y2)) {
             // building horizontally
-            // now fuck around with y2 so it's at the same level as y1
-            // y2 = y
-            if (x < x2) {
-                fillBlocks(x, y, Math.abs(x - x2) + 1, 1)
-            } else {
-                fillBlocks(x2, y, Math.abs(x - x2) + 1, 1)
+
+            val dx = Math.abs(x - x2) + 1
+            val startX = Math.min(x, x2)
+            fillBlocks(startX, y, dx, 1)
+
+            if (y != y2) {
+                // val endX = Math.max(x, x2)
+                val dy = Math.abs(y - y2) + 1
+                val startY = Math.min(y, y2)
+                fillBlocks(endBlock.x, startY, 1, dy)
             }
         } else {
             // building vertically
-            // now fuck around with x2 so it's at the same level as x1
-            // x2 = x
-            if (y < y2) {
-                fillBlocks(x, y, 1, Math.abs(y - y2) + 1)
-            } else {
-                fillBlocks(x, y2, 1, Math.abs(y - y2) + 1)
+
+            val dy = Math.abs(y - y2) + 1
+            val startY = Math.min(y, y2)
+            fillBlocks(x, startY, 1, dy)
+
+            if (x != x2) {
+                // val endY = Math.max(y, y2)
+                val dx = Math.abs(x - x2) + 1
+                val startX = Math.min(x, x2)
+                fillBlocks(startX, endBlock.y, dx, 1)
             }
         }
     }
