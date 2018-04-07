@@ -344,18 +344,14 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
         return uuid == other.uuid
     }
 
-    override fun toString(): String {
-        return "Building(class=${this.javaClass} uuid=$uuid)"
-    }
+    override fun toString() = "Building(class=${this.javaClass} uuid=$uuid)"
 
     fun zone(): Zone? {
-        return when {
-            this is Residential -> return Zone.RESIDENTIAL
-            this is Commercial -> return Zone.COMMERCIAL
-            this is Industrial -> return Zone.INDUSTRIAL
-            else -> {
-                null
-            }
+        return when (this) {
+            is Residential -> return Zone.RESIDENTIAL
+            is Commercial -> return Zone.COMMERCIAL
+            is Industrial -> return Zone.INDUSTRIAL
+            else -> null
         }
     }
 
@@ -397,7 +393,6 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
             }
         }
     }
-
 }
 
 class Residential : LoadableBuilding() {
@@ -412,7 +407,6 @@ class Residential : LoadableBuilding() {
     }
 
     override var borderColor: Color = Color.GREEN
-
 }
 
 class Commercial : LoadableBuilding() {

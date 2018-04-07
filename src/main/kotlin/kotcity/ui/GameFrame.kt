@@ -595,7 +595,7 @@ class GameFrame : View(), Debuggable {
         cityCanvas.setOnMouseClicked { evt ->
             // now let's handle some tools...
             if (evt.button == MouseButton.PRIMARY) {
-                cityRenderer?.getHoveredBlock()?.let {
+                cityRenderer?.mouseBlock?.let {
                     val newX = it.x - 1
                     val newY = it.y - 1
                     when (activeTool) {

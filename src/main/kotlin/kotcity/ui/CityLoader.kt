@@ -23,7 +23,6 @@ object CityLoader {
         runLater {
             val file = fileChooser.showOpenDialog(view.currentStage)
             if (file != null) {
-
                 // let's use the dialog... :)
                 view.currentWindow?.let { window ->
                     val workDialog = WorkIndicatorDialog<File>(window, "Loading City...")
@@ -48,10 +47,7 @@ object CityLoader {
                         }
                         1
                     })
-
                 }
-
-
             } else {
                 val alert = Alert(AlertType.ERROR)
                 alert.title = "Error during load"

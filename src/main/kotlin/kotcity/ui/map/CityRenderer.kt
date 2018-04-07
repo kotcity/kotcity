@@ -65,7 +65,7 @@ class CityRenderer(
     private var colorAdjuster: ColorAdjuster = ColorAdjuster(mapMinElevation, mapMaxElevation)
 
     private var mouseDown = false
-    private var mouseBlock: BlockCoordinate? = null
+    var mouseBlock: BlockCoordinate? = null
     private var firstBlockPressed: BlockCoordinate? = null
 
     var mapMode: MapMode = NORMAL
@@ -176,8 +176,6 @@ class CityRenderer(
     private fun updateMouseBlock(event: MouseEvent) {
         this.mouseBlock = mouseToBlock(event.x, event.y)
     }
-
-    fun getHoveredBlock() = this.mouseBlock
 
     // OK... if we have an active tool we might
     // have to draw a building highlight
