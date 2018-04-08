@@ -40,7 +40,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
                 val totalInLayer = layer.keys().size
 
                 // let's extract the blocks we should check... basically it is anywhere where desirability is off the floor...
-                val potentialLocations = layer.entries().filter { it.value > Double.NEGATIVE_INFINITY }.map { it.key }
+                val potentialLocations = layer.entries().map { it.key }
 
                 val emptyBlocks = potentialLocations.filter { isEmpty(it) }
 

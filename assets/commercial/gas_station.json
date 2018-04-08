@@ -1,0 +1,20 @@
+{
+  "type": "commercial",
+  "width": 1,
+  "height": 1,
+  "name": "gas_station",
+  "sprite": "gas_station.svg",
+  "description": "Gas Station",
+  "level": 1,
+  "power_required": 2,
+  "pollution": 2,
+  "production": {
+    "consumes": {
+      "labor": 1,
+      "wholesale_goods": 10
+    },
+    "produces": {
+      "goods": 3
+    }
+  }
+}
