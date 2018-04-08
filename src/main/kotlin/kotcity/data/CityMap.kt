@@ -541,10 +541,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      */
     private fun buildRailroadLeg(from: BlockCoordinate, to: BlockCoordinate) {
         roadBlocks(from, to).forEach { block ->
-            val railroad = Railroad(this)
+            val railroad = Railroad()
             val existingRoad = buildingLayer[block]
             if (existingRoad is Road || existingRoad is RailroadCrossing) {
-                buildingLayer[block] = RailroadCrossing(this)
+                buildingLayer[block] = RailroadCrossing()
                 // dezone under us...
                 zoneLayer.remove(block)
             } else if (existingRoad is Railroad || canBuildBuildingAt(railroad, block, waterCheck = false)) {
@@ -563,16 +563,38 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * @param isOneWay if it's true, this is a one way road. The direction starts at [from] and goes to [to]
      */
     fun buildRoad(from: BlockCoordinate, to: BlockCoordinate, isOneWay: Boolean = false) {
+        val dx = Math.abs(from.x - to.x)
+        val dy = Math.abs(from.y - to.y)
+        val mid =
+            if (dx > dy) {
+                BlockCoordinate(to.x, from.y)
+            } else {
+                BlockCoordinate(from.x, to.y)
+            }
+        buildRoadLeg(from, mid, isOneWay)
+        buildRoadLeg(mid, to, isOneWay)
+    }
+
+    /**
+     * Builds a single segment of [Road]. Ends up being assembled into an "L" shape.
+     * @param from start [BlockCoordinate]
+     * @param to end [BlockCoordinate]
+     */
+    private fun buildRoadLeg(from: BlockCoordinate, to: BlockCoordinate, isOneWay: Boolean) {
         roadBlocks(from, to).forEach { block ->
             val newRoad =
                 when (isOneWay) {
-                    false -> Road(this)
+                    false -> Road()
                     true -> {
                         buildOneWayRoad(from, to, block)
                     }
                 }
             val existingRoad = buildingLayer[block]
-            if ((existingRoad is Road) || canBuildBuildingAt(newRoad, block, waterCheck = false)) {
+            if (existingRoad is Railroad || existingRoad is RailroadCrossing) {
+                buildingLayer[block] = RailroadCrossing()
+                // dezone under us...
+                zoneLayer.remove(block)
+            } else if (existingRoad is Road || canBuildBuildingAt(newRoad, block, waterCheck = false)) {
                 buildingLayer[block] = newRoad
                 // dezone under us...
                 zoneLayer.remove(block)
@@ -637,7 +659,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             } else {
                 Direction.STATIONARY
             }
-        return Road(this, dir)
+        return Road(dir)
     }
 
     /**
@@ -774,7 +796,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      */
     fun buildPowerline(firstBlock: BlockCoordinate, lastBlock: BlockCoordinate) {
         roadBlocks(firstBlock, lastBlock).forEach { block ->
-            val newPowerLine = PowerLine(this)
+            val newPowerLine = PowerLine()
             if (buildingLayer[block] is Road || canBuildBuildingAt(newPowerLine, block, waterCheck = false)) {
                 powerLineLayer[block] = newPowerLine
             }

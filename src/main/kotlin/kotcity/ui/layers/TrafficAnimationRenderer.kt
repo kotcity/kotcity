@@ -85,8 +85,8 @@ class TrafficAnimationRenderer(
     private fun drawTrafficImage(g2d: GraphicsContext, coordinate: BlockCoordinate) {
         // g2d.fill = Color(Color.MAGENTA.red, Color.MAGENTA.green, Color.MAGENTA.blue, 0.50)
         // gotta translate here...
-        val horizontalImages = cachedScaledTrafficImages(horizontalFilenames, cityRenderer.blockSize())
-        val verticalImages = cachedScaledTrafficImages(verticalFilenames, cityRenderer.blockSize())
+        val horizontalImages = cachedScaledTrafficImages(horizontalFilenames, cityRenderer.blockSize)
+        val verticalImages = cachedScaledTrafficImages(verticalFilenames, cityRenderer.blockSize)
 
         if (horizontalRoad(coordinate)) {
             drawHorizontal(horizontalImages[currentImage], g2d, coordinate)
@@ -105,7 +105,7 @@ class TrafficAnimationRenderer(
     private fun drawVertical(image: Image, g2d: GraphicsContext, coordinate: BlockCoordinate) {
         val tx = coordinate.x - cityRenderer.blockOffsetX
         val ty = coordinate.y - cityRenderer.blockOffsetY
-        val blockSize = cityRenderer.blockSize()
+        val blockSize = cityRenderer.blockSize
         g2d.drawImage(image, tx * blockSize, ty * blockSize)
     }
 
@@ -113,7 +113,7 @@ class TrafficAnimationRenderer(
         // handle horizontal road...
         val tx = coordinate.x - cityRenderer.blockOffsetX
         val ty = coordinate.y - cityRenderer.blockOffsetY
-        val blockSize = cityRenderer.blockSize()
+        val blockSize = cityRenderer.blockSize
         g2d.drawImage(image, tx * blockSize, ty * blockSize)
     }
 }

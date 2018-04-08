@@ -15,7 +15,7 @@ class HappinessRenderer(private val cityRenderer: CityRenderer, private val city
     }
 
     fun render() {
-        val blockSize = cityRenderer.blockSize()
+        val blockSize = cityRenderer.blockSize
         val (startBlock, endBlock) = cityRenderer.visibleBlockRange()
 
         BlockCoordinate.iterateAll(startBlock, endBlock) { coordinate ->

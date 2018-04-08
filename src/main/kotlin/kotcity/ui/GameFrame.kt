@@ -247,8 +247,8 @@ class GameFrame : View(), Debuggable {
         horizontalScroll.min = 0.0
         verticalScroll.min = 0.0
 
-        val canvasBlockWidth = cityRenderer?.canvasBlockWidth() ?: 0
-        val canvasBlockHeight = cityRenderer?.canvasBlockHeight() ?: 0
+        val canvasBlockWidth = cityRenderer?.canvasBlockWidth ?: 0
+        val canvasBlockHeight = cityRenderer?.canvasBlockHeight ?: 0
         horizontalScroll.max = map.width - canvasBlockWidth - 1.0
         verticalScroll.max = map.height - canvasBlockHeight - 1.0
 
@@ -595,37 +595,37 @@ class GameFrame : View(), Debuggable {
         cityCanvas.setOnMouseClicked { evt ->
             // now let's handle some tools...
             if (evt.button == MouseButton.PRIMARY) {
-                cityRenderer?.getHoveredBlock()?.let {
+                cityRenderer?.mouseBlock?.let {
                     val newX = it.x - 1
                     val newY = it.y - 1
                     when (activeTool) {
                         Tool.COAL_POWER_PLANT -> {
                             // TODO: we have to figure out some kind of offset for this shit...
                             // can't take place at hovered block...
-                            map.build(PowerPlant("coal", map), BlockCoordinate(newX, newY))
+                            map.build(PowerPlant("coal"), BlockCoordinate(newX, newY))
                         }
                         Tool.NUCLEAR_POWER_PLANT -> {
-                            map.build(PowerPlant("nuclear", map), BlockCoordinate(newX, newY))
+                            map.build(PowerPlant("nuclear"), BlockCoordinate(newX, newY))
                         }
                         Tool.JOB_CENTER -> {
                             val jobCenter = assetManager.buildingFor(Civic::class, "job_center")
                             map.build(jobCenter, BlockCoordinate(newX, newY))
                         }
                         Tool.FIRE_STATION -> {
-                            map.build(FireStation(map), BlockCoordinate(newX, newY))
+                            map.build(FireStation(), BlockCoordinate(newX, newY))
                         }
                         Tool.POLICE_STATION -> {
-                            map.build(PoliceStation(map), BlockCoordinate(newX, newY))
+                            map.build(PoliceStation(), BlockCoordinate(newX, newY))
                         }
                         Tool.TOWN_WAREHOUSE -> {
                             val townWarehouse = assetManager.buildingFor(Civic::class, "town_warehouse")
                             map.build(townWarehouse, BlockCoordinate(newX, newY))
                         }
                         Tool.TRAIN_STATION -> {
-                            map.build(TrainStation(map), BlockCoordinate(newX, newY))
+                            map.build(TrainStation(), BlockCoordinate(newX, newY))
                         }
                         Tool.RAIL_DEPOT -> {
-                            map.build(RailDepot(map), BlockCoordinate(newX, newY))
+                            map.build(RailDepot(), BlockCoordinate(newX, newY))
                         }
                         else -> {
                             // We handle the other tools on a different place

@@ -133,7 +133,7 @@ class PathfinderTest {
 
         flatMap.buildRoad(twoBelowStart, twoBelowStart)
         flatMap.buildRailroad(aBlock, bBlock)
-        flatMap.build(TrainStation(flatMap), oneBelowStart)
+        flatMap.build(TrainStation(), oneBelowStart)
 
         pathfinder.purgeCaches()
 
@@ -155,8 +155,8 @@ class PathfinderTest {
 
         flatMap.buildRoad(twoBelowStart, twoBelowStart)
         flatMap.buildRailroad(aBlock, bBlock)
-        flatMap.build(TrainStation(flatMap), oneBelowStart)
-        flatMap.build(TrainStation(flatMap), oneBelowEnd)
+        flatMap.build(TrainStation(), oneBelowStart)
+        flatMap.build(TrainStation(), oneBelowEnd)
 
         pathfinder.purgeCaches()
 

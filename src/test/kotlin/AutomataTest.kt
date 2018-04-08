@@ -16,8 +16,8 @@ class AutomataTest {
         }
 
         // now let's drop a coal power plant...
-        val powerPlant1 = PowerPlant("coal", map)
-        val powerPlant2 = PowerPlant("coal", map)
+        val powerPlant1 = PowerPlant("coal")
+        val powerPlant2 = PowerPlant("coal")
 
         map.build(powerPlant1, BlockCoordinate(0, 0))
         map.build(powerPlant2, BlockCoordinate(0, 20))

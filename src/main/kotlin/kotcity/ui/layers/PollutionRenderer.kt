@@ -27,11 +27,11 @@ class PollutionRenderer(private val cityRenderer: CityRenderer, private val city
             val pollutionValue = cityMap.pollutionLayer[coord] ?: 0.0
             if (pollutionValue > 0.0) {
                 cityRenderer.apply {
-                    val dX = (coord.x - blockOffsetX) * blockSize()
-                    val dY = (coord.y - blockOffsetY) * blockSize()
+                    val dX = (coord.x - blockOffsetX) * blockSize
+                    val dY = (coord.y - blockOffsetY) * blockSize
                     canvas.graphicsContext2D.apply {
                         fill = determineColor(pollutionValue)
-                        fillRect(dX, dY, blockSize(), blockSize())
+                        fillRect(dX, dY, blockSize, blockSize)
                     }
                 }
             }

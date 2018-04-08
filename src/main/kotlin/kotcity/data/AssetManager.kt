@@ -66,10 +66,10 @@ class AssetManager(val cityMap: CityMap) {
         val buildingType = buildingJson["type"].nullString ?: return null
 
         val building = when (buildingType) {
-            "commercial" -> Commercial(cityMap)
-            "residential" -> Residential(cityMap)
-            "industrial" -> Industrial(cityMap)
-            "civic" -> Civic(cityMap)
+            "commercial" -> Commercial()
+            "residential" -> Residential()
+            "industrial" -> Industrial()
+            "civic" -> Civic()
             else -> throw RuntimeException("Unknown type: $buildingType")
         }
         building.name = buildingJson["name"].asString
@@ -85,10 +85,10 @@ class AssetManager(val cityMap: CityMap) {
         val buildingJson = CityFileAdapter.gson.fromJson<JsonObject>(FileReader(assetFile))
 
         val building = when (klass) {
-            Residential::class -> Residential(cityMap)
-            Commercial::class -> Commercial(cityMap)
-            Industrial::class -> Industrial(cityMap)
-            Civic::class -> Civic(cityMap)
+            Residential::class -> Residential()
+            Commercial::class -> Commercial()
+            Industrial::class -> Industrial()
+            Civic::class -> Civic()
             else -> throw RuntimeException("I don't know how to instantiate $klass")
         }
 

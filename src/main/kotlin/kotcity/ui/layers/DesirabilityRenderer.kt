@@ -28,7 +28,7 @@ class DesirabilityRenderer(private val cityRenderer: CityRenderer, private val c
             cityRenderer.apply {
                 val tx = coord.x - blockOffsetX
                 val ty = coord.y - blockOffsetY
-                val blockSize = blockSize()
+                val blockSize = blockSize
                 canvas.graphicsContext2D.apply {
                     val desirability = desirabilityScores.max()
                     if (desirability != null) {
