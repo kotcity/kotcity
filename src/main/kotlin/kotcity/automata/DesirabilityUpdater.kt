@@ -81,8 +81,8 @@ class DesirabilityUpdater(val cityMap: CityMap) : Debuggable {
                 val availableLaborScore =
                     resourceFinder.quantityForSaleNearby(Tradeable.LABOR, coordinate, maxDistance) * 0.1
 
-                val trafficAdjustment = -(cityMap.trafficNearby(coordinate, 3) * 0.05)
-                val pollutionAdjustment = -(cityMap.pollutionNearby(coordinate, 3) * 0.05)
+                val trafficAdjustment = -(cityMap.trafficNearby(coordinate, Tunable.TRAFFIC_RADIUS) * 0.05)
+                val pollutionAdjustment = -(cityMap.pollutionNearby(coordinate, Tunable.POLLUTION_RADIUS) * 0.01)
                 val landValueAdjustment = landValueAdjustment(coordinate)
 
                 desirabilityLayer[coordinate] = (
@@ -126,7 +126,7 @@ class DesirabilityUpdater(val cityMap: CityMap) : Debuggable {
                     resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, longDistance) * 0.1
                 val availableLaborScore =
                     resourceFinder.quantityForSaleNearby(Tradeable.LABOR, coordinate, maxDistance) * 0.1
-                val trafficAdjustment = -((cityMap.trafficNearby(coordinate, 3) * 0.05) / 2)
+                val trafficAdjustment = -((cityMap.trafficNearby(coordinate, Tunable.TRAFFIC_RADIUS) * 0.05) / 2)
                 val landValueAdjustment = landValueAdjustment(coordinate)
 
                 desirabilityLayer[coordinate] = (
@@ -204,8 +204,8 @@ class DesirabilityUpdater(val cityMap: CityMap) : Debuggable {
                     resourceFinder.quantityForSaleNearby(Tradeable.GOODS, coordinate, mediumDistance)
                 val availableGoodsMediumDistanceScore = availableGoodsMediumDistance * 0.1
 
-                val trafficAdjustment = -(cityMap.trafficNearby(coordinate, 3) * 0.05)
-                val pollutionAdjustment = -(cityMap.pollutionNearby(coordinate, 3) * 0.05)
+                val trafficAdjustment = -(cityMap.trafficNearby(coordinate, Tunable.TRAFFIC_RADIUS) * 0.01)
+                val pollutionAdjustment = -(cityMap.pollutionNearby(coordinate, Tunable.POLLUTION_RADIUS) * 0.05)
 
                 val landValueAdjustment = landValueAdjustment(coordinate)
 

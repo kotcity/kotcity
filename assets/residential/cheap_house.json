@@ -4,7 +4,7 @@
   "height": 1,
   "name": "cheap_house",
   "sprite": "cheap_house.svg",
-  "description": "Cheap House",
+  "description": "3609 Snider Street",
   "level": 2,
   "power_required": 2,
   "production": {

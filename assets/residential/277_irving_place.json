@@ -1,0 +1,18 @@
+{
+  "type": "residential",
+  "width": 2,
+  "height": 2,
+  "name": "277_irving_place",
+  "sprite": "277_irving_place.svg",
+  "description": "277 Irving Place",
+  "level": 3,
+  "power_required": 2,
+  "production": {
+    "consumes": {
+      "goods": 12
+    },
+    "produces": {
+      "labor": 10
+    }
+  }
+}

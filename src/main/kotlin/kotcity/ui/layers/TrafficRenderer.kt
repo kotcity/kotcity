@@ -13,7 +13,7 @@ class TrafficRenderer(private val cityRenderer: CityRenderer, private val cityMa
     companion object {
         const val TRAFFIC_CAP: Double = 1000.0
 
-        val NEGATIVE_COLOR: java.awt.Color = java.awt.Color.GREEN
+        val NEGATIVE_COLOR: java.awt.Color = java.awt.Color.YELLOW
         val POSITIVE_COLOR: java.awt.Color = java.awt.Color.RED
     }
 

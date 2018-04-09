@@ -1,0 +1,20 @@
+{
+  "type": "commercial",
+  "width": 3,
+  "height": 3,
+  "name": "hypermarket",
+  "sprite": "hypermarket.svg",
+  "description": "Hypermarket",
+  "level": 3,
+  "power_required": 4,
+  "pollution": 4,
+  "production": {
+    "consumes": {
+      "labor": 10,
+      "wholesale_goods": 40
+    },
+    "produces": {
+      "goods": 100
+    }
+  }
+}

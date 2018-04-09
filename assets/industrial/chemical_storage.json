@@ -1,0 +1,19 @@
+{
+  "type": "industrial",
+  "width": 2,
+  "height": 2,
+  "name": "chemical_storage",
+  "sprite": "chemical_storage.svg",
+  "description": "Chemical Storage",
+  "level": 2,
+  "power_required": 3,
+  "pollution": 5,
+  "production": {
+    "consumes": {
+      "labor": 2
+    },
+    "produces": {
+      "wholesale_goods": 5
+    }
+  }
+}

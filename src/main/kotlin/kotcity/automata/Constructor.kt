@@ -29,7 +29,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
         val zoneTypes = listOf(Zone.INDUSTRIAL, Zone.COMMERCIAL, Zone.RESIDENTIAL)
         zoneTypes.forEach { zoneType ->
 
-            val howManyBuildings = howManyToBuild(zoneType).coerceAtMost(5)
+            val howManyBuildings = howManyToBuild(zoneType).coerceAtMost(3)
 
             debug("According to our calculations we should build $howManyBuildings for $zoneType")
 
@@ -40,7 +40,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
                 val totalInLayer = layer.keys().size
 
                 // let's extract the blocks we should check... basically it is anywhere where desirability is off the floor...
-                val potentialLocations = layer.entries().filter { it.value > Double.NEGATIVE_INFINITY }.map { it.key }
+                val potentialLocations = layer.entries().map { it.key }
 
                 val emptyBlocks = potentialLocations.filter { isEmpty(it) }
 
