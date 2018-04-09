@@ -59,7 +59,7 @@ class ZotRenderer(
             val zotLocations = cachedLocationsWithZots(visibleBlockRange)
             zotLocations.forEach { location ->
                 randomZot(location)?.let {
-                    val blockSize = cityRenderer.blockSize()
+                    val blockSize = cityRenderer.blockSize
                     ZotSpriteLoader.spriteForZot(it, blockSize, blockSize)?.let {
                         drawZot(it, gc, location)
                     }
@@ -77,7 +77,7 @@ class ZotRenderer(
         val coordinate = location.coordinate
         val tx = coordinate.x - cityRenderer.blockOffsetX
         val ty = coordinate.y - cityRenderer.blockOffsetY
-        val blockSize = cityRenderer.blockSize()
+        val blockSize = cityRenderer.blockSize
         // gotta fill that background too...
 
         val halfBuildingWidth = if (location.building.width > 1) {

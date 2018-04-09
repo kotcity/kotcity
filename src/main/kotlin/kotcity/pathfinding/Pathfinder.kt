@@ -3,51 +3,9 @@ package kotcity.pathfinding
 import kotcity.data.*
 import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
-import kotlin.reflect.KClass
 import kotcity.util.Debuggable
 import java.util.concurrent.TimeUnit
-
-const val MAX_DISTANCE = 50
-
-/**
- * Direction of travel of node in found paths.
- */
-enum class Direction {
-    NORTH, SOUTH, EAST, WEST, STATIONARY
-}
-
-/**
- * Type of node in found paths.
- */
-enum class TransitType {
-    RAILROAD, ROAD
-}
-
-/**
- * Node in found paths.
- */
-data class NavigationNode(
-    val cityMap: CityMap,
-    val coordinate: BlockCoordinate,
-    val parent: NavigationNode?,
-    val score: Double,
-    val transitType: TransitType = TransitType.ROAD,
-    val direction: Direction,
-    val isOnRail: Boolean
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) {
-            return true
-        }
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as NavigationNode
-        return this.coordinate == that.coordinate
-    }
-
-    override fun hashCode(): Int {
-        return this.coordinate.hashCode()
-    }
-}
+import kotlin.reflect.KClass
 
 // let me show you de way
 //        ⢀⢀⢀⢀⢀⢀⢀⢀⢀⢀⠶⣿⣭⡧⡤⣤⣻⣛⣹⣿⣿⣿⣶⣄
@@ -74,61 +32,16 @@ data class NavigationNode(
 //        ⢀⢀⢀⢀⢀⢀⢀⢀⠻⠿⢀⢀⢀⢀⢀⢀⢀⢀⢀⢀⢀⢠⣿⣿⡇
 
 /**
- * Path of nodes, with conveniece methods.
- *
- * @nodes list of nodes along a path
- */
-data class Path(
-        internal val nodes: List<NavigationNode> = emptyList()
-) {
-    /**
-     * Total heuristic score of the nodes in this Path.
-     */
-    fun totalScore(): Int = nodes.sumBy { it.score.toInt() }
-
-    /**
-     * Total length of this Path.
-     */
-    fun length(): Int = nodes.size
-
-    /**
-     * List of coordinates in this Path.
-     */
-    fun blocks(): List<BlockCoordinate> = nodes.map { it.coordinate }.toList()
-
-    /**
-     * Append another Path to the end of this Path
-     */
-    fun plus(otherPath: Path?): Path? {
-        val otherNodes = otherPath?.nodes?.toList() ?: return this
-
-        val firstOfOther = otherNodes.first()
-        // chop the first node off the other list...
-        // because we have to replace it with a parent that has the other list
-        // of nodes as a parent to preserve the chain...
-        val newFirst = NavigationNode(
-                firstOfOther.cityMap,
-                firstOfOther.coordinate,
-                nodes.last(),
-                firstOfOther.score,
-                firstOfOther.transitType,
-                firstOfOther.direction,
-                firstOfOther.isOnRail
-        )
-
-        // lop off the first one and shove our new one in there...
-        val newOtherNodes = listOf(newFirst).plus(otherNodes.drop(1))
-
-        return Path(nodes.plus(newOtherNodes).distinct())
-    }
-}
-
-/**
  * Find paths within the CityMap parameter.
  *
  * @cityMap to search for paths
  */
 class Pathfinder(val cityMap: CityMap) : Debuggable {
+
+    companion object {
+        const val MAX_DISTANCE = 50
+    }
+
     override var debug: Boolean = true
 
     private val cachedHeuristicPair = ::heuristic.cache(
@@ -279,7 +192,9 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         val locations = cityMap.cachedLocationsIn(node.coordinate)
         if (locations.count() > 0) {
             val building = locations.first().building
-            return building is Road && (building.direction == Direction.STATIONARY || building.direction != oppositeDir(node.direction))
+            return building is Road && (building.direction == Direction.STATIONARY || building.direction != oppositeDir(
+                node.direction
+            ))
         }
         return false
     }
@@ -344,15 +259,17 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             debug("Now we can't find a path AFTER finding a road!")
             return null
         }
+
         return pathToNearestRoad.plus(restOfTheWay)
+
     }
 
     private fun directionToBlockDelta(direction: Direction): BlockCoordinate {
-        return when(direction) {
+        return when (direction) {
             Direction.NORTH -> BlockCoordinate(0, -1)
             Direction.SOUTH -> BlockCoordinate(0, 1)
-            Direction.EAST  -> BlockCoordinate(1, 0)
-            Direction.WEST  -> BlockCoordinate(-1, 0)
+            Direction.EAST -> BlockCoordinate(1, 0)
+            Direction.WEST -> BlockCoordinate(-1, 0)
             Direction.STATIONARY -> BlockCoordinate(0, 0)
         }
     }
@@ -383,13 +300,13 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                 makeNode(blockCoordinate, direction)
             } else {
                 NavigationNode(
-                        cityMap,
-                        blockCoordinate,
-                        makeNode(pathBlocks[index - 1], direction),
-                        0.0,
-                        TransitType.ROAD,
-                        direction,
-                        false
+                    cityMap,
+                    blockCoordinate,
+                    makeNode(pathBlocks[index - 1], direction),
+                    0.0,
+                    TransitType.ROAD,
+                    direction,
+                    false
                 )
             }
 
@@ -398,24 +315,28 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
     private fun makeNode(blockCoordinate: BlockCoordinate, direction: Direction): NavigationNode {
         return NavigationNode(
-                cityMap,
-                blockCoordinate,
-                null,
-                0.0,
-                TransitType.ROAD,
-                direction,
-                false
+            cityMap,
+            blockCoordinate,
+            null,
+            0.0,
+            TransitType.ROAD,
+            direction,
+            false
         )
     }
 
     // so basically what we want to do here is start from each coordinate and project each way (N,S,E,W) and see if we hit a destination...
-    private fun shortestCastToRoad(source: List<BlockCoordinate>, roadBlocks: List<BlockCoordinate>, maxLength: Int = 3): Path? {
+    private fun shortestCastToRoad(
+        source: List<BlockCoordinate>,
+        roadBlocks: List<BlockCoordinate>,
+        maxLength: Int = 3
+    ): Path? {
         val paths = source.flatMap {
             listOf(
-                    path(it, Direction.NORTH, maxLength),
-                    path(it, Direction.SOUTH, maxLength),
-                    path(it, Direction.EAST, maxLength),
-                    path(it, Direction.WEST, maxLength)
+                path(it, Direction.NORTH, maxLength),
+                path(it, Direction.SOUTH, maxLength),
+                path(it, Direction.EAST, maxLength),
+                path(it, Direction.WEST, maxLength)
             )
         }.filterNotNull()
 
@@ -437,17 +358,21 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return trimmedPaths.minBy { it.length() }
     }
 
-    private fun truePathfind(source: List<BlockCoordinate>, destinations: List<BlockCoordinate>, needsRoads: Boolean = true): Path? {
+    private fun truePathfind(
+        source: List<BlockCoordinate>,
+        destinations: List<BlockCoordinate>,
+        needsRoads: Boolean = true
+    ): Path? {
         // switch these to list of navigation nodes...
         val openList = source.map {
             NavigationNode(
-                    cityMap,
-                    it,
-                    null,
-                    cachedHeuristic(it, destinations),
-                    TransitType.ROAD,
-                    Direction.STATIONARY,
-                    false
+                cityMap,
+                it,
+                null,
+                cachedHeuristic(it, destinations),
+                TransitType.ROAD,
+                Direction.STATIONARY,
+                false
             )
         }.toMutableSet()
 
@@ -491,13 +416,21 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                         }
                     } else {
                         if (needsRoads) {
-                            if (canGoViaTrain(activeNode.coordinate, node.coordinate) || drivable(node) || destinations.contains(node.coordinate)) {
+                            if (canGoViaTrain(
+                                    activeNode.coordinate,
+                                    node.coordinate
+                                ) || drivable(node) || destinations.contains(node.coordinate)
+                            ) {
                                 openList.add(node)
                             } else {
                                 closedList.add(node)
                             }
                         } else {
-                            if (destinations.contains(node.coordinate) || canGoViaTrain(activeNode.coordinate, node.coordinate)) {
+                            if (destinations.contains(node.coordinate) || canGoViaTrain(
+                                    activeNode.coordinate,
+                                    node.coordinate
+                                )
+                            ) {
                                 openList.add(node)
                             } else {
                                 closedList.add(node)
@@ -512,13 +445,13 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                 val delta = directionToBlockDelta(direction)
                 val nextBlock = activeNode.coordinate + delta
                 val nextNode = NavigationNode(
-                        cityMap,
-                        nextBlock,
-                        activeNode,
-                        activeNode.score + cachedHeuristic(nextBlock, destinations),
-                        TransitType.ROAD,
-                        direction,
-                        false
+                    cityMap,
+                    nextBlock,
+                    activeNode,
+                    activeNode.score + cachedHeuristic(nextBlock, destinations),
+                    TransitType.ROAD,
+                    direction,
+                    false
                 )
                 maybeAppendNode(nextNode)
             }

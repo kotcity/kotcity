@@ -29,7 +29,7 @@ interface TradeEntity {
     val coordinate: BlockCoordinate
 
     fun addContract(contract: Contract)
-    fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path)
+    fun createContract(map: CityMap, otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path)
     fun voidContractsWith(otherTradeEntity: TradeEntity)
     fun hasAnyContracts(): Boolean
 
@@ -50,8 +50,8 @@ data class CityTradeEntity(override val coordinate: BlockCoordinate, val buildin
         return building.quantityOnHand(tradeable)
     }
 
-    override fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path) {
-        building.createContract(otherTradeEntity, tradeable, quantity, path)
+    override fun createContract(map: CityMap, otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path) {
+        building.createContract(map, otherTradeEntity, tradeable, quantity, path)
     }
 
     override fun voidContractsWith(otherTradeEntity: TradeEntity) {

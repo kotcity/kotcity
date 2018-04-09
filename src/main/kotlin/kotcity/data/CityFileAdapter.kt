@@ -115,7 +115,7 @@ object CityFileAdapter : Debuggable {
         data["powerLineLayer"].asJsonArray.forEach {
             val x = it["x"].asInt
             val y = it["y"].asInt
-            cityMap.powerLineLayer[BlockCoordinate(x, y)] = PowerLine(cityMap)
+            cityMap.powerLineLayer[BlockCoordinate(x, y)] = PowerLine()
         }
     }
 
@@ -165,11 +165,11 @@ object CityFileAdapter : Debuggable {
                 cityMap.build(building, BlockCoordinate(x, y), updateBuildingIndex = false)
             } else {
                 val building = when (type) {
-                    Road::class -> Road(cityMap)
-                    PowerPlant::class -> PowerPlant(it["variety"].asString, cityMap)
-                    Railroad::class -> Railroad(cityMap)
-                    RailDepot::class -> RailDepot(cityMap)
-                    TrainStation::class -> TrainStation(cityMap)
+                    Road::class -> Road()
+                    PowerPlant::class -> PowerPlant(it["variety"].asString)
+                    Railroad::class -> Railroad()
+                    RailDepot::class -> RailDepot()
+                    TrainStation::class -> TrainStation()
                     else -> {
                         debug("Unknown building: $it"); null
                     }
@@ -236,6 +236,7 @@ object CityFileAdapter : Debuggable {
                 }
 
                 toBuilding.building.createContract(
+                    cityMap,
                     CityTradeEntity(
                         fromBuilding.coordinate,
                         fromBuilding.building

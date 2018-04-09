@@ -1,11 +1,11 @@
 package kotcity.data
 
 import javafx.scene.paint.Color
-import kotcity.pathfinding.Path
 import kotcity.pathfinding.Direction
+import kotcity.pathfinding.Path
 import kotcity.util.randomElement
+import java.util.*
 import kotlin.reflect.KClass
-import java.util.UUID
 
 /**
  * Represents something in (or external) to the city that can have [Tradeable]s in its possession.
@@ -15,6 +15,7 @@ interface HasInventory {
      * How much [Tradeable.MONEY] that the given thing has.
      */
     fun balance(): Int
+
     fun addInventory(tradeable: Tradeable, quantity: Int): Int
     fun setInventory(tradeable: Tradeable, quantity: Int): Int
     fun subtractInventory(tradeable: Tradeable, quantity: Int): Int
@@ -116,7 +117,6 @@ interface HasConcreteContacts : HasContracts {
     val contracts: MutableList<Contract>
     val consumes: MutableMap<Tradeable, Int>
     val produces: MutableMap<Tradeable, Int>
-    val cityMap: CityMap
 
     override fun consumesQuantity(tradeable: Tradeable): Int {
         return consumes[tradeable] ?: 0
@@ -227,7 +227,7 @@ fun uuid(): String {
  * The basic unit of simulation in this game. Represents a building and all its attributes.
  * We currently count [Road] as building as well as [PowerLine].
  */
-abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, HasConcreteContacts {
+abstract class Building : HasConcreteInventory, HasConcreteContacts {
 
     companion object {
         /**
@@ -247,7 +247,7 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
                 "Civic" -> Civic::class
                 "PowerPlant" -> PowerPlant::class
                 else -> {
-                   null
+                    null
                 }
             }
         }
@@ -344,18 +344,14 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
         return uuid == other.uuid
     }
 
-    override fun toString(): String {
-        return "Building(class=${this.javaClass} uuid=$uuid)"
-    }
+    override fun toString() = "Building(class=${this.javaClass} uuid=$uuid)"
 
     fun zone(): Zone? {
-        return when {
-            this is Residential -> return Zone.RESIDENTIAL
-            this is Commercial -> return Zone.COMMERCIAL
-            this is Industrial -> return Zone.INDUSTRIAL
-            else -> {
-                null
-            }
+        return when (this) {
+            is Residential -> return Zone.RESIDENTIAL
+            is Commercial -> return Zone.COMMERCIAL
+            is Industrial -> return Zone.INDUSTRIAL
+            else -> null
         }
     }
 
@@ -364,8 +360,8 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
         addInventory(Tradeable.MONEY, DEFAULT_MONEY)
     }
 
-    fun createContract(otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path?) {
-        val ourBlocks = cityMap.coordinatesForBuilding(this)
+    fun createContract(map: CityMap, otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path?) {
+        val ourBlocks = map.coordinatesForBuilding(this)
         if (ourBlocks == null) {
             println("Sorry, we couldn't find one of the buildings!")
             return
@@ -397,10 +393,9 @@ abstract class Building(override val cityMap: CityMap) : HasConcreteInventory, H
             }
         }
     }
-
 }
 
-class Residential(override val cityMap: CityMap) : LoadableBuilding(cityMap) {
+class Residential : LoadableBuilding() {
 
     override fun currentQuantityWanted(tradeable: Tradeable): Int {
         val consumesCount = (consumes[tradeable] ?: 0) * 1.5
@@ -412,25 +407,24 @@ class Residential(override val cityMap: CityMap) : LoadableBuilding(cityMap) {
     }
 
     override var borderColor: Color = Color.GREEN
-
 }
 
-class Commercial(override val cityMap: CityMap) : LoadableBuilding(cityMap) {
+class Commercial : LoadableBuilding() {
     override var borderColor: Color = Color.BLUE
 }
 
-class Industrial(override val cityMap: CityMap) : LoadableBuilding(cityMap) {
+class Industrial : LoadableBuilding() {
     override var borderColor: Color = Color.GOLD
 }
 
-class Civic(override val cityMap: CityMap) : LoadableBuilding(cityMap) {
+class Civic : LoadableBuilding() {
     override var borderColor: Color = Color.DARKGRAY
 }
 
 const val DEFAULT_MONEY = 10
 val POWER_PLANT_TYPES = listOf("coal", "nuclear")
 
-class PowerPlant(override val variety: String, cityMap: CityMap) : Building(cityMap) {
+class PowerPlant(override val variety: String) : Building() {
 
     var powerGenerated: Int = 0
 
@@ -455,56 +449,56 @@ class PowerPlant(override val variety: String, cityMap: CityMap) : Building(city
     }
 }
 
-class FireStation(cityMap: CityMap) : Building(cityMap) {
+class FireStation : Building() {
     override var width = 3
     override var height = 3
     override val powerRequired = 1
     override var description: String? = "Fire Station"
 }
 
-class PoliceStation(cityMap: CityMap) : Building(cityMap) {
+class PoliceStation : Building() {
     override var width = 3
     override var height = 3
     override val powerRequired = 1
     override var description: String? = "Police Station"
 }
 
-class TrainStation(cityMap: CityMap) : Building(cityMap) {
+class TrainStation : Building() {
     override var width = 3
     override var height = 3
     override val powerRequired = 1
     override var description: String? = "Train Station"
 }
 
-class RailDepot(cityMap: CityMap) : Building(cityMap) {
+class RailDepot : Building() {
     override var width = 3
     override var height = 3
     override val powerRequired = 1
     override var description: String? = "Rail Depot"
 }
 
-class Road(cityMap: CityMap, val direction: Direction = Direction.STATIONARY) : Building(cityMap) {
+class Road(val direction: Direction = Direction.STATIONARY) : Building() {
     override var width = 1
     override var height = 1
     override var borderColor: Color = Color.BLACK
     override var description: String? = "Road"
 }
 
-class Railroad(cityMap: CityMap) : Building(cityMap) {
+class Railroad : Building() {
     override var width = 1
     override var height = 1
     override var borderColor: Color = Color.GREY
     override var description: String? = "Railroad"
 }
 
-class RailroadCrossing(cityMap: CityMap) : Building(cityMap) {
+class RailroadCrossing : Building() {
     override var width = 1
     override var height = 1
     override var borderColor: Color = Color.GREY
     override var description: String? = "Railroad Crossing"
 }
 
-class PowerLine(cityMap: CityMap) : Building(cityMap) {
+class PowerLine : Building() {
     override var width = 1
     override var height = 1
     override val powerRequired = 1
@@ -512,7 +506,7 @@ class PowerLine(cityMap: CityMap) : Building(cityMap) {
     override var description: String? = "Power Line"
 }
 
-open class LoadableBuilding(cityMap: CityMap) : Building(cityMap) {
+open class LoadableBuilding : Building() {
     override var height: Int = 1
     override var width: Int = 1
 }

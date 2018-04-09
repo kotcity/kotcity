@@ -110,12 +110,13 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                         val quantity = building.currentQuantityWanted(tradeable)
                                 .coerceAtMost(otherTradeEntity.currentQuantityForSale(tradeable))
 
-                        if (quantity > 0) {
-                            building.createContract(otherTradeEntity, tradeable, quantity, pathToOther)
-                            debug("")
-                            debug("${building.name}: Signed contract with ${otherTradeEntity.description()} to buy $quantity $tradeable")
-                            debug("${building.name} now requires ${building.currentQuantityWanted(tradeable)} $tradeable")
-                            debug(
+
+                            if (quantity > 0) {
+                                building.createContract(cityMap, otherTradeEntity, tradeable, quantity, pathToOther)
+                                debug("")
+                                debug("${building.name}: Signed contract with ${otherTradeEntity.description()} to buy $quantity $tradeable")
+                                debug("${building.name} now requires ${building.currentQuantityWanted(tradeable)} $tradeable")
+                                debug(
                                     "${otherTradeEntity.description()} has ${otherTradeEntity.currentQuantityForSale(
                                             tradeable
                                     )} left."
