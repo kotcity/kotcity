@@ -86,6 +86,7 @@ class QueryWindow : View() {
         this.title = "Inspecting ${building.description}"
 
         buffer.append(building.description + "\n")
+        buffer.append("Level: ${building.level}\n")
         buffer.append("Powered: ${building.powered}\n")
         buffer.append("Money: $${building.balance()}\n")
         buffer.append("Happiness: ${building.happiness}\n")
@@ -94,7 +95,9 @@ class QueryWindow : View() {
         if (building.zots.isNotEmpty()) {
             buffer.append("\nComplaints:\n")
             building.zots.forEach {
-                buffer.append(it.toString() + "\n")
+                if (it.age > Tunable.MIN_ZOT_AGE) {
+                    buffer.append(it.type.toString() + "\n")
+                }
             }
             buffer.append("\n")
         }

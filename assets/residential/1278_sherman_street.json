@@ -1,0 +1,18 @@
+{
+  "type": "residential",
+  "width": 3,
+  "height": 3,
+  "name": "1278_sherman_street",
+  "sprite": "1278_sherman_street.svg",
+  "description": "1278 Sherman St",
+  "level": 3,
+  "power_required": 2,
+  "production": {
+    "consumes": {
+      "goods": 20
+    },
+    "produces": {
+      "labor": 15
+    }
+  }
+}

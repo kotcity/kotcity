@@ -50,8 +50,10 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                         val jobList = mutableListOf<Job>()
                         contractCollection.toList().shuffled().forEach { location: Location ->
                             val job = launch(CommonPool, parent = contractJobs) {
-                                handleBuilding(location)
-                                howManyProcessed += 1
+                                async {
+                                    handleBuilding(location)
+                                    howManyProcessed += 1
+                                }
                             }
                             jobList.add(job)
                         }
@@ -83,105 +85,104 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
 
         val buildingBlocks = cityMap.buildingBlocks(coordinate, building)
 
-        synchronized(building) {
-            building.consumes.forEach { tradeable, _ ->
-                var done = false
-                val maxAttempts = 5
-                var currentAttempt = 0
-                while (building.currentQuantityWanted(tradeable) > 0 && !done && currentAttempt < maxAttempts) {
+        building.consumes.forEach { tradeable, _ ->
+            var done = false
+            val maxAttempts = 5
+            var currentAttempt = 0
+            while (building.currentQuantityWanted(tradeable) > 0 && !done && currentAttempt < maxAttempts) {
 
-                    currentAttempt += 1
+                currentAttempt += 1
 
-                    val needsCount = building.currentQuantityWanted(tradeable)
-                    debug("Building $building needs $needsCount $tradeable")
-                    val bestSource: Pair<TradeEntity, Path>? = findNearbySource(buildingBlocks, tradeable, needsCount)
+                val needsCount = building.currentQuantityWanted(tradeable)
+                debug("Building $building needs $needsCount $tradeable")
+                val bestSource: Pair<TradeEntity, Path>? = findNearbySource(buildingBlocks, tradeable, needsCount)
 
-                    if (bestSource == null) {
-                        debug("Could not find a source for $tradeable")
-                        done = true
-                    }
+                if (bestSource == null) {
+                    debug("Could not find a source for $tradeable")
+                    done = true
+                }
 
-                    if (bestSource != null) {
-                        synchronized(bestSource) {
-                            debug("Found best source for $tradeable... ${bestSource.first.description()}!")
-                            val otherTradeEntity = bestSource.first
-                            val pathToOther = bestSource.second
-                            val quantity = building.currentQuantityWanted(tradeable)
+                if (bestSource != null) {
+                    synchronized(bestSource) {
+                        debug("Found best source for $tradeable... ${bestSource.first.description()}!")
+                        val otherTradeEntity = bestSource.first
+                        val pathToOther = bestSource.second
+                        val quantity = building.currentQuantityWanted(tradeable)
                                 .coerceAtMost(otherTradeEntity.currentQuantityForSale(tradeable))
 
-                            if (quantity > 0) {
-                                building.createContract(otherTradeEntity, tradeable, quantity, pathToOther)
-                                debug("")
-                                debug("${building.name}: Signed contract with ${otherTradeEntity.description()} to buy $quantity $tradeable")
-                                debug("${building.name} now requires ${building.currentQuantityWanted(tradeable)} $tradeable")
-                                debug(
+                        if (quantity > 0) {
+                            building.createContract(otherTradeEntity, tradeable, quantity, pathToOther)
+                            debug("")
+                            debug("${building.name}: Signed contract with ${otherTradeEntity.description()} to buy $quantity $tradeable")
+                            debug("${building.name} now requires ${building.currentQuantityWanted(tradeable)} $tradeable")
+                            debug(
                                     "${otherTradeEntity.description()} has ${otherTradeEntity.currentQuantityForSale(
-                                        tradeable
+                                            tradeable
                                     )} left."
-                                )
-                                // debug("New setup: ${building.summarizeContracts()}")
-                            }
+                            )
+                            // debug("New setup: ${building.summarizeContracts()}")
                         }
-                    } else {
-                        debug("Could not find $needsCount $tradeable for ${building.name} at $coordinate")
                     }
+                } else {
+                    debug("Could not find $needsCount $tradeable for ${building.name} at $coordinate")
                 }
             }
+        }
 
-            building.produces.forEach { tradeable, _ ->
-                var done = false
-                val maxAttempts = 5
-                var currentAttempt = 0
-                while (building.currentQuantityForSale(tradeable) > 0 && !done && currentAttempt < maxAttempts) {
-                    currentAttempt += 1
-                    // limit us to selling at most 33% of our output to a single source...
-                    val forSaleCount = building.currentQuantityForSale(tradeable)
+        building.produces.forEach { tradeable, _ ->
+            var done = false
+            val maxAttempts = 5
+            var currentAttempt = 0
+            while (building.currentQuantityForSale(tradeable) > 0 && !done && currentAttempt < maxAttempts) {
+                currentAttempt += 1
+                // limit us to selling at most 33% of our output to a single source...
+                val forSaleCount = building.currentQuantityForSale(tradeable)
                         .coerceAtMost((building.producesQuantity(tradeable) / 3).coerceAtLeast(1))
-                    debug("${building.description} trying to sell $forSaleCount $tradeable")
-                    if (resourceFinder.quantityWantedNearby(tradeable, coordinate) > 0) {
-                        val entityAndPath =
+                debug("${building.description} trying to sell $forSaleCount $tradeable")
+                if (resourceFinder.quantityWantedNearby(tradeable, coordinate) > 0) {
+                    val entityAndPath =
                             resourceFinder.nearestBuyingTradeable(tradeable, buildingBlocks, MAX_RESOURCE_DISTANCE)
 
-                        if (entityAndPath == null) {
-                            debug("Want to sell $tradeable but can't find a path to a buyer!")
-                            done = true
-                        }
-
-                        if (entityAndPath != null) {
-                            val otherEntity = entityAndPath.first
-                            val path = entityAndPath.second
-
-                            val quantity = otherEntity.currentQuantityWanted(tradeable).coerceAtMost(forSaleCount)
-
-                            debug("Found a buyer for our $tradeable. It wants $quantity and we are selling $forSaleCount")
-
-                            if (quantity > 0) {
-                                val newContract = Contract(buildingTradeEntity, otherEntity, tradeable, quantity, path)
-                                debug("")
-                                debug("${building.name}: Signed contract with ${otherEntity.description()} to sell $quantity $tradeable")
-                                otherEntity.addContract(newContract)
-                                buildingTradeEntity.addContract(newContract)
-                                debug("${building.name} now has ${building.currentQuantityForSale(tradeable)} $tradeable left to provide.")
-                                // debug("${otherEntity.description()} still wants to buy ${otherEntity.currentQuantityWanted(tradeable)} $tradeable")
-                            }
-                        }
-                    } else {
-                        debug("Cannot find any place to sell $tradeable nearby. Won't bother with pathfinding...")
+                    if (entityAndPath == null) {
+                        debug("Want to sell $tradeable but can't find a path to a buyer!")
                         done = true
                     }
+
+                    if (entityAndPath != null) {
+                        val otherEntity = entityAndPath.first
+                        val path = entityAndPath.second
+
+                        val quantity = otherEntity.currentQuantityWanted(tradeable).coerceAtMost(forSaleCount)
+
+                        debug("Found a buyer for our $tradeable. It wants $quantity and we are selling $forSaleCount")
+
+                        if (quantity > 0) {
+                            val newContract = Contract(buildingTradeEntity, otherEntity, tradeable, quantity, path)
+                            debug("")
+                            debug("${building.name}: Signed contract with ${otherEntity.description()} to sell $quantity $tradeable")
+                            otherEntity.addContract(newContract)
+                            buildingTradeEntity.addContract(newContract)
+                            debug("${building.name} now has ${building.currentQuantityForSale(tradeable)} $tradeable left to provide.")
+                            // debug("${otherEntity.description()} still wants to buy ${otherEntity.currentQuantityWanted(tradeable)} $tradeable")
+                        }
+                    }
+                } else {
+                    debug("Cannot find any place to sell $tradeable nearby. Won't bother with pathfinding...")
+                    done = true
                 }
             }
+
         }
     }
 
     // TODO: this is most likely bugged...
     private fun findNearbySource(
-        buildingBlocks: List<BlockCoordinate>,
-        tradeable: Tradeable,
-        needsCount: Int
+            coordinates: List<BlockCoordinate>,
+            tradeable: Tradeable,
+            needsCount: Int
     ): Pair<TradeEntity, Path>? {
         (1..needsCount).reversed().forEach { quantity ->
-            val source = resourceFinder.findSource(buildingBlocks, tradeable, quantity)
+            val source = resourceFinder.findSource(coordinates, tradeable, quantity)
             if (source != null) {
                 return source
             }
@@ -192,7 +193,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
     private fun locationsNeedingContracts() = cityMap.locations().filter { it.building.needsAnyContracts() }
 
     private fun entitiesWithContracts() =
-        cityMap.locations().map { CityTradeEntity(it.coordinate, it.building) }.filter { it.hasAnyContracts() }
+            cityMap.locations().map { CityTradeEntity(it.coordinate, it.building) }.filter { it.hasAnyContracts() }
 
     fun terminateRandomContracts() {
         val totalBuildings = cityMap.locations().count()

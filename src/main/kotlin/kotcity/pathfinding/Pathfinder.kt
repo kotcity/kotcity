@@ -1,9 +1,11 @@
 package kotcity.pathfinding
 
 import kotcity.data.*
+import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotlin.reflect.KClass
 import kotcity.util.Debuggable
+import java.util.concurrent.TimeUnit
 
 const val MAX_DISTANCE = 50
 
@@ -47,6 +49,29 @@ data class NavigationNode(
     }
 }
 
+// let me show you de way
+//        ⢀⢀⢀⢀⢀⢀⢀⢀⢀⢀⠶⣿⣭⡧⡤⣤⣻⣛⣹⣿⣿⣿⣶⣄
+//        ⢀⢀⢀⢀⢀⢀⢀⢀⢀⣼⣊⣤⣶⣷⣶⣧⣤⣽⣿⣿⣿⣿⣿⣿⣷
+//        ⢀⢀⢀⢀⢀⢀⢀⢀⢀⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
+//        ⢀⢀⢀⢀⢀⢀⢀⣠⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧
+//        ⢀⢀⢀⢀⢀⢀⠸⠿⣿⣿⠿⣿⣿⣿⣿⣿⣿⣿⡿⣿⣻⣿⣿⣿⣿⣿⡆
+//        ⢀⢀⢀⢀⢀⢀⢀⢸⣿⣿⡀⠘⣿⡿⢿⣿⣿⡟⣾⣿⣯⣽⣼⣿⣿⣿⣿⡀
+//        ⢀⢀⢀⢀⢀⢀⡠⠚⢛⣛⣃⢄⡁⢀⢀⢀⠈⠁⠛⠛⠛⠛⠚⠻⣿⣿⣿⣷
+//        ⢀⢀⣴⣶⣶⣶⣷⡄⠊⠉⢻⣟⠃⢀⢀⢀⢀⡠⠔⠒⢀⢀⢀⢀⢹⣿⣿⣿⣄⣀⣀⣀⣀⣀⣀
+//        ⢠⣾⣿⣿⣿⣿⣿⣿⣿⣶⣄⣙⠻⠿⠶⠒⠁⢀⢀⣀⣤⣰⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄
+//        ⢿⠟⠛⠋⣿⣿⣿⣿⣿⣿⣿⣟⡿⠷⣶⣶⣶⢶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄
+//        ⢀⢀⢀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠉⠙⠻⠿⣿⣿⡿
+//        ⢀⢀⢀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢀⢀⢀⢀⠈⠁
+//        ⢀⢀⢀⢀⢸⣿⣿⣿⣿⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+//        ⢀⢀⢀⢀⢸⣿⣿⣿⣿⣄⠈⠛⠿⣿⣿⣿⣿⣿⣿⣿⡿⠟⣹⣿⣿⣿⣿⣿⣿⣿⣿⠇
+//        ⢀⢀⢀⢀⢀⢻⣿⣿⣿⣿⣧⣀⢀⢀⠉⠛⠛⠋⠉⢀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⠏
+//        ⢀⢀⢀⢀⢀⢀⢻⣿⣿⣿⣿⣿⣷⣤⣄⣀⣀⣤⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋
+//        ⢀⢀⢀⢀⢀⢀⢀⠙⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠛
+//        ⢀⢀⢀⢀⢀⢀⢀⢀⢀⢹⣿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠁
+//        ⢀⢀⢀⢀⢀⢀⢀⢀⢀⢸⣿⡇⢀⠈⠙⠛⠛⠛⠛⠛⠛⠻⣿⣿⣿⠇
+//        ⢀⢀⢀⢀⢀⢀⢀⢀⢀⣸⣿⡇⢀⢀⢀⢀⢀⢀⢀⢀⢀⢀⢨⣿⣿
+//        ⢀⢀⢀⢀⢀⢀⢀⢀⣾⣿⡿⠃⢀⢀⢀⢀⢀⢀⢀⢀⢀⢀⢸⣿⡏
+//        ⢀⢀⢀⢀⢀⢀⢀⢀⠻⠿⢀⢀⢀⢀⢀⢀⢀⢀⢀⢀⢀⢠⣿⣿⡇
 
 /**
  * Path of nodes, with conveniece methods.
@@ -106,7 +131,9 @@ data class Path(
 class Pathfinder(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = true
 
-    private val cachedHeuristicPair = ::heuristic.cache()
+    private val cachedHeuristicPair = ::heuristic.cache(
+            CacheOptions(weakKeys = true, weakValues = true, maximumSize = (cityMap.width * cityMap.height).toLong(), durationUnit = TimeUnit.SECONDS, durationValue = 30L)
+    )
     private val heuristicCache = cachedHeuristicPair.first
     private val cachedHeuristic = cachedHeuristicPair.second
 
@@ -293,8 +320,8 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         // let's find a road semi-nearby
         val nearbyBlocks = source.flatMap { it.neighbors(3) }.plus(source).distinct()
 
-        val nearbyLocations = nearbyBlocks.flatMap { cityMap.locationsAt(it) }
-        val nearbyRoads = nearbyLocations.filter { it.building is Road }
+        val nearbyLocations = nearbyBlocks.flatMap { cityMap.locationsAt(it) }.distinct()
+        val nearbyRoads = nearbyLocations.filter { it.building is Road }.distinct()
 
         if (nearbyRoads.isEmpty()) {
             return null
@@ -317,7 +344,6 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             debug("Now we can't find a path AFTER finding a road!")
             return null
         }
-
         return pathToNearestRoad.plus(restOfTheWay)
     }
 
