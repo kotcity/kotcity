@@ -50,39 +50,12 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     private val heuristicCache = cachedHeuristicPair.first
     private val cachedHeuristic = cachedHeuristicPair.second
 
-    private val mapBorders: List<BlockCoordinate> by lazy {
-        // I found this frustrating to write and this code
-        // can probably be improved upon...
-        val widthRange = -1..cityMap.width
-        val heightRange = -1..cityMap.height
-
-        val borderBlocks = mutableSetOf<BlockCoordinate>()
-
-        widthRange.forEach { x ->
-            borderBlocks.add(BlockCoordinate(x, heightRange.first))
-            borderBlocks.add(BlockCoordinate(x, heightRange.last))
-        }
-
-        heightRange.forEach { y ->
-            borderBlocks.add(BlockCoordinate(widthRange.first, y))
-            borderBlocks.add(BlockCoordinate(widthRange.last, y))
-        }
-
-        borderBlocks.toList()
-    }
-
     /**
      * Purges the cached results for the heuristic method.
      */
-    fun purgeCaches() {
-        heuristicCache.invalidateAll()
-    }
+    fun purgeCaches() = heuristicCache.invalidateAll()
 
-    // TODO: this is too slow... maybe cache?
-    fun pathToOutside(start: List<BlockCoordinate>): Path? {
-        // OK... let's see if we can get a trip to the outside...
-        return tripTo(start, mapBorders)
-    }
+    fun pathToOutside(start: List<BlockCoordinate>) = tripTo(start, cityMap.outsideConnections)
 
     private fun findNearestTrade(
         start: List<BlockCoordinate>,
@@ -159,9 +132,8 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         }.min() ?: Double.MAX_VALUE
     }
 
-
-    private fun manhattanDistance(start: BlockCoordinate, destination: BlockCoordinate): Double {
-        return Math.abs(start.x - destination.x) + Math.abs(start.y - destination.y).toDouble()
+    private fun manhattanDistance(source: BlockCoordinate, destination: BlockCoordinate): Double {
+        return Math.abs(source.x - destination.x) + Math.abs(source.y - destination.y).toDouble()
     }
 
     /**
@@ -177,8 +149,8 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return false
     }
 
-    private fun oppositeDir(d: Direction): Direction {
-        return when (d) {
+    private fun oppositeDir(direction: Direction): Direction {
+        return when (direction) {
             Direction.WEST -> Direction.EAST
             Direction.EAST -> Direction.WEST
             Direction.NORTH -> Direction.SOUTH
@@ -205,18 +177,16 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return !locations.isEmpty() && (building is Railroad || building is RailroadCrossing)
     }
 
-    private inline fun isRailBuilding(coordinate: BlockCoordinate): Boolean {
-        return isBuildingAt(coordinate, RailDepot::class) || isBuildingAt(coordinate, TrainStation::class)
+    private fun isRailBuilding(coordinate: BlockCoordinate): Boolean {
+        return isBuildingAt(coordinate, RailDepot::class, TrainStation::class)
     }
 
     private fun canGoViaTrain(fromCoordinate: BlockCoordinate, toCoordinate: BlockCoordinate): Boolean {
-
-        val isSourceRail = coordIsRailroad(fromCoordinate)
-        val isTargetRail = coordIsRailroad(toCoordinate)
-        val isEnteringRail = isRailBuilding(fromCoordinate) && isTargetRail
-        val isTargetStation = isRailBuilding(toCoordinate)
-
-        return isTargetStation || isSourceRail && isTargetRail || isEnteringRail // || isExitingRail
+        return isRailBuilding(toCoordinate)
+                || coordIsRailroad(fromCoordinate)
+                && coordIsRailroad(toCoordinate)
+                || isRailBuilding(fromCoordinate)
+                && coordIsRailroad(toCoordinate)
     }
 
     private fun isGround(node: NavigationNode) = cityMap.groundLayer[node.coordinate]?.type == TileType.GROUND
@@ -229,7 +199,8 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     ): Path? {
 
         if (destinations.isEmpty()) {
-            throw RuntimeException("We cannot path find to an empty destination!")
+            // We cannot path find to an empty destination!
+            return null
         }
 
         // let's find a road semi-nearby
@@ -274,10 +245,12 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         }
     }
 
-    private fun isBuildingAt(coordinate: BlockCoordinate, clazz: KClass<*>): Boolean {
-        cityMap.cachedLocationsIn(coordinate).forEach {
-            if (clazz.isInstance(it.building)) {
-                return true
+    private fun isBuildingAt(coordinate: BlockCoordinate, vararg buildings: KClass<out Building>): Boolean {
+        cityMap.cachedLocationsIn(coordinate).forEach { location ->
+            buildings.forEach {
+                if (it.isInstance(location.building)) {
+                    return true
+                }
             }
         }
         return false
@@ -297,32 +270,17 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         // convert to path with children set appropriately...
         return Path(pathBlocks.mapIndexed { index, blockCoordinate ->
             if (index == 0) {
-                makeNode(blockCoordinate, direction)
+                NavigationNode(coordinate = blockCoordinate, direction = direction)
             } else {
                 NavigationNode(
-                    cityMap,
                     blockCoordinate,
-                    makeNode(pathBlocks[index - 1], direction),
+                    NavigationNode(coordinate = pathBlocks[index - 1], direction = direction),
                     0.0,
                     TransitType.ROAD,
-                    direction,
-                    false
+                    direction
                 )
             }
-
         })
-    }
-
-    private fun makeNode(blockCoordinate: BlockCoordinate, direction: Direction): NavigationNode {
-        return NavigationNode(
-            cityMap,
-            blockCoordinate,
-            null,
-            0.0,
-            TransitType.ROAD,
-            direction,
-            false
-        )
     }
 
     // so basically what we want to do here is start from each coordinate and project each way (N,S,E,W) and see if we hit a destination...
@@ -366,13 +324,11 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         // switch these to list of navigation nodes...
         val openList = source.map {
             NavigationNode(
-                cityMap,
                 it,
                 null,
                 cachedHeuristic(it, destinations),
                 TransitType.ROAD,
-                Direction.STATIONARY,
-                false
+                Direction.STATIONARY
             )
         }.toMutableSet()
 
@@ -445,13 +401,11 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                 val delta = directionToBlockDelta(direction)
                 val nextBlock = activeNode.coordinate + delta
                 val nextNode = NavigationNode(
-                    cityMap,
                     nextBlock,
                     activeNode,
                     activeNode.score + cachedHeuristic(nextBlock, destinations),
                     TransitType.ROAD,
-                    direction,
-                    false
+                    direction
                 )
                 maybeAppendNode(nextNode)
             }
