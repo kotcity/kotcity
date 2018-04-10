@@ -42,9 +42,12 @@ class PollutionUpdater(val cityMap: CityMap) : Debuggable {
                 val (coordinate, pollutionValue) = it
                 val neighbors = coordinate.neighbors(1)
                 neighbors.forEach {
-                    // our neighbors pollution is the AVERAGE of (p * DIFFUSION_FACTOR) of us and the neighbor...
-                    cityMap.pollutionLayer[it] =
-                            listOf(cityMap.pollutionLayer[it] ?: 0.0, (pollutionValue * DIFFUSION_FACTOR)).average()
+                    // our neighbors pollution is the AVERAGE of (p * DIFFUSION_FACTOR) of us and the neighbor..
+                    if (cityMap.pollutionLayer[coordinate] ?: 0.0 > cityMap.pollutionLayer[it] ?: 0.0) {
+                        cityMap.pollutionLayer[it] =
+                                listOf(cityMap.pollutionLayer[it] ?: 0.0, (pollutionValue * DIFFUSION_FACTOR)).average()
+                    }
+
                 }
             }
         }

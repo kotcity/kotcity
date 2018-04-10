@@ -2,14 +2,14 @@
   "type": "residential",
   "width": 1,
   "height": 1,
-  "name": "slum2",
-  "sprite": "slum2.svg",
-  "description": "4307 Augusta Park",
+  "name": "2796_charla_lane",
+  "sprite": "2796_charla_lane.svg",
+  "description": "2796 Charla Lane",
   "level": 1,
   "power_required": 1,
   "production": {
     "consumes": {
-      "goods": 2
+      "goods": 4
     },
     "produces": {
       "labor": 2

@@ -1,0 +1,20 @@
+{
+  "type": "commercial",
+  "width": 1,
+  "height": 1,
+  "name": "cake_shop",
+  "sprite": "cake_shop.svg",
+  "description": "Cake Shop",
+  "level": 2,
+  "power_required": 1,
+  "pollution": 1,
+  "production": {
+    "consumes": {
+      "labor": 2,
+      "wholesale_goods": 15
+    },
+    "produces": {
+      "goods": 4
+    }
+  }
+}

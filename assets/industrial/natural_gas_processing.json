@@ -1,0 +1,19 @@
+{
+  "type": "industrial",
+  "width": 3,
+  "height": 3,
+  "name": "natural_gas_processing",
+  "sprite": "natural_gas_processing.svg",
+  "description": "Natural Gas Processing",
+  "level": 2,
+  "power_required": 12,
+  "pollution": 8,
+  "production": {
+    "consumes": {
+      "labor": 8
+    },
+    "produces": {
+      "wholesale_goods": 25
+    }
+  }
+}

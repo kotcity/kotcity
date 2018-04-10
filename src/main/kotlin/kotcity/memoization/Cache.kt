@@ -11,14 +11,19 @@ data class CacheOptions(
         val weakKeys: Boolean = true,
         val weakValues: Boolean = true,
         val maximumSize: Long = 100_000,
+        val limitSize: Boolean = false,
         val durationValue: Long = 3,
         val durationUnit: TimeUnit = TimeUnit.MINUTES
 )
 
 private fun caffeinate(cacheOptions: CacheOptions): Caffeine<Any?, Any?> {
     var cache = Caffeine.newBuilder()
-            .maximumSize(cacheOptions.maximumSize)
             .expireAfterWrite(cacheOptions.durationValue, cacheOptions.durationUnit)
+
+            if (cacheOptions.limitSize) {
+                cache = cache.maximumSize(cacheOptions.maximumSize)
+            }
+
             if (cacheOptions.weakKeys) {
                 cache = cache.weakKeys()
             }

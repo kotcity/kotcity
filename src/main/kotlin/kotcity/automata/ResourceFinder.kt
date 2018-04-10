@@ -34,8 +34,8 @@ class ResourceFinder(val cityMap: CityMap) : Debuggable {
     }
 
     fun findSource(sourceBlocks: List<BlockCoordinate>, tradeable: Tradeable, quantity: Int): Pair<TradeEntity, Path>? {
-        // TODO: we can just do this once for the "center" of the building... (i think)
-        val nearbyBuildings = sourceBlocks.flatMap { cityMap.nearestBuildings(it, MAX_RESOURCE_DISTANCE) }.distinct()
+        // just use the first block to do a nearby query...
+        val nearbyBuildings = cityMap.nearestBuildings(sourceBlocks.first(), MAX_RESOURCE_DISTANCE).distinct()
         // now we gotta make sure they got the resource...
         val buildingsWithResource = nearbyBuildings.filter { it.building.currentQuantityForSale(tradeable) >= quantity }
 
@@ -66,6 +66,7 @@ class ResourceFinder(val cityMap: CityMap) : Debuggable {
             // make sure the outside city has a resource before we get too excited and make a path...
             val pair = possiblePathToOutside(tradeable, quantity, sourceBlocks)
             if (pair != null) {
+                preferredPath = pair.second
                 preferredTradeEntity = pair.first
             }
         }
@@ -97,7 +98,7 @@ class ResourceFinder(val cityMap: CityMap) : Debuggable {
     ): Pair<TradeEntity, Path>? {
         // OK what we want to do here is don't try and get a trip to the outside all the time...
         // if we fail we won't even bother for 10 more seconds....
-        if (System.currentTimeMillis() - 10000 < lastOutsidePathFailAt) {
+        if (System.currentTimeMillis() - lastOutsidePathFailAt < 30000 ) {
             return null
         }
 
@@ -120,7 +121,7 @@ class ResourceFinder(val cityMap: CityMap) : Debuggable {
         maxDistance: Int = MAX_RESOURCE_DISTANCE
     ): Pair<TradeEntity, Path>? {
         // OK... we need to find nearby buildings...
-        val buildings = sourceBlocks.flatMap { cityMap.nearestBuildings(it, maxDistance) }.distinct()
+        val buildings =  cityMap.nearestBuildings(sourceBlocks.first(), maxDistance).distinct()
         // now we gotta make sure they got the resource...
         val buildingsWantingResource = buildings.filter { it.building.currentQuantityWanted(tradeable) > 0 }
 

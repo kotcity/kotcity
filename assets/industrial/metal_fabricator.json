@@ -1,0 +1,19 @@
+{
+  "type": "industrial",
+  "width": 3,
+  "height": 3,
+  "name": "metal_fabricator",
+  "sprite": "metal_fabricator.svg",
+  "description": "Metal Fabricator",
+  "level": 2,
+  "power_required": 3,
+  "pollution": 2,
+  "production": {
+    "consumes": {
+      "labor": 3
+    },
+    "produces": {
+      "wholesale_goods": 8
+    }
+  }
+}
