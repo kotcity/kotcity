@@ -45,7 +45,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = true
 
     private val cachedHeuristicPair = ::heuristic.cache(
-            CacheOptions(weakKeys = true, weakValues = true, maximumSize = (cityMap.width * cityMap.height).toLong(), durationUnit = TimeUnit.SECONDS, durationValue = 30L)
+            CacheOptions(weakKeys = false, weakValues = false, durationUnit = TimeUnit.SECONDS, durationValue = 60L)
     )
     private val heuristicCache = cachedHeuristicPair.first
     private val cachedHeuristic = cachedHeuristicPair.second
@@ -205,11 +205,11 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return !locations.isEmpty() && (building is Railroad || building is RailroadCrossing)
     }
 
-    private fun canGoViaTrain(fromCoordinate: BlockCoordinate, toCoordinate: BlockCoordinate): Boolean {
+    private inline fun isRailBuilding(coordinate: BlockCoordinate): Boolean {
+        return isBuildingAt(coordinate, RailDepot::class) || isBuildingAt(coordinate, TrainStation::class)
+    }
 
-        fun isRailBuilding(coordinate: BlockCoordinate): Boolean {
-            return isBuildingAt(coordinate, RailDepot::class) || isBuildingAt(coordinate, TrainStation::class)
-        }
+    private fun canGoViaTrain(fromCoordinate: BlockCoordinate, toCoordinate: BlockCoordinate): Boolean {
 
         val isSourceRail = coordIsRailroad(fromCoordinate)
         val isTargetRail = coordIsRailroad(toCoordinate)

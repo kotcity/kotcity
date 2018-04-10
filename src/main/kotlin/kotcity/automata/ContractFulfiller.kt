@@ -2,6 +2,7 @@ package kotcity.automata
 
 import kotcity.data.*
 import kotcity.data.Tunable.MAX_RESOURCE_DISTANCE
+import kotcity.jmx.KotCity
 import kotcity.pathfinding.Path
 import kotcity.util.Debuggable
 import kotcity.util.randomElements
@@ -14,7 +15,9 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
             field = value
             resourceFinder.debug = value
         }
+
     private val resourceFinder = ResourceFinder(cityMap)
+    private val mBean = KotCity
 
     init {
         resourceFinder.debug = debug
@@ -50,10 +53,8 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                         val jobList = mutableListOf<Job>()
                         contractCollection.toList().shuffled().forEach { location: Location ->
                             val job = launch(CommonPool, parent = contractJobs) {
-                                async {
-                                    handleBuilding(location)
-                                    howManyProcessed += 1
-                                }
+                                handleBuilding(location)
+                                howManyProcessed += 1
                             }
                             jobList.add(job)
                         }
@@ -71,6 +72,10 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
             } catch (ex: CancellationException) {
                 debug("Reached timeout of $maxMillis milliseconds! Cancelling all outstanding jobs!")
                 contractJobs.cancelAndJoin()
+            } finally {
+                // update JMX...
+                mBean.contractsSigned = howManyProcessed
+                mBean.pendingContracts = locationsNeedingContracts().size
             }
         }
 
@@ -183,6 +188,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
             needsCount: Int
     ): Pair<TradeEntity, Path>? {
         (1..needsCount).reversed().forEach { quantity ->
+
             val source = resourceFinder.findSource(coordinates, tradeable, quantity)
             if (source != null) {
                 return source
