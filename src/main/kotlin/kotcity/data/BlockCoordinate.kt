@@ -82,26 +82,30 @@ data class BlockCoordinate(
     /**
      * Returns the neighboring cell directly above this cell
      */
-    val top: BlockCoordinate
-        get() = BlockCoordinate(x, y - 1)
+    val top: BlockCoordinate by lazy {
+        BlockCoordinate(x, y - 1)
+    }
 
     /**
      * Returns the neighboring cell directly below this cell
      */
-    val bottom: BlockCoordinate
-        get() = BlockCoordinate(x, y + 1)
+    val bottom: BlockCoordinate by lazy {
+        BlockCoordinate(x, y + 1)
+    }
 
     /**
      * Returns the neighboring cell directly to the left of this cell
      */
-    val left: BlockCoordinate
-        get() = BlockCoordinate(x - 1, y)
+    val left: BlockCoordinate by lazy {
+        BlockCoordinate(x - 1, y)
+    }
 
     /**
      * Returns the neighboring cell directly to the right of this cell
      */
-    val right: BlockCoordinate
-        get() = BlockCoordinate(x + 1, y)
+    val right: BlockCoordinate by lazy {
+        BlockCoordinate(x + 1, y)
+    }
 
     /**
      * Returns a circle-ish area of [BlockCoordinate]s around us to the given radius
@@ -137,4 +141,17 @@ data class BlockCoordinate(
      */
     operator fun plus(other: BlockCoordinate): BlockCoordinate =
         BlockCoordinate(x + other.x, y + other.y)
+
+    override fun equals(other: Any?): Boolean {
+
+        if (other !is BlockCoordinate) {
+            return false
+        }
+
+        if (other.x == x && other.y == y) {
+            return true
+        }
+
+        return false
+    }
 }
