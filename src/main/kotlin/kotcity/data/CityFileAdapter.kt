@@ -75,6 +75,7 @@ object CityFileAdapter : Debuggable {
                 readContracts(data, cityMap)
 
                 cityMap.updateBuildingIndex()
+                cityMap.updateOutsideConnections()
 
                 // now let's force tick power...
                 PowerCoverageUpdater.update(cityMap)

@@ -22,34 +22,12 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     private val heuristicCache = cachedHeuristicPair.first
     private val cachedHeuristic = cachedHeuristicPair.second
 
-    private val mapBorders: List<BlockCoordinate> by lazy {
-        // I found this frustrating to write and this code
-        // can probably be improved upon...
-        val widthRange = -1..cityMap.width
-        val heightRange = -1..cityMap.height
-
-        val borderBlocks = mutableSetOf<BlockCoordinate>()
-
-        widthRange.forEach { x ->
-            borderBlocks.add(BlockCoordinate(x, heightRange.first))
-            borderBlocks.add(BlockCoordinate(x, heightRange.last))
-        }
-
-        heightRange.forEach { y ->
-            borderBlocks.add(BlockCoordinate(widthRange.first, y))
-            borderBlocks.add(BlockCoordinate(widthRange.last, y))
-        }
-
-        borderBlocks.toList()
-    }
-
     /**
      * Purges the cached results for the heuristic method.
      */
     fun purgeCaches() = heuristicCache.invalidateAll()
 
-    // TODO: this is too slow... maybe cache?
-    fun pathToOutside(start: List<BlockCoordinate>) = tripTo(start, mapBorders)
+    fun pathToOutside(start: List<BlockCoordinate>) = tripTo(start, cityMap.outsideConnections)
 
     private fun findNearestTrade(
         start: List<BlockCoordinate>,
@@ -193,7 +171,8 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     ): Path? {
 
         if (destinations.isEmpty()) {
-            throw RuntimeException("We cannot path find to an empty destination!")
+            // We cannot path find to an empty destination!
+            return null
         }
 
         // let's find a road semi-nearby
