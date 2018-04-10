@@ -6,7 +6,7 @@ class CacheTest {
     @Test
     fun cacheTest() {
         fun hello(name: String): String {
-            return "Hello $name!"
+            return "KotCityBeanImplementation $name!"
         }
 
         val (cache, cachedHello) = ::hello.cache()

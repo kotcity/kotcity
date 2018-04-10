@@ -10,6 +10,7 @@ import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import javafx.util.Duration
+import kotcity.jmx.SimpleAgent
 import kotcity.util.Game
 import tornadofx.App
 import tornadofx.View
@@ -92,5 +93,7 @@ class LaunchScreenApp : App(LaunchScreen::class, KotcityStyles::class) {
 }
 
 fun main(args: Array<String>) {
+    // start JMX agent...
+    val agent = SimpleAgent()
     Application.launch(LaunchScreenApp::class.java, *args)
 }
