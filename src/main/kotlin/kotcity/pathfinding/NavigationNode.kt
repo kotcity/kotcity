@@ -1,19 +1,16 @@
 package kotcity.pathfinding
 
 import kotcity.data.BlockCoordinate
-import kotcity.data.CityMap
 
 /**
  * Node in found paths.
  */
 data class NavigationNode(
-    val cityMap: CityMap,
     val coordinate: BlockCoordinate,
-    val parent: NavigationNode?,
-    val score: Double,
+    val parent: NavigationNode? = null,
+    val score: Double = 0.0,
     val transitType: TransitType = TransitType.ROAD,
-    val direction: Direction,
-    val isOnRail: Boolean
+    val direction: Direction
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) {

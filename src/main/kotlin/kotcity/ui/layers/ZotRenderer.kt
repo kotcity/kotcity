@@ -123,7 +123,7 @@ class ZotRenderer(
     // OK we need a cache here so we only shoot back a few buildings
     private fun randomBuildingsWithZots(visibleBlockRange: Pair<BlockCoordinate, BlockCoordinate>): List<Location> {
         val buildingsInRectangle = cityMap.locationsInRectangle(visibleBlockRange.first, visibleBlockRange.second)
-        return buildingsInRectangle.filter { it.building.zots.filter { it.age > Tunable.MIN_ZOT_AGE }.isNotEmpty() }
+        return buildingsInRectangle.filter { it.building.zots.any { it.age > Tunable.MIN_ZOT_AGE } }
     }
 
     private fun randomZot(location: Location): Zot? {

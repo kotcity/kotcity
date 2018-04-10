@@ -96,6 +96,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         DesirabilityLayer(Zone.INDUSTRIAL, 1)
     )
 
+    val outsideConnections = mutableListOf<BlockCoordinate>()
+
     val mainDistrict = District("Central district")
     val districts = mutableListOf(mainDistrict)
 
@@ -302,6 +304,41 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         buildingIndex = newIndex
         locationsInCache.invalidateAll()
     }
+
+    fun updateOutsideConnections() {
+        val widthRange = -1..width
+        val heightRange = -1..height
+
+        outsideConnections.clear()
+        widthRange.forEach { x ->
+            val topCoord = BlockCoordinate(x, heightRange.first)
+            val topBuilding = buildingLayer[topCoord]
+            val bottomCoord = BlockCoordinate(x, heightRange.last)
+            val bottomBuilding = buildingLayer[bottomCoord]
+
+            if (topBuilding.isDrivable()) {
+                outsideConnections.add(topCoord)
+            }
+            if (bottomBuilding.isDrivable()) {
+                outsideConnections.add(bottomCoord)
+            }
+        }
+        heightRange.forEach { y ->
+            val leftCoord = BlockCoordinate(widthRange.first, y)
+            val leftBuilding = buildingLayer[leftCoord]
+            val rightCoord = BlockCoordinate(widthRange.last, y)
+            val rightBuilding = buildingLayer[rightCoord]
+
+            if (leftBuilding.isDrivable()) {
+                outsideConnections.add(leftCoord)
+            }
+            if (rightBuilding.isDrivable()) {
+                outsideConnections.add(rightCoord)
+            }
+        }
+    }
+
+    private fun Building?.isDrivable() = this is Road || this is Railroad || this is RailroadCrossing
 
     /**
      * Suggests a filename to save the city as... it's based off the name of the city but made safe for filenames
@@ -554,6 +591,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
         }
         updateBuildingIndex()
+        updateOutsideConnections()
     }
 
     /**
@@ -601,6 +639,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
         }
         updateBuildingIndex()
+        updateOutsideConnections()
     }
 
     /**
@@ -722,6 +761,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 val buildingBlocks = buildingBlocks(block, building)
                 buildingBlocks.forEach { zoneLayer.remove(it) }
             }
+            if (building.isDrivable()) {
+                updateOutsideConnections()
+            }
             if (updateBuildingIndex) {
                 updateBuildingIndex()
             }
@@ -762,6 +804,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
         }
         updateBuildingIndex()
+        updateOutsideConnections()
     }
 
     /**
