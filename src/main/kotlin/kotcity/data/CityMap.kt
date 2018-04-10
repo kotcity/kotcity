@@ -506,46 +506,26 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * @return true if we can build here, false if not
      */
     fun canBuildBuildingAt(newBuilding: Building, coordinate: BlockCoordinate, waterCheck: Boolean = true): Boolean {
-
-        // OK... let's get nearby buildings to really cut this down...
         val newBuildingEnd =
             BlockCoordinate(coordinate.x + newBuilding.width - 1, coordinate.y + newBuilding.height - 1)
-
-        val newBuildingTopRight = BlockCoordinate(coordinate.x + newBuilding.width - 1, coordinate.y)
-        val newBuildingBottomLeft = BlockCoordinate(coordinate.x, coordinate.y + newBuilding.height - 1)
 
         if (waterCheck && waterFound(coordinate, newBuildingEnd)) {
             return false
         }
 
+        // OK... let's get nearby buildings to really cut this down...
         val nearby = nearestBuildings(coordinate)
         nearby.forEach { cityLocation: Location ->
             val building = cityLocation.building
-            val otherBuildingStart = cityLocation.coordinate
-            val otherBuildingEnd =
-                BlockCoordinate(otherBuildingStart.x + building.width - 1, otherBuildingStart.y + building.height - 1)
-            // now let's test...
-            // top left corner...
-            if (coordinate.x <= otherBuildingEnd.x && coordinate.x >= otherBuildingStart.x && coordinate.y <= otherBuildingEnd.y && coordinate.y >= otherBuildingStart.y) {
-                // collisionWarning("Collision with top left!", newBuilding, coordinate, building, cityLocation.coordinate)
-                return false
-            }
+            val otherCoord = cityLocation.coordinate
 
-            // bottom right corner...
-            if (newBuildingEnd.x <= otherBuildingEnd.x && newBuildingEnd.x >= otherBuildingStart.x && newBuildingEnd.y <= otherBuildingEnd.y && newBuildingEnd.y >= otherBuildingStart.y) {
-                // collisionWarning("Collision with bottom right!", newBuilding, coordinate, building, cityLocation.coordinate)
-                return false
-            }
+            val xOverlaps =
+                (coordinate.x <= otherCoord.x + building.width - 1 && coordinate.x + newBuilding.width - 1 >= otherCoord.x)
 
-            // top right corner...
-            if (newBuildingTopRight.x <= otherBuildingEnd.x && newBuildingTopRight.x >= otherBuildingStart.x && newBuildingTopRight.y <= otherBuildingEnd.y && newBuildingTopRight.y >= otherBuildingStart.y) {
-                // collisionWarning("Collision with top right!", newBuilding, coordinate, building, cityLocation.coordinate)
-                return false
-            }
+            val yOverlaps =
+                (coordinate.y <= otherCoord.y + building.height - 1 && coordinate.y + newBuilding.height - 1 >= otherCoord.y)
 
-            // bottom left corner...
-            if (newBuildingBottomLeft.x <= otherBuildingEnd.x && newBuildingBottomLeft.x >= otherBuildingStart.x && newBuildingBottomLeft.y <= otherBuildingEnd.y && newBuildingBottomLeft.y >= otherBuildingStart.y) {
-                // collisionWarning("Collision with bottom left!", newBuilding, coordinate, building, cityLocation.coordinate)
+            if (xOverlaps && yOverlaps) {
                 return false
             }
         }
