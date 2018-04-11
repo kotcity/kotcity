@@ -430,8 +430,8 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                 // determine transitType for destination
                 val newTransitType = transitTypeFor(nextBlock)
 
-                // if we are on a road and the destination is here... we can hit it!
-                if (destinations.contains(nextBlock) && activeNode.transitType == TransitType.ROAD) {
+                // if we are on a road and the destination is nearby... we can hit it!
+                if (distanceToGoal <= 3 && activeNode.transitType == TransitType.ROAD) {
                     val nextNode = NavigationNode(
                             nextBlock,
                             activeNode,
