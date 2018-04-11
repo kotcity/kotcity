@@ -1,5 +1,6 @@
 package kotcity.data
 
+import com.github.benmanes.caffeine.cache.stats.CacheStats
 import com.github.davidmoten.rtree.RTree
 import com.github.davidmoten.rtree.geometry.Geometries
 import com.github.davidmoten.rtree.geometry.Rectangle
@@ -96,7 +97,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         DesirabilityLayer(Zone.INDUSTRIAL, 1)
     )
 
-    val outsideConnections = mutableListOf<BlockCoordinate>()
+    private val outsideConnections = mutableListOf<BlockCoordinate>()
 
     val mainDistrict = District("Central district")
     val districts = mutableListOf(mainDistrict)
@@ -135,7 +136,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     /**
      * Should we print debug output or not?
      */
-    var debug = false
+    var debug = true
 
     /**
      * where we loaded OR saved this city to...
@@ -152,14 +153,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * An "r-tree" that lets us do relatively fast lookups on buildings in our city
      */
     private var buildingIndex = RTree.create<Building, Rectangle>()!!
-
-    // OK! we will require one key per map cell
-    private val numberOfCells = this.height.toLong() * this.width.toLong() + 100
     private val locationsInCachePair = ::locationsAt.cache(
         CacheOptions(
             weakKeys = false,
-            weakValues = true,
-            maximumSize = numberOfCells,
+            weakValues = false,
+            limitSize = false,
             durationUnit = TimeUnit.SECONDS,
             durationValue = 15
         )
@@ -170,7 +168,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      */
     private val locationsInCache = locationsInCachePair.first
     /**
-     * a cached version of [locationsIn]. This can be used when you want to do a fast lookup on a building
+     * a cached version of [locationsAt]. This can be used when you want to do a fast lookup on a building
      * but don't really care if you are wrong or not
      */
     val cachedLocationsIn = locationsInCachePair.second
@@ -199,6 +197,11 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         simpleDateFormat.timeZone = TimeZone.getDefault()
         time = simpleDateFormat.parse("2000-01-01 12:00:00")
+    }
+
+    fun locationCacheStats(): CacheStats {
+        // cache...
+        return locationsInCache.stats()
     }
 
     /**
@@ -396,6 +399,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 timeFunction("Performing upgrades") { upgrader.tick() }
                 timeFunction("Taking census again (to account for new demand...)") { censusTaker.tick() }
             }
+
+            debug("Cache stats: " + locationCacheStats().hitRate())
 
             if (hour == 0) {
                 debug("Processing tick for end of day...")
@@ -866,7 +871,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             } else {
                 null
             }
-        }.toBlocking().toIterable().filterNotNull()
+        }.filter { it != null }.toBlocking().toIterable().filterNotNull()
     }
 
     /**

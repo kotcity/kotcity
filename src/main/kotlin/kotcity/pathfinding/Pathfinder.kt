@@ -134,7 +134,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return destinations.map { coordinate ->
             var score = manhattanDistance(current, coordinate)
             // see if this is road and lower score by a tiny bit...
-            val locations = cityMap.locationsAt(current)
+            val locations = cityMap.cachedLocationsIn(current)
             if (locations.count() > 0) {
                 val building = locations.first().building
                 when (building) {

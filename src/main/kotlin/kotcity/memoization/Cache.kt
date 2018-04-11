@@ -8,8 +8,8 @@ import com.github.benmanes.caffeine.cache.LoadingCache
 import java.util.concurrent.TimeUnit
 
 data class CacheOptions(
-        val weakKeys: Boolean = true,
-        val weakValues: Boolean = true,
+        val weakKeys: Boolean = false,
+        val weakValues: Boolean = false,
         val maximumSize: Long = 100_000,
         val limitSize: Boolean = false,
         val durationValue: Long = 3,
