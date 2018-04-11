@@ -155,7 +155,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     // OK! we will require one key per map cell
     private val numberOfCells = this.height.toLong() * this.width.toLong() + 100
-    private val locationsInCachePair = ::locationsIn.cache(
+    private val locationsInCachePair = ::locationsAt.cache(
         CacheOptions(
             weakKeys = false,
             weakValues = true,
@@ -291,7 +291,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      */
     fun updateBuildingIndex() {
         var newIndex = RTree.star().create<Building, Rectangle>()
-        buildingLayer.forEach { coordinate, building ->
+        buildingLayer.toList().forEach { pair ->
+            val (coordinate, building) = pair
             newIndex = newIndex.add(
                 building, Geometries.rectangle(
                     coordinate.x.toFloat(),
@@ -690,7 +691,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun zone(type: Zone, from: BlockCoordinate, to: BlockCoordinate) {
         BlockCoordinate.iterateAll(from, to) {
             if (!isWaterAt(it)) {
-                if (locationsIn(it).count() == 0) {
+                if (locationsAt(it).count() == 0) {
                     zoneLayer[it] = type
                 }
             }
@@ -761,7 +762,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 synchronized(powerLineLayer) {
                     powerLineLayer.remove(coordinate)
                 }
-                val buildings = locationsIn(coordinate)
+                val buildings = locationsAt(coordinate)
 
                 // FIXME: I strongly suspect this doesn't work...
                 // now kill all those contracts...
@@ -903,25 +904,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     /**
-     * Checks map at a given [BlockCoordinate] to return a list of [Location]s
-     * @param block coordinate to check at
-     */
-    fun locationsIn(block: BlockCoordinate): List<Location> {
-        val nearestBuildings = nearestBuildings(block, MAX_BUILDING_SIZE + 1)
-        val filteredBuildings = nearestBuildings.filter {
-            val coordinate = it.coordinate
-            val building = it.building
-            buildingCorners(building, coordinate).includes(block)
-        }
-        // now we also need the power lines that are here...
-        powerLineLayer[block]?.let {
-            return filteredBuildings.plus(Location(this, block, it))
-        }
-        return filteredBuildings
-    }
-
-    /**
-     * We will probably end up having a desirabilty layer for each zone and each level... but I am not 100% sure yet
+     * We will probably end up having a desirability layer for each zone and each level... but I am not 100% sure yet
      * @param type [Zone] type to get
      * @param level level of matching desirability layer (1-5)
      */

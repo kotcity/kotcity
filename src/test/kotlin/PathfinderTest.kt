@@ -152,7 +152,13 @@ class PathfinderTest {
 
         pathfinder.purgeCaches()
 
-        val trip = pathfinder.tripTo(listOf(twoBelowStart), listOf(bBlock))
+        val trip = pathfinder.tripTo(listOf(twoBelowStart), listOf(bBlock.top))
+        if (trip != null) {
+            println("TRIP: ")
+            trip.nodes.forEach { node ->
+                println("${node.coordinate} ${node.transitType}")
+            }
+        }
         assertTrue(trip == null, "Path from a to b should not exist.")
     }
 
@@ -177,5 +183,6 @@ class PathfinderTest {
 
         val trip = pathfinder.tripTo(listOf(fourBelowStart), listOf(oneBelowEnd))
         assertTrue(trip?.blocks()?.count() == 16, "Path from a to b should be length 16.")
+
     }
 }
