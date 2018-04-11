@@ -137,30 +137,37 @@ class PathfinderTest {
 
         pathfinder.purgeCaches()
 
-        val trip = pathfinder.tripTo(listOf(twoBelowStart), listOf(bBlock))
+        val trip = pathfinder.tripTo(listOf(twoBelowStart), listOf(bBlock.top))
+        if (trip != null) {
+            println("TRIP: ")
+            trip.nodes.forEach { node ->
+                println("${node.coordinate} ${node.transitType}")
+            }
+        }
         assertTrue(trip == null, "Path from a to b should not exist.")
     }
 
     @Test
     fun testRailroadsWithStartAndEndStations() {
-        val aBlock = BlockCoordinate(10, 10)
-        val oneBelowStart = aBlock.bottom
+        val originBlock = BlockCoordinate(10, 10)
+        val oneBelowStart = originBlock.bottom
         val twoBelowStart = oneBelowStart.bottom
-        val bBlock = BlockCoordinate(20, 10)
-        val oneBelowEnd = bBlock.bottom
+        val destinationBlock = BlockCoordinate(20, 10)
+        val oneBelowEnd = destinationBlock.bottom
 
         val flatMap = CityMap.flatMap(100, 100)
         val pathfinder = Pathfinder(flatMap)
         pathfinder.debug = true
 
         flatMap.buildRoad(twoBelowStart, twoBelowStart)
-        flatMap.buildRailroad(aBlock, bBlock)
+        flatMap.buildRailroad(originBlock, destinationBlock)
         flatMap.build(TrainStation(), oneBelowStart)
         flatMap.build(TrainStation(), oneBelowEnd)
 
         pathfinder.purgeCaches()
 
         val trip = pathfinder.tripTo(listOf(twoBelowStart), listOf(oneBelowEnd))
-        assertTrue(trip?.blocks()?.count() == 14, "Path from a to b should be length 14.")
+        val count = trip?.blocks()?.count()
+        assertTrue(count == 14, "Path from a to b should be length 14 instead of $count")
     }
 }

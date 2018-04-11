@@ -134,7 +134,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return destinations.map { coordinate ->
             var score = manhattanDistance(current, coordinate)
             // see if this is road and lower score by a tiny bit...
-            val locations = cityMap.cachedLocationsIn(current)
+            val locations = cityMap.locationsAt(current)
             if (locations.count() > 0) {
                 val building = locations.first().building
                 when (building) {
@@ -187,36 +187,74 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         }
     }
 
-    private fun drivable(node: NavigationNode): Boolean {
-        // make sure we got a road under it...
-        val locations = cityMap.cachedLocationsIn(node.coordinate)
-        if (locations.count() > 0) {
-            val building = locations.first().building
-            return building is Road && (building.direction == Direction.STATIONARY || building.direction != oppositeDir(
-                node.direction
-            ))
+    private fun drivable(sourceNode: NavigationNode, destinationNode: NavigationNode): Boolean {
+        // kick it out if it's an invalid transition...
+        if (sourceNode.transitType == TransitType.ROAD) {
+            if (destinationNode.transitType == TransitType.RAILROAD) {
+                // can't go from ROAD -> RAILROAD
+                debug("Can't go directly from ROAD -> RAILROAD")
+                return false
+            } else if (destinationNode.transitType == TransitType.RAIL_STATION) {
+                // OK to go from ROAD -> RAIL_STATION
+                return true
+            } else if (destinationNode.transitType == TransitType.ROAD) {
+                // if src == ROAD and dest == ROAD do 1 way check...
+                // make sure we got a road under it...
+                val locations = cityMap.cachedLocationsIn(destinationNode.coordinate)
+                if (locations.count() > 0) {
+                    val building = locations.first().building
+                    return building is Road && (building.direction == Direction.STATIONARY || building.direction != oppositeDir(
+                            destinationNode.direction
+                    ))
+                }
+            }
+        } else if (sourceNode.transitType == TransitType.RAILROAD) {
+            when {
+                destinationNode.transitType == TransitType.ROAD -> {
+                    // cannot go from railroad to road...
+                    debug("Can't go directly from RAILROAD -> ROAD")
+                    return false
+                }
+                destinationNode.transitType == TransitType.RAIL_STATION -> return true
+                destinationNode.transitType == TransitType.RAILROAD -> return true
+                else -> {
+                }
+            }
+        } else if (sourceNode.transitType == TransitType.RAIL_STATION) {
+            // we can go to any kind of destination... rail OR road...
+            return true
         }
+        debug("Unknown transit type: ${sourceNode.transitType} to ${destinationNode.transitType}")
         return false
     }
 
     private fun coordIsRailroad(coordinate: BlockCoordinate): Boolean {
-        val locations = cityMap.cachedLocationsIn(coordinate)
+        val locations = cityMap.locationsAt(coordinate)
         val building = if (locations.isEmpty()) null else locations.first().building
         return !locations.isEmpty() && (building is Railroad || building is RailroadCrossing)
     }
 
-    private inline fun isRailBuilding(coordinate: BlockCoordinate): Boolean {
+    private fun isRailBuilding(coordinate: BlockCoordinate): Boolean {
         return isBuildingAt(coordinate, RailDepot::class) || isBuildingAt(coordinate, TrainStation::class)
     }
 
     private fun canGoViaTrain(fromCoordinate: BlockCoordinate, toCoordinate: BlockCoordinate): Boolean {
 
-        val isSourceRail = coordIsRailroad(fromCoordinate)
-        val isTargetRail = coordIsRailroad(toCoordinate)
-        val isEnteringRail = isRailBuilding(fromCoordinate) && isTargetRail
+        // break this up so we can hopefully bail out early...
         val isTargetStation = isRailBuilding(toCoordinate)
+        if (isTargetStation) {
+            return true
+        }
 
-        return isTargetStation || isSourceRail && isTargetRail || isEnteringRail // || isExitingRail
+        val isTargetRail = coordIsRailroad(toCoordinate)
+        val isSourceRail = coordIsRailroad(fromCoordinate)
+
+        if (isSourceRail && isTargetRail) {
+            return true
+        }
+
+        // finally, return if we are exiting rail...
+        return isRailBuilding(fromCoordinate) && isTargetRail
     }
 
     private fun isGround(node: NavigationNode) = cityMap.groundLayer[node.coordinate]?.type == TileType.GROUND
@@ -360,22 +398,11 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
     private fun truePathfind(
         source: List<BlockCoordinate>,
-        destinations: List<BlockCoordinate>,
-        needsRoads: Boolean = true
+        destinations: List<BlockCoordinate>
     ): Path? {
-        // switch these to list of navigation nodes...
-        val openList = source.map {
-            NavigationNode(
-                cityMap,
-                it,
-                null,
-                cachedHeuristic(it, destinations),
-                TransitType.ROAD,
-                Direction.STATIONARY,
-                false
-            )
-        }.toMutableSet()
 
+        // switch these to list of navigation nodes...
+        val openList = generateOpenList(source, destinations)
         val closedList = mutableSetOf<NavigationNode>()
 
         var done = false
@@ -385,11 +412,12 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         while (!done) {
             // bail out if we have no nodes left in the open list
             val activeNode = openList.minBy { it.score } ?: return null
+
             // now remove it from open list...
             openList.remove(activeNode)
             closedList.add(activeNode)
 
-            if (destinations.contains(activeNode.coordinate) && !coordIsRailroad(activeNode.coordinate)) {
+            if (destinations.contains(activeNode.coordinate)) {
                 done = true
                 lastNode = activeNode
             }
@@ -398,62 +426,41 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             // TODO: if we are within 3 blocks we can disregard drivable nodes...
             val distanceToGoal = destinations.map { activeNode.coordinate.distanceTo(it) }.min() ?: 999.0
 
-            // TODO: maybe pull out into lambda so we can re-use pathfinder...
-            fun maybeAppendNode(node: NavigationNode) {
-                if (!closedList.contains(node) && !openList.contains(node)) {
-                    // if we are within 3 we can just skip around...
-                    // BUG: this means if we are super close we can just ignore roads...
-
-                    // TODO: this the problem... when we get close enough we gotta cast to the destination...
-                    if (distanceToGoal <= 3) {
-
-                        val newNode = node.copy(score = cachedHeuristic(node.coordinate, destinations))
-
-                        if (isGround(newNode) || destinations.contains(newNode.coordinate)) {
-                            openList.add(newNode)
-                        } else {
-                            closedList.add(newNode)
-                        }
-                    } else {
-                        if (needsRoads) {
-                            if (canGoViaTrain(
-                                    activeNode.coordinate,
-                                    node.coordinate
-                                ) || drivable(node) || destinations.contains(node.coordinate)
-                            ) {
-                                openList.add(node)
-                            } else {
-                                closedList.add(node)
-                            }
-                        } else {
-                            if (destinations.contains(node.coordinate) || canGoViaTrain(
-                                    activeNode.coordinate,
-                                    node.coordinate
-                                )
-                            ) {
-                                openList.add(node)
-                            } else {
-                                closedList.add(node)
-                            }
-                        }
-                    }
-                }
-            }
-
             for (direction in listOf(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST)) {
                 // ok figure out the dang neighbors...
                 val delta = directionToBlockDelta(direction)
                 val nextBlock = activeNode.coordinate + delta
-                val nextNode = NavigationNode(
-                    cityMap,
-                    nextBlock,
-                    activeNode,
-                    activeNode.score + cachedHeuristic(nextBlock, destinations),
-                    TransitType.ROAD,
-                    direction,
-                    false
-                )
-                maybeAppendNode(nextNode)
+
+                // determine transitType for destination
+                val newTransitType = transitTypeFor(nextBlock)
+
+                // if we are on a road and the destination is here... we can hit it!
+                if (destinations.contains(nextBlock) && activeNode.transitType == TransitType.ROAD) {
+                    val nextNode = NavigationNode(
+                            cityMap,
+                            nextBlock,
+                            activeNode,
+                            activeNode.score + cachedHeuristic(nextBlock, destinations),
+                            TransitType.ROAD,
+                            direction,
+                            false
+                    )
+                    maybeAppendNode(activeNode, nextNode, openList, closedList, distanceToGoal, destinations)
+                } else {
+                    if (newTransitType != null) {
+                        // need to figure out the type of node we are now...
+                        val nextNode = NavigationNode(
+                                cityMap,
+                                nextBlock,
+                                activeNode,
+                                activeNode.score + cachedHeuristic(nextBlock, destinations),
+                                newTransitType,
+                                direction,
+                                false
+                        )
+                        maybeAppendNode(activeNode, nextNode, openList, closedList, distanceToGoal, destinations)
+                    }
+                }
             }
         }
 
@@ -471,5 +478,60 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
             Path(pathNodes.reversed())
         }
+    }
+
+    private fun transitTypeFor(coordinate: BlockCoordinate): TransitType? {
+        val building = cityMap.cachedLocationsIn(coordinate).firstOrNull() ?: return null
+        return when (building.building::class) {
+            Road::class -> TransitType.ROAD
+            RailDepot::class -> TransitType.RAIL_STATION
+            TrainStation::class -> TransitType.RAIL_STATION
+            Railroad::class -> TransitType.RAILROAD
+            else -> {
+                null
+            }
+        }
+    }
+
+    private fun maybeAppendNode(sourceNode: NavigationNode, destinationNode: NavigationNode, openList: MutableSet<NavigationNode>, closedList: MutableSet<NavigationNode>, distanceToGoal: Double, destinations: List<BlockCoordinate>) {
+        if (!closedList.contains(destinationNode) && !openList.contains(destinationNode)) {
+            // if we are within 3 we can just skip around...
+            // BUG: this means if we are super close we can just ignore roads...
+
+            // TODO: this the problem... when we get close enough we gotta cast to the destination...
+            if (distanceToGoal <= 3) {
+                val newNode = destinationNode.copy(score = cachedHeuristic(destinationNode.coordinate, destinations))
+                if (isGround(newNode) || destinations.contains(newNode.coordinate)) {
+                    openList.add(newNode)
+                } else {
+                    closedList.add(newNode)
+                }
+            } else {
+                if (sourceNode.transitType == TransitType.ROAD && destinations.contains(destinationNode.coordinate)) {
+                    openList.add(destinationNode)
+                } else {
+                    if (destinations.contains(destinationNode.coordinate) || drivable(sourceNode, destinationNode)) {
+                        openList.add(destinationNode)
+                    } else {
+                        closedList.add(destinationNode)
+                    }
+                }
+
+            }
+        }
+    }
+
+    private fun generateOpenList(source: List<BlockCoordinate>, destinations: List<BlockCoordinate>): MutableSet<NavigationNode> {
+        return source.map {
+            NavigationNode(
+                    cityMap,
+                    it,
+                    null,
+                    cachedHeuristic(it, destinations),
+                    TransitType.ROAD,
+                    Direction.STATIONARY,
+                    false
+            )
+        }.toMutableSet()
     }
 }
