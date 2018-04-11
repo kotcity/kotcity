@@ -1,6 +1,7 @@
 package kotcity.automata.util
 
 import kotcity.data.*
+import kotcity.pathfinding.Pathfinder
 import kotcity.util.Debuggable
 
 class BuildingBuilder(val cityMap: CityMap) : Debuggable {
@@ -12,7 +13,6 @@ class BuildingBuilder(val cityMap: CityMap) : Debuggable {
         var tries = 0
 
         while (tries < maxTries) {
-            // TODO: fuzz to 50% of building width...
             val fuzzedCoordinate: BlockCoordinate = coordinate.fuzz((newBuilding.width))
 
             val buildingZone: Zone? = findZoneForBuilding(newBuilding)
@@ -33,7 +33,13 @@ class BuildingBuilder(val cityMap: CityMap) : Debuggable {
     }
 
     private fun checkFootprint(buildingZone: Zone, buildingBlocks: List<BlockCoordinate>): Boolean {
-        return buildingBlocks.all { cityMap.zoneLayer[it] == buildingZone }
+        val isZoned = buildingBlocks.all { cityMap.zoneLayer[it] == buildingZone }
+
+        if (!isZoned) {
+            debug("Would have built but not all blocks were on the appropriate zone!")
+        }
+
+        return isZoned
     }
 
     private fun findZoneForBuilding(newBuilding: Building): Zone? {

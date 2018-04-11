@@ -2,6 +2,7 @@ package kotcity.automata
 
 import kotcity.automata.util.BuildingBuilder
 import kotcity.data.*
+import kotcity.pathfinding.Pathfinder
 import kotcity.util.Debuggable
 import kotcity.util.randomElement
 
@@ -14,6 +15,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
 
     private val assetManager = AssetManager(cityMap)
     private val buildingBuilder = BuildingBuilder(cityMap)
+    private val pathfinder: Pathfinder = Pathfinder(cityMap)
     override var debug = false
 
     /**
@@ -42,7 +44,9 @@ class Constructor(val cityMap: CityMap) : Debuggable {
                 // let's extract the blocks we should check... basically it is anywhere where desirability is off the floor...
                 val potentialLocations = layer.entries().map { it.key }
 
-                val emptyBlocks = potentialLocations.filter { isEmpty(it) }
+                val nearRoad = potentialLocations.filter { pathfinder.nearbyRoad(listOf(it)) }
+
+                val emptyBlocks = nearRoad.filter { isEmpty(it) }
 
                 val withCorrectZoneType = emptyBlocks.filter { correctZoneType(zoneType, it) }
 
