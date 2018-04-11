@@ -36,13 +36,11 @@ data class Path(
         // because we have to replace it with a parent that has the other list
         // of nodes as a parent to preserve the chain...
         val newFirst = NavigationNode(
-            firstOfOther.cityMap,
             firstOfOther.coordinate,
             nodes.last(),
             firstOfOther.score,
             firstOfOther.transitType,
-            firstOfOther.direction,
-            firstOfOther.isOnRail
+            firstOfOther.direction
         )
 
         // lop off the first one and shove our new one in there...

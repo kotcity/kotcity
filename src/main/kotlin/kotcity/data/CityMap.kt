@@ -96,6 +96,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         DesirabilityLayer(Zone.INDUSTRIAL, 1)
     )
 
+    val outsideConnections = mutableListOf<BlockCoordinate>()
+
     val mainDistrict = District("Central district")
     val districts = mutableListOf(mainDistrict)
 
@@ -304,6 +306,41 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         locationsInCache.invalidateAll()
     }
 
+    fun updateOutsideConnections() {
+        val widthRange = -1..width
+        val heightRange = -1..height
+
+        outsideConnections.clear()
+        widthRange.forEach { x ->
+            val topCoord = BlockCoordinate(x, heightRange.first)
+            val topBuilding = buildingLayer[topCoord]
+            val bottomCoord = BlockCoordinate(x, heightRange.last)
+            val bottomBuilding = buildingLayer[bottomCoord]
+
+            if (topBuilding.isDrivable()) {
+                outsideConnections.add(topCoord)
+            }
+            if (bottomBuilding.isDrivable()) {
+                outsideConnections.add(bottomCoord)
+            }
+        }
+        heightRange.forEach { y ->
+            val leftCoord = BlockCoordinate(widthRange.first, y)
+            val leftBuilding = buildingLayer[leftCoord]
+            val rightCoord = BlockCoordinate(widthRange.last, y)
+            val rightBuilding = buildingLayer[rightCoord]
+
+            if (leftBuilding.isDrivable()) {
+                outsideConnections.add(leftCoord)
+            }
+            if (rightBuilding.isDrivable()) {
+                outsideConnections.add(rightCoord)
+            }
+        }
+    }
+
+    private fun Building?.isDrivable() = this is Road || this is Railroad || this is RailroadCrossing
+
     /**
      * Suggests a filename to save the city as... it's based off the name of the city but made safe for filenames
      */
@@ -470,46 +507,26 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * @return true if we can build here, false if not
      */
     fun canBuildBuildingAt(newBuilding: Building, coordinate: BlockCoordinate, waterCheck: Boolean = true): Boolean {
-
-        // OK... let's get nearby buildings to really cut this down...
         val newBuildingEnd =
             BlockCoordinate(coordinate.x + newBuilding.width - 1, coordinate.y + newBuilding.height - 1)
-
-        val newBuildingTopRight = BlockCoordinate(coordinate.x + newBuilding.width - 1, coordinate.y)
-        val newBuildingBottomLeft = BlockCoordinate(coordinate.x, coordinate.y + newBuilding.height - 1)
 
         if (waterCheck && waterFound(coordinate, newBuildingEnd)) {
             return false
         }
 
+        // OK... let's get nearby buildings to really cut this down...
         val nearby = nearestBuildings(coordinate)
         nearby.forEach { cityLocation: Location ->
             val building = cityLocation.building
-            val otherBuildingStart = cityLocation.coordinate
-            val otherBuildingEnd =
-                BlockCoordinate(otherBuildingStart.x + building.width - 1, otherBuildingStart.y + building.height - 1)
-            // now let's test...
-            // top left corner...
-            if (coordinate.x <= otherBuildingEnd.x && coordinate.x >= otherBuildingStart.x && coordinate.y <= otherBuildingEnd.y && coordinate.y >= otherBuildingStart.y) {
-                // collisionWarning("Collision with top left!", newBuilding, coordinate, building, cityLocation.coordinate)
-                return false
-            }
+            val otherCoord = cityLocation.coordinate
 
-            // bottom right corner...
-            if (newBuildingEnd.x <= otherBuildingEnd.x && newBuildingEnd.x >= otherBuildingStart.x && newBuildingEnd.y <= otherBuildingEnd.y && newBuildingEnd.y >= otherBuildingStart.y) {
-                // collisionWarning("Collision with bottom right!", newBuilding, coordinate, building, cityLocation.coordinate)
-                return false
-            }
+            val xOverlaps =
+                (coordinate.x <= otherCoord.x + building.width - 1 && coordinate.x + newBuilding.width - 1 >= otherCoord.x)
 
-            // top right corner...
-            if (newBuildingTopRight.x <= otherBuildingEnd.x && newBuildingTopRight.x >= otherBuildingStart.x && newBuildingTopRight.y <= otherBuildingEnd.y && newBuildingTopRight.y >= otherBuildingStart.y) {
-                // collisionWarning("Collision with top right!", newBuilding, coordinate, building, cityLocation.coordinate)
-                return false
-            }
+            val yOverlaps =
+                (coordinate.y <= otherCoord.y + building.height - 1 && coordinate.y + newBuilding.height - 1 >= otherCoord.y)
 
-            // bottom left corner...
-            if (newBuildingBottomLeft.x <= otherBuildingEnd.x && newBuildingBottomLeft.x >= otherBuildingStart.x && newBuildingBottomLeft.y <= otherBuildingEnd.y && newBuildingBottomLeft.y >= otherBuildingStart.y) {
-                // collisionWarning("Collision with bottom left!", newBuilding, coordinate, building, cityLocation.coordinate)
+            if (xOverlaps && yOverlaps) {
                 return false
             }
         }
@@ -555,6 +572,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
         }
         updateBuildingIndex()
+        updateOutsideConnections()
     }
 
     /**
@@ -602,6 +620,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
         }
         updateBuildingIndex()
+        updateOutsideConnections()
     }
 
     /**
@@ -723,6 +742,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 val buildingBlocks = buildingBlocks(block, building)
                 buildingBlocks.forEach { zoneLayer.remove(it) }
             }
+            if (building.isDrivable()) {
+                updateOutsideConnections()
+            }
             if (updateBuildingIndex) {
                 updateBuildingIndex()
             }
@@ -763,6 +785,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             }
         }
         updateBuildingIndex()
+        updateOutsideConnections()
     }
 
     /**
