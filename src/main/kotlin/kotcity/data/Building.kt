@@ -350,9 +350,9 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
      * @param building The building
      * @return a list of matching blocks
      */
-    fun buildingBlocks(coordinate: BlockCoordinate, building: Building): List<BlockCoordinate> {
-        val xRange = coordinate.x..coordinate.x + (building.width - 1)
-        val yRange = coordinate.y..coordinate.y + (building.height - 1)
+    fun buildingBlocks(coordinate: BlockCoordinate): List<BlockCoordinate> {
+        val xRange = coordinate.x..coordinate.x + (this.width - 1)
+        val yRange = coordinate.y..coordinate.y + (this.height - 1)
         return xRange.flatMap { x -> yRange.map { BlockCoordinate(x, it) } }
     }
 

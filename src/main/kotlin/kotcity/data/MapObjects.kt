@@ -27,6 +27,6 @@ enum class Zone {
  */
 data class Location(val coordinate: BlockCoordinate, val building: Building) {
     fun blocks(): List<BlockCoordinate> {
-        return building.buildingBlocks(coordinate, building)
+        return building.buildingBlocks(coordinate)
     }
 }

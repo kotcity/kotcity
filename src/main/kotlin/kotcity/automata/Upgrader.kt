@@ -82,7 +82,7 @@ class Upgrader(val cityMap: CityMap) : Debuggable {
     }
 
     private fun tryToBuildAt(coordinate: BlockCoordinate, newBuilding: Building): Boolean {
-        val proposedFootprint: List<BlockCoordinate> = newBuildingBlocks(coordinate, newBuilding)
+        val proposedFootprint: List<BlockCoordinate> = newBuilding.buildingBlocks(coordinate)
         debug { "The building will consume blocks: $proposedFootprint" }
         // OK... now look at each block... the level has to be BENEATH us
         val emptyOrLower = proposedFootprint.all { emptyOrLowerLevelThan(it, newBuilding.level) }
@@ -91,7 +91,7 @@ class Upgrader(val cityMap: CityMap) : Debuggable {
             debug { "We found a great location!" }
             // we must bulldoze all the buildings in the proposed footprint...
             proposedFootprint.forEach { cityMap.bulldoze(it, it) }
-            debug {"Building the building: $newBuilding" }
+            debug { "Building the building: $newBuilding" }
             cityMap.build(newBuilding, coordinate)
             return true
         } else {
@@ -115,25 +115,5 @@ class Upgrader(val cityMap: CityMap) : Debuggable {
             return false
         }
         return locations.all { it.building.level < level }
-    }
-
-    private fun newBuildingBlocks(coordinate: BlockCoordinate, newBuilding: Building): List<BlockCoordinate> {
-        val bottomRight = BlockCoordinate(
-            coordinate.x + newBuilding.width - 1,
-            coordinate.y + newBuilding.height - 1
-        )
-        val blockRange = BlockRange(coordinate, bottomRight)
-        debug { "Our block range: $blockRange" }
-        return blockRange.blocks()
-    }
-}
-
-data class BlockRange(private val topLeft: BlockCoordinate, private val bottomRight: BlockCoordinate) {
-    fun blocks(): List<BlockCoordinate> {
-        val blocks = mutableListOf<BlockCoordinate>()
-        BlockCoordinate.iterateAll(topLeft, bottomRight) {
-            blocks.add(it)
-        }
-        return blocks
     }
 }
