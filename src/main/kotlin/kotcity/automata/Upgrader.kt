@@ -108,7 +108,7 @@ class Upgrader(val cityMap: CityMap) : Debuggable {
 
     private fun emptyOrLowerLevelThan(coordinate: BlockCoordinate, level: Int): Boolean {
         val locations = cityMap.locationsAt(coordinate)
-        if (locations.isEmpty()) {
+        if (locations.toList().isEmpty()) {
             return true
         }
         if (locations.any { it.building.zone() != Zone.RESIDENTIAL || it.building.zone() != Zone.COMMERCIAL || it.building.zone() != Zone.INDUSTRIAL }) {

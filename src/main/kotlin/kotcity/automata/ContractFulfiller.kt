@@ -23,6 +23,9 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         resourceFinder.debug = debug
     }
 
+    private val ticksToSkip = 6 // only do our thing every 6 ticks...
+    private val tickCounts = mutableMapOf<Location, Int>().withDefault { ticksToSkip }
+
     fun signContracts(shuffled: Boolean = true, maxMillis: Long = 5000, parallel: Boolean = true) {
         if (!parallel) {
             locationsNeedingContracts().forEach { handleBuilding(it) }
@@ -52,11 +55,22 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                         // kick them off in the background...
                         val jobList = mutableListOf<Job>()
                         contractCollection.toList().shuffled().forEach { location: Location ->
-                            val job = launch(CommonPool, parent = contractJobs) {
-                                handleBuilding(location)
-                                howManyProcessed += 1
+
+                            // see if we even have to bother...
+                            val ticksSinceLastContractFulfillment = tickCounts[location] ?: ticksToSkip
+
+                            if (ticksSinceLastContractFulfillment >= ticksToSkip) {
+                                tickCounts[location] = 0
+
+                                val job = launch(CommonPool, parent = contractJobs) {
+                                    handleBuilding(location)
+                                    howManyProcessed += 1
+                                }
+                                jobList.add(job)
+                            } else {
+                                tickCounts[location] = ticksSinceLastContractFulfillment + 1
+                                debug { "Skipping $location since it tried to find contracts recently..." }
                             }
-                            jobList.add(job)
                         }
                         jobList.forEach { it.join() }
                         // we need to make sure the size is decreasing...
@@ -70,7 +84,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                     }
                 }
             } catch (ex: CancellationException) {
-                debug{ "Reached timeout of $maxMillis milliseconds! Cancelling all outstanding jobs!" }
+                debug { "Reached timeout of $maxMillis milliseconds! Cancelling all outstanding jobs!" }
                 contractJobs.cancelAndJoin()
             } finally {
                 // update JMX...
@@ -82,14 +96,14 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         debug { "$howManyNeedContracts buildings needed contracts and we attempted to create $howManyProcessed" }
     }
 
-    private fun handleBuilding(entry: Location) {
-        val coordinate = entry.coordinate
-        val building = entry.building
+    private fun handleBuilding(location: Location) {
+        val coordinate = location.coordinate
+        val building = location.building
 
         val buildingBlocks = cityMap.buildingBlocks(coordinate, building)
 
         handleConsumes(building, buildingBlocks, coordinate)
-        // handleProduces(building, buildingBlocks, coordinate)
+        handleProduces(building, buildingBlocks, coordinate)
     }
 
     private fun handleProduces(building: Building, buildingBlocks: List<BlockCoordinate>, coordinate: BlockCoordinate) {
@@ -125,8 +139,8 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
 
                         if (quantity > 0) {
                             val newContract = Contract(buildingTradeEntity, otherEntity, tradeable, quantity, path)
-                            debug{ "" }
-                            debug{ "${building.name}: Signed contract with ${otherEntity.description()} to sell $quantity $tradeable" }
+                            debug { "" }
+                            debug { "${building.name}: Signed contract with ${otherEntity.description()} to sell $quantity $tradeable" }
                             otherEntity.addContract(newContract)
                             buildingTradeEntity.addContract(newContract)
                             debug { "${building.name} now has ${building.currentQuantityForSale(tradeable)} $tradeable left to provide." }
@@ -134,7 +148,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                         }
                     }
                 } else {
-                    debug {"Cannot find any place to sell $tradeable nearby. Won't bother with pathfinding..."}
+                    debug { "Cannot find any place to sell $tradeable nearby. Won't bother with pathfinding..." }
                     done = true
                 }
             }
@@ -190,7 +204,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                             }
                         }
                     } else {
-                        debug{ "Could not find $needsCount $tradeable for ${building.name} at $coordinate" }
+                        debug { "Could not find $needsCount $tradeable for ${building.name} at $coordinate" }
                     }
                 }
             }
@@ -213,10 +227,10 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         (1..needsCount).reversed().forEach { quantity ->
             val source = resourceFinder.findSource(coordinates, tradeable, quantity)
             if (source != null) {
-                debug { "Was able to find a source for $needsCount $tradeable!"}
+                debug { "Was able to find a source for $needsCount $tradeable!" }
                 return source
             } else {
-                debug { "Was NOT able to find a source for $needsCount $tradeable"}
+                debug { "Was NOT able to find a source for $needsCount $tradeable" }
             }
         }
         return null

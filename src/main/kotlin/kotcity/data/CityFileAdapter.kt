@@ -236,11 +236,11 @@ object CityFileAdapter : Debuggable {
                     return@forEach
                 }
 
-                toBuilding.building.createContract(
-                    toBuilding.coordinate,
-                    CityTradeEntity(
+                fromBuilding.building.createContract(
                         fromBuilding.coordinate,
-                        fromBuilding.building
+                    CityTradeEntity(
+                        toBuilding.coordinate,
+                        toBuilding.building
                     ), tradeable, quantity, path
                 )
             }

@@ -96,9 +96,9 @@ class TrafficAnimationRenderer(
         }
     }
 
-    private fun verticalRoad(coordinate: BlockCoordinate) = hasRoad(coordinate.top) || hasRoad(coordinate.bottom)
+    private fun verticalRoad(coordinate: BlockCoordinate) = hasRoad(coordinate.top()) || hasRoad(coordinate.bottom())
 
-    private fun horizontalRoad(coordinate: BlockCoordinate) = hasRoad(coordinate.left) || hasRoad(coordinate.right)
+    private fun horizontalRoad(coordinate: BlockCoordinate) = hasRoad(coordinate.left()) || hasRoad(coordinate.right())
 
     private fun hasRoad(coordinate: BlockCoordinate) = cityMap.cachedLocationsIn(coordinate).any { it.building is Road }
 

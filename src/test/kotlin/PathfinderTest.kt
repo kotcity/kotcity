@@ -139,8 +139,8 @@ class PathfinderTest {
     fun testRailroadsWithStartStation() {
         val aBlock = BlockCoordinate(10, 10)
         val bBlock = BlockCoordinate(20, 10)
-        val oneBelowStart = aBlock.bottom
-        val twoBelowStart = oneBelowStart.bottom
+        val oneBelowStart = aBlock.bottom()
+        val twoBelowStart = oneBelowStart.bottom()
 
         val flatMap = CityMap.flatMap(100, 100)
         val pathfinder = Pathfinder(flatMap)
@@ -152,7 +152,7 @@ class PathfinderTest {
 
         pathfinder.purgeCaches()
 
-        val trip = pathfinder.tripTo(listOf(twoBelowStart), listOf(bBlock.top))
+        val trip = pathfinder.tripTo(listOf(twoBelowStart), listOf(bBlock.top()))
         if (trip != null) {
             println("TRIP: ")
             trip.nodes.forEach { node ->
@@ -165,10 +165,10 @@ class PathfinderTest {
     @Test
     fun testRailroadsWithStartAndEndStations() {
         val aBlock = BlockCoordinate(10, 10)
-        val oneBelowStart = aBlock.bottom
-        val fourBelowStart = oneBelowStart.bottom.bottom.bottom
+        val oneBelowStart = aBlock.bottom()
+        val fourBelowStart = oneBelowStart.bottom().bottom().bottom()
         val bBlock = BlockCoordinate(20, 10)
-        val oneBelowEnd = bBlock.bottom
+        val oneBelowEnd = bBlock.bottom()
 
         val flatMap = CityMap.flatMap(100, 100)
         val pathfinder = Pathfinder(flatMap)

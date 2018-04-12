@@ -263,7 +263,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
     private fun isGround(node: NavigationNode) = cityMap.groundLayer[node.coordinate]?.type == TileType.GROUND
 
-    // OK... the REAL way pathfinding works is we have to find ourselves a road first... if we don't step on a road
+    // OK... the REAL way path finding works is we have to find ourselves a road first... if we don't step on a road
     // our path isn't valid...
     fun tripTo(
             source: List<BlockCoordinate>,
@@ -306,16 +306,6 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
     }
 
-    private fun directionToBlockDelta(direction: Direction): BlockCoordinate {
-        return when (direction) {
-            Direction.NORTH -> BlockCoordinate(0, -1)
-            Direction.SOUTH -> BlockCoordinate(0, 1)
-            Direction.EAST -> BlockCoordinate(1, 0)
-            Direction.WEST -> BlockCoordinate(-1, 0)
-            Direction.STATIONARY -> BlockCoordinate(0, 0)
-        }
-    }
-
     private fun isBuildingAt(coordinate: BlockCoordinate, clazz: KClass<*>): Boolean {
         cityMap.cachedLocationsIn(coordinate).forEach {
             if (clazz.isInstance(it.building)) {
@@ -326,7 +316,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     }
 
     private fun path(start: BlockCoordinate, direction: Direction, maxLength: Int): Path? {
-        val delta = directionToBlockDelta(direction)
+        val delta = direction.toDelta()
         var currentBlock = start
 
         val pathBlocks = mutableListOf(currentBlock)
@@ -428,8 +418,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
             for (direction in listOf(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST)) {
                 // ok figure out the dang neighbors...
-                val delta = directionToBlockDelta(direction)
-                val nextBlock = activeNode.coordinate + delta
+                val nextBlock = blockInDirection(activeNode.coordinate, direction)
 
                 // determine transitType for destination
                 val newTransitType = transitTypeFor(nextBlock)
@@ -473,6 +462,16 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             }
 
             Path(pathNodes.reversed())
+        }
+    }
+
+    private fun blockInDirection(coordinate: BlockCoordinate, direction: Direction): BlockCoordinate {
+        return when(direction) {
+            Direction.NORTH -> coordinate.top()
+            Direction.SOUTH -> coordinate.bottom()
+            Direction.EAST -> coordinate.right()
+            Direction.WEST -> coordinate.left()
+            Direction.STATIONARY -> coordinate
         }
     }
 
