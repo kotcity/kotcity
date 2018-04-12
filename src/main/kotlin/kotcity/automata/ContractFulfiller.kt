@@ -1,5 +1,7 @@
 package kotcity.automata
 
+import com.github.benmanes.caffeine.cache.Caffeine
+import com.github.benmanes.caffeine.cache.LoadingCache
 import kotcity.data.*
 import kotcity.data.Tunable.MAX_RESOURCE_DISTANCE
 import kotcity.jmx.KotCity
@@ -7,6 +9,7 @@ import kotcity.pathfinding.Path
 import kotcity.util.Debuggable
 import kotcity.util.randomElements
 import kotlinx.coroutines.experimental.*
+import java.util.concurrent.TimeUnit
 
 class ContactFulfiller(val cityMap: CityMap) : Debuggable {
 
@@ -16,15 +19,22 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
             resourceFinder.debug = value
         }
 
+    companion object {
+        private const val ticksToSkip = 6 // only do our thing every 6 ticks...
+
+        // BUG:
+        // shit... this will grow unbound...
+        private val tickCounts: LoadingCache<Location, Int> = Caffeine.newBuilder()
+                .expireAfterAccess(1, TimeUnit.MINUTES)
+                .build<Location, Int> { _ -> ticksToSkip }
+    }
+
     private val resourceFinder = ResourceFinder(cityMap)
     private val mBean = KotCity
 
     init {
         resourceFinder.debug = debug
     }
-
-    private val ticksToSkip = 6 // only do our thing every 6 ticks...
-    private val tickCounts = mutableMapOf<Location, Int>().withDefault { ticksToSkip }
 
     fun signContracts(shuffled: Boolean = true, maxMillis: Long = 5000, parallel: Boolean = true) {
         if (!parallel) {
@@ -60,7 +70,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                             val ticksSinceLastContractFulfillment = tickCounts[location] ?: ticksToSkip
 
                             if (ticksSinceLastContractFulfillment >= ticksToSkip) {
-                                tickCounts[location] = 0
+                                tickCounts.put(location, 0)
 
                                 val job = launch(CommonPool, parent = contractJobs) {
                                     handleBuilding(location)
@@ -68,7 +78,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                                 }
                                 jobList.add(job)
                             } else {
-                                tickCounts[location] = ticksSinceLastContractFulfillment + 1
+                                tickCounts.put(location, ticksSinceLastContractFulfillment + 1)
                                 debug { "Skipping $location since it tried to find contracts recently..." }
                             }
                         }
@@ -94,6 +104,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         }
 
         debug { "$howManyNeedContracts buildings needed contracts and we attempted to create $howManyProcessed" }
+
     }
 
     private fun handleBuilding(location: Location) {

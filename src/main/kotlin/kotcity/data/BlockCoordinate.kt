@@ -3,6 +3,7 @@ package kotcity.data
 import kotcity.pathfinding.Direction
 import kotcity.util.intBetween
 import kotcity.util.reorder
+import nl.pvdberg.hashkode.hashKode
 import java.util.*
 
 /**
@@ -155,4 +156,8 @@ data class BlockCoordinate(
 
         return false
     }
+
+    override fun hashCode() = hashKode(
+            x,y
+    )
 }

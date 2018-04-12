@@ -83,6 +83,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.xmlgraphics/xmlgraphics-commons
     compile group: 'org.apache.xmlgraphics', name: 'xmlgraphics-commons', version: '2.2'
 
+    compile 'com.github.pvdberg1998:hashkode:1.2.3'
 
 }
 

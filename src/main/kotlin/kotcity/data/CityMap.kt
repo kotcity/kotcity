@@ -208,9 +208,23 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * @param callback pass a function that we'll call and pass a location in
      */
     fun eachLocation(callback: (Location) -> Unit) {
-        buildingLayer.toList().forEach { entry ->
-            callback(Location(this, entry.first, entry.second))
+        this.buildingIndex.entries().forEach {
+            callback(it.value())
         }
+    }
+
+    /**
+     * Takes a coordinate and a building and returns the "footprint" of the building.
+     * In other words, each block the building sits in.
+     *
+     * @param coordinate Coordinate of the building
+     * @param building The building
+     * @return a list of matching blocks
+     */
+    fun buildingBlocks(coordinate: BlockCoordinate, building: Building): List<BlockCoordinate> {
+        val xRange = coordinate.x..coordinate.x + (building.width - 1)
+        val yRange = coordinate.y..coordinate.y + (building.height - 1)
+        return xRange.flatMap { x -> yRange.map { BlockCoordinate(x, it) } }
     }
 
     /**
@@ -231,20 +245,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val mapMinElevation = groundLayer.values.map { it.elevation }.min() ?: 0.0
         val mapMaxElevation = groundLayer.values.map { it.elevation }.max() ?: 0.0
         return Pair(mapMinElevation, mapMaxElevation)
-    }
-
-    /**
-     * Takes a coordinate and a building and returns the "footprint" of the building.
-     * In other words, each block the building sits in.
-     *
-     * @param coordinate Coordinate of the building
-     * @param building The building
-     * @return a list of matching blocks
-     */
-    fun buildingBlocks(coordinate: BlockCoordinate, building: Building): List<BlockCoordinate> {
-        val xRange = coordinate.x..coordinate.x + (building.width - 1)
-        val yRange = coordinate.y..coordinate.y + (building.height - 1)
-        return xRange.flatMap { x -> yRange.map { BlockCoordinate(x, it) } }
     }
 
     /**
@@ -290,7 +290,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             buildingLayer.toList().forEach { pair ->
                 val (coordinate, building) = pair
                 newIndex = newIndex.add(
-                        Location(this, coordinate, building), Geometries.rectangle(
+                        Location(coordinate, building), Geometries.rectangle(
                         coordinate.x.toFloat(),
                         coordinate.y.toFloat(),
                         coordinate.x.toFloat() + building.width.toFloat() - 1,
@@ -894,7 +894,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun locations(): List<Location> {
         synchronized(buildingLayer) {
             val sequence = buildingLayer.entries.iterator().asSequence()
-            return sequence.map { Location(this, it.key, it.value) }.toList()
+            return sequence.map { Location(it.key, it.value) }.toList()
         }
     }
 }

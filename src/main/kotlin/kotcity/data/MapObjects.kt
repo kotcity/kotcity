@@ -22,15 +22,11 @@ enum class Zone {
 
 /**
  * Represents a pair of a building and its location in the city.
- * @param cityMap map to use
  * @param coordinate (top left) coordinate of building
  * @param building building we are referring to
  */
-data class Location(val cityMap: CityMap, val coordinate: BlockCoordinate, val building: Building) {
-    /**
-     * Returns the "footprint" of the building in [BlockCoordinate]s
-     */
+data class Location(val coordinate: BlockCoordinate, val building: Building) {
     fun blocks(): List<BlockCoordinate> {
-        return cityMap.buildingBlocks(coordinate, building)
+        return building.buildingBlocks(coordinate, building)
     }
 }

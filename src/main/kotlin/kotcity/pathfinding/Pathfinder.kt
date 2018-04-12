@@ -42,13 +42,6 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         const val MAX_DISTANCE = 50
     }
 
-    private val cachedHeuristicPair = ::heuristic.cache(
-            CacheOptions(weakKeys = false, weakValues = false, durationUnit = TimeUnit.SECONDS, durationValue = 60L)
-    )
-
-    private val heuristicCache = cachedHeuristicPair.first
-    private val cachedHeuristic = cachedHeuristicPair.second
-
     override var debug: Boolean = true
 
     /**
@@ -73,13 +66,6 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         }
 
         borderBlocks.toList()
-    }
-
-    /**
-     * Purges the cached results for the heuristic method.
-     */
-    fun purgeCaches() {
-        heuristicCache.invalidateAll()
     }
 
     // TODO: this is too slow... maybe cache?
@@ -428,7 +414,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                     val nextNode = NavigationNode(
                             nextBlock,
                             activeNode,
-                            activeNode.score + cachedHeuristic(nextBlock, destinations),
+                            activeNode.score + heuristic(nextBlock, destinations),
                             TransitType.ROAD,
                             direction
                     )
@@ -439,7 +425,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                         val nextNode = NavigationNode(
                                 nextBlock,
                                 activeNode,
-                                activeNode.score + cachedHeuristic(nextBlock, destinations),
+                                activeNode.score + heuristic(nextBlock, destinations),
                                 newTransitType,
                                 direction
                         )
@@ -495,7 +481,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
             // TODO: this the problem... when we get close enough we gotta cast to the destination...
             if (distanceToGoal <= 3) {
-                val newNode = destinationNode.copy(score = cachedHeuristic(destinationNode.coordinate, destinations))
+                val newNode = destinationNode.copy(score = heuristic(destinationNode.coordinate, destinations))
                 if (isGround(newNode) || destinations.contains(newNode.coordinate)) {
                     openList.add(newNode)
                 } else {
@@ -521,7 +507,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             NavigationNode(
                     it,
                     null,
-                    cachedHeuristic(it, destinations),
+                    heuristic(it, destinations),
                     TransitType.ROAD,
                     Direction.STATIONARY
             )

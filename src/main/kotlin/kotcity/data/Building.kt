@@ -339,6 +339,21 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
 
     override fun toString() = "Building(class=${this.javaClass} uuid=$uuid)"
 
+    /**
+     * Takes a coordinate and a building and returns the "footprint" of the building.
+     * In other words, each block the building sits in.
+     *
+     * @param coordinate Coordinate of the building
+     * @param building The building
+     * @return a list of matching blocks
+     */
+    fun buildingBlocks(coordinate: BlockCoordinate, building: Building): List<BlockCoordinate> {
+        val xRange = coordinate.x..coordinate.x + (building.width - 1)
+        val yRange = coordinate.y..coordinate.y + (building.height - 1)
+        return xRange.flatMap { x -> yRange.map { BlockCoordinate(x, it) } }
+    }
+
+
     fun zone(): Zone? {
         return when (this) {
             is Residential -> return Zone.RESIDENTIAL

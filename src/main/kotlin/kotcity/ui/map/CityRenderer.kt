@@ -419,7 +419,7 @@ class CityRenderer(
         val powerLines = visibleBlocks(padding = MAX_BUILDING_SIZE).mapNotNull {
             val building = cityMap.powerLineLayer[it]
             if (building != null) {
-                Location(cityMap, it, building)
+                Location(it, building)
             } else {
                 null
             }
