@@ -33,7 +33,6 @@ class Upgrader(val cityMap: CityMap) : Debuggable {
                         tryToUpgrade(location, newBuilding, location.building)
                     }
                 }
-
             }
         }
     }
@@ -90,8 +89,7 @@ class Upgrader(val cityMap: CityMap) : Debuggable {
 
     private fun sameZoneType(coordinate: BlockCoordinate, zone: Zone?): Boolean {
         zone ?: return false
-        val coordZone = cityMap.zoneLayer[coordinate]
-        return coordZone == zone
+        return cityMap.zoneLayer[coordinate] == zone
     }
 
     private fun emptyOrLowerLevelThan(coordinate: BlockCoordinate, level: Int): Boolean {

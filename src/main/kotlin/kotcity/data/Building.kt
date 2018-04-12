@@ -359,9 +359,9 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
 
     fun zone(): Zone? {
         return when (this) {
-            is Residential -> return Zone.RESIDENTIAL
-            is Commercial -> return Zone.COMMERCIAL
-            is Industrial -> return Zone.INDUSTRIAL
+            is Residential -> Zone.RESIDENTIAL
+            is Commercial -> Zone.COMMERCIAL
+            is Industrial -> Zone.INDUSTRIAL
             else -> null
         }
     }

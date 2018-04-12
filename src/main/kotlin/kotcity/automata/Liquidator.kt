@@ -2,7 +2,6 @@ package kotcity.automata
 
 import kotcity.data.*
 import kotcity.util.Debuggable
-import kotlin.reflect.KClass
 
 class Liquidator(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = false
@@ -22,7 +21,7 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
         bulldozedCounts[Zone.INDUSTRIAL] = 0
 
         if (bankruptLocations.isNotEmpty()) {
-            val howManyNeedDestruction : Int = Math.floor(bankruptLocations.count() * 0.10).toInt().coerceIn(1 .. 15)
+            val howManyNeedDestruction: Int = Math.floor(bankruptLocations.count() * 0.10).toInt().coerceIn(1..15)
             debug { "Blowing up $howManyNeedDestruction buildings..." }
 
             val start = System.currentTimeMillis()
@@ -35,7 +34,10 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
                 }
                 debug { "Building ${location.building.description} is bankrupt or has no goods! Blowing it up!" }
                 cityMap.bulldoze(location.coordinate, location.coordinate)
-                bulldozedCounts[zoneForBuilding(location.building::class)] = (bulldozedCounts[zoneForBuilding(location.building::class)] ?: 0) + 1
+
+                val zone = location.building.zone()
+                        ?: throw RuntimeException("Liquidator doesn't know to work with ${location.building::class}!")
+                bulldozedCounts[zone] = (bulldozedCounts[zone] ?: 0) + 1
             }
 
         }
@@ -46,17 +48,6 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
     private fun updateBulldozedCount(bulldozeCounts: MutableMap<Zone, Int>) {
         debug { "After all that blowing up, the count is: $bulldozeCounts" }
         cityMap.bulldozedCounts = bulldozeCounts
-    }
-
-    private fun zoneForBuilding(klass: KClass<out Building>): Zone {
-        return when (klass) {
-            Residential::class -> Zone.RESIDENTIAL
-            Commercial::class -> Zone.COMMERCIAL
-            Industrial::class -> Zone.INDUSTRIAL
-            else -> {
-                throw RuntimeException("Liquidator doesn't know to work with $klass!")
-            }
-        }
     }
 
     private fun locationsToDestroy(): List<Location> {
@@ -74,7 +65,7 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
     }
 
     private fun hasNoGoodsZot(building: Residential): Boolean {
-        val noGoodsZot = building.zots.find { it.type == ZotType.NO_GOODS && it.age > Tunable.MIN_ZOT_AGE}
+        val noGoodsZot = building.zots.find { it.type == ZotType.NO_GOODS && it.age > Tunable.MIN_ZOT_AGE }
         return noGoodsZot != null
     }
 }

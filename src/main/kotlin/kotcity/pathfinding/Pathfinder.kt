@@ -80,23 +80,10 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             buildingFilter: (Building, Int) -> Boolean
     ): List<BlockCoordinate> {
         return start.flatMap { coordinate ->
-            val buildings = cityMap.nearestBuildings(coordinate, MAX_DISTANCE)
-
-            buildings.filter {
-                val building = it.building
-                buildingFilter(building, quantity)
+            cityMap.nearestBuildings(coordinate, MAX_DISTANCE).filter {
+                buildingFilter(it.building, quantity)
             }
-        }.flatMap { blocksFor(it.building, it.coordinate) }
-    }
-
-    private fun blocksFor(building: Building, coordinate: BlockCoordinate): List<BlockCoordinate> {
-        val xRange = coordinate.x..(coordinate.x + building.width - 1)
-        val yRange = coordinate.y..(coordinate.y + building.height - 1)
-        return xRange.flatMap { x ->
-            yRange.map { y ->
-                BlockCoordinate(x, y)
-            }
-        }
+        }.flatMap { it.blocks() }
     }
 
     /**
