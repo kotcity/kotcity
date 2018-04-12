@@ -42,14 +42,18 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         const val MAX_DISTANCE = 50
     }
 
-    override var debug: Boolean = true
-
     private val cachedHeuristicPair = ::heuristic.cache(
             CacheOptions(weakKeys = false, weakValues = false, durationUnit = TimeUnit.SECONDS, durationValue = 60L)
     )
+
     private val heuristicCache = cachedHeuristicPair.first
     private val cachedHeuristic = cachedHeuristicPair.second
 
+    override var debug: Boolean = true
+
+    /**
+     * Coordinates that make up the border of the map
+     */
     private val mapBorders: List<BlockCoordinate> by lazy {
         // I found this frustrating to write and this code
         // can probably be improved upon...
@@ -192,7 +196,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         if (sourceNode.transitType == TransitType.ROAD) {
             if (destinationNode.transitType == TransitType.RAILROAD) {
                 // can't go from ROAD -> RAILROAD
-                debug("Can't go directly from ROAD -> RAILROAD")
+                debug { "Can't go directly from ROAD -> RAILROAD" }
                 return false
             } else if (destinationNode.transitType == TransitType.RAIL_STATION) {
                 // OK to go from ROAD -> RAIL_STATION
@@ -212,7 +216,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             when {
                 destinationNode.transitType == TransitType.ROAD -> {
                     // cannot go from railroad to road...
-                    debug("Can't go directly from RAILROAD -> ROAD")
+                    debug { "Can't go directly from RAILROAD -> ROAD" }
                     return false
                 }
                 destinationNode.transitType == TransitType.RAIL_STATION -> return true
@@ -224,7 +228,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             // we can go to any kind of destination... rail OR road...
             return true
         }
-        debug("Unknown transit type: ${sourceNode.transitType} to ${destinationNode.transitType}")
+        debug { "Unknown transit type: ${sourceNode.transitType} to ${destinationNode.transitType}" }
         return false
     }
 
@@ -283,7 +287,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         // bail out if we can't get to a road...
         val pathToNearestRoad = shortestCastToRoad(source, nearbyRoads.map { it.coordinate })
         if (pathToNearestRoad == null) {
-            debug("Could not find a path to the nearest road!")
+            debug { "Could not find a path to the nearest road!" }
             return null
         }
 
@@ -293,8 +297,8 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         // now try to go the rest of the way OR bail out...
         val restOfTheWay = truePathfind(listOf(startRoad), destinations)
         if (restOfTheWay == null) {
-            debug("Our source is $startRoad and destination is: $destinations")
-            debug("Now we can't find a path AFTER finding a road!")
+            debug { "Our source is $startRoad and destination is: $destinations" }
+            debug { "Now we can't find a path AFTER finding a road!" }
             return null
         }
 
@@ -378,7 +382,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         val pathsWithRoad = paths.filter { it.blocks().any { roadBlocks.contains(it) } }
 
         if (pathsWithRoad.isEmpty()) {
-            debug("Could not find any paths including road!")
+            debug { "Could not find any paths including road!" }
             return null
         }
 

@@ -15,7 +15,7 @@ object ContractChecker: Debuggable {
                     val to = it.to
                     val buildings = listOf(from, to)
                     if (buildings.any { missingBuilding(cityMap, it) }) {
-                        debug("We had a bum contract! Either $from or $to does not exist!")
+                        debug {"We had a bum contract! Either $from or $to does not exist!" }
                         building.contracts.remove(it)
                     }
                 }

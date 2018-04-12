@@ -152,14 +152,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     /**
      * An "r-tree" that lets us do relatively fast lookups on buildings in our city
      */
-    private var buildingIndex = RTree.create<Building, Rectangle>()!!
+    private var buildingIndex = RTree.star().create<Building, Rectangle>()!!
     private val locationsInCachePair = ::locationsAt.cache(
         CacheOptions(
             weakKeys = false,
             weakValues = false,
             limitSize = false,
-            durationUnit = TimeUnit.SECONDS,
-            durationValue = 15
+            durationUnit = TimeUnit.MINUTES,
+            durationValue = 5
         )
     )
 
@@ -182,7 +182,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         shipper.debug = false
         contractFulfiller.debug = false
         manufacturer.debug = false
-        constructor.debug = true
+        constructor.debug = false
         taxCollector.debug = false
         desirabilityUpdater.debug = false
         liquidator.debug = false
@@ -199,7 +199,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         time = simpleDateFormat.parse("2000-01-01 12:00:00")
     }
 
-    fun locationCacheStats(): CacheStats {
+    private fun locationCacheStats(): CacheStats {
         // cache...
         return locationsInCache.stats()
     }
@@ -277,7 +277,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun nearestBuildings(coordinate: BlockCoordinate, distance: Int = 10): List<Location> {
         val point = Geometries.point(coordinate.x.toFloat(), coordinate.y.toFloat())
         return buildingIndex.search(point, distance.toDouble())
-            .filter({ t -> t != null }).map { entry ->
+            .map { entry ->
                 val geometry = entry.geometry()
                 val building = entry.value()
                 if (geometry != null && building != null) {
@@ -294,16 +294,18 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      */
     fun updateBuildingIndex() {
         var newIndex = RTree.star().create<Building, Rectangle>()
-        buildingLayer.toList().forEach { pair ->
-            val (coordinate, building) = pair
-            newIndex = newIndex.add(
-                building, Geometries.rectangle(
-                    coordinate.x.toFloat(),
-                    coordinate.y.toFloat(),
-                    coordinate.x.toFloat() + building.width.toFloat() - 1,
-                    coordinate.y.toFloat() + building.height.toFloat() - 1
+        synchronized(buildingLayer) {
+            buildingLayer.toList().forEach { pair ->
+                val (coordinate, building) = pair
+                newIndex = newIndex.add(
+                        building, Geometries.rectangle(
+                        coordinate.x.toFloat(),
+                        coordinate.y.toFloat(),
+                        coordinate.x.toFloat() + building.width.toFloat() - 1,
+                        coordinate.y.toFloat() + building.height.toFloat() - 1
                 )
-            )
+                )
+            }
         }
         buildingIndex = newIndex
         locationsInCache.invalidateAll()

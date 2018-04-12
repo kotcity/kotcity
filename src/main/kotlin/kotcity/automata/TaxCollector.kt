@@ -18,7 +18,7 @@ class TaxCollector(val cityMap: CityMap) : Debuggable {
                     taxAmount = 5.0
                 }
                 building.setInventory(Tradeable.MONEY, Math.floor(money - taxAmount).toInt())
-                debug("${building.description} has been taxed $taxAmount")
+                debug { "${building.description} has been taxed $taxAmount" }
             }
         }
     }

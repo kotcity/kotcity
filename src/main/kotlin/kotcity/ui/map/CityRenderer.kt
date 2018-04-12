@@ -553,8 +553,25 @@ class CityRenderer(
         canvas.graphicsContext2D.fill = Color.WHITE
         canvas.graphicsContext2D.fillRoundRect(sx, sy, ex, ey, arcSize, arcSize)
 
-        canvas.graphicsContext2D.stroke = building.borderColor
+        canvas.graphicsContext2D.stroke = borderColor(building)
         canvas.graphicsContext2D.strokeRoundRect(sx, sy, ex, ey, arcSize, arcSize)
+    }
+
+    private fun borderColor(building: Building): Color {
+        return when (building) {
+            is Road -> Color.BLACK
+            is Residential -> Color.GREEN
+            is Commercial -> Color.BLUE
+            is Industrial -> Color.GOLD
+            is Civic -> Color.DARKGREY
+            is PowerPlant -> Color.BLACK
+            is Railroad -> Color.GRAY
+            is RailroadCrossing -> Color.GRAY
+            is PowerLine -> Color.BLACK
+            else -> {
+                Color.PINK
+            }
+        }
     }
 
     private fun drawZones() {

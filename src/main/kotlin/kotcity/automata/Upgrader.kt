@@ -20,7 +20,7 @@ class Upgrader(val cityMap: CityMap) : Debuggable {
 
         // pick 3 random
         if (lowestLevelEligable.isNotEmpty()) {
-            debug("We have some buildings to upgrade!")
+            debug { "We have some buildings to upgrade!" }
         }
         lowestLevelEligable.randomElements(1).forEach { location ->
             val oldLevel = location.building.level
@@ -40,30 +40,30 @@ class Upgrader(val cityMap: CityMap) : Debuggable {
 
     // TODO: check for that new building and old building overlap
     private fun tryToUpgrade(location: Location, newBuilding: Building, oldBuilding: Building) {
-        debug("Trying to upgrade ${location.coordinate} to ${newBuilding.description}")
+        debug { "Trying to upgrade ${location.coordinate} to ${newBuilding.description}" }
         // try to build it where it sits...
         val coordinate = location.coordinate
         if (tryToBuildAt(coordinate, newBuilding)) {
             return
         } else {
-            debug("Cannot just replace original building!")
+            debug { "Cannot just replace original building!" }
         }
 
         var tries = 0
         while (tries < maxTries) {
-            debug("Trying a fuzzed location!")
+            debug { "Trying a fuzzed location!" }
 
             val fuzzedCoordinate = coordinate.fuzz((newBuilding.width / 2).coerceAtLeast(1))
 
             val oldCoordinate = location.coordinate
 
             if (ensureOverlap(oldBuilding, oldCoordinate, newBuilding, fuzzedCoordinate)) {
-                debug("It does overlap!")
+                debug { "It does overlap!" }
                 if (tryToBuildAt(fuzzedCoordinate, newBuilding)) {
                     return
                 }
             } else {
-                debug("Sorry, the proposed building does NOT overlap!")
+                debug { "Sorry, the proposed building does NOT overlap!" }
             }
             tries++
         }
@@ -83,19 +83,19 @@ class Upgrader(val cityMap: CityMap) : Debuggable {
 
     private fun tryToBuildAt(coordinate: BlockCoordinate, newBuilding: Building): Boolean {
         val proposedFootprint: List<BlockCoordinate> = newBuildingBlocks(coordinate, newBuilding)
-        debug("The building will consume blocks: $proposedFootprint")
+        debug { "The building will consume blocks: $proposedFootprint" }
         // OK... now look at each block... the level has to be BENEATH us
         val emptyOrLower = proposedFootprint.all { emptyOrLowerLevelThan(it, newBuilding.level) }
         val sameZone = proposedFootprint.all { sameZoneType(it, newBuilding.zone()) }
         if (sameZone || emptyOrLower) {
-            debug("We found a great location!")
+            debug { "We found a great location!" }
             // we must bulldoze all the buildings in the proposed footprint...
             proposedFootprint.forEach { cityMap.bulldoze(it, it) }
-            debug("Building the building: $newBuilding")
+            debug {"Building the building: $newBuilding" }
             cityMap.build(newBuilding, coordinate)
             return true
         } else {
-            debug("Same zone: $sameZone, Empty or lower: $emptyOrLower")
+            debug { "Same zone: $sameZone, Empty or lower: $emptyOrLower" }
         }
         return false
     }
@@ -123,7 +123,7 @@ class Upgrader(val cityMap: CityMap) : Debuggable {
             coordinate.y + newBuilding.height - 1
         )
         val blockRange = BlockRange(coordinate, bottomRight)
-        debug("Our block range: $blockRange")
+        debug { "Our block range: $blockRange" }
         return blockRange.blocks()
     }
 }

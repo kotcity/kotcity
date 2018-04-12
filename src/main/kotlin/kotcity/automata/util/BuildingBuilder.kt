@@ -22,7 +22,7 @@ class BuildingBuilder(val cityMap: CityMap) : Debuggable {
                 val buildingBlocks = cityMap.buildingBlocks(fuzzedCoordinate, newBuilding)
                 val validToBuild: Boolean = checkFootprint(buildingZone, buildingBlocks)
                 if (validToBuild) {
-                    debug("Trying to build $newBuilding at $fuzzedCoordinate")
+                    debug { "Trying to build $newBuilding at $fuzzedCoordinate" }
                     if (cityMap.canBuildBuildingAt(newBuilding, fuzzedCoordinate)) {
                         cityMap.build(newBuilding, fuzzedCoordinate)
                         return
@@ -38,11 +38,11 @@ class BuildingBuilder(val cityMap: CityMap) : Debuggable {
         // we have to check near road again because we got fuzzed...
         val nearRoad = pathfinder.nearbyRoad(buildingBlocks)
         if (!isZoned) {
-            debug("Would have built but not all blocks were on the appropriate zone!")
+            debug { "Would have built but not all blocks were on the appropriate zone!" }
         }
 
         if (!nearRoad) {
-            debug("Would have built but we were not close enough to a road!")
+            debug { "Would have built but we were not close enough to a road!" }
         }
         return isZoned && nearRoad
     }

@@ -172,7 +172,7 @@ object CityFileAdapter : Debuggable {
                     RailDepot::class -> RailDepot()
                     TrainStation::class -> TrainStation()
                     else -> {
-                        debug("Unknown building: $it"); null
+                        debug { "Unknown building: $it" }; null
                     }
                 }
                 if (building != null) {
@@ -237,7 +237,7 @@ object CityFileAdapter : Debuggable {
                 }
 
                 toBuilding.building.createContract(
-                    cityMap,
+                    toBuilding.coordinate,
                     CityTradeEntity(
                         fromBuilding.coordinate,
                         fromBuilding.building

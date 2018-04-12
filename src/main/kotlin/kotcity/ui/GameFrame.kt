@@ -493,7 +493,7 @@ class GameFrame : View(), Debuggable {
             canvasPane.add(it)
             it.prefHeight(canvasPane.height - 20)
             it.prefWidth(canvasPane.width - 20)
-            debug("Traffic canvas was added!")
+            debug { "Traffic canvas was added!" }
         }
 
         zotCanvas.let {
@@ -501,7 +501,7 @@ class GameFrame : View(), Debuggable {
             canvasPane.add(it)
             it.prefHeight(canvasPane.height - 20)
             it.prefWidth(canvasPane.width - 20)
-            debug("ZotType canvas was added!")
+            debug { "ZotType canvas was added!" }
         }
 
         canvasPane.widthProperty().addListener { _, _, newValue ->
