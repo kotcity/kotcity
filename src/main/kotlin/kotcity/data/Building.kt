@@ -368,7 +368,13 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
         addInventory(Tradeable.MONEY, DEFAULT_MONEY)
     }
 
-    fun createContract(buildingCoordinate: BlockCoordinate, otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path?) {
+    fun createContract(
+        buildingCoordinate: BlockCoordinate,
+        otherTradeEntity: TradeEntity,
+        tradeable: Tradeable,
+        quantity: Int,
+        path: Path?
+    ) {
         val ourLocation = CityTradeEntity(buildingCoordinate, this)
         val newContract = Contract(otherTradeEntity, ourLocation, tradeable, quantity, path)
         synchronized(contracts) {
@@ -421,9 +427,13 @@ class Industrial : LoadableBuilding()
 class Civic : LoadableBuilding()
 
 const val DEFAULT_MONEY = 10
-val POWER_PLANT_TYPES = listOf("coal", "nuclear")
 
 class PowerPlant(override val variety: String) : Building() {
+
+    companion object {
+        const val VARIETY_COAL = "coal"
+        const val VARIETY_NUCLEAR = "nuclear"
+    }
 
     var powerGenerated: Int = 0
 
@@ -431,16 +441,16 @@ class PowerPlant(override val variety: String) : Building() {
     override var height = 4
 
     init {
-        if (!POWER_PLANT_TYPES.contains(variety)) {
-            throw RuntimeException("Invalid power plant type: $variety")
-        }
         when (variety) {
-            "coal" -> {
-                this.powerGenerated = 2000; this.description = "Coal Power Plant"
+            VARIETY_COAL -> {
+                this.powerGenerated = 2000
+                this.description = "Coal Power Plant"
             }
-            "nuclear" -> {
-                this.powerGenerated = 5000; this.description = "Nuclear Power Plant"
+            VARIETY_NUCLEAR -> {
+                this.powerGenerated = 5000
+                this.description = "Nuclear Power Plant"
             }
+            else -> throw RuntimeException("Invalid power plant type: $variety")
         }
         // let's make it consume workers...
         this.consumes[Tradeable.LABOR] = 10
