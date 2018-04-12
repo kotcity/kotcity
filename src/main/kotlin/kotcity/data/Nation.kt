@@ -29,7 +29,7 @@ data class OutsideTradeEntity(
     }
 
     override fun createContract(
-        map: CityMap,
+        coordinate: BlockCoordinate,
         otherTradeEntity: TradeEntity,
         tradeable: Tradeable,
         quantity: Int,

@@ -14,7 +14,7 @@ class PathfinderTest {
         assertTrue(outsidePath == null, "Path to outside should be null")
         // let's build a road right across...
         flatMap.buildRoad(BlockCoordinate(0, 50), BlockCoordinate(100, 50))
-        pathfinder.purgeCaches()
+
         outsidePath = pathfinder.pathToOutside(listOf(BlockCoordinate(50, 50)))?.blocks()
         assertTrue(outsidePath != null, "Path to outside should not be null")
         assertTrue(
@@ -42,7 +42,7 @@ class PathfinderTest {
 
         // build one way road
         flatMap.buildRoad(startBlock, endBlock, true)
-        pathfinder.purgeCaches()
+
         assertTrue(
             pathfinder.tripTo(startList, endList)?.blocks()?.count() == 51,
             "Path to outside should be 51 nodes."
@@ -51,7 +51,7 @@ class PathfinderTest {
 
         // build one way road branching off
         flatMap.buildRoad(branchStartBlock, branchEndBlock, true)
-        pathfinder.purgeCaches()
+
         assertTrue(
             pathfinder.tripTo(branchStartList, branchEndList)?.blocks()?.count() == 27,
             "Branch path totalScore should be 27 nodes."
@@ -129,8 +129,6 @@ class PathfinderTest {
 
         flatMap.buildRailroad(aBlock, bBlock)
 
-        pathfinder.purgeCaches()
-
         val trip = pathfinder.tripTo(listOf(aBlock), listOf(bBlock))
         assertTrue(trip == null, "Path from a to b should not exist.")
     }
@@ -139,8 +137,8 @@ class PathfinderTest {
     fun testRailroadsWithStartStation() {
         val aBlock = BlockCoordinate(10, 10)
         val bBlock = BlockCoordinate(20, 10)
-        val oneBelowStart = aBlock.bottom
-        val twoBelowStart = oneBelowStart.bottom
+        val oneBelowStart = aBlock.bottom()
+        val twoBelowStart = oneBelowStart.bottom()
 
         val flatMap = CityMap.flatMap(100, 100)
         val pathfinder = Pathfinder(flatMap)
@@ -150,9 +148,7 @@ class PathfinderTest {
         flatMap.buildRailroad(aBlock, bBlock)
         flatMap.build(TrainStation(), oneBelowStart)
 
-        pathfinder.purgeCaches()
-
-        val trip = pathfinder.tripTo(listOf(twoBelowStart), listOf(bBlock.top))
+        val trip = pathfinder.tripTo(listOf(twoBelowStart), listOf(bBlock.top()))
         if (trip != null) {
             println("TRIP: ")
             trip.nodes.forEach { node ->
@@ -165,10 +161,10 @@ class PathfinderTest {
     @Test
     fun testRailroadsWithStartAndEndStations() {
         val aBlock = BlockCoordinate(10, 10)
-        val oneBelowStart = aBlock.bottom
-        val fourBelowStart = oneBelowStart.bottom.bottom.bottom
+        val oneBelowStart = aBlock.bottom()
+        val fourBelowStart = oneBelowStart.bottom().bottom().bottom()
         val bBlock = BlockCoordinate(20, 10)
-        val oneBelowEnd = bBlock.bottom
+        val oneBelowEnd = bBlock.bottom()
 
         val flatMap = CityMap.flatMap(100, 100)
         val pathfinder = Pathfinder(flatMap)
@@ -178,8 +174,6 @@ class PathfinderTest {
         flatMap.buildRailroad(aBlock, bBlock)
         flatMap.build(TrainStation(), oneBelowStart)
         flatMap.build(TrainStation(), oneBelowEnd)
-
-        pathfinder.purgeCaches()
 
         val trip = pathfinder.tripTo(listOf(fourBelowStart), listOf(oneBelowEnd))
         assertTrue(trip?.blocks()?.count() == 16, "Path from a to b should be length 16.")

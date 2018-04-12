@@ -24,7 +24,7 @@ class ZotPopulator(val cityMap: CityMap) : Debuggable {
                 val existingZots = location.building.zots
                 val combinedZots: List<Zot> = combineZots(existingZots, finalNewZots)
                 if (combinedZots.isNotEmpty()) {
-                    debug("New zots for building: $combinedZots")
+                    debug { "New zots for building: $combinedZots" }
                 }
                 location.building.zots = combinedZots
             }

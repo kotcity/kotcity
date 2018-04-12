@@ -23,17 +23,17 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
 
         if (bankruptLocations.isNotEmpty()) {
             val howManyNeedDestruction : Int = Math.floor(bankruptLocations.count() * 0.10).toInt().coerceIn(1 .. 15)
-            debug("Blowing up $howManyNeedDestruction buildings...")
+            debug { "Blowing up $howManyNeedDestruction buildings..." }
 
             val start = System.currentTimeMillis()
 
             bankruptLocations.shuffled().take(howManyNeedDestruction).forEach { location ->
                 if (System.currentTimeMillis() - start > 5000) {
-                    debug("Out of time during liquidation...")
+                    debug { "Out of time during liquidation..." }
                     updateBulldozedCount(bulldozedCounts)
                     return
                 }
-                debug("Building ${location.building.description} is bankrupt or has no goods! Blowing it up!")
+                debug { "Building ${location.building.description} is bankrupt or has no goods! Blowing it up!" }
                 cityMap.bulldoze(location.coordinate, location.coordinate)
                 bulldozedCounts[zoneForBuilding(location.building::class)] = (bulldozedCounts[zoneForBuilding(location.building::class)] ?: 0) + 1
             }
@@ -44,7 +44,7 @@ class Liquidator(val cityMap: CityMap) : Debuggable {
     }
 
     private fun updateBulldozedCount(bulldozeCounts: MutableMap<Zone, Int>) {
-        debug("After all that blowing up, the count is: $bulldozeCounts")
+        debug { "After all that blowing up, the count is: $bulldozeCounts" }
         cityMap.bulldozedCounts = bulldozeCounts
     }
 

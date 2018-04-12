@@ -1,6 +1,5 @@
 package kotcity.data
 
-import javafx.scene.paint.Color
 import kotcity.pathfinding.Direction
 import kotcity.pathfinding.Path
 import kotcity.util.randomElement
@@ -293,7 +292,7 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
      * Unique ID of building
      * @TODO do we even need this?
      */
-    val uuid = uuid()
+    private val uuid = uuid()
 
     /**
      * How many units of power this building needs to be happy
@@ -310,12 +309,6 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
      * How happy the building is. This can be positive or negative.
      */
     open var happiness: Int = 0
-
-    /**
-     * Default border color, used for rendering
-     * @TODO should probably move this to renderer... this does not need to live "in" a [Building]
-     */
-    open var borderColor: Color = Color.PINK
 
     /**
      * How much pollution this building generates...
@@ -346,6 +339,21 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
 
     override fun toString() = "Building(class=${this.javaClass} uuid=$uuid)"
 
+    /**
+     * Takes a coordinate and a building and returns the "footprint" of the building.
+     * In other words, each block the building sits in.
+     *
+     * @param coordinate Coordinate of the building
+     * @param building The building
+     * @return a list of matching blocks
+     */
+    fun buildingBlocks(coordinate: BlockCoordinate, building: Building): List<BlockCoordinate> {
+        val xRange = coordinate.x..coordinate.x + (building.width - 1)
+        val yRange = coordinate.y..coordinate.y + (building.height - 1)
+        return xRange.flatMap { x -> yRange.map { BlockCoordinate(x, it) } }
+    }
+
+
     fun zone(): Zone? {
         return when (this) {
             is Residential -> return Zone.RESIDENTIAL
@@ -360,13 +368,8 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
         addInventory(Tradeable.MONEY, DEFAULT_MONEY)
     }
 
-    fun createContract(map: CityMap, otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path?) {
-        val ourBlocks = map.coordinatesForBuilding(this)
-        if (ourBlocks == null) {
-            println("Sorry, we couldn't find one of the buildings!")
-            return
-        }
-        val ourLocation = CityTradeEntity(ourBlocks, this)
+    fun createContract(buildingCoordinate: BlockCoordinate, otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path?) {
+        val ourLocation = CityTradeEntity(buildingCoordinate, this)
         val newContract = Contract(otherTradeEntity, ourLocation, tradeable, quantity, path)
         synchronized(contracts) {
             if (otherTradeEntity.currentQuantityForSale(tradeable) >= newContract.quantity) {
@@ -397,6 +400,9 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
 
 class Residential : LoadableBuilding() {
 
+    /**
+     * Try to yank MORE goods than we really need (as spares)
+     */
     override fun currentQuantityWanted(tradeable: Tradeable): Int {
         val consumesCount = (consumes[tradeable] ?: 0) * 1.5
         synchronized(contracts) {
@@ -406,20 +412,13 @@ class Residential : LoadableBuilding() {
         }
     }
 
-    override var borderColor: Color = Color.GREEN
 }
 
-class Commercial : LoadableBuilding() {
-    override var borderColor: Color = Color.BLUE
-}
+class Commercial : LoadableBuilding()
 
-class Industrial : LoadableBuilding() {
-    override var borderColor: Color = Color.GOLD
-}
+class Industrial : LoadableBuilding()
 
-class Civic : LoadableBuilding() {
-    override var borderColor: Color = Color.DARKGRAY
-}
+class Civic : LoadableBuilding()
 
 const val DEFAULT_MONEY = 10
 val POWER_PLANT_TYPES = listOf("coal", "nuclear")
@@ -430,7 +429,6 @@ class PowerPlant(override val variety: String) : Building() {
 
     override var width = 4
     override var height = 4
-    override var borderColor: Color = Color.BLACK
 
     init {
         if (!POWER_PLANT_TYPES.contains(variety)) {
@@ -480,21 +478,18 @@ class RailDepot : Building() {
 class Road(val direction: Direction = Direction.STATIONARY) : Building() {
     override var width = 1
     override var height = 1
-    override var borderColor: Color = Color.BLACK
     override var description: String? = "Road"
 }
 
 class Railroad : Building() {
     override var width = 1
     override var height = 1
-    override var borderColor: Color = Color.GREY
     override var description: String? = "Railroad"
 }
 
 class RailroadCrossing : Building() {
     override var width = 1
     override var height = 1
-    override var borderColor: Color = Color.GREY
     override var description: String? = "Railroad Crossing"
 }
 
@@ -502,7 +497,6 @@ class PowerLine : Building() {
     override var width = 1
     override var height = 1
     override val powerRequired = 1
-    override var borderColor: Color = Color.BLACK
     override var description: String? = "Power Line"
 }
 

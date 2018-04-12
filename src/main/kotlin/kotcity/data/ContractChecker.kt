@@ -1,6 +1,7 @@
 package kotcity.data
 
 import kotcity.util.Debuggable
+import kotlinx.coroutines.experimental.async
 
 object ContractChecker: Debuggable {
     override var debug: Boolean = true
@@ -10,13 +11,15 @@ object ContractChecker: Debuggable {
             val building = it.building
             synchronized(building.contracts) {
                 building.contracts.toList().forEach {
-                    // make sure each building exists...
-                    val from = it.from
-                    val to = it.to
-                    val buildings = listOf(from, to)
-                    if (buildings.any { missingBuilding(cityMap, it) }) {
-                        debug("We had a bum contract! Either $from or $to does not exist!")
-                        building.contracts.remove(it)
+                    async {
+                        // make sure each building exists...
+                        val from = it.from
+                        val to = it.to
+                        val buildings = listOf(from, to)
+                        if (buildings.any { missingBuilding(cityMap, it) }) {
+                            debug {"We had a bum contract! Either $from or $to does not exist!" }
+                            building.contracts.remove(it)
+                        }
                     }
                 }
             }
@@ -30,7 +33,7 @@ object ContractChecker: Debuggable {
         }
         // ok... basically just look in the map and there should be a building where we say it is
         tradeEntity.building().let { building ->
-            if (cityMap.locationsAt(tradeEntity.coordinate).map {it.building}.contains(building)) {
+            if (cityMap.cachedLocationsIn(tradeEntity.coordinate).map {it.building}.contains(building)) {
                 // we found the building, so the building is not missing...
                 return false
             }

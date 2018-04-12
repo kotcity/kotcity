@@ -44,12 +44,9 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
     override var debug: Boolean = true
 
-    private val cachedHeuristicPair = ::heuristic.cache(
-            CacheOptions(weakKeys = false, weakValues = false, durationUnit = TimeUnit.SECONDS, durationValue = 60L)
-    )
-    private val heuristicCache = cachedHeuristicPair.first
-    private val cachedHeuristic = cachedHeuristicPair.second
-
+    /**
+     * Coordinates that make up the border of the map
+     */
     private val mapBorders: List<BlockCoordinate> by lazy {
         // I found this frustrating to write and this code
         // can probably be improved upon...
@@ -69,13 +66,6 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         }
 
         borderBlocks.toList()
-    }
-
-    /**
-     * Purges the cached results for the heuristic method.
-     */
-    fun purgeCaches() {
-        heuristicCache.invalidateAll()
     }
 
     // TODO: this is too slow... maybe cache?
@@ -134,7 +124,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         return destinations.map { coordinate ->
             var score = manhattanDistance(current, coordinate)
             // see if this is road and lower score by a tiny bit...
-            val locations = cityMap.locationsAt(current)
+            val locations = cityMap.cachedLocationsIn(current)
             if (locations.count() > 0) {
                 val building = locations.first().building
                 when (building) {
@@ -192,7 +182,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         if (sourceNode.transitType == TransitType.ROAD) {
             if (destinationNode.transitType == TransitType.RAILROAD) {
                 // can't go from ROAD -> RAILROAD
-                debug("Can't go directly from ROAD -> RAILROAD")
+                debug { "Can't go directly from ROAD -> RAILROAD" }
                 return false
             } else if (destinationNode.transitType == TransitType.RAIL_STATION) {
                 // OK to go from ROAD -> RAIL_STATION
@@ -212,7 +202,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             when {
                 destinationNode.transitType == TransitType.ROAD -> {
                     // cannot go from railroad to road...
-                    debug("Can't go directly from RAILROAD -> ROAD")
+                    debug { "Can't go directly from RAILROAD -> ROAD" }
                     return false
                 }
                 destinationNode.transitType == TransitType.RAIL_STATION -> return true
@@ -224,7 +214,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             // we can go to any kind of destination... rail OR road...
             return true
         }
-        debug("Unknown transit type: ${sourceNode.transitType} to ${destinationNode.transitType}")
+        debug { "Unknown transit type: ${sourceNode.transitType} to ${destinationNode.transitType}" }
         return false
     }
 
@@ -259,7 +249,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
     private fun isGround(node: NavigationNode) = cityMap.groundLayer[node.coordinate]?.type == TileType.GROUND
 
-    // OK... the REAL way pathfinding works is we have to find ourselves a road first... if we don't step on a road
+    // OK... the REAL way path finding works is we have to find ourselves a road first... if we don't step on a road
     // our path isn't valid...
     fun tripTo(
             source: List<BlockCoordinate>,
@@ -283,7 +273,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         // bail out if we can't get to a road...
         val pathToNearestRoad = shortestCastToRoad(source, nearbyRoads.map { it.coordinate })
         if (pathToNearestRoad == null) {
-            debug("Could not find a path to the nearest road!")
+            debug { "Could not find a path to the nearest road!" }
             return null
         }
 
@@ -293,23 +283,13 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         // now try to go the rest of the way OR bail out...
         val restOfTheWay = truePathfind(listOf(startRoad), destinations)
         if (restOfTheWay == null) {
-            debug("Our source is $startRoad and destination is: $destinations")
-            debug("Now we can't find a path AFTER finding a road!")
+            debug { "Our source is $startRoad and destination is: $destinations" }
+            debug { "Now we can't find a path AFTER finding a road!" }
             return null
         }
 
         return pathToNearestRoad.plus(restOfTheWay)
 
-    }
-
-    private fun directionToBlockDelta(direction: Direction): BlockCoordinate {
-        return when (direction) {
-            Direction.NORTH -> BlockCoordinate(0, -1)
-            Direction.SOUTH -> BlockCoordinate(0, 1)
-            Direction.EAST -> BlockCoordinate(1, 0)
-            Direction.WEST -> BlockCoordinate(-1, 0)
-            Direction.STATIONARY -> BlockCoordinate(0, 0)
-        }
     }
 
     private fun isBuildingAt(coordinate: BlockCoordinate, clazz: KClass<*>): Boolean {
@@ -322,7 +302,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     }
 
     private fun path(start: BlockCoordinate, direction: Direction, maxLength: Int): Path? {
-        val delta = directionToBlockDelta(direction)
+        val delta = direction.toDelta()
         var currentBlock = start
 
         val pathBlocks = mutableListOf(currentBlock)
@@ -378,7 +358,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         val pathsWithRoad = paths.filter { it.blocks().any { roadBlocks.contains(it) } }
 
         if (pathsWithRoad.isEmpty()) {
-            debug("Could not find any paths including road!")
+            debug { "Could not find any paths including road!" }
             return null
         }
 
@@ -424,8 +404,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
             for (direction in listOf(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST)) {
                 // ok figure out the dang neighbors...
-                val delta = directionToBlockDelta(direction)
-                val nextBlock = activeNode.coordinate + delta
+                val nextBlock = blockInDirection(activeNode.coordinate, direction)
 
                 // determine transitType for destination
                 val newTransitType = transitTypeFor(nextBlock)
@@ -435,7 +414,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                     val nextNode = NavigationNode(
                             nextBlock,
                             activeNode,
-                            activeNode.score + cachedHeuristic(nextBlock, destinations),
+                            activeNode.score + heuristic(nextBlock, destinations),
                             TransitType.ROAD,
                             direction
                     )
@@ -446,7 +425,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                         val nextNode = NavigationNode(
                                 nextBlock,
                                 activeNode,
-                                activeNode.score + cachedHeuristic(nextBlock, destinations),
+                                activeNode.score + heuristic(nextBlock, destinations),
                                 newTransitType,
                                 direction
                         )
@@ -472,6 +451,16 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         }
     }
 
+    private fun blockInDirection(coordinate: BlockCoordinate, direction: Direction): BlockCoordinate {
+        return when(direction) {
+            Direction.NORTH -> coordinate.top()
+            Direction.SOUTH -> coordinate.bottom()
+            Direction.EAST -> coordinate.right()
+            Direction.WEST -> coordinate.left()
+            Direction.STATIONARY -> coordinate
+        }
+    }
+
     private fun transitTypeFor(coordinate: BlockCoordinate): TransitType? {
         val building = cityMap.cachedLocationsIn(coordinate).firstOrNull() ?: return null
         return when (building.building::class) {
@@ -492,7 +481,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
             // TODO: this the problem... when we get close enough we gotta cast to the destination...
             if (distanceToGoal <= 3) {
-                val newNode = destinationNode.copy(score = cachedHeuristic(destinationNode.coordinate, destinations))
+                val newNode = destinationNode.copy(score = heuristic(destinationNode.coordinate, destinations))
                 if (isGround(newNode) || destinations.contains(newNode.coordinate)) {
                     openList.add(newNode)
                 } else {
@@ -518,7 +507,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             NavigationNode(
                     it,
                     null,
-                    cachedHeuristic(it, destinations),
+                    heuristic(it, destinations),
                     TransitType.ROAD,
                     Direction.STATIONARY
             )

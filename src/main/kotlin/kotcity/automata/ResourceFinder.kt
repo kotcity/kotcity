@@ -34,17 +34,19 @@ class ResourceFinder(val cityMap: CityMap) : Debuggable {
     }
 
     fun findSource(sourceBlocks: List<BlockCoordinate>, tradeable: Tradeable, quantity: Int): Pair<TradeEntity, Path>? {
+
         // just use the first block to do a nearby query...
         val nearbyBuildings = cityMap.nearestBuildings(sourceBlocks.first(), MAX_RESOURCE_DISTANCE).distinct()
+
         // now we gotta make sure they got the resource...
         val buildingsWithResource = nearbyBuildings.filter { it.building.currentQuantityForSale(tradeable) >= quantity }
 
         // we gotta order em by distance...
         val sortedBuildingsWithResource =
-            buildingsWithResource.sortedBy { location -> sourceBlocks.map { it.distanceTo(location.coordinate) }.min() }
+            buildingsWithResource.sortedBy { location -> sourceBlocks.first().distanceTo(location.coordinate) }
 
         if (sortedBuildingsWithResource.isNotEmpty()) {
-            debug("We have ${sortedBuildingsWithResource.size} buildings to potentially buy $tradeable from...")
+            debug { "We have ${sortedBuildingsWithResource.size} buildings to potentially buy $tradeable from..." }
         }
 
         val shortestPath: Path? = firstWithValidPath(sourceBlocks, sortedBuildingsWithResource)
@@ -126,7 +128,7 @@ class ResourceFinder(val cityMap: CityMap) : Debuggable {
         val buildingsWantingResource = buildings.filter { it.building.currentQuantityWanted(tradeable) > 0 }
 
         if (buildingsWantingResource.isNotEmpty()) {
-            debug("We have ${buildingsWantingResource.size} buildings to potentially sell $tradeable to...")
+            debug { "We have ${buildingsWantingResource.size} buildings to potentially sell $tradeable to..." }
         }
 
         // we gotta order em by distance...

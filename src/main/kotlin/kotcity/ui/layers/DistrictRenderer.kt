@@ -46,16 +46,16 @@ class DistrictRenderer(private val renderer: CityRenderer, private val map: City
 
                 // We draw a border around the edges of the district in a predefined color
                 gc.stroke = district.color
-                if (map.districtLayer[coordinate.top] != district) {
+                if (map.districtLayer[coordinate.top()] != district) {
                     gc.strokeLine(left, top, right, top)
                 }
-                if (map.districtLayer[coordinate.bottom] != district) {
+                if (map.districtLayer[coordinate.bottom()] != district) {
                     gc.strokeLine(left, bottom, right, bottom)
                 }
-                if (map.districtLayer[coordinate.left] != district) {
+                if (map.districtLayer[coordinate.left()] != district) {
                     gc.strokeLine(left, top, left, bottom)
                 }
-                if (map.districtLayer[coordinate.right] != district) {
+                if (map.districtLayer[coordinate.right()] != district) {
                     gc.strokeLine(right, top, right, bottom)
                 }
             }

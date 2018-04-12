@@ -1,5 +1,6 @@
 package kotcity.data
 
+import com.github.benmanes.caffeine.cache.stats.CacheStats
 import com.github.davidmoten.rtree.RTree
 import com.github.davidmoten.rtree.geometry.Geometries
 import com.github.davidmoten.rtree.geometry.Rectangle
@@ -96,7 +97,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         DesirabilityLayer(Zone.INDUSTRIAL, 1)
     )
 
-    val outsideConnections = mutableListOf<BlockCoordinate>()
+    private val outsideConnections = mutableListOf<BlockCoordinate>()
 
     val mainDistrict = District("Central district")
     val districts = mutableListOf(mainDistrict)
@@ -135,7 +136,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     /**
      * Should we print debug output or not?
      */
-    var debug = false
+    var debug = true
 
     /**
      * where we loaded OR saved this city to...
@@ -151,17 +152,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     /**
      * An "r-tree" that lets us do relatively fast lookups on buildings in our city
      */
-    private var buildingIndex = RTree.create<Building, Rectangle>()!!
-
-    // OK! we will require one key per map cell
-    private val numberOfCells = this.height.toLong() * this.width.toLong() + 100
+    private var buildingIndex = RTree.star().create<Location, Rectangle>()!!
     private val locationsInCachePair = ::locationsAt.cache(
         CacheOptions(
             weakKeys = false,
-            weakValues = true,
-            maximumSize = numberOfCells,
-            durationUnit = TimeUnit.SECONDS,
-            durationValue = 15
+            weakValues = false,
+            limitSize = false,
+            durationUnit = TimeUnit.MINUTES,
+            durationValue = 5
         )
     )
 
@@ -170,7 +168,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      */
     private val locationsInCache = locationsInCachePair.first
     /**
-     * a cached version of [locationsIn]. This can be used when you want to do a fast lookup on a building
+     * a cached version of [locationsAt]. This can be used when you want to do a fast lookup on a building
      * but don't really care if you are wrong or not
      */
     val cachedLocationsIn = locationsInCachePair.second
@@ -184,7 +182,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         shipper.debug = false
         contractFulfiller.debug = false
         manufacturer.debug = false
-        constructor.debug = true
+        constructor.debug = false
         taxCollector.debug = false
         desirabilityUpdater.debug = false
         liquidator.debug = false
@@ -201,13 +199,32 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         time = simpleDateFormat.parse("2000-01-01 12:00:00")
     }
 
+    private fun locationCacheStats(): CacheStats {
+        // cache...
+        return locationsInCache.stats()
+    }
+
     /**
      * @param callback pass a function that we'll call and pass a location in
      */
     fun eachLocation(callback: (Location) -> Unit) {
-        buildingLayer.toList().forEach { entry ->
-            callback(Location(this, entry.first, entry.second))
+        this.buildingIndex.entries().forEach {
+            callback(it.value())
         }
+    }
+
+    /**
+     * Takes a coordinate and a building and returns the "footprint" of the building.
+     * In other words, each block the building sits in.
+     *
+     * @param coordinate Coordinate of the building
+     * @param building The building
+     * @return a list of matching blocks
+     */
+    fun buildingBlocks(coordinate: BlockCoordinate, building: Building): List<BlockCoordinate> {
+        val xRange = coordinate.x..coordinate.x + (building.width - 1)
+        val yRange = coordinate.y..coordinate.y + (building.height - 1)
+        return xRange.flatMap { x -> yRange.map { BlockCoordinate(x, it) } }
     }
 
     /**
@@ -228,20 +245,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val mapMinElevation = groundLayer.values.map { it.elevation }.min() ?: 0.0
         val mapMaxElevation = groundLayer.values.map { it.elevation }.max() ?: 0.0
         return Pair(mapMinElevation, mapMaxElevation)
-    }
-
-    /**
-     * Takes a coordinate and a building and returns the "footprint" of the building.
-     * In other words, each block the building sits in.
-     *
-     * @param coordinate Coordinate of the building
-     * @param building The building
-     * @return a list of matching blocks
-     */
-    fun buildingBlocks(coordinate: BlockCoordinate, building: Building): List<BlockCoordinate> {
-        val xRange = coordinate.x..coordinate.x + (building.width - 1)
-        val yRange = coordinate.y..coordinate.y + (building.height - 1)
-        return xRange.flatMap { x -> yRange.map { BlockCoordinate(x, it) } }
     }
 
     /**
@@ -274,15 +277,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun nearestBuildings(coordinate: BlockCoordinate, distance: Int = 10): List<Location> {
         val point = Geometries.point(coordinate.x.toFloat(), coordinate.y.toFloat())
         return buildingIndex.search(point, distance.toDouble())
-            .filter({ t -> t != null }).map { entry ->
-                val geometry = entry.geometry()
-                val building = entry.value()
-                if (geometry != null && building != null) {
-                    Location(this, BlockCoordinate(geometry.x1().toInt(), geometry.y1().toInt()), building)
-                } else {
-                    null
-                }
-            }.toBlocking().toIterable().filterNotNull()
+            .map { it.value() }.toBlocking().toIterable().toList()
     }
 
     /**
@@ -290,17 +285,19 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * @TODO get smarter about index... we don't want to be rebuilding this all the time...
      */
     fun updateBuildingIndex() {
-        var newIndex = RTree.star().create<Building, Rectangle>()
-        buildingLayer.toList().forEach { pair ->
-            val (coordinate, building) = pair
-            newIndex = newIndex.add(
-                building, Geometries.rectangle(
-                    coordinate.x.toFloat(),
-                    coordinate.y.toFloat(),
-                    coordinate.x.toFloat() + building.width.toFloat() - 1,
-                    coordinate.y.toFloat() + building.height.toFloat() - 1
+        var newIndex = RTree.star().create<Location, Rectangle>()
+        synchronized(buildingLayer) {
+            buildingLayer.toList().forEach { pair ->
+                val (coordinate, building) = pair
+                newIndex = newIndex.add(
+                        Location(coordinate, building), Geometries.rectangle(
+                        coordinate.x.toFloat(),
+                        coordinate.y.toFloat(),
+                        coordinate.x.toFloat() + building.width.toFloat() - 1,
+                        coordinate.y.toFloat() + building.height.toFloat() - 1
                 )
-            )
+                )
+            }
         }
         buildingIndex = newIndex
         locationsInCache.invalidateAll()
@@ -392,10 +389,13 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             if (hour == 0 || hour == 6 || hour == 12 || hour == 18) {
                 timeFunction("Taking census (to calculate demand)") { censusTaker.tick() }
                 timeFunction("Liquidating bankrupt properties") { liquidator.tick() }
+                timeFunction("Checking validity of contracts") { ContractChecker.checkContracts(this) }
                 timeFunction("Constructing buildings") { constructor.tick() }
                 timeFunction("Performing upgrades") { upgrader.tick() }
                 timeFunction("Taking census again (to account for new demand...)") { censusTaker.tick() }
             }
+
+            debug("Cache stats: " + locationCacheStats().hitRate())
 
             if (hour == 0) {
                 debug("Processing tick for end of day...")
@@ -431,10 +431,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         async {
             timeFunction("Calculating fire coverage") { FireCoverageUpdater.update(self) }
             timeFunction("Calculating crime and police presence") { CrimeUpdater.update(self) }
-        }
-
-        async {
-            timeFunction("Checking validity of contracts") { ContractChecker.checkContracts(self) }
         }
 
         async {
@@ -647,30 +643,35 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val dy = Math.abs(to.y - from.y)
         val isDxGreater = dx > dy
         val isDyGreater = dy > dx
-        val left = buildingLayer[block.left]
-        val right = buildingLayer[block.right]
-        val above = buildingLayer[block.top]
-        val below = buildingLayer[block.bottom]
+
         val dir =
             if (isDxGreater && to.x > from.x) {
+                val above = buildingLayer[block.top()]
+                val below = buildingLayer[block.bottom()]
                 if (above is Road || below is Road) {
                     Direction.STATIONARY
                 } else {
                     Direction.EAST
                 }
             } else if (isDxGreater && to.x < from.x) {
+                val above = buildingLayer[block.top()]
+                val below = buildingLayer[block.bottom()]
                 if (above is Road || below is Road) {
                     Direction.STATIONARY
                 } else {
                     Direction.WEST
                 }
             } else if (isDyGreater && to.y > from.y) {
+                val left = buildingLayer[block.left()]
+                val right = buildingLayer[block.right()]
                 if (left is Road || right is Road) {
                     Direction.STATIONARY
                 } else {
                     Direction.SOUTH
                 }
             } else if (isDyGreater && to.y < from.y) {
+                val left = buildingLayer[block.left()]
+                val right = buildingLayer[block.right()]
                 if (left is Road || right is Road) {
                     Direction.STATIONARY
                 } else {
@@ -764,16 +765,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 }
                 val buildings = locationsAt(coordinate)
 
-                // FIXME: I strongly suspect this doesn't work...
-                // now kill all those contracts...
                 buildings.forEach {
-                    buildingLayer.values.forEach { otherBuilding ->
-                        val otherCoords = coordinatesForBuilding(otherBuilding)
-                        if (otherCoords != null) {
-                            val otherEntity = CityTradeEntity(otherCoords, otherBuilding)
-                            otherBuilding.voidContractsWith(otherEntity)
-                        }
-                    }
                     // gotta remove building from the list...
                     val iterator = buildingLayer.iterator()
                     iterator.forEach { mutableEntry ->
@@ -833,7 +825,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * @param topLeft top left of rectangle
      * @param bottomRight bottom right of rectangle
      */
-    fun locationsInRectangle(topLeft: BlockCoordinate, bottomRight: BlockCoordinate): List<Location> {
+    fun locationsInRectangle(topLeft: BlockCoordinate, bottomRight: BlockCoordinate): Iterable<Location> {
         val buildings = buildingIndex.search(
             Geometries.rectangle(
                 topLeft.x.toDouble(),
@@ -842,13 +834,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 bottomRight.y.toDouble()
             )
         )
-        return buildings.map { it ->
-            it.value()?.let { building ->
-                val x = it.geometry().x1()
-                val y = it.geometry().y1()
-                Location(this, BlockCoordinate(x.toInt(), y.toInt()), building)
-            }
-        }.toBlocking().toIterable().filterNotNull()
+        return buildings.map { it.value() }.toBlocking().toIterable().filterNotNull()
     }
 
     /**
@@ -858,15 +844,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun locationsAt(coordinate: BlockCoordinate): List<Location> {
         val point = Geometries.point(coordinate.x.toDouble(), coordinate.y.toDouble())
         val buildings = buildingIndex.search(point)
-        return buildings.map {
-            val building = it.value()
-            val rectangle = it.geometry()
-            if (building != null && rectangle != null) {
-                Location(this, BlockCoordinate(rectangle.x1().toInt(), rectangle.y1().toInt()), building)
-            } else {
-                null
-            }
-        }.toBlocking().toIterable().filterNotNull()
+        return buildings.map { it.value() }.toBlocking().toIterable().toList()
     }
 
     /**
@@ -916,7 +894,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     fun locations(): List<Location> {
         synchronized(buildingLayer) {
             val sequence = buildingLayer.entries.iterator().asSequence()
-            return sequence.map { Location(this, it.key, it.value) }.toList()
+            return sequence.map { Location(it.key, it.value) }.toList()
         }
     }
 }

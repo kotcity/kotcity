@@ -2,6 +2,7 @@ package kotcity.automata
 
 import kotcity.automata.util.BuildingBuilder
 import kotcity.data.*
+import kotcity.pathfinding.Pathfinder
 import kotcity.util.Debuggable
 import kotcity.util.randomElement
 
@@ -14,6 +15,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
 
     private val assetManager = AssetManager(cityMap)
     private val buildingBuilder = BuildingBuilder(cityMap)
+    private val pathfinder: Pathfinder = Pathfinder(cityMap)
     override var debug = false
 
     /**
@@ -31,7 +33,7 @@ class Constructor(val cityMap: CityMap) : Debuggable {
 
             val howManyBuildings = howManyToBuild(zoneType).coerceAtMost(3)
 
-            debug("According to our calculations we should build $howManyBuildings for $zoneType")
+            debug { "According to our calculations we should build $howManyBuildings for $zoneType" }
 
             repeat(howManyBuildings, {
 
@@ -42,7 +44,9 @@ class Constructor(val cityMap: CityMap) : Debuggable {
                 // let's extract the blocks we should check... basically it is anywhere where desirability is off the floor...
                 val potentialLocations = layer.entries().map { it.key }
 
-                val emptyBlocks = potentialLocations.filter { isEmpty(it) }
+                val nearRoad = potentialLocations.filter { pathfinder.nearbyRoad(listOf(it)) }
+
+                val emptyBlocks = nearRoad.filter { isEmpty(it) }
 
                 val withCorrectZoneType = emptyBlocks.filter { correctZoneType(zoneType, it) }
 
@@ -59,22 +63,22 @@ class Constructor(val cityMap: CityMap) : Debuggable {
                 // OK now have to make sure this is zoned right....
                 if (bestLocation == null) {
                     if (debug) {
-                        debug("Could not find most desirable $zoneType zone!")
-                        debug("Total entries in desirability layer: $totalInLayer")
-                        debug("Potential locations: ${potentialLocations.size}")
-                        debug("Empty blocks: ${emptyBlocks.size}")
-                        debug("With correct zone type: ${withCorrectZoneType.size}")
+                        debug { "Could not find most desirable $zoneType zone!" }
+                        debug { "Total entries in desirability layer: $totalInLayer" }
+                        debug { "Potential locations: ${potentialLocations.size}" }
+                        debug { "Empty blocks: ${emptyBlocks.size}" }
+                        debug { "With correct zone type: ${withCorrectZoneType.size}" }
                     }
                 } else {
-                    debug("We will be trying to build at $bestLocation")
+                    debug { "We will be trying to build at $bestLocation" }
                     // constructor only constructs level 1 buildings...
                     val newBuilding = assetManager.findBuilding(zoneType, 1)
                     if (newBuilding != null) {
-                        debug("The building to be attempted is: $newBuilding")
+                        debug { "The building to be attempted is: $newBuilding" }
                         // let's try like X times...
                         buildingBuilder.tryToBuild(bestLocation, newBuilding)
                     } else {
-                        debug("Sorry, no building could be found for $zoneType at $bestLocation")
+                        debug { "Sorry, no building could be found for $zoneType at $bestLocation" }
                     }
                 }
             })

@@ -1,7 +1,9 @@
 package kotcity.data
 
+import kotcity.pathfinding.Direction
 import kotcity.util.intBetween
 import kotcity.util.reorder
+import nl.pvdberg.hashkode.hashKode
 import java.util.*
 
 /**
@@ -82,29 +84,29 @@ data class BlockCoordinate(
     /**
      * Returns the neighboring cell directly above this cell
      */
-    val top: BlockCoordinate by lazy {
-        BlockCoordinate(x, y - 1)
+    fun top(): BlockCoordinate {
+        return BlockCoordinate(x, y - 1)
     }
 
     /**
      * Returns the neighboring cell directly below this cell
      */
-    val bottom: BlockCoordinate by lazy {
-        BlockCoordinate(x, y + 1)
+    fun bottom(): BlockCoordinate {
+        return BlockCoordinate(x, y + 1)
     }
 
     /**
      * Returns the neighboring cell directly to the left of this cell
      */
-    val left: BlockCoordinate by lazy {
-        BlockCoordinate(x - 1, y)
+    fun left(): BlockCoordinate {
+        return BlockCoordinate(x - 1, y)
     }
 
     /**
      * Returns the neighboring cell directly to the right of this cell
      */
-    val right: BlockCoordinate by lazy {
-        BlockCoordinate(x + 1, y)
+    fun right(): BlockCoordinate {
+        return BlockCoordinate(x + 1, y)
     }
 
     /**
@@ -154,4 +156,8 @@ data class BlockCoordinate(
 
         return false
     }
+
+    override fun hashCode() = hashKode(
+            x,y
+    )
 }
