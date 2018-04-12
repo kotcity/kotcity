@@ -3,6 +3,7 @@ package kotcity.data
 import kotcity.pathfinding.Direction
 import kotcity.pathfinding.Path
 import kotcity.util.randomElement
+import nl.pvdberg.hashkode.hashKode
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -337,6 +338,8 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
         return uuid == other.uuid
     }
 
+    override fun hashCode() = hashKode(uuid)
+
     override fun toString() = "Building(class=${this.javaClass} uuid=$uuid)"
 
     /**
@@ -347,18 +350,18 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
      * @param building The building
      * @return a list of matching blocks
      */
-    fun buildingBlocks(coordinate: BlockCoordinate, building: Building): List<BlockCoordinate> {
-        val xRange = coordinate.x..coordinate.x + (building.width - 1)
-        val yRange = coordinate.y..coordinate.y + (building.height - 1)
+    fun buildingBlocks(coordinate: BlockCoordinate): List<BlockCoordinate> {
+        val xRange = coordinate.x..coordinate.x + (this.width - 1)
+        val yRange = coordinate.y..coordinate.y + (this.height - 1)
         return xRange.flatMap { x -> yRange.map { BlockCoordinate(x, it) } }
     }
 
 
     fun zone(): Zone? {
         return when (this) {
-            is Residential -> return Zone.RESIDENTIAL
-            is Commercial -> return Zone.COMMERCIAL
-            is Industrial -> return Zone.INDUSTRIAL
+            is Residential -> Zone.RESIDENTIAL
+            is Commercial -> Zone.COMMERCIAL
+            is Industrial -> Zone.INDUSTRIAL
             else -> null
         }
     }
@@ -368,7 +371,13 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
         addInventory(Tradeable.MONEY, DEFAULT_MONEY)
     }
 
-    fun createContract(buildingCoordinate: BlockCoordinate, otherTradeEntity: TradeEntity, tradeable: Tradeable, quantity: Int, path: Path?) {
+    fun createContract(
+        buildingCoordinate: BlockCoordinate,
+        otherTradeEntity: TradeEntity,
+        tradeable: Tradeable,
+        quantity: Int,
+        path: Path?
+    ) {
         val ourLocation = CityTradeEntity(buildingCoordinate, this)
         val newContract = Contract(otherTradeEntity, ourLocation, tradeable, quantity, path)
         synchronized(contracts) {
@@ -421,9 +430,13 @@ class Industrial : LoadableBuilding()
 class Civic : LoadableBuilding()
 
 const val DEFAULT_MONEY = 10
-val POWER_PLANT_TYPES = listOf("coal", "nuclear")
 
 class PowerPlant(override val variety: String) : Building() {
+
+    companion object {
+        const val VARIETY_COAL = "coal"
+        const val VARIETY_NUCLEAR = "nuclear"
+    }
 
     var powerGenerated: Int = 0
 
@@ -431,16 +444,16 @@ class PowerPlant(override val variety: String) : Building() {
     override var height = 4
 
     init {
-        if (!POWER_PLANT_TYPES.contains(variety)) {
-            throw RuntimeException("Invalid power plant type: $variety")
-        }
         when (variety) {
-            "coal" -> {
-                this.powerGenerated = 2000; this.description = "Coal Power Plant"
+            VARIETY_COAL -> {
+                this.powerGenerated = 2000
+                this.description = "Coal Power Plant"
             }
-            "nuclear" -> {
-                this.powerGenerated = 5000; this.description = "Nuclear Power Plant"
+            VARIETY_NUCLEAR -> {
+                this.powerGenerated = 5000
+                this.description = "Nuclear Power Plant"
             }
+            else -> throw RuntimeException("Invalid power plant type: $variety")
         }
         // let's make it consume workers...
         this.consumes[Tradeable.LABOR] = 10
