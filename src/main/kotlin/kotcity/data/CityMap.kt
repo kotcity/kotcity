@@ -501,31 +501,18 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * @param waterCheck if true, we will make sure we can't build this on water
      * @return true if we can build here, false if not
      */
-    fun canBuildBuildingAt(newBuilding: Building, coordinate: BlockCoordinate, waterCheck: Boolean = true): Boolean {
+    fun canBuildBuildingAt(building: Building, coordinate: BlockCoordinate, waterCheck: Boolean = true): Boolean {
+        val newLocation = Location(coordinate, building)
+
         val newBuildingEnd =
-            BlockCoordinate(coordinate.x + newBuilding.width - 1, coordinate.y + newBuilding.height - 1)
+            BlockCoordinate(coordinate.x + building.width - 1, coordinate.y + building.height - 1)
 
         if (waterCheck && waterFound(coordinate, newBuildingEnd)) {
             return false
         }
 
         // OK... let's get nearby buildings to really cut this down...
-        val nearby = nearestBuildings(coordinate)
-        nearby.forEach { cityLocation: Location ->
-            val building = cityLocation.building
-            val otherCoord = cityLocation.coordinate
-
-            val xOverlaps =
-                (coordinate.x <= otherCoord.x + building.width - 1 && coordinate.x + newBuilding.width - 1 >= otherCoord.x)
-
-            val yOverlaps =
-                (coordinate.y <= otherCoord.y + building.height - 1 && coordinate.y + newBuilding.height - 1 >= otherCoord.y)
-
-            if (xOverlaps && yOverlaps) {
-                return false
-            }
-        }
-        return true
+        return nearestBuildings(coordinate).none { newLocation.overlaps(it) }
     }
 
     /**

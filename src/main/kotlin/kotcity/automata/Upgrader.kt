@@ -57,7 +57,7 @@ class Upgrader(val cityMap: CityMap) : Debuggable {
 
             val oldCoordinate = location.coordinate
 
-            if (ensureOverlap(oldBuilding, oldCoordinate, newBuilding, fuzzedCoordinate)) {
+            if (Location(oldCoordinate, oldBuilding).overlaps(Location(fuzzedCoordinate, newBuilding))) {
                 debug { "It does overlap!" }
                 if (tryToBuildAt(fuzzedCoordinate, newBuilding)) {
                     return
@@ -67,18 +67,6 @@ class Upgrader(val cityMap: CityMap) : Debuggable {
             }
             tries++
         }
-
-    }
-
-    private fun ensureOverlap(
-        oldBuilding: Building,
-        oldCoordinate: BlockCoordinate,
-        newBuilding: Building,
-        newCoordinate: BlockCoordinate
-    ): Boolean {
-        val oldBuildingBlocks = cityMap.buildingBlocks(oldCoordinate, oldBuilding)
-        val newBuildingBlocks = cityMap.buildingBlocks(newCoordinate, newBuilding)
-        return oldBuildingBlocks.any { newBuildingBlocks.contains(it) }
     }
 
     private fun tryToBuildAt(coordinate: BlockCoordinate, newBuilding: Building): Boolean {
