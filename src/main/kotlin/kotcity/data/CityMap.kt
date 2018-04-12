@@ -7,7 +7,6 @@ import com.github.davidmoten.rtree.geometry.Rectangle
 import com.github.debop.javatimes.plus
 import com.github.debop.javatimes.toDateTime
 import kotcity.automata.*
-import kotcity.data.Tunable.MAX_BUILDING_SIZE
 import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotcity.pathfinding.Direction
@@ -290,12 +289,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             buildingLayer.toList().forEach { pair ->
                 val (coordinate, building) = pair
                 newIndex = newIndex.add(
-                        Location(coordinate, building), Geometries.rectangle(
+                    Location(coordinate, building), Geometries.rectangle(
                         coordinate.x.toFloat(),
                         coordinate.y.toFloat(),
                         coordinate.x.toFloat() + building.width.toFloat() - 1,
                         coordinate.y.toFloat() + building.height.toFloat() - 1
-                )
+                    )
                 )
             }
         }
@@ -852,34 +851,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * @param coordinate the coordinate to search at
      */
     fun districtAt(coordinate: BlockCoordinate) = districtLayer[coordinate] ?: mainDistrict
-
-    /**
-     * Returns 4 [BlockCoordinate] that represent each corner of a building. We use this for bounds checking
-     * @param building building to check
-     * @param block coordinate of building
-     */
-    private fun buildingCorners(building: Building, block: BlockCoordinate): Corners {
-        val buildingTopLeft = BlockCoordinate(block.x, block.y)
-        val buildingBottomRight = BlockCoordinate(block.x + building.width - 1, block.y + building.height - 1)
-
-        val buildingTopRight = BlockCoordinate(block.x + building.width - 1, block.y)
-        val buildingBottomLeft = BlockCoordinate(block.x, block.y + building.height - 1)
-
-        return Corners(buildingTopLeft, buildingBottomRight, buildingTopRight, buildingBottomLeft)
-    }
-
-    /**
-     * For a given [Building], runs through it and finds the coordinate
-     * @bug This is slow as hell...
-     * @param building [Building] to locate
-     */
-    fun coordinatesForBuilding(building: Building): BlockCoordinate? {
-        synchronized(buildingLayer) {
-            return buildingLayer.toList().find {
-                it.second == building
-            }?.first
-        }
-    }
 
     /**
      * We will probably end up having a desirability layer for each zone and each level... but I am not 100% sure yet
