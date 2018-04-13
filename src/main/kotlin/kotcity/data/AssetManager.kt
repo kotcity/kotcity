@@ -51,7 +51,7 @@ class AssetManager(val cityMap: CityMap) {
                 it?.let { matcher.matches(it.fileName) } ?: false
             }
             .map({ it.toAbsolutePath().toString() })
-            .collect(toList())
+            .collect(toList<String>())
     }
 
     fun all() = directories.map { dir -> assetsInDir(dir).mapNotNull { loadFromFile(it) } }.flatten()
