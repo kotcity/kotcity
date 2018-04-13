@@ -3,9 +3,7 @@ package kotcity.automata
 import kotcity.data.*
 import kotcity.pathfinding.Pathfinder
 import kotcity.util.Debuggable
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.experimental.*
 
 /**
  * This class is responsible for going over each zoned tile and figuring out the "Desirability score"... in other words
@@ -63,14 +61,14 @@ class DesirabilityUpdater(val cityMap: CityMap) : Debuggable {
 
         val commercialZones = zoneCoordinates(Zone.COMMERCIAL)
 
-        val jobs = arrayListOf<Deferred<Unit>>()
+        val jobs = arrayListOf<Job>()
 
         commercialZones.forEach { coordinate ->
 
-            jobs += async {
+            jobs += launch {
                 if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                     desirabilityLayer[coordinate] = Double.MIN_VALUE
-                    return@async
+                    return@launch
                 }
                 val availableGoodsShortDistanceScore =
                     resourceFinder.quantityWantedNearby(Tradeable.GOODS, coordinate, shortDistance) * 0.1
@@ -93,7 +91,7 @@ class DesirabilityUpdater(val cityMap: CityMap) : Debuggable {
             }
         }
 
-        jobs.forEach { it.await() }
+        jobs.forEach { it.join() }
 
         trimDesirabilityLayer(desirabilityLayer, commercialZones)
     }
@@ -106,17 +104,17 @@ class DesirabilityUpdater(val cityMap: CityMap) : Debuggable {
 
     private suspend fun updateIndustrial(desirabilityLayer: DesirabilityLayer) {
 
-        val jobs = arrayListOf<Deferred<Unit>>()
+        val jobs = arrayListOf<Job>()
 
         // ok... we just gotta find each block with an industrial zone...
         val industryZones = zoneCoordinates(Zone.INDUSTRIAL)
 
         industryZones.forEach { coordinate ->
-            jobs += async {
+            jobs += launch {
                 // if we aren't near a road we are not desirable...
                 if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                     desirabilityLayer[coordinate] = Double.MIN_VALUE
-                    return@async
+                    return@launch
                 }
                 val availableBuyingWholesaleGoodsShortDistanceScore =
                     resourceFinder.quantityWantedNearby(Tradeable.WHOLESALE_GOODS, coordinate, shortDistance) * 0.1
@@ -138,7 +136,7 @@ class DesirabilityUpdater(val cityMap: CityMap) : Debuggable {
             }
         }
 
-        jobs.forEach { it.await() }
+        jobs.forEach { it.join() }
 
         trimDesirabilityLayer(desirabilityLayer, industryZones)
     }
@@ -160,7 +158,7 @@ class DesirabilityUpdater(val cityMap: CityMap) : Debuggable {
 
     private suspend fun updateResidential(desirabilityLayer: DesirabilityLayer) {
 
-        val jobs = arrayListOf<Deferred<Unit>>()
+        val jobs = arrayListOf<Job>()
 
         val population = cityMap.censusTaker.population
 
@@ -170,16 +168,16 @@ class DesirabilityUpdater(val cityMap: CityMap) : Debuggable {
         // we like being near places that PROVIDE goods
         residentialZones.forEach { coordinate ->
 
-            jobs += async {
+            jobs += launch {
                 if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                     desirabilityLayer[coordinate] = Double.MIN_VALUE
-                    return@async
+                    return@launch
                 }
 
                 // if we have less than 20 people we just want to live here...
                 if (population < 20) {
                     desirabilityLayer[coordinate] = 10.0
-                    return@async
+                    return@launch
                 }
 
                 val availableJobsShortDistance =
@@ -219,7 +217,7 @@ class DesirabilityUpdater(val cityMap: CityMap) : Debuggable {
             }
         }
 
-        jobs.forEach { it.await() }
+        jobs.forEach { it.join() }
 
         trimDesirabilityLayer(desirabilityLayer, residentialZones)
     }

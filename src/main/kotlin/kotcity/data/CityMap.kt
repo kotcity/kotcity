@@ -379,8 +379,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 timeFunction("Consuming goods") { goodsConsumer.tick() }
                 timeFunction("Generating traffic") { trafficCalculator.tick() }
 
-                async { timeFunction("Populating Zots") { zotPopulator.tick() } }
-                async {
+                launch { timeFunction("Populating Zots") { zotPopulator.tick() } }
+                launch {
                     timeFunction("Updating pollution...") { pollutionUpdater.tick() }
                     timeFunction("Updating happiness...") { happinessUpdater.tick() }
                 }
@@ -415,25 +415,25 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private fun dailyTick() {
         val self = this
 
-        async {
+        launch {
             timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(self) }
         }
 
-        async {
+        launch {
             timeFunction("Calculating desirability") { desirabilityUpdater.tick() }
         }
 
-        async {
+        launch {
             timeFunction("Collect Taxes") { taxCollector.tick() }
             timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
         }
 
-        async {
+        launch {
             timeFunction("Calculating fire coverage") { FireCoverageUpdater.update(self) }
             timeFunction("Calculating crime and police presence") { CrimeUpdater.update(self) }
         }
 
-        async {
+        launch {
             timeFunction("Update land value") { landValueUpdater.tick() }
         }
     }
