@@ -16,7 +16,7 @@ class BuildingBuilder(val cityMap: CityMap) : Debuggable {
         while (tries < maxTries) {
             val fuzzedCoordinate: BlockCoordinate = coordinate.fuzz((newBuilding.width))
 
-            val buildingZone: Zone? = findZoneForBuilding(newBuilding)
+            val buildingZone: Zone? = newBuilding.zone()
 
             if (buildingZone != null) {
                 val buildingBlocks = cityMap.buildingBlocks(fuzzedCoordinate, newBuilding)
@@ -45,14 +45,5 @@ class BuildingBuilder(val cityMap: CityMap) : Debuggable {
             debug { "Would have built but we were not close enough to a road!" }
         }
         return isZoned && nearRoad
-    }
-
-    private fun findZoneForBuilding(newBuilding: Building): Zone? {
-        return when (newBuilding::class) {
-            Residential::class -> Zone.RESIDENTIAL
-            Commercial::class -> Zone.COMMERCIAL
-            Industrial::class -> Zone.INDUSTRIAL
-            else -> null
-        }
     }
 }

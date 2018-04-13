@@ -34,26 +34,26 @@ object BuildingSpriteLoader {
     }
 
     fun filename(building: Building): String {
-        return when (building::class) {
-            PowerPlant::class -> powerPlantSprite(building)
-            Commercial::class -> "./assets/commercial/${building.sprite}"
-            Residential::class -> "./assets/residential/${building.sprite}"
-            Industrial::class -> "./assets/industrial/${building.sprite}"
-            PowerLine::class -> "./assets/utility/power_line.png"
-            FireStation::class -> "./assets/utility/fire_station.png"
-            PoliceStation::class -> "./assets/utility/police_station.png"
-            TrainStation::class -> "./assets/transportation/trains/train_station_icon.png"
-            RailDepot::class -> "./assets/transportation/trains/rail_depot_icon.png"
-            Civic::class -> "./assets/civic/${building.sprite}"
+        return when (building) {
+            is PowerPlant -> powerPlantSprite(building)
+            is Commercial -> "./assets/commercial/${building.sprite}"
+            is Residential -> "./assets/residential/${building.sprite}"
+            is Industrial -> "./assets/industrial/${building.sprite}"
+            is PowerLine -> "./assets/utility/power_line.png"
+            is FireStation -> "./assets/utility/fire_station.png"
+            is PoliceStation -> "./assets/utility/police_station.png"
+            is TrainStation -> "./assets/transportation/trains/train_station_icon.png"
+            is RailDepot -> "./assets/transportation/trains/rail_depot_icon.png"
+            is Civic -> "./assets/civic/${building.sprite}"
             else -> throw RuntimeException("Unknown sprite for ${building::class}")
         }
     }
 
-    private fun powerPlantSprite(building: Building): String {
-        return when {
-            building.variety == "coal" -> "./assets/utility/coal_power_plant.png"
-            building.variety == "nuclear" -> "./assets/utility/nuclear_power_plant.png"
-            else -> throw RuntimeException("Unknown power plant variety: ${building.variety}")
+    private fun powerPlantSprite(powerPlant: PowerPlant): String {
+        return when (powerPlant.variety) {
+            PowerPlant.VARIETY_COAL -> "./assets/utility/coal_power_plant.png"
+            PowerPlant.VARIETY_NUCLEAR -> "./assets/utility/nuclear_power_plant.png"
+            else -> throw RuntimeException("Unknown power plant variety: ${powerPlant.variety}")
         }
     }
 }

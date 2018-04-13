@@ -7,13 +7,11 @@ class HappinessUpdater(val cityMap: CityMap) : Debuggable {
     override var debug: Boolean = false
 
     private fun developedZone(building: Building): Boolean {
-        return when (building::class) {
-            Residential::class -> true
-            Commercial::class -> true
-            Industrial::class -> true
-            else -> {
-                false
-            }
+        return when (building) {
+            is Residential,
+            is Commercial,
+            is Industrial -> true
+            else -> false
         }
     }
 
