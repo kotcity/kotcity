@@ -18,27 +18,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-
-/**
- * Just a utility class for hanging onto a rectangle of BlockCoordinates
- */
-data class Corners(
-    private val topLeft: BlockCoordinate,
-    private val bottomRight: BlockCoordinate,
-    private val topRight: BlockCoordinate,
-    private val bottomLeft: BlockCoordinate
-) {
-    fun includes(block: BlockCoordinate): Boolean {
-        if (block.x >= topLeft.x && block.x <= bottomRight.x && block.y >= topLeft.y && block.y <= bottomRight.y) {
-            return true
-        }
-        if (block.x <= topRight.x && block.x >= bottomLeft.x && block.y <= topRight.y && block.y >= bottomLeft.y) {
-            return true
-        }
-        return false
-    }
-}
-
 /**
  * Represents a grid of "desirability values" that we store in the [CityMap]
  */
