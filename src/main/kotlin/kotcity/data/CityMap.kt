@@ -403,17 +403,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     /**
-     * Used to check traffic at a given coordinate with a certain radius
-     * @param coordinate coordinate to check at
-     * @param radius radius in blocks
-     * @param quantity quantity of traffic. Each one represents the traffic from one contract.
-     */
-    fun hasTrafficNearby(coordinate: BlockCoordinate, radius: Int, quantity: Int): Boolean {
-        val trafficCount = trafficNearby(coordinate, radius)
-        return trafficCount > quantity
-    }
-
-    /**
      * Returns a count of traffic at the given coordinate and radius
      * @param coordinate
      * @param radius

@@ -66,7 +66,7 @@ class ZotPopulator(val cityMap: CityMap) : Debuggable {
             zotList.add(Zot(ZotType.NO_WORKERS))
         }
 
-        if (!cityMap.hasTrafficNearby(location.coordinate, 5, 50)) {
+        if (cityMap.trafficNearby(location.coordinate, 5) <= 50) {
             zotList.add(Zot(ZotType.NO_CUSTOMERS))
         }
 
@@ -95,7 +95,7 @@ class ZotPopulator(val cityMap: CityMap) : Debuggable {
             zotList.add(Zot(ZotType.NO_GOODS))
         }
 
-        if (cityMap.hasTrafficNearby(location.coordinate, Tunable.TRAFFIC_RADIUS, Tunable.MAX_TRAFFIC)) {
+        if (cityMap.trafficNearby(location.coordinate, Tunable.TRAFFIC_RADIUS) > Tunable.MAX_TRAFFIC) {
             zotList.add(Zot(ZotType.TOO_MUCH_TRAFFIC))
         }
 
