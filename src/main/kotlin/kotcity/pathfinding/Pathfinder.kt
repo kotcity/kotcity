@@ -106,7 +106,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     private fun heuristic(current: BlockCoordinate, destinations: List<BlockCoordinate>): Double {
         // calculate manhattan distance to each...
         return destinations.map { coordinate ->
-            var score = manhattanDistance(current, coordinate)
+            var score = current.manhattanDistanceTo(coordinate)
             // see if this is road and lower score by a tiny bit...
             val locations = cityMap.cachedLocationsIn(current)
             if (locations.count() > 0) {
@@ -131,11 +131,6 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             }
             score
         }.min() ?: Double.MAX_VALUE
-    }
-
-
-    private fun manhattanDistance(start: BlockCoordinate, destination: BlockCoordinate): Double {
-        return Math.abs(start.x - destination.x) + Math.abs(start.y - destination.y).toDouble()
     }
 
     /**

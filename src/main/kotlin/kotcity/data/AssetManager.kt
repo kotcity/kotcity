@@ -124,7 +124,7 @@ class AssetManager(val cityMap: CityMap) {
     }
 
     private fun checkSprite(building: LoadableBuilding) {
-        if (building.sprite == null || building.sprite == "") {
+        if (building.sprite.isNullOrEmpty()) {
             throw RuntimeException("Could not load sprite for $building")
         }
         BuildingSpriteLoader.filename(building)

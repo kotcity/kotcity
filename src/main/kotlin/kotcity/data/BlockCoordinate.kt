@@ -4,6 +4,8 @@ import kotcity.util.intBetween
 import kotcity.util.reorder
 import nl.pvdberg.hashkode.hashKode
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.sqrt
 
 /**
  * The main coordinate system used in this game. Everything is on an X-Y grid and we use this all over the place.
@@ -16,7 +18,6 @@ data class BlockCoordinate(
     val y: Int
 ) {
     companion object {
-
         /**
          * Used for fuzzing...
          */
@@ -83,30 +84,22 @@ data class BlockCoordinate(
     /**
      * Returns the neighboring cell directly above this cell
      */
-    fun top(): BlockCoordinate {
-        return BlockCoordinate(x, y - 1)
-    }
+    fun top() = BlockCoordinate(x, y - 1)
 
     /**
      * Returns the neighboring cell directly below this cell
      */
-    fun bottom(): BlockCoordinate {
-        return BlockCoordinate(x, y + 1)
-    }
+    fun bottom() = BlockCoordinate(x, y + 1)
 
     /**
      * Returns the neighboring cell directly to the left of this cell
      */
-    fun left(): BlockCoordinate {
-        return BlockCoordinate(x - 1, y)
-    }
+    fun left() = BlockCoordinate(x - 1, y)
 
     /**
      * Returns the neighboring cell directly to the right of this cell
      */
-    fun right(): BlockCoordinate {
-        return BlockCoordinate(x + 1, y)
-    }
+    fun right() = BlockCoordinate(x + 1, y)
 
     /**
      * Returns a circle-ish area of [BlockCoordinate]s around us to the given radius
@@ -129,10 +122,18 @@ data class BlockCoordinate(
 
     /**
      * Returns the distance to the other [BlockCoordinate]
-     * @param otherCoordinate
+     * @param other
      */
-    fun distanceTo(otherCoordinate: BlockCoordinate): Double {
-        return Math.sqrt(((this.x - otherCoordinate.x) * (this.x - otherCoordinate.x) + (this.y - otherCoordinate.y) * (this.y - otherCoordinate.y)).toDouble())
+    fun distanceTo(other: BlockCoordinate): Double {
+        return sqrt(((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y)).toDouble())
+    }
+
+    /**
+     * Returns the distance to the other [BlockCoordinate] only allowing strictly vertical and horizontal paths
+     * @param other
+     */
+    fun manhattanDistanceTo(other: BlockCoordinate): Double {
+        return abs(x - other.x) + abs(y - other.y).toDouble()
     }
 
     /**
@@ -140,21 +141,9 @@ data class BlockCoordinate(
      * @param other the other coordinate
      * @return a new coordinate based on the sum of each of the xy
      */
-    operator fun plus(other: BlockCoordinate): BlockCoordinate =
-        BlockCoordinate(x + other.x, y + other.y)
+    operator fun plus(other: BlockCoordinate): BlockCoordinate = BlockCoordinate(x + other.x, y + other.y)
 
-    override fun equals(other: Any?): Boolean {
-
-        if (other !is BlockCoordinate) {
-            return false
-        }
-
-        if (other.x == x && other.y == y) {
-            return true
-        }
-
-        return false
-    }
+    override fun equals(other: Any?) = other is BlockCoordinate && x == other.x && y == other.y
 
     override fun hashCode() = hashKode(x, y)
 }
