@@ -80,23 +80,10 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             buildingFilter: (Building, Int) -> Boolean
     ): List<BlockCoordinate> {
         return start.flatMap { coordinate ->
-            val buildings = cityMap.nearestBuildings(coordinate, MAX_DISTANCE)
-
-            buildings.filter {
-                val building = it.building
-                buildingFilter(building, quantity)
+            cityMap.nearestBuildings(coordinate, MAX_DISTANCE).filter {
+                buildingFilter(it.building, quantity)
             }
-        }.flatMap { blocksFor(it.building, it.coordinate) }
-    }
-
-    private fun blocksFor(building: Building, coordinate: BlockCoordinate): List<BlockCoordinate> {
-        val xRange = coordinate.x..(coordinate.x + building.width - 1)
-        val yRange = coordinate.y..(coordinate.y + building.height - 1)
-        return xRange.flatMap { x ->
-            yRange.map { y ->
-                BlockCoordinate(x, y)
-            }
-        }
+        }.flatMap { it.blocks() }
     }
 
     /**
@@ -477,7 +464,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     private fun maybeAppendNode(sourceNode: NavigationNode, destinationNode: NavigationNode, openList: MutableSet<NavigationNode>, closedList: MutableSet<NavigationNode>, distanceToGoal: Double, destinations: List<BlockCoordinate>) {
         if (!closedList.contains(destinationNode) && !openList.contains(destinationNode)) {
             // if we are within 3 we can just skip around...
-            // BUG: this means if we are super close we can just ignore roads...
+            // FIXME: this means if we are super close we can just ignore roads...
 
             // TODO: this the problem... when we get close enough we gotta cast to the destination...
             if (distanceToGoal <= 3) {
