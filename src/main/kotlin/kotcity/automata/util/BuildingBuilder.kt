@@ -1,6 +1,9 @@
 package kotcity.automata.util
 
-import kotcity.data.*
+import kotcity.data.BlockCoordinate
+import kotcity.data.Building
+import kotcity.data.CityMap
+import kotcity.data.Zone
 import kotcity.pathfinding.Pathfinder
 import kotcity.util.Debuggable
 
@@ -19,7 +22,7 @@ class BuildingBuilder(val cityMap: CityMap) : Debuggable {
             val buildingZone: Zone? = newBuilding.zone()
 
             if (buildingZone != null) {
-                val buildingBlocks = cityMap.buildingBlocks(fuzzedCoordinate, newBuilding)
+                val buildingBlocks = newBuilding.buildingBlocks(fuzzedCoordinate)
                 val validToBuild: Boolean = checkFootprint(buildingZone, buildingBlocks)
                 if (validToBuild) {
                     debug { "Trying to build $newBuilding at $fuzzedCoordinate" }

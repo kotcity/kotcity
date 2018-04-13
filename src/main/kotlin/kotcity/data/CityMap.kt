@@ -192,20 +192,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     /**
-     * Takes a coordinate and a building and returns the "footprint" of the building.
-     * In other words, each block the building sits in.
-     *
-     * @param coordinate Coordinate of the building
-     * @param building The building
-     * @return a list of matching blocks
-     */
-    fun buildingBlocks(coordinate: BlockCoordinate, building: Building): List<BlockCoordinate> {
-        val xRange = coordinate.x..coordinate.x + (building.width - 1)
-        val yRange = coordinate.y..coordinate.y + (building.height - 1)
-        return xRange.flatMap { x -> yRange.map { BlockCoordinate(x, it) } }
-    }
-
-    /**
      * Purges spatial index of buildings...
      */
     fun purgeRTree() {
@@ -705,8 +691,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             this.buildingLayer[block] = building
             building.powered = true
             if (building !is Commercial && building !is Residential && building !is Industrial) {
-                val buildingBlocks = buildingBlocks(block, building)
-                buildingBlocks.forEach { zoneLayer.remove(it) }
+                building.buildingBlocks(block).forEach { zoneLayer.remove(it) }
             }
             if (building.isDrivable()) {
                 updateOutsideConnections()
