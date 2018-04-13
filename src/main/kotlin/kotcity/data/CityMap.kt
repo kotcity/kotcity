@@ -17,6 +17,7 @@ import kotlinx.coroutines.experimental.withTimeout
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.system.measureTimeMillis
 
 /**
  * Represents a grid of "desirability values" that we store in the [CityMap]
@@ -416,17 +417,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     /**
-     * A utility function that helps us to time various automata and functions.
-     * @param desc Description of the function (printed to console)
-     * @param timedFunction Actual function to invoke
+     * Executes the given function and prints elapsed time to console.
+     * @param description Description of the function (printed to console)
+     * @param function Actual function to invoke
      */
-    private fun timeFunction(desc: String, timedFunction: () -> Unit) {
-        println("Beginning $desc...")
-        val startMillis = System.currentTimeMillis()
-        timedFunction()
-        val endMillis = System.currentTimeMillis()
-        val totalTime = endMillis - startMillis
-        println("$desc calc took $totalTime millis")
+    private inline fun timeFunction(description: String, function: () -> Unit) {
+        println("Beginning $description...")
+        val totalTime = measureTimeMillis(function)
+        println("$description calc took $totalTime ms")
     }
 
     /**
