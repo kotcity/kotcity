@@ -448,7 +448,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     /**
      * See if we can plop a new building on the map at the given coordinate
-     * @param newBuilding proposed building
+     * @param building proposed building
      * @param coordinate top left coordinate of building
      * @param waterCheck if true, we will make sure we can't build this on water
      * @return true if we can build here, false if not
