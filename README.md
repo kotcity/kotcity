@@ -1,4 +1,4 @@
-# KotCity 0.49.2 (🐇 Post-Easter Edition 🐇)
+# KotCity 0.49.3
 
 [![Build Status](https://semaphoreci.com/api/v1/kotcity/kotcity/branches/master/badge.svg)](https://semaphoreci.com/kotcity/kotcity) [![Build Status](https://travis-ci.org/kotcity/kotcity.svg?branch=master)](https://travis-ci.org/kotcity/kotcity)
 
@@ -7,7 +7,7 @@
 This is _pre-alpha_ software with super obvious bugs, rough edges etc. In the spirit of "release early and release often", I am posting the code. This project is far from done but I prefer to get the code out there to be used by whomever. Disagree with the project? Fork it :)
 
 ## Obligatory Screenshot
-![KotCity Screenshot](screenshot.gif?raw=true "Screenshot of the game's UI and an example city")
+![KotCity Screenshot](screenshot.png?raw=true "Screenshot of the game's UI and an example city")
 
 ## Gimme the Software!
 
@@ -19,12 +19,9 @@ Java 8+ is required. On Windows it will look for JRE and bring you to download p
 
 ## New in this version
 
-* Districts by @sabieber, initial version, more features to come!
-* performance improvements by @sabieber
-* Improved UI (added some nice labels)
-* Vector Graphic (SVG) assets are now supported!
-* Some fixes to railway (still buggy, but getting better!)
-* railways by @moonpatroller 
+* Fix for bad collision detection by @sabieber
+* Optimizations to pathfinding
+* Lots of new buildings :)
 
 ## Known bugs
 

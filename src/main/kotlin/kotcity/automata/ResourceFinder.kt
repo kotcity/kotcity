@@ -63,7 +63,7 @@ class ResourceFinder(val cityMap: CityMap) : Debuggable {
         }
 
         // so basically we can't find a nearby building with what we want so let's look to the nation...
-        if (preferredTradeEntity == null) {
+        if (cityMap.hasOutsideConnections() && preferredTradeEntity == null) {
             // let's try and get a path to the outside...
             // make sure the outside city has a resource before we get too excited and make a path...
             val pair = possiblePathToOutside(tradeable, quantity, sourceBlocks)
@@ -98,6 +98,11 @@ class ResourceFinder(val cityMap: CityMap) : Debuggable {
         quantity: Int,
         sourceBlocks: List<BlockCoordinate>
     ): Pair<TradeEntity, Path>? {
+        // OK... don't even bother if we have no outside connections.
+        if (!cityMap.hasOutsideConnections()) {
+            return null
+        }
+
         // OK what we want to do here is don't try and get a trip to the outside all the time...
         // if we fail we won't even bother for 10 more seconds....
         if (System.currentTimeMillis() - lastOutsidePathFailAt < 30000 ) {
@@ -151,7 +156,7 @@ class ResourceFinder(val cityMap: CityMap) : Debuggable {
                 }
             }
 
-            if (cityMap.nationalTradeEntity.currentQuantityWanted(tradeable) >= 1) {
+            if (cityMap.hasOutsideConnections() && cityMap.nationalTradeEntity.currentQuantityWanted(tradeable) >= 1) {
                 val outsidePair = possiblePathToOutside(tradeable, 1, sourceBlocks)
                 outsidePair?.let {
                     val tradeEntity = it.first
