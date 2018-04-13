@@ -47,7 +47,7 @@ class CityMapCanvas : ResizableCanvas() {
 
                     val translatedBlock = BlockCoordinate(nx.toInt(), ny.toInt())
 
-                    // TODO: this is a BUG!!!! we are getting the canvas XY coordinates but we care about the building ones...
+                    // FIXME: this is a BUG!!!! we are getting the canvas XY coordinates but we care about the building ones...
                     val buildings = buildingCache.get(translatedBlock, { buildingBlock ->
                         map.cachedLocationsIn(buildingBlock)
                     })
