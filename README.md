@@ -19,12 +19,9 @@ Java 8+ is required. On Windows it will look for JRE and bring you to download p
 
 ## New in this version
 
-* Districts by @sabieber, initial version, more features to come!
-* performance improvements by @sabieber
-* Improved UI (added some nice labels)
-* Vector Graphic (SVG) assets are now supported!
-* Some fixes to railway (still buggy, but getting better!)
-* railways by @moonpatroller 
+* Fix for bad collision detection by @sabieber
+* Optimizations to pathfinding
+* Lots of new buildings :)
 
 ## Known bugs
 
