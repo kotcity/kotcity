@@ -97,7 +97,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         DesirabilityLayer(Zone.INDUSTRIAL, 1)
     )
 
-    private val outsideConnections = mutableListOf<BlockCoordinate>()
+    private var outsideConnections = mutableListOf<BlockCoordinate>()
 
     val mainDistrict = District("Central district")
     val districts = mutableListOf(mainDistrict)
@@ -303,11 +303,15 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         locationsInCache.invalidateAll()
     }
 
+    fun hasOutsideConnections(): Boolean {
+        return outsideConnections.size > 0
+    }
+
     fun updateOutsideConnections() {
         val widthRange = -1..width
         val heightRange = -1..height
 
-        outsideConnections.clear()
+        val newOutsideConnections = mutableListOf<BlockCoordinate>()
         widthRange.forEach { x ->
             val topCoord = BlockCoordinate(x, heightRange.first)
             val topBuilding = buildingLayer[topCoord]
@@ -315,10 +319,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             val bottomBuilding = buildingLayer[bottomCoord]
 
             if (topBuilding.isDrivable()) {
-                outsideConnections.add(topCoord)
+                newOutsideConnections.add(topCoord)
             }
             if (bottomBuilding.isDrivable()) {
-                outsideConnections.add(bottomCoord)
+                newOutsideConnections.add(bottomCoord)
             }
         }
         heightRange.forEach { y ->
@@ -328,12 +332,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             val rightBuilding = buildingLayer[rightCoord]
 
             if (leftBuilding.isDrivable()) {
-                outsideConnections.add(leftCoord)
+                newOutsideConnections.add(leftCoord)
             }
             if (rightBuilding.isDrivable()) {
-                outsideConnections.add(rightCoord)
+                newOutsideConnections.add(rightCoord)
             }
         }
+
+        outsideConnections = newOutsideConnections
     }
 
     private fun Building?.isDrivable() = this is Road || this is Railroad || this is RailroadCrossing
