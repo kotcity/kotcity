@@ -17,27 +17,7 @@ import kotlinx.coroutines.experimental.withTimeout
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-
-
-/**
- * Just a utility class for hanging onto a rectangle of BlockCoordinates
- */
-data class Corners(
-    private val topLeft: BlockCoordinate,
-    private val bottomRight: BlockCoordinate,
-    private val topRight: BlockCoordinate,
-    private val bottomLeft: BlockCoordinate
-) {
-    fun includes(block: BlockCoordinate): Boolean {
-        if (block.x >= topLeft.x && block.x <= bottomRight.x && block.y >= topLeft.y && block.y <= bottomRight.y) {
-            return true
-        }
-        if (block.x <= topRight.x && block.x >= bottomLeft.x && block.y <= topRight.y && block.y >= bottomLeft.y) {
-            return true
-        }
-        return false
-    }
-}
+import kotlin.system.measureTimeMillis
 
 /**
  * Represents a grid of "desirability values" that we store in the [CityMap]
@@ -210,20 +190,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         this.buildingIndex.entries().forEach {
             callback(it.value())
         }
-    }
-
-    /**
-     * Takes a coordinate and a building and returns the "footprint" of the building.
-     * In other words, each block the building sits in.
-     *
-     * @param coordinate Coordinate of the building
-     * @param building The building
-     * @return a list of matching blocks
-     */
-    fun buildingBlocks(coordinate: BlockCoordinate, building: Building): List<BlockCoordinate> {
-        val xRange = coordinate.x..coordinate.x + (building.width - 1)
-        val yRange = coordinate.y..coordinate.y + (building.height - 1)
-        return xRange.flatMap { x -> yRange.map { BlockCoordinate(x, it) } }
     }
 
     /**
@@ -444,17 +410,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     /**
-     * Used to check traffic at a given coordinate with a certain radius
-     * @param coordinate coordinate to check at
-     * @param radius radius in blocks
-     * @param quantity quantity of traffic. Each one represents the traffic from one contract.
-     */
-    fun hasTrafficNearby(coordinate: BlockCoordinate, radius: Int, quantity: Int): Boolean {
-        val trafficCount = trafficNearby(coordinate, radius)
-        return trafficCount > quantity
-    }
-
-    /**
      * Returns a count of traffic at the given coordinate and radius
      * @param coordinate
      * @param radius
@@ -468,17 +423,14 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     }
 
     /**
-     * A utility function that helps us to time various automata and functions.
-     * @param desc Description of the function (printed to console)
-     * @param timedFunction Actual function to invoke
+     * Executes the given function and prints elapsed time to console.
+     * @param description Description of the function (printed to console)
+     * @param function Actual function to invoke
      */
-    private fun timeFunction(desc: String, timedFunction: () -> Unit) {
-        println("Beginning $desc...")
-        val startMillis = System.currentTimeMillis()
-        timedFunction()
-        val endMillis = System.currentTimeMillis()
-        val totalTime = endMillis - startMillis
-        println("$desc calc took $totalTime millis")
+    private inline fun timeFunction(description: String, function: () -> Unit) {
+        println("Beginning $description...")
+        val totalTime = measureTimeMillis(function)
+        println("$description calc took $totalTime ms")
     }
 
     /**
@@ -502,7 +454,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     /**
      * See if we can plop a new building on the map at the given coordinate
-     * @param newBuilding proposed building
+     * @param building proposed building
      * @param coordinate top left coordinate of building
      * @param waterCheck if true, we will make sure we can't build this on water
      * @return true if we can build here, false if not
@@ -732,8 +684,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             this.buildingLayer[block] = building
             building.powered = true
             if (building !is Commercial && building !is Residential && building !is Industrial) {
-                val buildingBlocks = buildingBlocks(block, building)
-                buildingBlocks.forEach { zoneLayer.remove(it) }
+                building.buildingBlocks(block).forEach { zoneLayer.remove(it) }
             }
             if (building.isDrivable()) {
                 updateOutsideConnections()

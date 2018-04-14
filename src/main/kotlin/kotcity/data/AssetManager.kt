@@ -51,7 +51,7 @@ class AssetManager(val cityMap: CityMap) {
                 it?.let { matcher.matches(it.fileName) } ?: false
             }
             .map({ it.toAbsolutePath().toString() })
-            .collect(toList())
+            .collect(toList<String>())
     }
 
     fun all() = directories.map { dir -> assetsInDir(dir).mapNotNull { loadFromFile(it) } }.flatten()
@@ -124,7 +124,7 @@ class AssetManager(val cityMap: CityMap) {
     }
 
     private fun checkSprite(building: LoadableBuilding) {
-        if (building.sprite == null || building.sprite == "") {
+        if (building.sprite.isNullOrEmpty()) {
             throw RuntimeException("Could not load sprite for $building")
         }
         BuildingSpriteLoader.filename(building)

@@ -347,7 +347,6 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
      * In other words, each block the building sits in.
      *
      * @param coordinate Coordinate of the building
-     * @param building The building
      * @return a list of matching blocks
      */
     fun buildingBlocks(coordinate: BlockCoordinate): List<BlockCoordinate> {

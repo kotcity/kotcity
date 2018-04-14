@@ -25,8 +25,8 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         // BUG:
         // shit... this will grow unbound...
         private val tickCounts: LoadingCache<Location, Int> = Caffeine.newBuilder()
-                .expireAfterAccess(1, TimeUnit.MINUTES)
-                .build<Location, Int> { _ -> ticksToSkip }
+            .expireAfterAccess(1, TimeUnit.MINUTES)
+            .build<Location, Int> { _ -> ticksToSkip }
     }
 
     private val resourceFinder = ResourceFinder(cityMap)
@@ -111,7 +111,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
         val coordinate = location.coordinate
         val building = location.building
 
-        val buildingBlocks = cityMap.buildingBlocks(coordinate, building)
+        val buildingBlocks = building.buildingBlocks(coordinate)
 
         handleConsumes(building, buildingBlocks, coordinate)
         handleProduces(building, buildingBlocks, coordinate)
@@ -129,11 +129,11 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                 currentAttempt += 1
                 // limit us to selling at most 33% of our output to a single source...
                 val forSaleCount = building.currentQuantityForSale(tradeable)
-                        .coerceAtMost((building.producesQuantity(tradeable) / 3).coerceAtLeast(1))
+                    .coerceAtMost((building.producesQuantity(tradeable) / 3).coerceAtLeast(1))
                 debug { "${building.description} trying to sell $forSaleCount $tradeable" }
                 if (resourceFinder.quantityWantedNearby(tradeable, coordinate) > 0) {
                     val entityAndPath =
-                            resourceFinder.nearestBuyingTradeable(tradeable, buildingBlocks, MAX_RESOURCE_DISTANCE)
+                        resourceFinder.nearestBuyingTradeable(tradeable, buildingBlocks, MAX_RESOURCE_DISTANCE)
 
                     if (entityAndPath == null) {
                         debug { "Want to sell $tradeable but can't find a path to a buyer!" }
@@ -196,7 +196,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                             val otherTradeEntity = bestSource.first
                             val pathToOther = bestSource.second
                             val quantity = building.currentQuantityWanted(tradeable)
-                                    .coerceAtMost(otherTradeEntity.currentQuantityForSale(tradeable))
+                                .coerceAtMost(otherTradeEntity.currentQuantityForSale(tradeable))
 
 
                             if (quantity > 0) {
@@ -206,7 +206,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                                 debug { "${building.name} now requires ${building.currentQuantityWanted(tradeable)} $tradeable" }
                                 debug {
                                     "${otherTradeEntity.description()} has ${otherTradeEntity.currentQuantityForSale(
-                                            tradeable
+                                        tradeable
                                     )} left."
                                 }
                                 // update the max count...
@@ -226,14 +226,14 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
 
     private fun maxAvailableNearby(coordinate: BlockCoordinate, tradeable: Tradeable): Int {
         val nearbyBuildings = cityMap.nearestBuildings(coordinate, MAX_RESOURCE_DISTANCE)
-        return nearbyBuildings.mapNotNull { it.building.currentQuantityForSale(tradeable) }.max() ?: 0
+        return nearbyBuildings.map { it.building.currentQuantityForSale(tradeable) }.max() ?: 0
     }
 
     // TODO: this is most likely bugged...
     private fun findNearbySource(
-            coordinates: List<BlockCoordinate>,
-            tradeable: Tradeable,
-            needsCount: Int
+        coordinates: List<BlockCoordinate>,
+        tradeable: Tradeable,
+        needsCount: Int
     ): Pair<TradeEntity, Path>? {
         (1..needsCount).reversed().forEach { quantity ->
             val source = resourceFinder.findSource(coordinates, tradeable, quantity)
@@ -250,7 +250,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
     private fun locationsNeedingContracts() = cityMap.locations().filter { it.building.needsAnyContracts() }
 
     private fun entitiesWithContracts() =
-            cityMap.locations().map { CityTradeEntity(it.coordinate, it.building) }.filter { it.hasAnyContracts() }
+        cityMap.locations().map { CityTradeEntity(it.coordinate, it.building) }.filter { it.hasAnyContracts() }
 
     fun terminateRandomContracts() {
         val totalBuildings = cityMap.locations().count()

@@ -1,10 +1,7 @@
 package kotcity.pathfinding
 
 import kotcity.data.*
-import kotcity.memoization.CacheOptions
-import kotcity.memoization.cache
 import kotcity.util.Debuggable
-import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 // let me show you de way
@@ -75,9 +72,9 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     }
 
     private fun findNearestTrade(
-            start: List<BlockCoordinate>,
-            quantity: Int,
-            buildingFilter: (Building, Int) -> Boolean
+        start: List<BlockCoordinate>,
+        quantity: Int,
+        buildingFilter: (Building, Int) -> Boolean
     ): List<BlockCoordinate> {
         return start.flatMap { coordinate ->
             cityMap.nearestBuildings(coordinate, MAX_DISTANCE).filter {
@@ -109,7 +106,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     private fun heuristic(current: BlockCoordinate, destinations: List<BlockCoordinate>): Double {
         // calculate manhattan distance to each...
         return destinations.map { coordinate ->
-            var score = manhattanDistance(current, coordinate)
+            var score = current.manhattanDistanceTo(coordinate)
             // see if this is road and lower score by a tiny bit...
             val locations = cityMap.cachedLocationsIn(current)
             if (locations.count() > 0) {
@@ -134,11 +131,6 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             }
             score
         }.min() ?: Double.MAX_VALUE
-    }
-
-
-    private fun manhattanDistance(start: BlockCoordinate, destination: BlockCoordinate): Double {
-        return Math.abs(start.x - destination.x) + Math.abs(start.y - destination.y).toDouble()
     }
 
     /**
@@ -181,7 +173,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                 if (locations.count() > 0) {
                     val building = locations.first().building
                     return building is Road && (building.direction == Direction.STATIONARY || building.direction != oppositeDir(
-                            destinationNode.direction
+                        destinationNode.direction
                     ))
                 }
             }
@@ -239,8 +231,8 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     // OK... the REAL way path finding works is we have to find ourselves a road first... if we don't step on a road
     // our path isn't valid...
     fun tripTo(
-            source: List<BlockCoordinate>,
-            destinations: List<BlockCoordinate>
+        source: List<BlockCoordinate>,
+        destinations: List<BlockCoordinate>
     ): Path? {
 
         if (destinations.isEmpty()) {
@@ -305,11 +297,11 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                 makeNode(blockCoordinate, direction)
             } else {
                 NavigationNode(
-                        blockCoordinate,
-                        makeNode(pathBlocks[index - 1], direction),
-                        0.0,
-                        TransitType.ROAD,
-                        direction
+                    blockCoordinate,
+                    makeNode(pathBlocks[index - 1], direction),
+                    0.0,
+                    TransitType.ROAD,
+                    direction
                 )
             }
 
@@ -318,26 +310,26 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
     private fun makeNode(blockCoordinate: BlockCoordinate, direction: Direction): NavigationNode {
         return NavigationNode(
-                blockCoordinate,
-                null,
-                0.0,
-                TransitType.ROAD,
-                direction
+            blockCoordinate,
+            null,
+            0.0,
+            TransitType.ROAD,
+            direction
         )
     }
 
     // so basically what we want to do here is start from each coordinate and project each way (N,S,E,W) and see if we hit a destination...
     private fun shortestCastToRoad(
-            source: List<BlockCoordinate>,
-            roadBlocks: List<BlockCoordinate>,
-            maxLength: Int = 3
+        source: List<BlockCoordinate>,
+        roadBlocks: List<BlockCoordinate>,
+        maxLength: Int = 3
     ): Path? {
         val paths = source.flatMap {
             listOf(
-                    path(it, Direction.NORTH, maxLength),
-                    path(it, Direction.SOUTH, maxLength),
-                    path(it, Direction.EAST, maxLength),
-                    path(it, Direction.WEST, maxLength)
+                path(it, Direction.NORTH, maxLength),
+                path(it, Direction.SOUTH, maxLength),
+                path(it, Direction.EAST, maxLength),
+                path(it, Direction.WEST, maxLength)
             )
         }.filterNotNull()
 
@@ -360,8 +352,8 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     }
 
     private fun truePathfind(
-            source: List<BlockCoordinate>,
-            destinations: List<BlockCoordinate>
+        source: List<BlockCoordinate>,
+        destinations: List<BlockCoordinate>
     ): Path? {
 
         // switch these to list of navigation nodes...
@@ -399,22 +391,22 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                 // if we are on a road and the destination is nearby... we can hit it!
                 if (distanceToGoal <= 3 && activeNode.transitType == TransitType.ROAD) {
                     val nextNode = NavigationNode(
-                            nextBlock,
-                            activeNode,
-                            activeNode.score + heuristic(nextBlock, destinations),
-                            TransitType.ROAD,
-                            direction
+                        nextBlock,
+                        activeNode,
+                        activeNode.score + heuristic(nextBlock, destinations),
+                        TransitType.ROAD,
+                        direction
                     )
                     maybeAppendNode(activeNode, nextNode, openList, closedList, distanceToGoal, destinations)
                 } else {
                     if (newTransitType != null) {
                         // need to figure out the type of node we are now...
                         val nextNode = NavigationNode(
-                                nextBlock,
-                                activeNode,
-                                activeNode.score + heuristic(nextBlock, destinations),
-                                newTransitType,
-                                direction
+                            nextBlock,
+                            activeNode,
+                            activeNode.score + heuristic(nextBlock, destinations),
+                            newTransitType,
+                            direction
                         )
                         maybeAppendNode(activeNode, nextNode, openList, closedList, distanceToGoal, destinations)
                     }
@@ -439,7 +431,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
     }
 
     private fun blockInDirection(coordinate: BlockCoordinate, direction: Direction): BlockCoordinate {
-        return when(direction) {
+        return when (direction) {
             Direction.NORTH -> coordinate.top()
             Direction.SOUTH -> coordinate.bottom()
             Direction.EAST -> coordinate.right()
@@ -461,7 +453,14 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         }
     }
 
-    private fun maybeAppendNode(sourceNode: NavigationNode, destinationNode: NavigationNode, openList: MutableSet<NavigationNode>, closedList: MutableSet<NavigationNode>, distanceToGoal: Double, destinations: List<BlockCoordinate>) {
+    private fun maybeAppendNode(
+        sourceNode: NavigationNode,
+        destinationNode: NavigationNode,
+        openList: MutableSet<NavigationNode>,
+        closedList: MutableSet<NavigationNode>,
+        distanceToGoal: Double,
+        destinations: List<BlockCoordinate>
+    ) {
         if (!closedList.contains(destinationNode) && !openList.contains(destinationNode)) {
             // if we are within 3 we can just skip around...
             // FIXME: this means if we are super close we can just ignore roads...
@@ -489,14 +488,17 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
         }
     }
 
-    private fun generateOpenList(source: List<BlockCoordinate>, destinations: List<BlockCoordinate>): MutableSet<NavigationNode> {
+    private fun generateOpenList(
+        source: List<BlockCoordinate>,
+        destinations: List<BlockCoordinate>
+    ): MutableSet<NavigationNode> {
         return source.map {
             NavigationNode(
-                    it,
-                    null,
-                    heuristic(it, destinations),
-                    TransitType.ROAD,
-                    Direction.STATIONARY
+                it,
+                null,
+                heuristic(it, destinations),
+                TransitType.ROAD,
+                Direction.STATIONARY
             )
         }.toMutableSet()
     }
