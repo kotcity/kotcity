@@ -11,7 +11,6 @@ import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotcity.pathfinding.Direction
 import kotcity.util.reorder
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withTimeout
 import java.text.SimpleDateFormat
@@ -76,7 +75,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         DesirabilityLayer(Zone.INDUSTRIAL, 1)
     )
 
-    private var outsideConnections = mutableListOf<BlockCoordinate>()
+    private var outsideConnections: List<BlockCoordinate> = listOf()
 
     val mainDistrict = District("Central district")
     val districts = mutableListOf(mainDistrict)
@@ -268,9 +267,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         locationsInCache.invalidateAll()
     }
 
-    fun hasOutsideConnections(): Boolean {
-        return outsideConnections.size > 0
-    }
+    fun hasOutsideConnections() = outsideConnections.isNotEmpty()
 
     fun updateOutsideConnections() {
         val widthRange = -1..width
@@ -303,7 +300,6 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 newOutsideConnections.add(rightCoord)
             }
         }
-
         outsideConnections = newOutsideConnections
     }
 
