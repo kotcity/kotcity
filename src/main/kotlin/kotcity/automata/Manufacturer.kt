@@ -1,8 +1,8 @@
 package kotcity.automata
 
 import kotcity.data.CityMap
-import kotcity.data.Commercial
-import kotcity.data.Industrial
+import kotcity.data.buildings.Commercial
+import kotcity.data.buildings.Industrial
 import kotcity.data.Tradeable
 import kotcity.util.Debuggable
 
@@ -16,6 +16,9 @@ class Manufacturer(val cityMap: CityMap) : Debuggable {
             when (location.building) {
                 is Industrial -> handleIndustrial(location.building)
                 is Commercial -> handleCommercial(location.building)
+                else -> {
+                    Unit
+                }
             }
         }
     }

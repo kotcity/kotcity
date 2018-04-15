@@ -2,7 +2,7 @@ package kotcity.automata
 
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
-import kotcity.data.Road
+import kotcity.data.buildings.Road
 import kotcity.util.Debuggable
 
 private const val EVAPORATION_FACTOR = 0.90

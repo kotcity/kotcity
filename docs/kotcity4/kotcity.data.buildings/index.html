@@ -1,0 +1,211 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>kotcity.data.buildings - kotcity4</title>
+<link rel="stylesheet" href="../../style.css">
+</HEAD>
+<BODY>
+<a href="../index.html">kotcity4</a>&nbsp;/&nbsp;<a href="./index.html">kotcity.data.buildings</a><br/>
+<br/>
+<h2>Package kotcity.data.buildings</h2>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-building/index.html">Building</a></p>
+</td>
+<td>
+<code><span class="keyword">sealed</span> <span class="keyword">class </span><span class="identifier">Building</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-has-concrete-inventory/index.html"><span class="identifier">HasConcreteInventory</span></a><span class="symbol">, </span><a href="-has-concrete-contacts/index.html"><span class="identifier">HasConcreteContacts</span></a></code>
+<p>The basic unit of simulation in this game. Represents a building and all its attributes.
+We currently count <a href="-road/index.html">Road</a> as building as well as <a href="-power-line/index.html">PowerLine</a>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="-civic/index.html">Civic</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Civic</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-loadable-building/index.html"><span class="identifier">LoadableBuilding</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-commercial/index.html">Commercial</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Commercial</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-loadable-building/index.html"><span class="identifier">LoadableBuilding</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-elementary-school/index.html">ElementarySchool</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">ElementarySchool</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-school/index.html"><span class="identifier">School</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-fire-station/index.html">FireStation</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">FireStation</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-building/index.html"><span class="identifier">Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-has-concrete-contacts/index.html">HasConcreteContacts</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">HasConcreteContacts</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-has-contracts/index.html"><span class="identifier">HasContracts</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-has-concrete-inventory/index.html">HasConcreteInventory</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">HasConcreteInventory</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-has-inventory/index.html"><span class="identifier">HasInventory</span></a></code>
+<p>This is used for something in the <a href="../kotcity.data/-city-map/index.html">CityMap</a> that has REAL trackable inventory.
+The reason we have "<a href="-has-concrete-inventory/index.html">HasConcreteInventory</a>" and not is because the outside <a href="../kotcity.data/-national-trade-entity/index.html">NationalTradeEntity</a> does not REALLY have anything.
+It just pretends to.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="-has-contracts/index.html">HasContracts</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">HasContracts</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-has-inventory/index.html">HasInventory</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">HasInventory</span></code>
+<p>Represents something in (or external) to the city that can have <a href="../kotcity.data/-tradeable/index.html">Tradeable</a>s in its possession.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="-high-school/index.html">HighSchool</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">HighSchool</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-school/index.html"><span class="identifier">School</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-industrial/index.html">Industrial</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Industrial</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-loadable-building/index.html"><span class="identifier">LoadableBuilding</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-loadable-building/index.html">LoadableBuilding</a></p>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">LoadableBuilding</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-building/index.html"><span class="identifier">Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-police-station/index.html">PoliceStation</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PoliceStation</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-building/index.html"><span class="identifier">Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-power-line/index.html">PowerLine</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PowerLine</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-building/index.html"><span class="identifier">Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-power-plant/index.html">PowerPlant</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PowerPlant</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-building/index.html"><span class="identifier">Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-rail-depot/index.html">RailDepot</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">RailDepot</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-building/index.html"><span class="identifier">Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-railroad/index.html">Railroad</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Railroad</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-building/index.html"><span class="identifier">Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-railroad-crossing/index.html">RailroadCrossing</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">RailroadCrossing</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-building/index.html"><span class="identifier">Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-residential/index.html">Residential</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Residential</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-loadable-building/index.html"><span class="identifier">LoadableBuilding</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-road/index.html">Road</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Road</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-building/index.html"><span class="identifier">Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-school/index.html">School</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">School</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-building/index.html"><span class="identifier">Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-train-station/index.html">TrainStation</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">TrainStation</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-building/index.html"><span class="identifier">Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-university/index.html">University</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">University</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-school/index.html"><span class="identifier">School</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-d-e-f-a-u-l-t_-m-o-n-e-y.html">DEFAULT_MONEY</a></p>
+</td>
+<td>
+<code><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">DEFAULT_MONEY</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="uuid.html">uuid</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">uuid</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

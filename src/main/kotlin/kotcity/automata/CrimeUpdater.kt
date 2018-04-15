@@ -2,7 +2,7 @@ package kotcity.automata
 
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
-import kotcity.data.PoliceStation
+import kotcity.data.buildings.PoliceStation
 
 object CrimeUpdater {
     fun update(map: CityMap) {

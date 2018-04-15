@@ -1,0 +1,100 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>HasInventory - kotcity4</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kotcity4</a>&nbsp;/&nbsp;<a href="../index.html">kotcity.data.buildings</a>&nbsp;/&nbsp;<a href="./index.html">HasInventory</a><br/>
+<br/>
+<h1>HasInventory</h1>
+<code><span class="keyword">interface </span><span class="identifier">HasInventory</span></code>
+<p>Represents something in (or external) to the city that can have <a href="../../kotcity.data/-tradeable/index.html">Tradeable</a>s in its possession.</p>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="add-inventory.html">addInventory</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">addInventory</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasInventory$addInventory(kotcity.data.Tradeable, kotlin.Int)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.HasInventory$addInventory(kotcity.data.Tradeable, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="balance.html">balance</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">balance</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code>
+<p>How much <a href="../../kotcity.data/-tradeable/-m-o-n-e-y.html">Tradeable.MONEY</a> that the given thing has.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="quantity-on-hand.html">quantityOnHand</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">quantityOnHand</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasInventory$quantityOnHand(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="set-inventory.html">setInventory</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">setInventory</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasInventory$setInventory(kotcity.data.Tradeable, kotlin.Int)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.HasInventory$setInventory(kotcity.data.Tradeable, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="subtract-inventory.html">subtractInventory</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">subtractInventory</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasInventory$subtractInventory(kotcity.data.Tradeable, kotlin.Int)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.HasInventory$subtractInventory(kotcity.data.Tradeable, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="summarize-inventory.html">summarizeInventory</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">summarizeInventory</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="transfer-inventory.html">transferInventory</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">transferInventory</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasInventory$transferInventory(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int)/to">to</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-trade-entity/index.html"><span class="identifier">TradeEntity</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.HasInventory$transferInventory(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.HasInventory$transferInventory(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="../-has-concrete-inventory/index.html">HasConcreteInventory</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">HasConcreteInventory</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">HasInventory</span></a></code>
+<p>This is used for something in the <a href="../../kotcity.data/-city-map/index.html">CityMap</a> that has REAL trackable inventory.
+The reason we have "<a href="../-has-concrete-inventory/index.html">HasConcreteInventory</a>" and not is because the outside <a href="../../kotcity.data/-national-trade-entity/index.html">NationalTradeEntity</a> does not REALLY have anything.
+It just pretends to.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="../../kotcity.data/-national-trade-entity/index.html">NationalTradeEntity</a></p>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">NationalTradeEntity</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-has-contracts/index.html"><span class="identifier">HasContracts</span></a><span class="symbol">, </span><a href="./index.html"><span class="identifier">HasInventory</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../../kotcity.data/-outside-trade-entity/index.html">OutsideTradeEntity</a></p>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">OutsideTradeEntity</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-trade-entity/index.html"><span class="identifier">TradeEntity</span></a><span class="symbol">, </span><a href="../-has-contracts/index.html"><span class="identifier">HasContracts</span></a><span class="symbol">, </span><a href="./index.html"><span class="identifier">HasInventory</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

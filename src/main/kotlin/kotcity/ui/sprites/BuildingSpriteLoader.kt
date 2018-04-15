@@ -2,7 +2,7 @@ package kotcity.ui.sprites
 
 import javafx.embed.swing.SwingFXUtils
 import javafx.scene.image.Image
-import kotcity.data.*
+import kotcity.data.buildings.*
 import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotcity.util.resize

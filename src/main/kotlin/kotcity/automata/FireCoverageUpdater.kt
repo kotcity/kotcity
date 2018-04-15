@@ -2,7 +2,7 @@ package kotcity.automata
 
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
-import kotcity.data.FireStation
+import kotcity.data.buildings.FireStation
 
 object FireCoverageUpdater {
     fun update(map: CityMap) {

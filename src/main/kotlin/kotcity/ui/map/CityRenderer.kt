@@ -8,6 +8,7 @@ import javafx.scene.text.Font
 import kotcity.data.*
 import kotcity.data.MapMode.*
 import kotcity.data.Tunable.MAX_BUILDING_SIZE
+import kotcity.data.buildings.*
 import kotcity.pathfinding.Direction
 import kotcity.ui.*
 import kotcity.ui.layers.*
@@ -451,11 +452,11 @@ class CityRenderer(
         drawRoad(tx, ty, blockSize, building, Color.web("#424242"))
 
     private fun drawRoad(
-        tx: Double,
-        ty: Double,
-        blockSize: Double,
-        building: Building,
-        fillColor: Color = Color.BLACK
+            tx: Double,
+            ty: Double,
+            blockSize: Double,
+            building: Building,
+            fillColor: Color = Color.BLACK
     ) {
         canvas.graphicsContext2D.fill = fillColor
         canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
@@ -530,12 +531,12 @@ class CityRenderer(
     }
 
     private fun drawBuildingBorder(
-        building: Building,
-        tx: Double,
-        ty: Double,
-        width: Double,
-        height: Double,
-        blockSize: Double
+            building: Building,
+            tx: Double,
+            ty: Double,
+            width: Double,
+            height: Double,
+            blockSize: Double
     ) {
         if (building is Road) {
             return

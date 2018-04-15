@@ -2,6 +2,8 @@
 import kotcity.automata.ContactFulfiller
 import kotcity.data.*
 import kotcity.data.AssetManager
+import kotcity.data.buildings.Civic
+import kotcity.data.buildings.Industrial
 import org.junit.jupiter.api.Test
 import java.io.File
 

@@ -2,7 +2,7 @@ package kotcity.automata
 
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
-import kotcity.data.PowerPlant
+import kotcity.data.buildings.PowerPlant
 
 object PowerCoverageUpdater {
     fun update(map: CityMap) {

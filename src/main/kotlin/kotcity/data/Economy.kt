@@ -1,5 +1,6 @@
 package kotcity.data
 
+import kotcity.data.buildings.Building
 import kotcity.pathfinding.Path
 import kotcity.util.Debuggable
 

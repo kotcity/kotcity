@@ -19,7 +19,7 @@ We currently count <a href="../-road/index.html">Road</a> as building as well as
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">Building</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.Building$<init>(kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="../-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></code>
+<code><span class="identifier">Building</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.Building$<init>(kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="../-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></code>
 <p>The basic unit of simulation in this game. Represents a building and all its attributes.
 We currently count <a href="../-road/index.html">Road</a> as building as well as <a href="../-power-line/index.html">PowerLine</a>.</p>
 </td>
@@ -217,14 +217,14 @@ like town hall.</p>
 <p><a href="create-contract.html">createContract</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">createContract</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.Building$createContract(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int, kotcity.pathfinding.Path)/otherTradeEntity">otherTradeEntity</span><span class="symbol">:</span>&nbsp;<a href="../-trade-entity/index.html"><span class="identifier">TradeEntity</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.Building$createContract(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int, kotcity.pathfinding.Path)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.Building$createContract(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int, kotcity.pathfinding.Path)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.Building$createContract(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int, kotcity.pathfinding.Path)/path">path</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.pathfinding/-path/index.html"><span class="identifier">Path</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">createContract</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.Building$createContract(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int, kotcity.pathfinding.Path)/otherTradeEntity">otherTradeEntity</span><span class="symbol">:</span>&nbsp;<a href="../-trade-entity/index.html"><span class="identifier">TradeEntity</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.Building$createContract(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int, kotcity.pathfinding.Path)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.Building$createContract(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int, kotcity.pathfinding.Path)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.Building$createContract(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int, kotcity.pathfinding.Path)/path">path</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.pathfinding/-path/index.html"><span class="identifier">Path</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
 <p><a href="equals.html">equals</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">equals</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.Building$equals(kotlin.Any)/other">other</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">equals</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.Building$equals(kotlin.Any)/other">other</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -257,14 +257,14 @@ like town hall.</p>
 <p><a href="../-has-concrete-contacts/add-contract.html">addContract</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">addContract</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.HasConcreteContacts$addContract(kotcity.data.Contract)/contract">contract</span><span class="symbol">:</span>&nbsp;<a href="../-contract/index.html"><span class="identifier">Contract</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">addContract</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasConcreteContacts$addContract(kotcity.data.Contract)/contract">contract</span><span class="symbol">:</span>&nbsp;<a href="../-contract/index.html"><span class="identifier">Contract</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
 <p><a href="../-has-concrete-inventory/add-inventory.html">addInventory</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">addInventory</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.HasConcreteInventory$addInventory(kotcity.data.Tradeable, kotlin.Int)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.HasConcreteInventory$addInventory(kotcity.data.Tradeable, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">addInventory</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasConcreteInventory$addInventory(kotcity.data.Tradeable, kotlin.Int)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.HasConcreteInventory$addInventory(kotcity.data.Tradeable, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -278,21 +278,21 @@ like town hall.</p>
 <p><a href="../-has-concrete-contacts/consumes-quantity.html">consumesQuantity</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">consumesQuantity</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.HasConcreteContacts$consumesQuantity(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">consumesQuantity</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasConcreteContacts$consumesQuantity(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
 <p><a href="../-has-concrete-contacts/current-quantity-for-sale.html">currentQuantityForSale</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">currentQuantityForSale</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.HasConcreteContacts$currentQuantityForSale(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">currentQuantityForSale</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasConcreteContacts$currentQuantityForSale(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
 <p><a href="../-has-concrete-contacts/current-quantity-wanted.html">currentQuantityWanted</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">currentQuantityWanted</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.HasConcreteContacts$currentQuantityWanted(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">currentQuantityWanted</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasConcreteContacts$currentQuantityWanted(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -306,7 +306,7 @@ like town hall.</p>
 <p><a href="../-has-concrete-contacts/produces-quantity.html">producesQuantity</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">producesQuantity</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.HasConcreteContacts$producesQuantity(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">producesQuantity</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasConcreteContacts$producesQuantity(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -320,7 +320,7 @@ like town hall.</p>
 <p><a href="../-has-concrete-inventory/quantity-on-hand.html">quantityOnHand</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">quantityOnHand</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.HasConcreteInventory$quantityOnHand(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">quantityOnHand</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasConcreteInventory$quantityOnHand(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code>
 <p>How many of the <a href="../-tradeable/index.html">Tradeable</a> that we have in our inventory</p>
 </td>
 </tr>
@@ -329,14 +329,14 @@ like town hall.</p>
 <p><a href="../-has-concrete-inventory/set-inventory.html">setInventory</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setInventory</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.HasConcreteInventory$setInventory(kotcity.data.Tradeable, kotlin.Int)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.HasConcreteInventory$setInventory(kotcity.data.Tradeable, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setInventory</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasConcreteInventory$setInventory(kotcity.data.Tradeable, kotlin.Int)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.HasConcreteInventory$setInventory(kotcity.data.Tradeable, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
 <p><a href="../-has-concrete-inventory/subtract-inventory.html">subtractInventory</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">subtractInventory</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.HasConcreteInventory$subtractInventory(kotcity.data.Tradeable, kotlin.Int)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.HasConcreteInventory$subtractInventory(kotcity.data.Tradeable, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">subtractInventory</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasConcreteInventory$subtractInventory(kotcity.data.Tradeable, kotlin.Int)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.HasConcreteInventory$subtractInventory(kotcity.data.Tradeable, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -359,21 +359,21 @@ like town hall.</p>
 <p><a href="../-has-concrete-contacts/total-being-bought.html">totalBeingBought</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">totalBeingBought</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.HasConcreteContacts$totalBeingBought(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">totalBeingBought</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasConcreteContacts$totalBeingBought(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
 <p><a href="../-has-concrete-contacts/total-being-sold.html">totalBeingSold</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">totalBeingSold</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.HasConcreteContacts$totalBeingSold(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">totalBeingSold</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasConcreteContacts$totalBeingSold(kotcity.data.Tradeable)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
 <p><a href="../-has-concrete-inventory/transfer-inventory.html">transferInventory</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">transferInventory</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.HasConcreteInventory$transferInventory(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int)/to">to</span><span class="symbol">:</span>&nbsp;<a href="../-trade-entity/index.html"><span class="identifier">TradeEntity</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.HasConcreteInventory$transferInventory(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.HasConcreteInventory$transferInventory(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">transferInventory</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasConcreteInventory$transferInventory(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int)/to">to</span><span class="symbol">:</span>&nbsp;<a href="../-trade-entity/index.html"><span class="identifier">TradeEntity</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.HasConcreteInventory$transferInventory(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.HasConcreteInventory$transferInventory(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code>
 <p>Send <a href="../-tradeable/index.html">Tradeable</a> to another <a href="../-trade-entity/index.html">TradeEntity</a> but only if we actually have it</p>
 </td>
 </tr>
@@ -382,7 +382,7 @@ like town hall.</p>
 <p><a href="../-has-concrete-contacts/void-contracts-with.html">voidContractsWith</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">voidContractsWith</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.HasConcreteContacts$voidContractsWith(kotcity.data.TradeEntity)/otherEntity">otherEntity</span><span class="symbol">:</span>&nbsp;<a href="../-trade-entity/index.html"><span class="identifier">TradeEntity</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">voidContractsWith</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasConcreteContacts$voidContractsWith(kotcity.data.TradeEntity)/otherEntity">otherEntity</span><span class="symbol">:</span>&nbsp;<a href="../-trade-entity/index.html"><span class="identifier">TradeEntity</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -401,7 +401,7 @@ like town hall.</p>
 <p><a href="class-by-string.html">classByString</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">classByString</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.Building.Companion$classByString(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><span class="identifier">KClass</span></a><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<a href="./index.html"><span class="identifier">Building</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></code>
+<code><span class="keyword">fun </span><span class="identifier">classByString</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.Building.Companion$classByString(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><span class="identifier">KClass</span></a><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<a href="./index.html"><span class="identifier">Building</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></code>
 <p>Used by the <a href="../-city-file-adapter/index.html">CityFileAdapter</a> to help turn the names in the datafiles to the actual classes.</p>
 </td>
 </tr>

@@ -1,5 +1,6 @@
-package kotcity.data
+package kotcity.data.buildings
 
+import kotcity.data.*
 import kotcity.pathfinding.Direction
 import kotcity.pathfinding.Path
 import kotcity.util.randomElement
@@ -164,9 +165,9 @@ interface HasConcreteContacts : HasContracts {
     }
 
     private fun calculateAvailable(
-        hash: Map<Tradeable, Int>,
-        tradeable: Tradeable,
-        filter: (Contract) -> Building?
+            hash: Map<Tradeable, Int>,
+            tradeable: Tradeable,
+            filter: (Contract) -> Building?
     ): Int {
         val inventoryCount = hash[tradeable] ?: 0
         synchronized(contracts) {
@@ -227,7 +228,7 @@ fun uuid(): String {
  * The basic unit of simulation in this game. Represents a building and all its attributes.
  * We currently count [Road] as building as well as [PowerLine].
  */
-abstract class Building : HasConcreteInventory, HasConcreteContacts {
+sealed class Building : HasConcreteInventory, HasConcreteContacts {
 
     companion object {
         /**
@@ -371,11 +372,11 @@ abstract class Building : HasConcreteInventory, HasConcreteContacts {
     }
 
     fun createContract(
-        buildingCoordinate: BlockCoordinate,
-        otherTradeEntity: TradeEntity,
-        tradeable: Tradeable,
-        quantity: Int,
-        path: Path?
+            buildingCoordinate: BlockCoordinate,
+            otherTradeEntity: TradeEntity,
+            tradeable: Tradeable,
+            quantity: Int,
+            path: Path?
     ) {
         val ourLocation = CityTradeEntity(buildingCoordinate, this)
         val newContract = Contract(otherTradeEntity, ourLocation, tradeable, quantity, path)
@@ -515,4 +516,21 @@ class PowerLine : Building() {
 open class LoadableBuilding : Building() {
     override var height: Int = 1
     override var width: Int = 1
+}
+
+abstract class School : Building()
+
+class ElementarySchool : School() {
+    override var height: Int = 3
+    override var width: Int = 3
+}
+
+class HighSchool : School() {
+    override var height: Int = 3
+    override var width: Int = 3
+}
+
+class University : School() {
+    override var height: Int = 3
+    override var width: Int = 3
 }

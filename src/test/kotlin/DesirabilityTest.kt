@@ -5,6 +5,10 @@ import kotcity.automata.Shipper
 import kotcity.data.*
 import kotcity.data.AssetManager
 import kotcity.data.Tunable.DEFAULT_DESIRABILITY
+import kotcity.data.buildings.Civic
+import kotcity.data.buildings.Commercial
+import kotcity.data.buildings.Industrial
+import kotcity.data.buildings.Residential
 import kotcity.pathfinding.Pathfinder
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail

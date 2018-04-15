@@ -1,6 +1,7 @@
 package kotcity.automata
 
 import kotcity.data.*
+import kotcity.data.buildings.*
 import kotcity.util.Debuggable
 
 class ZotPopulator(val cityMap: CityMap) : Debuggable {

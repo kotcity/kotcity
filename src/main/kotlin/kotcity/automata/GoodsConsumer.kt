@@ -1,7 +1,7 @@
 package kotcity.automata
 
 import kotcity.data.CityMap
-import kotcity.data.Residential
+import kotcity.data.buildings.Residential
 import kotcity.data.Tradeable
 
 class GoodsConsumer(val cityMap: CityMap) {

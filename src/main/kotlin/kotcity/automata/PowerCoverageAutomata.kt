@@ -2,13 +2,13 @@ package kotcity.automata
 
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
-import kotcity.data.PowerPlant
+import kotcity.data.buildings.PowerPlant
 
 class PowerCoverageAutomata(
-    coordinate: BlockCoordinate,
-    powerPlant: PowerPlant,
-    private val gridMap: MutableMap<BlockCoordinate, PowerCoverageAutomata>,
-    val map: CityMap
+        coordinate: BlockCoordinate,
+        powerPlant: PowerPlant,
+        private val gridMap: MutableMap<BlockCoordinate, PowerCoverageAutomata>,
+        val map: CityMap
 ) {
 
     private val openList = mutableSetOf<BlockCoordinate>()

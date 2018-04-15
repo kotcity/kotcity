@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import kotcity.data.*
 import kotcity.data.Tunable.MAX_RESOURCE_DISTANCE
+import kotcity.data.buildings.Building
 import kotcity.jmx.KotCity
 import kotcity.pathfinding.Path
 import kotcity.util.Debuggable

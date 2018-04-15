@@ -6,6 +6,7 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
 import kotcity.data.*
+import kotcity.data.buildings.Road
 import kotcity.ui.sprites.BuildingSpriteLoader
 import tornadofx.View
 import kotlin.math.roundToInt

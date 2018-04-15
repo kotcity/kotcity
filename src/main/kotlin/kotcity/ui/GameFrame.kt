@@ -15,6 +15,7 @@ import javafx.scene.layout.StackPane
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import kotcity.data.*
+import kotcity.data.buildings.*
 import kotcity.ui.charts.SupplyDemandChart
 import kotcity.ui.layers.TrafficAnimationRenderer
 import kotcity.ui.layers.ZotRenderer

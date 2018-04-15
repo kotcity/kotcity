@@ -1,0 +1,27 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>HasConcreteInventory.transferInventory - kotcity4</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">kotcity4</a>&nbsp;/&nbsp;<a href="../index.html">kotcity.data.buildings</a>&nbsp;/&nbsp;<a href="index.html">HasConcreteInventory</a>&nbsp;/&nbsp;<a href="./transfer-inventory.html">transferInventory</a><br/>
+<br/>
+<h1>transferInventory</h1>
+<a name="kotcity.data.buildings.HasConcreteInventory$transferInventory(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int)"></a>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">transferInventory</span><span class="symbol">(</span><span class="identifier" id="kotcity.data.buildings.HasConcreteInventory$transferInventory(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int)/to">to</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-trade-entity/index.html"><span class="identifier">TradeEntity</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.HasConcreteInventory$transferInventory(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int)/tradeable">tradeable</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-tradeable/index.html"><span class="identifier">Tradeable</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.data.buildings.HasConcreteInventory$transferInventory(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code>
+<p>Overrides <a href="../-has-inventory/transfer-inventory.html">HasInventory.transferInventory</a></p>
+<p>Send <a href="../../kotcity.data/-tradeable/index.html">Tradeable</a> to another <a href="../../kotcity.data/-trade-entity/index.html">TradeEntity</a> but only if we actually have it</p>
+<h3>Parameters</h3>
+<p><a name="to"></a>
+<code>to</code> - other <a href="../../kotcity.data/-trade-entity/index.html">TradeEntity</a> to send to</p>
+<p><a name="tradeable"></a>
+<code>tradeable</code> - which <a href="../../kotcity.data/-tradeable/index.html">Tradeable</a> to transact in</p>
+<p><a name="quantity"></a>
+<code>quantity</code> - how many <a href="../../kotcity.data/-tradeable/index.html">Tradeable</a> to send</p>
+<p><strong>TODO</strong><br/>
+implement partial fulfillment... in other words maybe we can get less than we ask for... instead of all or nothing</p>
+<p><strong>Return</strong><br/>
+how many <a href="../../kotcity.data/-tradeable/index.html">Tradeable</a> were actually sent to <a href="transfer-inventory.html#kotcity.data.buildings.HasConcreteInventory$transferInventory(kotcity.data.TradeEntity, kotcity.data.Tradeable, kotlin.Int)/to">to</a></p>
+</BODY>
+</HTML>

@@ -3,6 +3,8 @@
  */
 package kotcity.data
 
+import kotcity.data.buildings.Building
+
 /**
  * Represents if we have ground or water
  */

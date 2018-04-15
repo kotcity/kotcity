@@ -1,6 +1,7 @@
 package kotcity.pathfinding
 
 import kotcity.data.*
+import kotcity.data.buildings.*
 import kotcity.util.Debuggable
 import kotlin.reflect.KClass
 

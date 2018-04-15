@@ -1,4 +1,5 @@
 import kotcity.data.*
+import kotcity.data.buildings.PowerPlant
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.jupiter.api.Test
 
