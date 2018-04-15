@@ -518,19 +518,20 @@ open class LoadableBuilding : Building() {
     override var width: Int = 1
 }
 
-abstract class School : Building()
+sealed class School : Building() {
+    class ElementarySchool : School() {
+        override var height: Int = 3
+        override var width: Int = 3
+    }
 
-class ElementarySchool : School() {
-    override var height: Int = 3
-    override var width: Int = 3
+    class HighSchool : School() {
+        override var height: Int = 3
+        override var width: Int = 3
+    }
+
+    class University : School() {
+        override var height: Int = 3
+        override var width: Int = 3
+    }
 }
 
-class HighSchool : School() {
-    override var height: Int = 3
-    override var width: Int = 3
-}
-
-class University : School() {
-    override var height: Int = 3
-    override var width: Int = 3
-}

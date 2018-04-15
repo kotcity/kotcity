@@ -16,6 +16,7 @@ import javafx.stage.FileChooser
 import javafx.stage.Stage
 import kotcity.data.*
 import kotcity.data.buildings.*
+import kotcity.ui.Tool.*
 import kotcity.ui.charts.SupplyDemandChart
 import kotcity.ui.layers.TrafficAnimationRenderer
 import kotcity.ui.layers.ZotRenderer
@@ -32,7 +33,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.timerTask
 
-
 object Algorithms {
     fun scale(valueIn: Double, baseMin: Double, baseMax: Double, limitMin: Double, limitMax: Double): Double {
         return (limitMax - limitMin) * (valueIn - baseMin) / (baseMax - baseMin) + limitMin
@@ -48,28 +48,6 @@ fun serializeDate(date: Date): String {
 const val DRAW_GRID = false
 const val TICK_DELAY_AT_REST: Int = 7 // only render every 7 ticks... (framerate limiter)
 const val TICK_DELAY_AT_MOVE: Int = 1 // only render every tick when moving the camera around
-
-enum class Tool {
-    BULLDOZE,
-    QUERY,
-    RAILROAD,
-    RAIL_DEPOT,
-    TRAIN_STATION,
-    ROAD,
-    ONE_WAY_ROAD,
-    RESIDENTIAL_ZONE, INDUSTRIAL_ZONE,
-    COMMERCIAL_ZONE, COAL_POWER_PLANT,
-    NUCLEAR_POWER_PLANT,
-    DEZONE,
-    POWER_LINES,
-    JOB_CENTER,
-    TOWN_WAREHOUSE,
-    FIRE_STATION,
-    POLICE_STATION,
-    ROUTES, RECENTER,
-    ASSIGN_DISTRICT,
-    CLEAR_DISTRICT
-}
 
 enum class GameSpeed(val tickPeriod: Long) {
     SLOW(150),
@@ -114,6 +92,9 @@ class GameFrame : View(), Debuggable {
     private val recenterButton: ToggleButton by fxid()
     private val assignDistrictButton: ToggleButton by fxid()
     private val clearDistrictButton: ToggleButton by fxid()
+    private val elementarySchoolButton: ToggleButton by fxid()
+    private val highSchoolButton: ToggleButton by fxid()
+    private val universityButton: ToggleButton by fxid()
 
     // cityMap modes...
     private val normalMapMode: RadioMenuItem by fxid()
@@ -154,7 +135,7 @@ class GameFrame : View(), Debuggable {
     private lateinit var assetManager: AssetManager
     private var lastMapRender = System.currentTimeMillis()
 
-    var activeTool: Tool = Tool.QUERY
+    var activeTool: Tool = QUERY
         set(value) {
             field = value
             selectedToolLabel.text = "Selected: $value"
@@ -166,11 +147,11 @@ class GameFrame : View(), Debuggable {
     private var zotRenderer: ZotRenderer? = null
 
     private val quitMessages = listOf(
-        "You want to quit?\nThen, thou hast lost an eighth!",
-        "Don't go now, there's a\ndimensional shambler waiting\nat the DOS prompt!",
-        "Get outta here and go back to your boring programs.",
-        "Are you sure you want to quit this great game?",
-        "You're trying to say you like DOS\nbetter than me, right? "
+            "You want to quit?\nThen, thou hast lost an eighth!",
+            "Don't go now, there's a\ndimensional shambler waiting\nat the DOS prompt!",
+            "Get outta here and go back to your boring programs.",
+            "Are you sure you want to quit this great game?",
+            "You're trying to say you like DOS\nbetter than me, right? "
     )
 
     override fun onDock() {
@@ -307,7 +288,7 @@ class GameFrame : View(), Debuggable {
         val fileChooser = FileChooser()
         fileChooser.title = "Save your city"
         fileChooser.extensionFilters.addAll(
-            FileChooser.ExtensionFilter("KotCity City", "*.kcity")
+                FileChooser.ExtensionFilter("KotCity City", "*.kcity")
         )
         fileChooser.initialFileName = map.suggestedFilename()
         val file = fileChooser.showSaveDialog(this.primaryStage)
@@ -329,33 +310,36 @@ class GameFrame : View(), Debuggable {
     }
 
     private fun bindButtons() {
-        railroadButton.setOnAction { activeTool = Tool.RAILROAD }
-        railDepotButton.setOnAction { activeTool = Tool.RAIL_DEPOT }
-        trainStationButton.setOnAction { activeTool = Tool.TRAIN_STATION }
-        roadButton.setOnAction { activeTool = Tool.ROAD }
-        oneWayRoadButton.setOnAction { activeTool = Tool.ONE_WAY_ROAD }
-        queryButton.setOnAction { activeTool = Tool.QUERY }
-        bulldozeButton.setOnAction { activeTool = Tool.BULLDOZE }
-        recenterButton.setOnAction { activeTool = Tool.RECENTER }
-        residentialButton.setOnAction { activeTool = Tool.RESIDENTIAL_ZONE }
-        commercialButton.setOnAction { activeTool = Tool.COMMERCIAL_ZONE }
-        industrialButton.setOnAction { activeTool = Tool.INDUSTRIAL_ZONE }
-        coalPowerButton.setOnAction { activeTool = Tool.COAL_POWER_PLANT }
-        dezoneButton.setOnAction { activeTool = Tool.DEZONE }
-        powerLinesButton.setOnAction { activeTool = Tool.POWER_LINES }
-        nuclearPowerButton.setOnAction { activeTool = Tool.NUCLEAR_POWER_PLANT }
-        townWarehouseButton.setOnAction { activeTool = Tool.TOWN_WAREHOUSE }
-        jobCenterButton.setOnAction { activeTool = Tool.JOB_CENTER }
-        fireStationButton.setOnAction { activeTool = Tool.FIRE_STATION }
-        policeStationButton.setOnAction { activeTool = Tool.POLICE_STATION }
-        routesButton.setOnAction { activeTool = Tool.ROUTES }
-        assignDistrictButton.setOnAction { activeTool = Tool.ASSIGN_DISTRICT }
-        clearDistrictButton.setOnAction { activeTool = Tool.CLEAR_DISTRICT }
+        railroadButton.setOnAction { activeTool = RAILROAD }
+        railDepotButton.setOnAction { activeTool = RAIL_DEPOT }
+        trainStationButton.setOnAction { activeTool = TRAIN_STATION }
+        roadButton.setOnAction { activeTool = ROAD }
+        oneWayRoadButton.setOnAction { activeTool = ONE_WAY_ROAD }
+        queryButton.setOnAction { activeTool = QUERY }
+        bulldozeButton.setOnAction { activeTool = BULLDOZE }
+        recenterButton.setOnAction { activeTool = RECENTER }
+        residentialButton.setOnAction { activeTool = RESIDENTIAL_ZONE }
+        commercialButton.setOnAction { activeTool = COMMERCIAL_ZONE }
+        industrialButton.setOnAction { activeTool = INDUSTRIAL_ZONE }
+        coalPowerButton.setOnAction { activeTool = COAL_POWER_PLANT }
+        dezoneButton.setOnAction { activeTool = DEZONE }
+        powerLinesButton.setOnAction { activeTool = POWER_LINES }
+        nuclearPowerButton.setOnAction { activeTool = NUCLEAR_POWER_PLANT }
+        townWarehouseButton.setOnAction { activeTool = TOWN_WAREHOUSE }
+        jobCenterButton.setOnAction { activeTool = JOB_CENTER }
+        fireStationButton.setOnAction { activeTool = FIRE_STATION }
+        policeStationButton.setOnAction { activeTool = POLICE_STATION }
+        routesButton.setOnAction { activeTool = ROUTES }
+        assignDistrictButton.setOnAction { activeTool = ASSIGN_DISTRICT }
+        clearDistrictButton.setOnAction { activeTool = CLEAR_DISTRICT }
         supplyDemandMenuItem.setOnAction {
             val supplyDemandChart = find(SupplyDemandChart::class)
             supplyDemandChart.census = cityMapCanvas.map?.censusTaker
             supplyDemandChart.openWindow()
         }
+        elementarySchoolButton.setOnAction { activeTool = ELEMENTARY_SCHOOL }
+        highSchoolButton.setOnAction { activeTool = HIGH_SCHOOL }
+        universityButton.setOnAction { activeTool = UNIVERSITY }
     }
 
     private fun setMapModes(mapMode: MapMode) {
@@ -528,46 +512,7 @@ class GameFrame : View(), Debuggable {
                 val (firstBlock, lastBlock) = it.blockRange()
                 if (firstBlock != null && lastBlock != null) {
                     if (evt.button == MouseButton.PRIMARY) {
-                        when (activeTool) {
-                            Tool.RAILROAD -> {
-                                map.buildRailroad(firstBlock, lastBlock)
-                            }
-                            Tool.ROAD -> {
-                                map.buildRoad(firstBlock, lastBlock)
-                            }
-                            Tool.ONE_WAY_ROAD -> {
-                                map.buildRoad(firstBlock, lastBlock, true)
-                            }
-                            Tool.POWER_LINES -> map.buildPowerline(firstBlock, lastBlock)
-                            Tool.BULLDOZE -> map.bulldoze(firstBlock, lastBlock)
-                            Tool.RESIDENTIAL_ZONE -> map.zone(Zone.RESIDENTIAL, firstBlock, lastBlock)
-                            Tool.COMMERCIAL_ZONE -> map.zone(Zone.COMMERCIAL, firstBlock, lastBlock)
-                            Tool.INDUSTRIAL_ZONE -> map.zone(Zone.INDUSTRIAL, firstBlock, lastBlock)
-                            Tool.ASSIGN_DISTRICT -> {
-                                var district = map.districtAt(firstBlock)
-                                if (district == map.mainDistrict) {
-                                    district = District("District ${map.districts.size}")
-                                    map.districts.add(district)
-                                }
-                                map.assignDistrict(district, firstBlock, lastBlock)
-                            }
-                            Tool.CLEAR_DISTRICT -> map.assignDistrict(map.mainDistrict, firstBlock, lastBlock)
-                            Tool.RECENTER -> it.panMap(firstBlock)
-                            Tool.DEZONE -> map.dezone(firstBlock, lastBlock)
-                            Tool.QUERY -> {
-                                // let's do that query...
-                                val queryWindow = find(QueryWindow::class)
-                                // get building under the active block...
-                                queryWindow.mapAndCoordinate = Pair(map, firstBlock)
-                                queryWindow.openModal()
-                            }
-                            Tool.ROUTES -> {
-                                it.showRoutesFor = firstBlock
-                            }
-                            else -> {
-                                println("Warning: tool $activeTool not handled...")
-                            }
-                        }
+                        handleToolClick(it, firstBlock, lastBlock)
                     }
                 }
             }
@@ -597,40 +542,11 @@ class GameFrame : View(), Debuggable {
             // now let's handle some tools...
             if (evt.button == MouseButton.PRIMARY) {
                 cityRenderer?.mouseBlock?.let {
-                    val newX = it.x - 1
-                    val newY = it.y - 1
-                    when (activeTool) {
-                        Tool.COAL_POWER_PLANT -> {
-                            // TODO: we have to figure out some kind of offset for this shit...
-                            // can't take place at hovered block...
-                            map.build(PowerPlant("coal"), BlockCoordinate(newX, newY))
-                        }
-                        Tool.NUCLEAR_POWER_PLANT -> {
-                            map.build(PowerPlant("nuclear"), BlockCoordinate(newX, newY))
-                        }
-                        Tool.JOB_CENTER -> {
-                            val jobCenter = assetManager.buildingFor(Civic::class, "job_center")
-                            map.build(jobCenter, BlockCoordinate(newX, newY))
-                        }
-                        Tool.FIRE_STATION -> {
-                            map.build(FireStation(), BlockCoordinate(newX, newY))
-                        }
-                        Tool.POLICE_STATION -> {
-                            map.build(PoliceStation(), BlockCoordinate(newX, newY))
-                        }
-                        Tool.TOWN_WAREHOUSE -> {
-                            val townWarehouse = assetManager.buildingFor(Civic::class, "town_warehouse")
-                            map.build(townWarehouse, BlockCoordinate(newX, newY))
-                        }
-                        Tool.TRAIN_STATION -> {
-                            map.build(TrainStation(), BlockCoordinate(newX, newY))
-                        }
-                        Tool.RAIL_DEPOT -> {
-                            map.build(RailDepot(), BlockCoordinate(newX, newY))
-                        }
-                        else -> {
-                            // We handle the other tools on a different place
-                        }
+                    val newX = it.x
+                    val newY = it.y
+                    val newCoordinate = BlockCoordinate(newX, newY)
+                    cityRenderer?.let {
+                        handleToolClick(it, firstBlock = newCoordinate)
                     }
                 }
             }
@@ -660,7 +576,98 @@ class GameFrame : View(), Debuggable {
             cityMapCanvas.render()
         }
     }
+
+    private fun handleToolClick(renderer: CityRenderer, firstBlock: BlockCoordinate, lastBlock: BlockCoordinate? = null) {
+
+
+        // TODO: when we try to build buildings we have to displace them N blocks to the top and left...
+
+        when (activeTool) {
+            RAILROAD -> {
+                lastBlock?.let { map.buildRailroad(firstBlock, lastBlock) }
+            }
+            ROAD -> {
+                lastBlock?.let { map.buildRoad(firstBlock, lastBlock) }
+            }
+            ONE_WAY_ROAD -> {
+                lastBlock?.let { map.buildRoad(firstBlock, lastBlock, true) }
+            }
+            POWER_LINES -> lastBlock?.let { map.buildPowerline(firstBlock, lastBlock) }
+            BULLDOZE -> lastBlock?.let { map.bulldoze(firstBlock, lastBlock) }
+            RESIDENTIAL_ZONE -> lastBlock?.let { map.zone(Zone.RESIDENTIAL, firstBlock, lastBlock) }
+            COMMERCIAL_ZONE -> lastBlock?.let { map.zone(Zone.COMMERCIAL, firstBlock, lastBlock) }
+            INDUSTRIAL_ZONE -> lastBlock?.let { map.zone(Zone.INDUSTRIAL, firstBlock, lastBlock) }
+            ASSIGN_DISTRICT -> {
+                var district = map.districtAt(firstBlock)
+                if (district == map.mainDistrict) {
+                    district = District("District ${map.districts.size}")
+                    map.districts.add(district)
+                }
+                lastBlock?.let { map.assignDistrict(district, firstBlock, lastBlock) }
+            }
+            CLEAR_DISTRICT -> lastBlock?.let { map.assignDistrict(map.mainDistrict, firstBlock, lastBlock) }
+            RECENTER -> renderer.panMap(firstBlock)
+            DEZONE -> lastBlock?.let { map.dezone(firstBlock, lastBlock) }
+            QUERY -> {
+                // let's do that query...
+                val queryWindow = find(QueryWindow::class)
+                // get building under the active block...
+                queryWindow.mapAndCoordinate = Pair(map, firstBlock)
+                queryWindow.openModal()
+            }
+            ROUTES -> {
+                renderer.showRoutesFor = firstBlock
+            }
+            COAL_POWER_PLANT -> {
+                // TODO: we have to figure out some kind of offset for this shit...
+                // can't take place at hovered block...
+                buildWithOffset(PowerPlant("coal"), firstBlock)
+            }
+            NUCLEAR_POWER_PLANT -> {
+                buildWithOffset(PowerPlant("nuclear"), firstBlock)
+            }
+            JOB_CENTER -> {
+                val jobCenter = assetManager.buildingFor(Civic::class, "job_center")
+                buildWithOffset(jobCenter, firstBlock)
+            }
+            FIRE_STATION -> {
+                buildWithOffset(FireStation(), firstBlock)
+            }
+            POLICE_STATION -> {
+                buildWithOffset(PoliceStation(), firstBlock)
+            }
+            TOWN_WAREHOUSE -> {
+                val townWarehouse = assetManager.buildingFor(Civic::class, "town_warehouse")
+                buildWithOffset(townWarehouse, firstBlock)
+            }
+            TRAIN_STATION -> {
+                buildWithOffset(TrainStation(), firstBlock)
+            }
+            RAIL_DEPOT -> {
+                buildWithOffset(RailDepot(), firstBlock)
+            }
+            ELEMENTARY_SCHOOL -> {
+                val elementarySchool = School.ElementarySchool()
+                buildWithOffset(elementarySchool, firstBlock)
+            }
+            HIGH_SCHOOL -> {
+                val highSchool = School.HighSchool()
+                buildWithOffset(highSchool, firstBlock)
+            }
+            UNIVERSITY -> {
+                val university = School.University()
+                buildWithOffset(university, firstBlock)
+            }
+        }
+    }
+
+    private fun buildWithOffset(building: Building, coordinate: BlockCoordinate) {
+        val buildingWidthOffset = -(building.width / 2)
+        val buildingHeightOffset = -(building.height / 2)
+        map.build(building, coordinate.plus(BlockCoordinate(buildingWidthOffset, buildingHeightOffset)))
+    }
 }
+
 
 class GameFrameApp : App(GameFrame::class, KotcityStyles::class) {
     override fun start(stage: Stage) {

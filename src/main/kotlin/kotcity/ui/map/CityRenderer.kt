@@ -353,6 +353,9 @@ class CityRenderer(
                     Tool.RAIL_DEPOT,
                     Tool.TRAIN_STATION,
                     Tool.POLICE_STATION,
+                    Tool.ELEMENTARY_SCHOOL,
+                    Tool.HIGH_SCHOOL,
+                    Tool.UNIVERSITY,
                     Tool.FIRE_STATION -> {
                         it.let { highlightCenteredBlocks(it, 3, 3) }
                     }
@@ -375,8 +378,8 @@ class CityRenderer(
             val newBlock = BlockCoordinate(start.x - offsetX, start.y - offsetY)
             highlightBlocks(newBlock, width, height)
         } else {
-            val offsetX = (width / 2) - 1
-            val offsetY = (height / 2) - 1
+            val offsetX = (width / 2)
+            val offsetY = (height / 2)
             val newBlock = BlockCoordinate(start.x - offsetX, start.y - offsetY)
             highlightBlocks(newBlock, width, height)
         }
