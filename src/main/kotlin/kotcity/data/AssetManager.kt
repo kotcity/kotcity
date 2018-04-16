@@ -6,6 +6,7 @@ import com.github.salomonbrys.kotson.nullDouble
 import com.github.salomonbrys.kotson.nullString
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import kotcity.data.buildings.*
 import kotcity.ui.sprites.BuildingSpriteLoader
 import kotcity.util.randomElement
 import java.io.FileReader

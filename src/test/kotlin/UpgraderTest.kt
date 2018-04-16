@@ -1,5 +1,6 @@
 import kotcity.automata.Upgrader
 import kotcity.data.*
+import kotcity.data.buildings.Residential
 import org.junit.jupiter.api.Test
 
 class UpgraderTest {

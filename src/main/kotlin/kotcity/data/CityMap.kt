@@ -7,6 +7,7 @@ import com.github.davidmoten.rtree.geometry.Rectangle
 import com.github.debop.javatimes.plus
 import com.github.debop.javatimes.toDateTime
 import kotcity.automata.*
+import kotcity.data.buildings.*
 import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotcity.pathfinding.Direction

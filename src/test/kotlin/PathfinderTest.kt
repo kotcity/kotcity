@@ -1,5 +1,8 @@
 import kotcity.automata.ContactFulfiller
 import kotcity.data.*
+import kotcity.data.buildings.Industrial
+import kotcity.data.buildings.Residential
+import kotcity.data.buildings.TrainStation
 import kotcity.pathfinding.Pathfinder
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

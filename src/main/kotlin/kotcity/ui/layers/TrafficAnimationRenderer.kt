@@ -8,7 +8,7 @@ import javafx.scene.image.Image
 import javafx.util.Duration
 import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
-import kotcity.data.Road
+import kotcity.data.buildings.Road
 import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotcity.ui.ResizableCanvas

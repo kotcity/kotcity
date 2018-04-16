@@ -1,6 +1,7 @@
 package kotcity.automata
 
 import kotcity.data.*
+import kotcity.data.buildings.Building
 import kotcity.util.Debuggable
 
 class Shipper(val cityMap: CityMap) : Debuggable {

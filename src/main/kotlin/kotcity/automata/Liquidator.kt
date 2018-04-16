@@ -1,6 +1,9 @@
 package kotcity.automata
 
 import kotcity.data.*
+import kotcity.data.buildings.Commercial
+import kotcity.data.buildings.Industrial
+import kotcity.data.buildings.Residential
 import kotcity.util.Debuggable
 
 class Liquidator(val cityMap: CityMap) : Debuggable {

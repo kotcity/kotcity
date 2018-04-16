@@ -1,6 +1,7 @@
 package kotcity.automata
 
 import kotcity.data.*
+import kotcity.data.buildings.Building
 import kotcity.util.Debuggable
 import kotcity.util.randomElements
 

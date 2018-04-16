@@ -1,7 +1,7 @@
 package kotcity.automata.util
 
 import kotcity.data.BlockCoordinate
-import kotcity.data.Building
+import kotcity.data.buildings.Building
 import kotcity.data.CityMap
 import kotcity.data.Zone
 import kotcity.pathfinding.Pathfinder

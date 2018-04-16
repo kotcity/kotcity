@@ -1,5 +1,6 @@
 import kotcity.data.*
 import kotcity.data.AssetManager
+import kotcity.data.buildings.Residential
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 

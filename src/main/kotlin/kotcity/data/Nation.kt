@@ -1,5 +1,8 @@
 package kotcity.data
 
+import kotcity.data.buildings.Building
+import kotcity.data.buildings.HasContracts
+import kotcity.data.buildings.HasInventory
 import kotcity.pathfinding.Path
 
 // all the outside shares one contract list...

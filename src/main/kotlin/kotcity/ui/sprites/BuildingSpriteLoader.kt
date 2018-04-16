@@ -2,7 +2,7 @@ package kotcity.ui.sprites
 
 import javafx.embed.swing.SwingFXUtils
 import javafx.scene.image.Image
-import kotcity.data.*
+import kotcity.data.buildings.*
 import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotcity.util.resize
@@ -45,7 +45,16 @@ object BuildingSpriteLoader {
             is TrainStation -> "./assets/transportation/trains/train_station_icon.png"
             is RailDepot -> "./assets/transportation/trains/rail_depot_icon.png"
             is Civic -> "./assets/civic/${building.sprite}"
+            is School -> schoolSprite(building)
             else -> throw RuntimeException("Unknown sprite for ${building::class}")
+        }
+    }
+
+    private fun schoolSprite(building: School): String {
+        return when (building) {
+            is School.ElementarySchool -> "./assets/civic/elementary_school.svg"
+            is School.HighSchool -> "./assets/civic/high_school.svg"
+            is School.University -> "./assets/civic/university.svg"
         }
     }
 

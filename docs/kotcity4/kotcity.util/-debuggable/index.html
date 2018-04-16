@@ -17,7 +17,7 @@
 <p><a href="debug.html">debug</a></p>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">debug</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">debug</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -29,7 +29,7 @@
 <p><a href="debug.html">debug</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">debug</span><span class="symbol">(</span><span class="identifier" id="kotcity.util.Debuggable$debug(kotlin.String)/message">message</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">debug</span><span class="symbol">(</span><span class="identifier" id="kotcity.util.Debuggable$debug(kotlin.Function0((kotlin.String)))/message">message</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -140,7 +140,9 @@ how badly people want to live there...</p>
 <p><a href="../../kotcity.pathfinding/-pathfinder/index.html">Pathfinder</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">Pathfinder</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Debuggable</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">Pathfinder</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Debuggable</span></a></code>
+<p>Find paths within the CityMap parameter.</p>
+</td>
 </tr>
 <tr>
 <td>

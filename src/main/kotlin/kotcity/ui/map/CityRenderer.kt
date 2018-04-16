@@ -8,6 +8,7 @@ import javafx.scene.text.Font
 import kotcity.data.*
 import kotcity.data.MapMode.*
 import kotcity.data.Tunable.MAX_BUILDING_SIZE
+import kotcity.data.buildings.*
 import kotcity.pathfinding.Direction
 import kotcity.ui.*
 import kotcity.ui.layers.*
@@ -352,6 +353,9 @@ class CityRenderer(
                     Tool.RAIL_DEPOT,
                     Tool.TRAIN_STATION,
                     Tool.POLICE_STATION,
+                    Tool.ELEMENTARY_SCHOOL,
+                    Tool.HIGH_SCHOOL,
+                    Tool.UNIVERSITY,
                     Tool.FIRE_STATION -> {
                         it.let { highlightCenteredBlocks(it, 3, 3) }
                     }
@@ -374,8 +378,8 @@ class CityRenderer(
             val newBlock = BlockCoordinate(start.x - offsetX, start.y - offsetY)
             highlightBlocks(newBlock, width, height)
         } else {
-            val offsetX = (width / 2) - 1
-            val offsetY = (height / 2) - 1
+            val offsetX = (width / 2)
+            val offsetY = (height / 2)
             val newBlock = BlockCoordinate(start.x - offsetX, start.y - offsetY)
             highlightBlocks(newBlock, width, height)
         }
@@ -451,11 +455,11 @@ class CityRenderer(
         drawRoad(tx, ty, blockSize, building, Color.web("#424242"))
 
     private fun drawRoad(
-        tx: Double,
-        ty: Double,
-        blockSize: Double,
-        building: Building,
-        fillColor: Color = Color.BLACK
+            tx: Double,
+            ty: Double,
+            blockSize: Double,
+            building: Building,
+            fillColor: Color = Color.BLACK
     ) {
         canvas.graphicsContext2D.fill = fillColor
         canvas.graphicsContext2D.fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
@@ -530,12 +534,12 @@ class CityRenderer(
     }
 
     private fun drawBuildingBorder(
-        building: Building,
-        tx: Double,
-        ty: Double,
-        width: Double,
-        height: Double,
-        blockSize: Double
+            building: Building,
+            tx: Double,
+            ty: Double,
+            width: Double,
+            height: Double,
+            blockSize: Double
     ) {
         if (building is Road) {
             return

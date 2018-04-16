@@ -425,6 +425,66 @@
                         </ScrollPane>
                      </content>
                   </Tab>
+                  <Tab text="Education">
+                     <content>
+                        <ScrollPane>
+                           <content>
+                              <HBox prefHeight="98.0" prefWidth="432.0" spacing="4.0">
+                                 <children>
+                                    <ToggleButton fx:id="elementarySchoolButton" contentDisplay="BOTTOM" graphicTextGap="0.0" maxWidth="238.0" mnemonicParsing="false" prefWidth="100.0" styleClass="toolbarButton" text="Elementary" toggleGroup="$buildTools">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                       <graphic>
+                                          <ImageView fitHeight="40.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@ui/elementary_school.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <tooltip>
+                                          <Tooltip text="Job Center" />
+                                       </tooltip>
+                                    </ToggleButton>
+                                    <ToggleButton fx:id="highSchoolButton" contentDisplay="BOTTOM" graphicTextGap="0.0" mnemonicParsing="false" styleClass="toolbarButton" text="High" toggleGroup="$buildTools">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                       <graphic>
+                                          <ImageView fitHeight="40.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@ui/high_school.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <tooltip>
+                                          <Tooltip text="Town Warehouse" />
+                                       </tooltip>
+                                    </ToggleButton>
+                                    <ToggleButton fx:id="universityButton" contentDisplay="BOTTOM" graphicTextGap="0.0" mnemonicParsing="false" styleClass="toolbarButton" text="University" toggleGroup="$buildTools">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                       <graphic>
+                                          <ImageView fitHeight="40.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@ui/university.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <tooltip>
+                                          <Tooltip text="Fire Station" />
+                                       </tooltip>
+                                    </ToggleButton>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                 </padding>
+                              </HBox>
+                           </content>
+                        </ScrollPane>
+                     </content>
+                  </Tab>
               </tabs>
                <opaqueInsets>
                   <Insets />

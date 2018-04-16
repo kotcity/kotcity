@@ -3,7 +3,7 @@ package kotcity.ui.layers
 import javafx.scene.paint.Color
 import kotcity.data.BlockCoordinate.Companion.iterateAll
 import kotcity.data.CityMap
-import kotcity.data.Road
+import kotcity.data.buildings.Road
 import kotcity.ui.Algorithms
 import kotcity.ui.map.CityRenderer
 import kotcity.util.interpolate

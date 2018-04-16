@@ -9,6 +9,9 @@
 <br/>
 <h1>Pathfinder</h1>
 <code><span class="keyword">class </span><span class="identifier">Pathfinder</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../kotcity.util/-debuggable/index.html"><span class="identifier">Debuggable</span></a></code>
+<p>Find paths within the CityMap parameter.</p>
+<p><strong>CityMap</strong><br/>
+to search for paths</p>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -17,7 +20,9 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">Pathfinder</span><span class="symbol">(</span><span class="identifier" id="kotcity.pathfinding.Pathfinder$<init>(kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">Pathfinder</span><span class="symbol">(</span><span class="identifier" id="kotcity.pathfinding.Pathfinder$<init>(kotcity.data.CityMap)/cityMap">cityMap</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-city-map/index.html"><span class="identifier">CityMap</span></a><span class="symbol">)</span></code>
+<p>Find paths within the CityMap parameter.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -48,28 +53,27 @@
 <p><a href="nearby-road.html">nearbyRoad</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">nearbyRoad</span><span class="symbol">(</span><span class="identifier" id="kotcity.pathfinding.Pathfinder$nearbyRoad(kotlin.collections.List((kotcity.data.BlockCoordinate)), kotlin.Int)/sourceBlocks">sourceBlocks</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="kotcity.pathfinding.Pathfinder$nearbyRoad(kotlin.collections.List((kotcity.data.BlockCoordinate)), kotlin.Int)/distance">distance</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;4<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="path.html">path</a></p>
+<code><span class="keyword">fun </span><span class="identifier">nearbyRoad</span><span class="symbol">(</span><span class="identifier" id="kotcity.pathfinding.Pathfinder$nearbyRoad(kotlin.collections.List((kotcity.data.BlockCoordinate)), kotlin.Int)/sourceBlocks">sourceBlocks</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="kotcity.pathfinding.Pathfinder$nearbyRoad(kotlin.collections.List((kotcity.data.BlockCoordinate)), kotlin.Int)/distance">distance</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;4<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code>
+<p>Find if a road block is within distance.</p>
 </td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">path</span><span class="symbol">(</span><span class="identifier" id="kotcity.pathfinding.Pathfinder$path(kotcity.data.BlockCoordinate, kotcity.pathfinding.Direction, kotlin.Int)/start">start</span><span class="symbol">:</span>&nbsp;<a href="../../kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.pathfinding.Pathfinder$path(kotcity.data.BlockCoordinate, kotcity.pathfinding.Direction, kotlin.Int)/direction">direction</span><span class="symbol">:</span>&nbsp;<a href="../-direction/index.html"><span class="identifier">Direction</span></a><span class="symbol">, </span><span class="identifier" id="kotcity.pathfinding.Pathfinder$path(kotcity.data.BlockCoordinate, kotcity.pathfinding.Direction, kotlin.Int)/maxLength">maxLength</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-path/index.html"><span class="identifier">Path</span></a><span class="symbol">?</span></code></td>
 </tr>
 <tr>
 <td>
 <p><a href="path-to-nearest-job.html">pathToNearestJob</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">pathToNearestJob</span><span class="symbol">(</span><span class="identifier" id="kotcity.pathfinding.Pathfinder$pathToNearestJob(kotlin.collections.List((kotcity.data.BlockCoordinate)), kotlin.Int)/start">start</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="kotcity.pathfinding.Pathfinder$pathToNearestJob(kotlin.collections.List((kotcity.data.BlockCoordinate)), kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;1<span class="symbol">)</span><span class="symbol">: </span><a href="../-path/index.html"><span class="identifier">Path</span></a><span class="symbol">?</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">pathToNearestJob</span><span class="symbol">(</span><span class="identifier" id="kotcity.pathfinding.Pathfinder$pathToNearestJob(kotlin.collections.List((kotcity.data.BlockCoordinate)), kotlin.Int)/start">start</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="kotcity.pathfinding.Pathfinder$pathToNearestJob(kotlin.collections.List((kotcity.data.BlockCoordinate)), kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;1<span class="symbol">)</span><span class="symbol">: </span><a href="../-path/index.html"><span class="identifier">Path</span></a><span class="symbol">?</span></code>
+<p>Gets path to nearest wanted labor tradeable.</p>
+</td>
 </tr>
 <tr>
 <td>
 <p><a href="path-to-nearest-labor.html">pathToNearestLabor</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">pathToNearestLabor</span><span class="symbol">(</span><span class="identifier" id="kotcity.pathfinding.Pathfinder$pathToNearestLabor(kotlin.collections.List((kotcity.data.BlockCoordinate)), kotlin.Int)/start">start</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="kotcity.pathfinding.Pathfinder$pathToNearestLabor(kotlin.collections.List((kotcity.data.BlockCoordinate)), kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;1<span class="symbol">)</span><span class="symbol">: </span><a href="../-path/index.html"><span class="identifier">Path</span></a><span class="symbol">?</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">pathToNearestLabor</span><span class="symbol">(</span><span class="identifier" id="kotcity.pathfinding.Pathfinder$pathToNearestLabor(kotlin.collections.List((kotcity.data.BlockCoordinate)), kotlin.Int)/start">start</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="kotcity.pathfinding.Pathfinder$pathToNearestLabor(kotlin.collections.List((kotcity.data.BlockCoordinate)), kotlin.Int)/quantity">quantity</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;1<span class="symbol">)</span><span class="symbol">: </span><a href="../-path/index.html"><span class="identifier">Path</span></a><span class="symbol">?</span></code>
+<p>Gets path to nearest labor for sale.</p>
+</td>
 </tr>
 <tr>
 <td>
@@ -77,13 +81,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">pathToOutside</span><span class="symbol">(</span><span class="identifier" id="kotcity.pathfinding.Pathfinder$pathToOutside(kotlin.collections.List((kotcity.data.BlockCoordinate)))/start">start</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../kotcity.data/-block-coordinate/index.html"><span class="identifier">BlockCoordinate</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-path/index.html"><span class="identifier">Path</span></a><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="purge-caches.html">purgeCaches</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">purgeCaches</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -102,7 +99,19 @@
 <p><a href="../../kotcity.util/-debuggable/debug.html">debug</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">debug</span><span class="symbol">(</span><span class="identifier" id="kotcity.util.Debuggable$debug(kotlin.String)/message">message</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">debug</span><span class="symbol">(</span><span class="identifier" id="kotcity.util.Debuggable$debug(kotlin.Function0((kotlin.String)))/message">message</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-m-a-x_-d-i-s-t-a-n-c-e.html">MAX_DISTANCE</a></p>
+</td>
+<td>
+<code><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MAX_DISTANCE</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 </tbody>
 </table>

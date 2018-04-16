@@ -22,13 +22,6 @@
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-b-m-p-decoder/index.html">kotcity.data.BMPDecoder</a></td>
-<td>
-<p>A decoder for Windows bitmap (.BMP) files.</p>
-</td>
-</tr>
-<tr>
-<td>
 <a href="../kotcity.data/-b-m-p-importer/index.html">kotcity.data.BMPImporter</a></td>
 <td>
 </td>
@@ -43,16 +36,16 @@ You will see "blocks", "tiles", etc. This is our unit of measure... it is our Ko
 </tr>
 <tr>
 <td>
-<a href="../kotcity.automata/-block-range/index.html">kotcity.automata.BlockRange</a></td>
+<a href="../kotcity.util/java.awt.image.-buffered-image/index.html">java.awt.image.BufferedImage</a> (extensions in package kotcity.util)</td>
 <td>
 </td>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-building/index.html">kotcity.data.Building</a></td>
+<a href="../kotcity.data.buildings/-building/index.html">kotcity.data.buildings.Building</a></td>
 <td>
 <p>The basic unit of simulation in this game. Represents a building and all its attributes.
-We currently count <a href="../kotcity.data/-road/index.html">Road</a> as building as well as <a href="../kotcity.data/-power-line/index.html">PowerLine</a>.</p>
+We currently count <a href="../kotcity.data.buildings/-road/index.html">Road</a> as building as well as <a href="../kotcity.data.buildings/-power-line/index.html">PowerLine</a>.</p>
 </td>
 </tr>
 <tr>
@@ -96,7 +89,7 @@ We currently count <a href="../kotcity.data/-road/index.html">Road</a> as buildi
 <td>
 <a href="../kotcity.data/-city-map/index.html">kotcity.data.CityMap</a></td>
 <td>
-<p>A map representing the city. The map hangs on to <a href="../kotcity.data/-building/index.html">Building</a>s and <a href="../kotcity.data/-location/index.html">Location</a>s. The map is set up as a grid
+<p>A map representing the city. The map hangs on to <a href="../kotcity.data.buildings/-building/index.html">Building</a>s and <a href="../kotcity.data/-location/index.html">Location</a>s. The map is set up as a grid
 of <a href="../kotcity.data/-block-coordinate/index.html">BlockCoordinate</a> and various layers hanging onto various values (desirability, crime, etc).</p>
 </td>
 </tr>
@@ -120,13 +113,7 @@ of <a href="../kotcity.data/-block-coordinate/index.html">BlockCoordinate</a> an
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-civic/index.html">kotcity.data.Civic</a></td>
-<td>
-</td>
-</tr>
-<tr>
-<td>
-<a href="../kotcity.ui.map/kotlin.ranges.-closed-range/index.html">kotlin.ranges.ClosedRange</a> (extensions in package kotcity.ui.map)</td>
+<a href="../kotcity.data.buildings/-civic/index.html">kotcity.data.buildings.Civic</a></td>
 <td>
 </td>
 </tr>
@@ -138,7 +125,7 @@ of <a href="../kotcity.data/-block-coordinate/index.html">BlockCoordinate</a> an
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-commercial/index.html">kotcity.data.Commercial</a></td>
+<a href="../kotcity.data.buildings/-commercial/index.html">kotcity.data.buildings.Commercial</a></td>
 <td>
 </td>
 </tr>
@@ -166,13 +153,6 @@ of zone and then attempting to place them in the most desirable spots...</p>
 <td>
 <a href="../kotcity.data/-contract-checker/index.html">kotcity.data.ContractChecker</a></td>
 <td>
-</td>
-</tr>
-<tr>
-<td>
-<a href="../kotcity.data/-corners/index.html">kotcity.data.Corners</a></td>
-<td>
-<p>Just a utility class for hanging onto a rectangle of BlockCoordinates</p>
 </td>
 </tr>
 <tr>
@@ -228,9 +208,27 @@ how badly people want to live there...</p>
 </tr>
 <tr>
 <td>
+<a href="../kotcity.data/-district/index.html">kotcity.data.District</a></td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../kotcity.ui.layers/-district-renderer/index.html">kotcity.ui.layers.DistrictRenderer</a></td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
 <a href="../kotcity.automata/-economy-report/index.html">kotcity.automata.EconomyReport</a></td>
 <td>
 <p>Stores supply/demand stats, used by charts and so forth.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../kotcity.data.buildings/-elementary-school/index.html">kotcity.data.buildings.ElementarySchool</a></td>
+<td>
 </td>
 </tr>
 <tr>
@@ -247,7 +245,7 @@ how badly people want to live there...</p>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-fire-station/index.html">kotcity.data.FireStation</a></td>
+<a href="../kotcity.data.buildings/-fire-station/index.html">kotcity.data.buildings.FireStation</a></td>
 <td>
 </td>
 </tr>
@@ -325,35 +323,41 @@ how badly people want to live there...</p>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-has-concrete-contacts/index.html">kotcity.data.HasConcreteContacts</a></td>
+<a href="../kotcity.data.buildings/-has-concrete-contacts/index.html">kotcity.data.buildings.HasConcreteContacts</a></td>
 <td>
 </td>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-has-concrete-inventory/index.html">kotcity.data.HasConcreteInventory</a></td>
+<a href="../kotcity.data.buildings/-has-concrete-inventory/index.html">kotcity.data.buildings.HasConcreteInventory</a></td>
 <td>
 <p>This is used for something in the <a href="../kotcity.data/-city-map/index.html">CityMap</a> that has REAL trackable inventory.
-The reason we have "<a href="../kotcity.data/-has-concrete-inventory/index.html">HasConcreteInventory</a>" and not is because the outside <a href="../kotcity.data/-national-trade-entity/index.html">NationalTradeEntity</a> does not REALLY have anything.
+The reason we have "<a href="../kotcity.data.buildings/-has-concrete-inventory/index.html">HasConcreteInventory</a>" and not is because the outside <a href="../kotcity.data/-national-trade-entity/index.html">NationalTradeEntity</a> does not REALLY have anything.
 It just pretends to.</p>
 </td>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-has-contracts/index.html">kotcity.data.HasContracts</a></td>
+<a href="../kotcity.data.buildings/-has-contracts/index.html">kotcity.data.buildings.HasContracts</a></td>
 <td>
 </td>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-has-inventory/index.html">kotcity.data.HasInventory</a></td>
+<a href="../kotcity.data.buildings/-has-inventory/index.html">kotcity.data.buildings.HasInventory</a></td>
 <td>
 <p>Represents something in (or external) to the city that can have <a href="../kotcity.data/-tradeable/index.html">Tradeable</a>s in its possession.</p>
 </td>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-industrial/index.html">kotcity.data.Industrial</a></td>
+<a href="../kotcity.data.buildings/-high-school/index.html">kotcity.data.buildings.HighSchool</a></td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../kotcity.data.buildings/-industrial/index.html">kotcity.data.buildings.Industrial</a></td>
 <td>
 </td>
 </tr>
@@ -366,6 +370,24 @@ It just pretends to.</p>
 <tr>
 <td>
 <a href="../kotcity.data/-inventory/index.html">kotcity.data.Inventory</a></td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../kotcity.jmx/-j-m-x-agent/index.html">kotcity.jmx.JMXAgent</a></td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../kotcity.jmx/-kot-city/index.html">kotcity.jmx.KotCity</a></td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../kotcity.jmx/-kot-city-m-bean/index.html">kotcity.jmx.KotCityMBean</a></td>
 <td>
 </td>
 </tr>
@@ -413,7 +435,7 @@ It just pretends to.</p>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-loadable-building/index.html">kotcity.data.LoadableBuilding</a></td>
+<a href="../kotcity.data.buildings/-loadable-building/index.html">kotcity.data.buildings.LoadableBuilding</a></td>
 <td>
 </td>
 </tr>
@@ -464,6 +486,7 @@ It just pretends to.</p>
 <td>
 <a href="../kotcity.pathfinding/-navigation-node/index.html">kotcity.pathfinding.NavigationNode</a></td>
 <td>
+<p>Node in found paths.</p>
 </td>
 </tr>
 <tr>
@@ -482,17 +505,19 @@ It just pretends to.</p>
 <td>
 <a href="../kotcity.pathfinding/-path/index.html">kotcity.pathfinding.Path</a></td>
 <td>
+<p>Path of nodes, with conveniece methods.</p>
 </td>
 </tr>
 <tr>
 <td>
 <a href="../kotcity.pathfinding/-pathfinder/index.html">kotcity.pathfinding.Pathfinder</a></td>
 <td>
+<p>Find paths within the CityMap parameter.</p>
 </td>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-police-station/index.html">kotcity.data.PoliceStation</a></td>
+<a href="../kotcity.data.buildings/-police-station/index.html">kotcity.data.buildings.PoliceStation</a></td>
 <td>
 </td>
 </tr>
@@ -522,13 +547,13 @@ It just pretends to.</p>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-power-line/index.html">kotcity.data.PowerLine</a></td>
+<a href="../kotcity.data.buildings/-power-line/index.html">kotcity.data.buildings.PowerLine</a></td>
 <td>
 </td>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-power-plant/index.html">kotcity.data.PowerPlant</a></td>
+<a href="../kotcity.data.buildings/-power-plant/index.html">kotcity.data.buildings.PowerPlant</a></td>
 <td>
 </td>
 </tr>
@@ -566,13 +591,19 @@ It just pretends to.</p>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-rail-depot/index.html">kotcity.data.RailDepot</a></td>
+<a href="../kotcity.data.buildings/-rail-depot/index.html">kotcity.data.buildings.RailDepot</a></td>
 <td>
 </td>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-railroad/index.html">kotcity.data.Railroad</a></td>
+<a href="../kotcity.data.buildings/-railroad/index.html">kotcity.data.buildings.Railroad</a></td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../kotcity.data.buildings/-railroad-crossing/index.html">kotcity.data.buildings.RailroadCrossing</a></td>
 <td>
 </td>
 </tr>
@@ -584,7 +615,7 @@ It just pretends to.</p>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-residential/index.html">kotcity.data.Residential</a></td>
+<a href="../kotcity.data.buildings/-residential/index.html">kotcity.data.buildings.Residential</a></td>
 <td>
 </td>
 </tr>
@@ -608,7 +639,13 @@ It just pretends to.</p>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-road/index.html">kotcity.data.Road</a></td>
+<a href="../kotcity.data.buildings/-road/index.html">kotcity.data.buildings.Road</a></td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../kotcity.data.buildings/-school/index.html">kotcity.data.buildings.School</a></td>
 <td>
 </td>
 </tr>
@@ -687,7 +724,7 @@ It just pretends to.</p>
 </tr>
 <tr>
 <td>
-<a href="../kotcity.data/-train-station/index.html">kotcity.data.TrainStation</a></td>
+<a href="../kotcity.data.buildings/-train-station/index.html">kotcity.data.buildings.TrainStation</a></td>
 <td>
 </td>
 </tr>
@@ -695,11 +732,18 @@ It just pretends to.</p>
 <td>
 <a href="../kotcity.pathfinding/-transit-type/index.html">kotcity.pathfinding.TransitType</a></td>
 <td>
+<p>Type of node in found paths.</p>
 </td>
 </tr>
 <tr>
 <td>
 <a href="../kotcity.data/-tunable/index.html">kotcity.data.Tunable</a></td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../kotcity.data.buildings/-university/index.html">kotcity.data.buildings.University</a></td>
 <td>
 </td>
 </tr>
