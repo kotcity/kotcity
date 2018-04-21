@@ -99,6 +99,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
     val nationalTradeEntity = NationalTradeEntity(this)
 
+    val population = Population(this)
+
     private var doingHourly = false
 
     /**
@@ -173,9 +175,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         censusTaker.tick()
         nationalTradeEntity.resetCounts()
 
-        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        simpleDateFormat.timeZone = TimeZone.getDefault()
-        time = simpleDateFormat.parse("2000-01-01 12:00:00")
+        val defaultDate = defaultDate()
+        time = defaultDate
     }
 
     private fun locationCacheStats(): CacheStats {
@@ -318,9 +319,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         time += 60_000
         if (time.toDateTime().minuteOfHour == 0) {
             val hour = time.toDateTime().hourOfDay
+            val frozenTime = time.clone() as Date
             launch {
                 if (!doingHourly) {
-                    hourlyTick(hour)
+                    hourlyTick(hour, frozenTime)
                 } else {
                     debug("Warning... hourly still in progress!")
                 }
@@ -332,7 +334,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * Things that we want done each game hour
      * @param hour current hour that we are processing in military (24 hour) format... (0 .. 23)
      */
-    suspend fun hourlyTick(hour: Int) {
+    suspend fun hourlyTick(hour: Int, frozenTime: Date = defaultDate()) {
         try {
             doingHourly = true
             debug("Processing tick for: $hour:00")
@@ -367,7 +369,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
             if (hour == 0) {
                 debug("Processing tick for end of day...")
-                dailyTick()
+                dailyTick(frozenTime)
             }
         } catch (e: Exception) {
             println("WARNING! Error during hourly: ${e.message}")
@@ -380,7 +382,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     /**
      * Used for things we want done once per day.
      */
-    private fun dailyTick() {
+    private fun dailyTick(frozenTime: Date) {
         val self = this
 
         launch {
@@ -403,6 +405,17 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
         launch {
             timeFunction("Update land value") { landValueUpdater.tick() }
+        }
+
+        // see if we should launch the monthly stuff...
+        if (frozenTime.toDateTime().dayOfMonth().get() == 1) {
+            monthlyTick()
+        }
+    }
+
+    private fun monthlyTick() {
+        launch {
+            timeFunction("Updating population") { population.tick() }
         }
     }
 
@@ -809,4 +822,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
             return sequence.map { Location(it.key, it.value) }.toList()
         }
     }
+}
+
+private fun defaultDate(): Date {
+    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    simpleDateFormat.timeZone = TimeZone.getDefault()
+    return simpleDateFormat.parse("2000-01-01 12:00:00")
 }

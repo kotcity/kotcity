@@ -318,6 +318,11 @@ sealed class Building : HasConcreteInventory, HasConcreteContacts {
     open var pollution: Double = 0.0
 
     /**
+     * How educated we are...
+     */
+    open var educationPoints: Double = 0.0
+
+    /**
      * List of [Zot] that this building suffers from. Populated by... [ZotPopulator]
      */
     var zots = listOf<Zot>()
