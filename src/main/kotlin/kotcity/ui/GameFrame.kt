@@ -20,6 +20,7 @@ import kotcity.ui.Tool.*
 import kotcity.ui.charts.SupplyDemandChart
 import kotcity.ui.layers.TrafficAnimationRenderer
 import kotcity.ui.layers.ZotRenderer
+import kotcity.ui.map.CityCanvas
 import kotcity.ui.map.CityMapCanvas
 import kotcity.ui.map.CityRenderer
 import kotcity.util.Debuggable
@@ -58,7 +59,7 @@ enum class GameSpeed(val tickPeriod: Long) {
 class GameFrame : View(), Debuggable {
     override var debug: Boolean = false
     override val root: BorderPane by fxml("/GameFrame.fxml")
-    private val cityCanvas = ResizableCanvas()
+    private val cityCanvas = CityCanvas()
     private val trafficCanvas = ResizableCanvas()
     private val zotCanvas = ResizableCanvas()
 
@@ -183,6 +184,7 @@ class GameFrame : View(), Debuggable {
 
         // clean up the old renderers here...
         this.cityRenderer?.removePanListeners()
+        this.cityCanvas?.clearSizeChangeListeners()
         this.trafficRenderer?.stop()
         this.zotRenderer?.stop()
 

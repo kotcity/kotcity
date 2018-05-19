@@ -1,5 +1,6 @@
 package kotcity.ui.map
 
+import javafx.beans.value.ObservableValue
 import javafx.scene.Cursor
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
@@ -20,7 +21,7 @@ import kotlin.math.pow
 
 class CityRenderer(
     private val gameFrame: GameFrame,
-    val canvas: ResizableCanvas,
+    val canvas: CityCanvas,
     private val cityMap: CityMap
 ) {
 
@@ -75,10 +76,13 @@ class CityRenderer(
 
     private val panListeners: MutableList<(Pair<BlockCoordinate, BlockCoordinate>) -> Unit> = mutableListOf()
 
+    private val sizeChangedListener = {observable: ObservableValue<out Number>, oldValue: Number, newValue: Number -> firePanChanged() }
+
     init {
         mapMinElevation = cityMap.groundLayer.values.map { it.elevation }.min() ?: 0.0
         mapMaxElevation = cityMap.groundLayer.values.map { it.elevation }.max() ?: 0.0
         colorAdjuster = ColorAdjuster(mapMinElevation, mapMaxElevation)
+        canvas.addSizeChangeListener {firePanChanged()}
     }
 
     // awkward... we need padding to get building off the screen...
