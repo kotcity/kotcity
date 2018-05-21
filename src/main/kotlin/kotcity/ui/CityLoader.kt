@@ -28,23 +28,20 @@ object CityLoader {
                 view.currentWindow?.let { window ->
                     val workDialog = WorkIndicatorDialog<File>(window, "Loading City...")
 
-                    val launchScreen = find(LaunchScreen::class)
-                    launchScreen.close()
-                    view.close()
-                    view.currentStage?.close()
-                    view.primaryStage.close()
-
                     workDialog.exec(
                             file,
                             ToIntFunction<File> {
                                 val map = CityFileAdapter.load(it)
                                 runLater {
+                                    closeLaunchScreen()
+
                                     val gameFrame = tornadofx.find(GameFrame::class)
                                     gameFrame.setMap(map)
                                     gameFrame.currentStage?.isMaximized = true
                                     gameFrame.openWindow()
                                     println("Gameframe should be open at this point...")
                                     gameFrame.currentStage?.isMaximized = true
+
                                     // clean up orphaned objects....
                                     System.gc()
                                 }
@@ -54,9 +51,6 @@ object CityLoader {
                                 // log exception just in case
                                 println("Handling exception:")
                                 it.printStackTrace()
-
-                                // restore launch screen
-                                restoreLaunchScreen()
 
                                 // show error message to user
                                 val alert = Alert(AlertType.ERROR)
@@ -74,8 +68,8 @@ object CityLoader {
         }
     }
 
-    private fun restoreLaunchScreen() {
+    private fun closeLaunchScreen() {
         val launchScreen = find(LaunchScreen::class)
-        launchScreen.openWindow()
+        launchScreen.close()
     }
 }
