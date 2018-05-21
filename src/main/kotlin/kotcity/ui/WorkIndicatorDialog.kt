@@ -28,7 +28,7 @@ import java.util.function.ToIntFunction
  * P = Input parameter type. Given to the closure as parameter. Return type is always Integer.
  * (cc) @imifos
  */
-class WorkIndicatorDialog<in P>(owner: Window, label: String) {
+class WorkIndicatorDialog<P>(owner: Window, label: String) {
 
     private var animationWorker: Task<*>? = null
     private var taskWorker: Task<Int>? = null
@@ -71,7 +71,7 @@ class WorkIndicatorDialog<in P>(owner: Window, label: String) {
      * @param parameter An input parameter for the payload function
      * @param func The payload function which should be executed
      */
-    fun exec(parameter: P, func: ToIntFunction<*>) {
+    fun exec(parameter: P, func: ToIntFunction<P>) {
         exec(parameter, func, Consumer {throw it} )
     }
 
@@ -82,10 +82,10 @@ class WorkIndicatorDialog<in P>(owner: Window, label: String) {
      * @param func The payload function which should be executed
      * @param errFunc The error handling function, which will be called in case an exception occurs
      */
-    fun exec(parameter: P, func: ToIntFunction<*>, errFunc: Consumer<Exception>) {
+    fun exec(parameter: P, func: ToIntFunction<P>, errFunc: Consumer<Exception>) {
         setupDialog()
         setupAnimationThread()
-        setupWorkerThread(parameter, func as ToIntFunction<P>, errFunc)
+        setupWorkerThread(parameter, func, errFunc)
     }
 
     /**
