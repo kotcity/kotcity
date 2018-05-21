@@ -13,5 +13,6 @@ class KotTest {
         println("Kot: $randomKot")
         val randomFamily = FamilyGenerator.generate()
         println(randomFamily)
+        println("Family: ${randomFamily.description}")
     }
 }
