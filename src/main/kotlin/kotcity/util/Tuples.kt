@@ -1,4 +1,4 @@
-package aballano.kotlinmemoization.tuples
+package kotcity.util
 
 import java.io.Serializable
 

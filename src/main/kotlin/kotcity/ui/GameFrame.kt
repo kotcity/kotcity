@@ -184,7 +184,7 @@ class GameFrame : View(), Debuggable {
 
         // clean up the old renderers here...
         this.cityRenderer?.removePanListeners()
-        this.cityCanvas?.clearSizeChangeListeners()
+        this.cityCanvas.clearSizeChangeListeners()
         this.trafficRenderer?.stop()
         this.zotRenderer?.stop()
 

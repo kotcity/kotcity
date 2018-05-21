@@ -1,7 +1,7 @@
 package kotcity.memoization
 
-import aballano.kotlinmemoization.tuples.Quadruple
-import aballano.kotlinmemoization.tuples.Quintuple
+import kotcity.util.Quadruple
+import kotcity.util.Quintuple
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache

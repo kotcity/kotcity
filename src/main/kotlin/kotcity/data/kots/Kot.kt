@@ -15,20 +15,20 @@ object KotGenerator {
     private val lastNames = gson.fromJson<List<String>>(FileReader("./assets/names/names.json"))
 
     fun generate(): Kot {
-        val gender = Gender.values().toList().randomElement() ?: Gender.MALE
+        val gender = Gender.values().toList().randomElement()
         val first  = if(gender == Gender.MALE) {
-            maleFirstNames.randomElement().orEmpty()
+            maleFirstNames.randomElement()
         } else {
-            femaleFirstNames.randomElement().orEmpty()
+            femaleFirstNames.randomElement()
         }
 
         val middle = if(gender == Gender.MALE) {
-            maleFirstNames.randomElement().orEmpty()
+            maleFirstNames.randomElement()
         } else {
-            femaleFirstNames.randomElement().orEmpty()
+            femaleFirstNames.randomElement()
         }
 
-        val last = lastNames.randomElement().orEmpty()
+        val last = lastNames.randomElement()
 
         return Kot(gender, first, middle, last)
     }
@@ -36,7 +36,7 @@ object KotGenerator {
 
 object FamilyGenerator {
     fun generate(): Family {
-        val familySize = (1..4).toList().randomElement() ?: 1
+        val familySize = (1..4).toList().randomElement()
         val kots = List(familySize) {
             KotGenerator.generate()
         }
