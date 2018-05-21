@@ -193,7 +193,7 @@ interface HasConcreteContacts : HasContracts {
 
     fun voidRandomContract() {
         if (contracts.count() > 0) {
-            contracts.randomElement()?.let {
+            contracts.randomElement().let {
                 val otherBuilding = it.to
                 voidContractsWith(otherBuilding)
             }
