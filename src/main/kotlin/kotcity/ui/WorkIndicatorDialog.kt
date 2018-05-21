@@ -19,6 +19,7 @@ import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.stage.Window
+import tornadofx.runLater
 import java.util.function.Consumer
 import java.util.function.ToIntFunction
 
@@ -66,12 +67,25 @@ class WorkIndicatorDialog<in P>(owner: Window, label: String) {
     }
 
     /**
-     *
+     * Executes the work indicator dialog. If an exception occurs during execution, it will be thrown.
+     * @param parameter An input parameter for the payload function
+     * @param func The payload function which should be executed
      */
     fun exec(parameter: P, func: ToIntFunction<*>) {
+        exec(parameter, func, Consumer {throw it} )
+    }
+
+    /**
+     * Executes the work indicator dialog. If an exception occurs during execution, it will not be thrown but passed to
+     * the error handling function
+     * @param parameter An input parameter for the payload function
+     * @param func The payload function which should be executed
+     * @param errFunc The error handling function, which will be called in case an exception occurs
+     */
+    fun exec(parameter: P, func: ToIntFunction<*>, errFunc: Consumer<Exception>) {
         setupDialog()
         setupAnimationThread()
-        setupWorkerThread(parameter, func as ToIntFunction<P>)
+        setupWorkerThread(parameter, func as ToIntFunction<P>, errFunc)
     }
 
     /**
@@ -126,7 +140,7 @@ class WorkIndicatorDialog<in P>(owner: Window, label: String) {
     /**
      *
      */
-    private fun setupWorkerThread(parameter: P, func: ToIntFunction<P>) {
+    private fun setupWorkerThread(parameter: P, func: ToIntFunction<P>, errFunc: Consumer<Exception>) {
 
         taskWorker = object : Task<Int>() {
             public override fun call(): Int? {
@@ -143,7 +157,7 @@ class WorkIndicatorDialog<in P>(owner: Window, label: String) {
                 resultValue = taskWorker!!.get()
                 resultNotificationList.add(resultValue)
             } catch (e: Exception) {
-                throw RuntimeException(e)
+                errFunc.accept(e)
             }
 
         }
