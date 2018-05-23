@@ -169,6 +169,9 @@ class GameFrame : View(), Debuggable {
     }
 
     fun setMap(cityMap: CityMap) {
+        if (::map.isInitialized) {
+            map.purgeRTree()
+        }
         this.map = cityMap
         cityMapCanvas.map = cityMap
         this.assetManager = AssetManager(cityMap)
@@ -391,10 +394,6 @@ class GameFrame : View(), Debuggable {
     fun loadCityPressed() {
         // TODO: wrap this with a dialog...
         // we will just be loading...
-        this.map.purgeRTree()
-        this.currentStage?.close()
-        renderTimer?.stop()
-        gameTickTask?.cancel()
         CityLoader.loadCity(this)
         title = "$GAME_TITLE - ${map.cityName}"
     }
