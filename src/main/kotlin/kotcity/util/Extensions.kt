@@ -11,7 +11,6 @@ import java.util.*
  */
 fun <E> List<E>.randomElement() = this[Random().nextInt(this.size)]
 
-
 /**
  * Extension function on any list that will return a list of unique random picks
  * from the list. If the specified number of elements you want is larger than the

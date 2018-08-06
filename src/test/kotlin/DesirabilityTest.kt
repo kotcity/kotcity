@@ -53,13 +53,13 @@ class DesirabilityTest {
         val path = pathfinder.pathToNearestLabor(listOf(BlockCoordinate(3, 10)))
 
         if (path == null) {
-            fail("The path was null...")
+            fail<Nothing>("The path was null...")
         }
 
         val pathToJob = pathfinder.pathToNearestJob(listOf(BlockCoordinate(3, 10)))
 
         if (pathToJob == null) {
-            fail("The path was null...")
+            fail<Nothing>("The path was null...")
         }
 
         // ok now let's make sure the desirability is actually kosher...
