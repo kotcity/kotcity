@@ -66,19 +66,30 @@ object CityFileAdapter : Debuggable {
                 cityMap.width = data["width"].asInt
                 cityMap.cityName = data["cityName"].asString
                 cityMap.time = parseDate(data["time"].asString)
+                println("Reading ground tiles...")
                 readGroundTiles(data, cityMap)
+                println("Reading building layer...")
                 readBuildingLayer(data, cityMap)
+                println("Updating building index...")
                 cityMap.updateBuildingIndex()
+                println("Reading power line layer...")
                 readPowerlineLayer(data, cityMap)
+                println("Reading zone layer...")
                 readZoneLayer(data, cityMap)
+                println("Reading resource layers...")
                 readResourceLayers(data, cityMap)
+                println("Reading desirability layers...")
                 readDesirabilityLayers(data, cityMap)
+                println("Reading contracts...")
                 readContracts(data, cityMap)
 
+                println("Updating building index...")
                 cityMap.updateBuildingIndex()
+                println("Updating outside connections...")
                 cityMap.updateOutsideConnections()
 
                 // now let's force tick power...
+                println("Forcing power to tick...")
                 PowerCoverageUpdater.update(cityMap)
 
                 cityMap
@@ -194,6 +205,7 @@ object CityFileAdapter : Debuggable {
             val tile = MapTile(tileType, tileObj["elevation"].asDouble)
             cityMap.groundLayer[coordinate] = tile
         }
+        println("All done reading in tiles!")
     }
 
     private fun writePowerlineLayer(data: JsonObject, it: SerializerArg<CityMap>) {
