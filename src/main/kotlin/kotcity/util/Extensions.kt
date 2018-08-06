@@ -9,8 +9,9 @@ import java.util.*
  * Extension function on any list that will return a random element from index 0
  * to the last index
  */
-fun <E> List<E>.randomElement() = this[Random().nextInt(this.size)]
-
+fun <E> List<E>.randomElement(): E? = if (this.isEmpty()) null else {
+    this[Random().nextInt(this.size)]
+}
 
 /**
  * Extension function on any list that will return a list of unique random picks

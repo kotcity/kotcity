@@ -9,6 +9,7 @@ import tornadofx.View
 import tornadofx.find
 import tornadofx.runLater
 import java.io.File
+import java.util.function.Consumer
 import java.util.function.ToIntFunction
 
 
@@ -27,38 +28,48 @@ object CityLoader {
                 view.currentWindow?.let { window ->
                     val workDialog = WorkIndicatorDialog<File>(window, "Loading City...")
 
-                    val launchScreen = find(LaunchScreen::class)
-                    launchScreen.close()
-                    view.close()
-                    view.currentStage?.close()
-                    view.primaryStage.close()
+                    workDialog.exec(
+                            file,
+                            ToIntFunction<File> {
+                                val map = CityFileAdapter.load(it)
+                                runLater {
+                                    closeLaunchScreen()
 
-                    workDialog.exec(file, func = ToIntFunction<File> {
-                        val map = CityFileAdapter.load(file)
-                        runLater {
-                            val gameFrame = tornadofx.find(GameFrame::class)
-                            gameFrame.setMap(map)
-                            gameFrame.currentStage?.isMaximized = true
-                            gameFrame.openWindow()
-                            println("Gameframe should be open at this point...")
-                            gameFrame.currentStage?.isMaximized = true
-                            // clean up orphaned objects....
-                            System.gc()
-                        }
-                        1
-                    })
+                                    val gameFrame = tornadofx.find(GameFrame::class)
+                                    gameFrame.setMap(map)
+                                    gameFrame.currentStage?.isMaximized = true
+                                    gameFrame.openWindow()
+                                    println("Gameframe should be open at this point...")
+                                    gameFrame.currentStage?.isMaximized = true
+
+                                    // clean up orphaned objects....
+                                    System.gc()
+                                }
+                                1
+                            },
+                            Consumer {
+                                // log exception just in case
+                                println("Handling exception:")
+                                it.printStackTrace()
+
+                                // show error message to user
+                                val alert = Alert(AlertType.ERROR)
+                                alert.title = "Error during load"
+                                alert.headerText = "Could not load your city!"
+                                alert.contentText = "Why not? Exception is: " + it.message
+                                val stage = alert.dialogPane.scene.window as Stage
+                                stage.isAlwaysOnTop = true
+                                stage.toFront() // not sure if necessary
+                                alert.showAndWait()
+                                System.gc()
+                            })
                 }
-            } else {
-                val alert = Alert(AlertType.ERROR)
-                alert.title = "Error during load"
-                alert.headerText = "Could not load your city!"
-                alert.contentText = "Why not? Totally unknown?"
-                val stage = alert.dialogPane.scene.window as Stage
-                stage.isAlwaysOnTop = true
-                stage.toFront() // not sure if necessary
-
-                alert.showAndWait()
             }
         }
+    }
+
+    private fun closeLaunchScreen() {
+        val launchScreen = find(LaunchScreen::class)
+        launchScreen.close()
     }
 }
