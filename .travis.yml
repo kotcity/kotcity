@@ -9,7 +9,7 @@ before_install:
   - docker build -t kotcity .
  
 script:
-  - docker run -t --name=kotcity kotcity ./gradlew test
+  - docker run -v /dev/urandom:/dev/random -t --name=kotcity kotcity ./gradlew test
 
 notifications:
   webhooks:

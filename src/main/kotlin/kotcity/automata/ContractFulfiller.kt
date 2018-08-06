@@ -96,7 +96,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                 }
             } catch (ex: CancellationException) {
                 debug { "Reached timeout of $maxMillis milliseconds! Cancelling all outstanding jobs!" }
-                contractJobs.cancelAndJoin()
+                contractJobs.cancel()
             } finally {
                 // update JMX...
                 mBean.contractsSigned = howManyProcessed
