@@ -12,8 +12,8 @@ import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotcity.pathfinding.Direction
 import kotcity.util.reorder
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withTimeout
+import kotlinx.coroutines.*
+import kotlinx.coroutines.withTimeout
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -176,6 +176,9 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         simpleDateFormat.timeZone = TimeZone.getDefault()
         time = simpleDateFormat.parse("2000-01-01 12:00:00")
+
+        // let's get our scope...
+
     }
 
     private fun locationCacheStats(): CacheStats {
@@ -318,7 +321,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         time += 60_000
         if (time.toDateTime().minuteOfHour == 0) {
             val hour = time.toDateTime().hourOfDay
-            launch {
+            GlobalScope.launch {
                 if (!doingHourly) {
                     hourlyTick(hour)
                 } else {
@@ -339,7 +342,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
 
             if (hour % 3 == 0) {
                 timeFunction("Terminating random contracts") { contractFulfiller.terminateRandomContracts() }
-                withTimeout(5000, TimeUnit.MILLISECONDS) {
+                withTimeout(5000L) {
                     timeFunction("Signing contracts") { contractFulfiller.signContracts(true, 5000, true) }
                 }
                 timeFunction("Doing manufacturing") { manufacturer.tick() }
@@ -347,8 +350,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
                 timeFunction("Consuming goods") { goodsConsumer.tick() }
                 timeFunction("Generating traffic") { trafficCalculator.tick() }
 
-                launch { timeFunction("Populating Zots") { zotPopulator.tick() } }
-                launch {
+                GlobalScope.launch { timeFunction("Populating Zots") { zotPopulator.tick() } }
+                GlobalScope.launch {
                     timeFunction("Updating pollution...") { pollutionUpdater.tick() }
                     timeFunction("Updating happiness...") { happinessUpdater.tick() }
                 }
@@ -383,25 +386,25 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     private fun dailyTick() {
         val self = this
 
-        launch {
+        GlobalScope.launch {
             timeFunction("Updating power coverage...") { PowerCoverageUpdater.update(self) }
         }
 
-        launch {
+        GlobalScope.launch {
             timeFunction("Calculating desirability") { desirabilityUpdater.tick() }
         }
 
-        launch {
+        GlobalScope.launch {
             timeFunction("Collect Taxes") { taxCollector.tick() }
             timeFunction("Setting National Supply") { nationalTradeEntity.resetCounts() }
         }
 
-        launch {
+        GlobalScope.launch {
             timeFunction("Calculating fire coverage") { FireCoverageUpdater.update(self) }
             timeFunction("Calculating crime and police presence") { CrimeUpdater.update(self) }
         }
 
-        launch {
+        GlobalScope.launch {
             timeFunction("Update land value") { landValueUpdater.tick() }
         }
     }

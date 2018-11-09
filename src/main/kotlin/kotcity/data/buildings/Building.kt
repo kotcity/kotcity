@@ -4,7 +4,6 @@ import kotcity.data.*
 import kotcity.pathfinding.Direction
 import kotcity.pathfinding.Path
 import kotcity.util.randomElement
-import nl.pvdberg.hashkode.hashKode
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -341,7 +340,7 @@ sealed class Building : HasConcreteInventory, HasConcreteContacts {
         return uuid == other.uuid
     }
 
-    override fun hashCode() = hashKode(uuid)
+    override fun hashCode() = uuid.hashCode()
 
     override fun toString() = "Building(class=${this.javaClass} uuid=$uuid)"
 

@@ -9,7 +9,7 @@ import kotcity.jmx.KotCity
 import kotcity.pathfinding.Path
 import kotcity.util.Debuggable
 import kotcity.util.randomElements
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 
 class ContactFulfiller(val cityMap: CityMap) : Debuggable {
@@ -73,7 +73,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
                             if (ticksSinceLastContractFulfillment >= ticksToSkip) {
                                 tickCounts.put(location, 0)
 
-                                val job = launch(CommonPool, parent = contractJobs) {
+                                val job = this.launch {
                                     handleBuilding(location)
                                     howManyProcessed += 1
                                 }
