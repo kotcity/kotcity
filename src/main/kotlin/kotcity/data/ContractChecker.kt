@@ -1,7 +1,9 @@
 package kotcity.data
 
 import kotcity.util.Debuggable
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 object ContractChecker: Debuggable {
     override var debug: Boolean = true
@@ -11,7 +13,7 @@ object ContractChecker: Debuggable {
             val building = it.building
             synchronized(building.contracts) {
                 building.contracts.toList().forEach {
-                    async {
+                    GlobalScope.launch {
                         // make sure each building exists...
                         val from = it.from
                         val to = it.to

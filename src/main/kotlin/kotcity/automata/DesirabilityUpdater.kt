@@ -3,7 +3,7 @@ package kotcity.automata
 import kotcity.data.*
 import kotcity.pathfinding.Pathfinder
 import kotcity.util.Debuggable
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.*
 
 /**
  * This class is responsible for going over each zoned tile and figuring out the "Desirability score"... in other words
@@ -65,7 +65,7 @@ class DesirabilityUpdater(val cityMap: CityMap) : Debuggable {
 
         commercialZones.forEach { coordinate ->
 
-            jobs += launch {
+            jobs += GlobalScope.launch {
                 if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                     desirabilityLayer[coordinate] = Double.MIN_VALUE
                     return@launch
@@ -110,7 +110,7 @@ class DesirabilityUpdater(val cityMap: CityMap) : Debuggable {
         val industryZones = zoneCoordinates(Zone.INDUSTRIAL)
 
         industryZones.forEach { coordinate ->
-            jobs += launch {
+            jobs += GlobalScope.launch {
                 // if we aren't near a road we are not desirable...
                 if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                     desirabilityLayer[coordinate] = Double.MIN_VALUE
@@ -168,7 +168,7 @@ class DesirabilityUpdater(val cityMap: CityMap) : Debuggable {
         // we like being near places that PROVIDE goods
         residentialZones.forEach { coordinate ->
 
-            jobs += launch {
+            jobs += GlobalScope.launch {
                 if (!pathFinder.nearbyRoad(listOf(coordinate))) {
                     desirabilityLayer[coordinate] = Double.MIN_VALUE
                     return@launch

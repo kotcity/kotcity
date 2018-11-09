@@ -2,7 +2,6 @@ package kotcity.data
 
 import kotcity.util.intBetween
 import kotcity.util.reorder
-import nl.pvdberg.hashkode.hashKode
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.sqrt
@@ -144,6 +143,4 @@ data class BlockCoordinate(
     operator fun plus(other: BlockCoordinate): BlockCoordinate = BlockCoordinate(x + other.x, y + other.y)
 
     override fun equals(other: Any?) = other is BlockCoordinate && x == other.x && y == other.y
-
-    override fun hashCode() = hashKode(x, y)
 }
