@@ -5,7 +5,6 @@ import com.github.davidmoten.rtree.RTree
 import com.github.davidmoten.rtree.geometry.Geometries
 import com.github.davidmoten.rtree.geometry.Rectangle
 import com.github.debop.javatimes.plus
-import com.github.debop.javatimes.toDateTime
 import kotcity.automata.*
 import kotcity.data.buildings.*
 import kotcity.memoization.CacheOptions
@@ -319,16 +318,18 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      */
     fun tick() {
         time += 60_000
-        if (time.toDateTime().minuteOfHour == 0) {
-            val hour = time.toDateTime().hourOfDay
-            GlobalScope.launch {
-                if (!doingHourly) {
-                    hourlyTick(hour)
-                } else {
-                    debug("Warning... hourly still in progress!")
-                }
-            }
-        }
+
+        // TODO: this does not compile due to missing / conflicting dependencies
+//        if (time.toDateTime().minuteOfHour == 0) {
+//            val hour = time.toDateTime().hourOfDay
+//            GlobalScope.launch {
+//                if (!doingHourly) {
+//                    hourlyTick(hour)
+//                } else {
+//                    debug("Warning... hourly still in progress!")
+//                }
+//            }
+//        }
     }
 
     /**
