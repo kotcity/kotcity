@@ -31,6 +31,7 @@ import tornadofx.find
 import tornadofx.runLater
 import java.io.File
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.concurrent.timerTask
 
@@ -40,10 +41,8 @@ object Algorithms {
     }
 }
 
-fun serializeDate(date: Date): String {
-    val simpleDateFormat = SimpleDateFormat("EEE MM/dd/yyyy hh:mm a")
-    simpleDateFormat.timeZone = TimeZone.getDefault()
-    return simpleDateFormat.format(date)
+fun serializeDate(date: LocalDateTime): String {
+    return date.toString()
 }
 
 const val DRAW_GRID = false

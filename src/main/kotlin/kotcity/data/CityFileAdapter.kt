@@ -12,6 +12,7 @@ import kotcity.pathfinding.Pathfinder
 import kotcity.util.Debuggable
 import java.io.File
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 
 object CityFileAdapter : Debuggable {
@@ -19,14 +20,12 @@ object CityFileAdapter : Debuggable {
 
     private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
-    private fun parseDate(str: String): Date {
-        simpleDateFormat.timeZone = TimeZone.getDefault()
-        return simpleDateFormat.parse(str)
+    private fun parseDate(str: String): LocalDateTime {
+        return LocalDateTime.parse(str)
     }
 
-    private fun serializeDate(date: Date): String {
-        simpleDateFormat.timeZone = TimeZone.getDefault()
-        return simpleDateFormat.format(date)
+    private fun serializeDate(date: LocalDateTime): String {
+        return date.toString()
     }
 
     val gson: Gson = GsonBuilder()

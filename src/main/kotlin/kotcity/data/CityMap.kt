@@ -4,17 +4,16 @@ import com.github.benmanes.caffeine.cache.stats.CacheStats
 import com.github.davidmoten.rtree.RTree
 import com.github.davidmoten.rtree.geometry.Geometries
 import com.github.davidmoten.rtree.geometry.Rectangle
-import com.github.debop.javatimes.plus
 import kotcity.automata.*
 import kotcity.data.buildings.*
 import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotcity.pathfinding.Direction
 import kotcity.util.reorder
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
@@ -109,7 +108,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     /**
      * Current time in the simulation
      */
-    var time: Date
+    var time: LocalDateTime
 
     /**
      * Should we print debug output or not?
@@ -172,9 +171,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         censusTaker.tick()
         nationalTradeEntity.resetCounts()
 
-        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        simpleDateFormat.timeZone = TimeZone.getDefault()
-        time = simpleDateFormat.parse("2000-01-01 12:00:00")
+        time = LocalDateTime.of(2000, 1, 1, 12, 0)
 
         // let's get our scope...
 
@@ -317,19 +314,18 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * Main game loop. The engine calls this every X milliseconds and various functions are run from here.
      */
     fun tick() {
-        time += 60_000
+        time = time.plusMinutes(1)
 
-        // TODO: this does not compile due to missing / conflicting dependencies
-//        if (time.toDateTime().minuteOfHour == 0) {
-//            val hour = time.toDateTime().hourOfDay
-//            GlobalScope.launch {
-//                if (!doingHourly) {
-//                    hourlyTick(hour)
-//                } else {
-//                    debug("Warning... hourly still in progress!")
-//                }
-//            }
-//        }
+        if (time.minute == 0) {
+            val hour = time.hour
+            GlobalScope.launch {
+                if (!doingHourly) {
+                    hourlyTick(hour)
+                } else {
+                    debug("Warning... hourly still in progress!")
+                }
+            }
+        }
     }
 
     /**
