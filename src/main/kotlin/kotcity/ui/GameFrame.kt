@@ -181,7 +181,9 @@ class GameFrame : View(), Debuggable {
 
         Platform.setImplicitExit(false)
 
-        title = "$GAME_TITLE - ${cityMap.cityName}"
+        title = "KotCity"
+        // TODO:
+        //title = "$GAME_TITLE - ${cityMap.cityName}"
         cityNameLabel.text = "City: ${cityMap.cityName}"
 
         // clean up the old renderers here...
@@ -281,11 +283,13 @@ class GameFrame : View(), Debuggable {
 
     fun newCityPressed() {
         println("New city was pressed!")
-        this.currentStage?.close()
-        val launchScreen = tornadofx.find(LaunchScreen::class)
-        renderTimer?.stop()
-        gameTickTask?.cancel()
-        launchScreen.openWindow()
+
+        // TODO:
+//        this.currentStage?.close()
+//        val launchScreen = tornadofx.find(LaunchScreen::class)
+//        renderTimer?.stop()
+//        gameTickTask?.cancel()
+//        launchScreen.openWindow()
     }
 
     fun saveCityAs() {
@@ -394,11 +398,16 @@ class GameFrame : View(), Debuggable {
         // TODO: wrap this with a dialog...
         // we will just be loading...
         CityLoader.loadCity(this)
-        title = "$GAME_TITLE - ${map.cityName}"
+
+        title = "KotCity"
+        // TODO:
+        // title = "$GAME_TITLE - ${map.cityName}"
     }
 
     private fun initComponents() {
-        title = GAME_TITLE
+        title = "KotCity"
+        // TODO:
+        //title = GAME_TITLE
 
         bindCanvas()
         bindButtons()
@@ -669,18 +678,19 @@ class GameFrame : View(), Debuggable {
 }
 
 
-class GameFrameApp : App(GameFrame::class, KotcityStyles::class) {
-    override fun start(stage: Stage) {
-        stage.isResizable = true
-        val gameFrame = find(GameFrame::class)
-        val mapGenerator = MapGenerator()
-        val map = mapGenerator.generateMap(512, 512)
-        gameFrame.setMap(map)
-        stage.isMaximized = true
-        super.start(stage)
-    }
-}
-
-fun main(args: Array<String>) {
-    Application.launch(GameFrameApp::class.java, *args)
-}
+// TODO:
+//class GameFrameApp : App(GameFrame::class, KotcityStyles::class) {
+//    override fun start(stage: Stage) {
+//        stage.isResizable = true
+//        val gameFrame = find(GameFrame::class)
+//        val mapGenerator = MapGenerator()
+//        val map = mapGenerator.generateMap(512, 512)
+//        gameFrame.setMap(map)
+//        stage.isMaximized = true
+//        super.start(stage)
+//    }
+//}
+//
+//fun main(args: Array<String>) {
+//    Application.launch(GameFrameApp::class.java, *args)
+//}

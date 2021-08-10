@@ -38,6 +38,8 @@ class LaunchScreenFXGL : GameApplication() {
         val btnLoad = getUIFactoryService().newButton("Load City")
         btnLoad.setOnAction {
             showMessage("TODO:")
+
+            // TODO: CityLoader.loadCity(launchScreen)
         }
 
         val btnQuit = getUIFactoryService().newButton("Quit")
