@@ -121,10 +121,6 @@ class GameFrame : View(), Debuggable {
     private val pauseMenuItem: CheckMenuItem by fxid()
 
     private var gameSpeed = GameSpeed.MEDIUM
-        set(value) {
-            field = value
-            scheduleGameTickTimer()
-        }
 
     private var tickDelay = TICK_DELAY_AT_REST
     private var ticks = 0
@@ -255,7 +251,6 @@ class GameFrame : View(), Debuggable {
     fun fastClicked() {
         gameSpeed = GameSpeed.FAST
     }
-
 
     fun zoomOut() {
         cityRenderer?.let {
@@ -434,28 +429,35 @@ class GameFrame : View(), Debuggable {
             }
         }
         renderTimer?.start()
-
-        scheduleGameTickTimer()
     }
 
-    private fun scheduleGameTickTimer() {
-        gameTickTask?.cancel()
-        gameTickTask = timerTask {
-            runLater {
-                if (!pauseMenuItem.isSelected) {
-                    map.tick()
-                    populationLabel.text = "Population: ${map.censusTaker.population}"
-                    clockLabel.text = serializeDate(map.time)
+    private var tickCounter = 0.0
 
-                    val resRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.LABOR))
-                    val comRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.GOODS))
-                    val indRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.WHOLESALE_GOODS))
+    /**
+     * A single frame of the game to be run inside the main loop.
+     * Needs to run on the JavaFX thread.
+     */
+    fun tick(tpf: Double) {
+        tickCounter += tpf
 
-                    demandLabel.text = "R: $resRatio C: $comRatio I: $indRatio"
-                }
-            }
+        if (tickCounter * 1000 > gameSpeed.tickPeriod) {
+            tick()
+            tickCounter = 0.0
         }
-        gameTickTimer.scheduleAtFixedRate(gameTickTask, 0L, gameSpeed.tickPeriod)
+    }
+
+    private fun tick() {
+        if (!pauseMenuItem.isSelected) {
+            map.tick()
+            populationLabel.text = "Population: ${map.censusTaker.population}"
+            clockLabel.text = serializeDate(map.time)
+
+            val resRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.LABOR))
+            val comRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.GOODS))
+            val indRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.WHOLESALE_GOODS))
+
+            demandLabel.text = "R: $resRatio C: $comRatio I: $indRatio"
+        }
     }
 
     fun quitPressed() {

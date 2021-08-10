@@ -39,6 +39,10 @@ class KotCityApp : GameApplication() {
     override fun initGame() {
         addUINode(gameFrame.root)
     }
+
+    override fun onUpdate(tpf: Double) {
+        gameFrame.tick(tpf)
+    }
 }
 
 fun main() {
