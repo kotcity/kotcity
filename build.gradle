@@ -53,10 +53,8 @@ dependencies {
     compile 'no.tornado:tornadofx:1.7.17'
     compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
     compile 'com.github.davidmoten:rtree:0.8.6'
-    compile 'com.github.kizitonwose.time:time:1.0.2'
     compile 'javax.vecmath:vecmath:1.5.2'
 
-    compile 'com.github.debop:koda-time:1.2.2'
     compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1'
 
     compile 'com.github.ben-manes.caffeine:caffeine:2.6.2'
