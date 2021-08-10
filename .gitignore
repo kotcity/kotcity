@@ -6,3 +6,5 @@ out
 cities
 *.kcity
 /kotcity4.iml
+system/
+logs/
