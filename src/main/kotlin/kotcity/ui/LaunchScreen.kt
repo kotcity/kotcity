@@ -2,14 +2,19 @@ package kotcity.ui
 
 import com.almasb.fxgl.app.GameApplication
 import com.almasb.fxgl.app.GameSettings
-import com.almasb.fxgl.dsl.*
-import javafx.scene.layout.VBox
+import com.almasb.fxgl.app.scene.FXGLMenu
+import com.almasb.fxgl.app.scene.SceneFactory
+import com.almasb.fxgl.dsl.addUINode
+import kotcity.ui.scenes.KotCityMainMenu
 
 /**
  *
  * @author Almas Baimagambetov (almaslvl@gmail.com)
  */
-class LaunchScreenFXGL : GameApplication() {
+class KotCityApp : GameApplication() {
+
+    lateinit var gameFrame: GameFrame
+
     override fun initSettings(settings: GameSettings) {
         with(settings) {
             title = "KotCity"
@@ -20,40 +25,22 @@ class LaunchScreenFXGL : GameApplication() {
             isManualResizeEnabled = true
             isScaleAffectedOnResize = false
             isCloseConfirmation = true
+            isMainMenuEnabled = true
+            isGameMenuEnabled = false
+
+            sceneFactory = object : SceneFactory() {
+                override fun newMainMenu(): FXGLMenu {
+                    return KotCityMainMenu()
+                }
+            }
         }
     }
 
     override fun initGame() {
-
-    }
-
-    override fun initUI() {
-        val ui = getAssetLoader().loadUI("MapGeneratorScreen.fxml", MapGeneratorScreenController())
-
-        val btnNew = getUIFactoryService().newButton("New City")
-        btnNew.setOnAction {
-            addUINode(ui.root)
-        }
-
-        val btnLoad = getUIFactoryService().newButton("Load City")
-        btnLoad.setOnAction {
-            showMessage("TODO:")
-
-            // TODO: CityLoader.loadCity(launchScreen)
-        }
-
-        val btnQuit = getUIFactoryService().newButton("Quit")
-        btnQuit.setOnAction {
-            getGameController().exit()
-        }
-
-        val vbox = VBox(10.0, btnNew, btnLoad, btnQuit)
-        vbox.setPrefSize(getAppWidth().toDouble(), getAppHeight().toDouble())
-
-        addUINode(vbox)
+        addUINode(gameFrame.root)
     }
 }
 
 fun main() {
-    GameApplication.launch(LaunchScreenFXGL::class.java, emptyArray())
+    GameApplication.launch(KotCityApp::class.java, emptyArray())
 }

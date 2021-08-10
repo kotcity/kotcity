@@ -1,23 +1,33 @@
-package kotcity.ui
+package kotcity.ui.scenes
 
+import com.almasb.fxgl.dsl.getAssetLoader
+import com.almasb.fxgl.dsl.getSettings
+import com.almasb.fxgl.scene.SubScene
 import com.almasb.fxgl.ui.UIController
-import javafx.animation.AnimationTimer
 import javafx.scene.control.ComboBox
 import javafx.scene.control.Slider
 import javafx.scene.control.TextField
 import javafx.scene.layout.BorderPane
+import javafx.scene.paint.Color
+import javafx.scene.shape.Rectangle
 import javafx.stage.FileChooser
+import javafx.util.Duration
 import kotcity.data.CityMap
 import kotcity.data.MapGenerator
 import kotcity.data.MapMode
+import kotcity.ui.GameFrame
 import kotcity.ui.map.CityMapCanvas
 
+/**
+ *
+ * @author Almas Baimagambetov (almaslvl@gmail.com)
+ */
+class MapGeneratorSubScene : SubScene(), UIController {
 
-class MapGeneratorScreenController : UIController {
     private val cityMapCanvas = CityMapCanvas()
     private val mapGenerator = MapGenerator()
 
-    lateinit var root: BorderPane
+    lateinit var rootPane: BorderPane
 
     lateinit var f1Field: TextField
     lateinit var f2Field: TextField
@@ -26,49 +36,45 @@ class MapGeneratorScreenController : UIController {
     lateinit var sizeField: TextField
     lateinit var nameField: TextField
     lateinit var seaLevelSlider: Slider
-
-    private var timer: AnimationTimer? = null
-
     lateinit var mapModeComboBox: ComboBox<String>
 
     private lateinit var newMap: CityMap
 
     private val mapModes = listOf("Normal", "Oil", "Coal", "Gold", "Soil")
 
+    var callback: (GameFrame) -> Unit = {}
+
+    init {
+        val bg = Rectangle(0.0, 0.0, Color.LIGHTGREY)
+        bg.widthProperty().bind(getSettings().prefWidthProperty())
+        bg.heightProperty().bind(getSettings().prefHeightProperty())
+
+        contentRoot.children.addAll(bg)
+
+        loadUI()
+    }
+
+    private fun loadUI() {
+        val ui = getAssetLoader().loadUI("MapGeneratorScreen.fxml", this)
+
+        contentRoot.children.add(ui.root)
+
+        timer.runAtInterval({
+            cityMapCanvas.render()
+        }, Duration.seconds(1.0))
+    }
+
     override fun init() {
         newMap = mapGenerator.generateMap(sizeField.text.toInt(), sizeField.text.toInt())
 
         cityMapCanvas.map = newMap
-        root.center = cityMapCanvas
+        rootPane.center = cityMapCanvas
 
         mapModeComboBox.items.setAll(mapModes)
 
         mapModeComboBox.selectionModel.select(0)
 
         fitMap()
-
-        var ticks = 0
-
-        timer = object : AnimationTimer() {
-            override fun handle(now: Long) {
-                ticks += 1
-                if (ticks > 50) {
-                    cityMapCanvas.render()
-                    ticks = 0
-                }
-            }
-        }
-
-        timer?.start()
-    }
-
-    private fun generate(width: Int, height: Int): CityMap {
-        val f1 = f1Field.text.toDouble()
-        val f2 = f2Field.text.toDouble()
-        val f3 = f3Field.text.toDouble()
-        val exp = expField.text.toDouble()
-        mapGenerator.seaLevel = seaLevelSlider.value
-        return mapGenerator.generateMap(width, height, f1, f2, f3, exp)
     }
 
     fun importPressed() {
@@ -76,7 +82,7 @@ class MapGeneratorScreenController : UIController {
         fileChooser.title = "Import BMP"
         // fileChooser.initialDirectory = File(System.getProperty("user.home"))
         fileChooser.extensionFilters.addAll(
-            FileChooser.ExtensionFilter("SC4 Map", "*.bmp")
+                FileChooser.ExtensionFilter("SC4 Map", "*.bmp")
         )
 
         // TODO:
@@ -127,6 +133,15 @@ class MapGeneratorScreenController : UIController {
         fitMap()
     }
 
+    private fun generate(width: Int, height: Int): CityMap {
+        val f1 = f1Field.text.toDouble()
+        val f2 = f2Field.text.toDouble()
+        val f3 = f3Field.text.toDouble()
+        val exp = expField.text.toDouble()
+        mapGenerator.seaLevel = seaLevelSlider.value
+        return mapGenerator.generateMap(width, height, f1, f2, f3, exp)
+    }
+
     private fun fitMap() {
         val width = newMap.width.toDouble()
         val height = newMap.height.toDouble()
@@ -151,10 +166,10 @@ class MapGeneratorScreenController : UIController {
 
     fun acceptPressed() {
         newMap.cityName = nameField.text
-        timer?.stop()
 
-        // TODO:
-        //replaceWith<GameFrame>()
-        //tornadofx.find(GameFrame::class).setMap(newMap)
+        val gameFrame = GameFrame()
+        gameFrame.setMap(newMap)
+
+        callback(gameFrame)
     }
 }
