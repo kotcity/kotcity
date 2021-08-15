@@ -5,6 +5,7 @@ import com.almasb.fxgl.app.GameSettings
 import com.almasb.fxgl.app.scene.FXGLMenu
 import com.almasb.fxgl.app.scene.SceneFactory
 import com.almasb.fxgl.dsl.addUINode
+import com.almasb.fxgl.dsl.getSettings
 import kotcity.ui.scenes.KotCityMainMenu
 
 /**
@@ -38,6 +39,9 @@ class KotCityApp : GameApplication() {
 
     override fun initGame() {
         addUINode(gameFrame.root)
+
+        gameFrame.root.prefWidthProperty().bind(getSettings().prefWidthProperty())
+        gameFrame.root.prefHeightProperty().bind(getSettings().prefHeightProperty())
     }
 
     override fun onUpdate(tpf: Double) {
