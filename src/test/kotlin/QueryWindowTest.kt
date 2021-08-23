@@ -4,12 +4,12 @@ import kotcity.data.BlockCoordinate
 import kotcity.data.CityMap
 import kotcity.data.buildings.Residential
 import kotcity.data.AssetManager
+import kotcity.ui.KotcityStyles
 import kotcity.ui.QueryWindow
 import tornadofx.App
-import tornadofx.Stylesheet
 import tornadofx.find
 
-class QueryWindowApp : App(QueryWindow::class, Stylesheet::class) {
+class QueryWindowApp : App(QueryWindow::class, KotcityStyles::class) {
 
     private fun setBuilding(): Pair<CityMap, BlockCoordinate> {
         val map = CityMap.flatMap(512, 512)

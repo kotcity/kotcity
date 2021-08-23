@@ -1,54 +1,99 @@
 package kotcity.ui
 
-import com.almasb.fxgl.app.GameApplication
-import com.almasb.fxgl.app.GameSettings
-import com.almasb.fxgl.app.scene.FXGLMenu
-import com.almasb.fxgl.app.scene.SceneFactory
-import com.almasb.fxgl.dsl.addUINode
-import com.almasb.fxgl.dsl.getSettings
-import kotcity.ui.scenes.KotCityMainMenu
+import com.natpryce.konfig.ConfigurationProperties
+import javafx.application.Application
+import javafx.application.Platform
+import javafx.scene.control.Alert
+import javafx.scene.control.ButtonBar
+import javafx.scene.control.ButtonType
+import javafx.scene.control.Label
+import javafx.scene.layout.VBox
+import javafx.stage.Stage
+import javafx.util.Duration
+import kotcity.jmx.JMXAgent
+import kotcity.util.Game
+import tornadofx.App
+import tornadofx.View
+import tornadofx.runLater
 
-/**
- *
- * @author Almas Baimagambetov (almaslvl@gmail.com)
- */
-class KotCityApp : GameApplication() {
+val config = ConfigurationProperties.fromResource("config/defaults.properties")
 
-    lateinit var gameFrame: GameFrame
+var GAME_TITLE = "${config[Game.Name]} ${config[Game.Version]}"
 
-    override fun initSettings(settings: GameSettings) {
-        with(settings) {
-            title = "KotCity"
-            version = "0.50.0"
+class LaunchScreen : View() {
+    override val root: VBox by fxml("/LaunchScreen.fxml")
+    private val titleLabel: Label by fxid()
 
-            width = 1280
-            height = 720
-            isManualResizeEnabled = true
-            isScaleAffectedOnResize = false
-            isCloseConfirmation = true
-            isMainMenuEnabled = true
-            isGameMenuEnabled = false
+    init {
+        title = GAME_TITLE
+        titleLabel.text = GAME_TITLE
+        currentStage?.toFront()
+    }
 
-            sceneFactory = object : SceneFactory() {
-                override fun newMainMenu(): FXGLMenu {
-                    return KotCityMainMenu()
-                }
-            }
+    override fun onDock() {
+        super.onDock()
+        currentWindow?.sizeToScene()
+        currentWindow?.centerOnScreen()
+        currentStage?.requestFocus()
+    }
+
+    fun newCityPressed() {
+        replaceWith<MapGeneratorScreen>()
+    }
+
+    fun loadCityPressed() {
+        val launchScreen = this
+        runLater {
+            CityLoader.loadCity(launchScreen)
         }
     }
 
-    override fun initGame() {
-        addUINode(gameFrame.root)
-
-        gameFrame.root.prefWidthProperty().bind(getSettings().prefWidthProperty())
-        gameFrame.root.prefHeightProperty().bind(getSettings().prefHeightProperty())
-    }
-
-    override fun onUpdate(tpf: Double) {
-        gameFrame.tick(tpf)
+    fun quitPressed() {
+        System.exit(0)
     }
 }
 
-fun main() {
-    GameApplication.launch(KotCityApp::class.java, emptyArray())
+class LaunchScreenApp : App(LaunchScreen::class, KotcityStyles::class) {
+
+    override fun start(stage: Stage) {
+        stage.isResizable = true
+        stage.toFront()
+        stage.isAlwaysOnTop = true
+        runLater(Duration(5000.0)) {
+            stage.isAlwaysOnTop = false
+        }
+        super.start(stage)
+
+        stage.setOnCloseRequest {
+            Alert(Alert.AlertType.CONFIRMATION).apply {
+                title = "Quitting KotCity"
+                headerText = "Are you ready to leave?"
+                contentText = "Please confirm..."
+
+                val buttonTypeOne = ButtonType("Yes, please quit.")
+                val buttonTypeTwo = ButtonType("No, I want to keep playing.")
+                val buttonTypeCancel = ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE)
+
+                buttonTypes.setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel)
+
+                val result = showAndWait()
+                when (result.get()) {
+                    buttonTypeOne -> {
+                        Platform.exit()
+                        System.exit(0)
+                    }
+                    else -> {
+                        // don't do anything ...
+                    }
+                }
+            }
+            it.consume()
+        }
+    }
+}
+
+fun main(args: Array<String>) {
+    // start JMX agent...
+    val agent = JMXAgent()
+    Application.launch(LaunchScreenApp::class.java, *args)
 }
