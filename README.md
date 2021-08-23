@@ -50,7 +50,7 @@ View our [Developer's Guide](https://github.com/kotcity/kotcity/wiki/Developer's
 [API Documentation](https://cdn.rawgit.com/kotcity/kotcity/6559c68e/docs/kotcity4/index.html)
 
 ### Command line-flow
-* Install JDK 1.8+.
+* Install JDK 11+.
 * Clone the project.
 * Run Gradle using ./gradlew run.
 
