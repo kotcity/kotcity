@@ -138,7 +138,7 @@ class ResourceFinder(val cityMap: CityMap) : Debuggable {
 
         // we gotta order em by distance...
         val sortedBuildingsWantingResources = buildingsWantingResource.sortedBy { location ->
-            sourceBlocks.map { it.distanceTo(location.coordinate) }.min()
+            sourceBlocks.map { it.distanceTo(location.coordinate) }.minOrNull()
         }
 
         synchronized(sortedBuildingsWantingResources) {

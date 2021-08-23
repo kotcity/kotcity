@@ -227,7 +227,7 @@ class ContactFulfiller(val cityMap: CityMap) : Debuggable {
 
     private fun maxAvailableNearby(coordinate: BlockCoordinate, tradeable: Tradeable): Int {
         val nearbyBuildings = cityMap.nearestBuildings(coordinate, MAX_RESOURCE_DISTANCE)
-        return nearbyBuildings.map { it.building.currentQuantityForSale(tradeable) }.max() ?: 0
+        return nearbyBuildings.map { it.building.currentQuantityForSale(tradeable) }.maxOrNull() ?: 0
     }
 
     // TODO: this is most likely bugged...

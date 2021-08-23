@@ -10,6 +10,7 @@ import kotcity.automata.PowerCoverageUpdater
 import kotcity.data.buildings.*
 import kotcity.pathfinding.Pathfinder
 import kotcity.util.Debuggable
+import kotlinx.datetime.Instant
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,7 +44,7 @@ object CityFileAdapter : Debuggable {
                 data["height"] = map.height
                 data["width"] = map.width
                 data["cityName"] = map.cityName
-                data["time"] = serializeDate(map.time)
+                data["time"] = map.time.toString()
                 writeZoneLayer(data, it)
                 writeGroundLayer(data, it)
                 writeResourceLayers(data, it)
@@ -65,7 +66,7 @@ object CityFileAdapter : Debuggable {
                 cityMap.height = data["height"].asInt
                 cityMap.width = data["width"].asInt
                 cityMap.cityName = data["cityName"].asString
-                cityMap.time = parseDate(data["time"].asString)
+                cityMap.time = Instant.parse(data["time"].asString)
                 println("Reading ground tiles...")
                 readGroundTiles(data, cityMap)
                 println("Reading building layer...")

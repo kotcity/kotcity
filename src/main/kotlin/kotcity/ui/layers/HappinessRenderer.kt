@@ -21,7 +21,7 @@ class HappinessRenderer(private val cityRenderer: CityRenderer, private val city
         BlockCoordinate.iterateAll(startBlock, endBlock) { coordinate ->
             // gotta get buildings at this coordinate...
             val locations = cityMap.locationsAt(coordinate)
-            val happiness = locations.maxBy { it.building.happiness }?.building?.happiness ?: 0
+            val happiness = locations.maxByOrNull { it.building.happiness }?.building?.happiness ?: 0
             val tx = coordinate.x - cityRenderer.blockOffsetX
             val ty = coordinate.y - cityRenderer.blockOffsetY
 
@@ -33,7 +33,7 @@ class HappinessRenderer(private val cityRenderer: CityRenderer, private val city
     }
 
     private fun maxHappiness(cityMap: CityMap): Int {
-        return cityMap.locations().maxBy { it.building.happiness }?.building?.happiness ?: 0
+        return cityMap.locations().maxByOrNull { it.building.happiness }?.building?.happiness ?: 0
     }
 
     private fun determineColor(happiness: Double): Color {

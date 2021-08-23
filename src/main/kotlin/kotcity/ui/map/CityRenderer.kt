@@ -79,8 +79,8 @@ class CityRenderer(
     private val sizeChangedListener = {observable: ObservableValue<out Number>, oldValue: Number, newValue: Number -> firePanChanged() }
 
     init {
-        mapMinElevation = cityMap.groundLayer.values.map { it.elevation }.min() ?: 0.0
-        mapMaxElevation = cityMap.groundLayer.values.map { it.elevation }.max() ?: 0.0
+        mapMinElevation = cityMap.groundLayer.values.map { it.elevation }.minOrNull() ?: 0.0
+        mapMaxElevation = cityMap.groundLayer.values.map { it.elevation }.maxOrNull() ?: 0.0
         colorAdjuster = ColorAdjuster(mapMinElevation, mapMaxElevation)
         canvas.addSizeChangeListener {firePanChanged()}
     }

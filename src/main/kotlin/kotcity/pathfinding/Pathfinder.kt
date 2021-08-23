@@ -131,7 +131,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
                 score += 10_000
             }
             score
-        }.min() ?: Double.MAX_VALUE
+        }.minOrNull() ?: Double.MAX_VALUE
     }
 
     /**
@@ -349,7 +349,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
             Path(newNodes)
         }
 
-        return trimmedPaths.minBy { it.length() }
+        return trimmedPaths.minByOrNull { it.length() }
     }
 
     private fun truePathfind(
@@ -367,7 +367,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
         while (!done) {
             // bail out if we have no nodes left in the open list
-            val activeNode = openList.minBy { it.score } ?: return null
+            val activeNode = openList.minByOrNull { it.score } ?: return null
 
             // now remove it from open list...
             openList.remove(activeNode)
@@ -380,7 +380,7 @@ class Pathfinder(val cityMap: CityMap) : Debuggable {
 
             // look within 3 nodes of here... (we can jump 3 nodes...)
             // TODO: if we are within 3 blocks we can disregard drivable nodes...
-            val distanceToGoal = destinations.map { activeNode.coordinate.distanceTo(it) }.min() ?: 999.0
+            val distanceToGoal = destinations.map { activeNode.coordinate.distanceTo(it) }.minOrNull() ?: 999.0
 
             for (direction in listOf(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST)) {
                 // ok figure out the dang neighbors...

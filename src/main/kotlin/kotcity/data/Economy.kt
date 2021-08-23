@@ -126,7 +126,7 @@ data class Contract(
 
                     debug { "So they want $customerWantsQuantity more..." }
                     // ok... pick whatever is least... how many we have in inventory OR how much the other guy wants...
-                    val howManyToSend = listOf(customerWantsQuantity, building.quantityOnHand(tradeable)).min() ?: 0
+                    val howManyToSend = listOf(customerWantsQuantity, building.quantityOnHand(tradeable)).minOrNull() ?: 0
 
                     if (howManyToSend > 0) {
                         debug { "We have ${building.quantityOnHand(tradeable)} and we will send them $howManyToSend" }

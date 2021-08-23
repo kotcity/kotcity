@@ -437,7 +437,7 @@ class GameFrame : View(), Debuggable {
                 if (!pauseMenuItem.isSelected) {
                     map.tick()
                     populationLabel.text = "Population: ${map.censusTaker.population}"
-                    clockLabel.text = serializeDate(map.time)
+                    clockLabel.text = map.time.toString()
 
                     val resRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.LABOR))
                     val comRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.GOODS))

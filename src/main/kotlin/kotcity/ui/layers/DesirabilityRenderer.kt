@@ -30,7 +30,7 @@ class DesirabilityRenderer(private val cityRenderer: CityRenderer, private val c
                 val ty = coord.y - blockOffsetY
                 val blockSize = blockSize
                 canvas.graphicsContext2D.apply {
-                    val desirability = desirabilityScores.max()
+                    val desirability = desirabilityScores.maxOrNull()
                     if (desirability != null) {
                         fill = determineColor(desirability, minDesirability, maxDesirability)
                         fillRect(tx * blockSize, ty * blockSize, blockSize, blockSize)
