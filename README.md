@@ -13,7 +13,7 @@ This is _pre-alpha_ software with super obvious bugs, rough edges etc. In the sp
 
 [Download pre-alpha builds for Windows, macOS and Linux](https://github.com/kotcity/kotcity/releases/).
 
-Java 8+ is required. On Windows it will look for JRE and bring you to download page if you don't have it.
+Java 11+ is required. On Windows it will look for JRE and bring you to download page if you don't have it.
 
 (note, on Ubuntu do "apt-get install openjfx")
 
