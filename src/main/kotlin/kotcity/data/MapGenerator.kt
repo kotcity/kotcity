@@ -1,6 +1,5 @@
 package kotcity.data
 
-import kotcity.noise.OpenSimplexNoise
 import java.lang.Math.pow
 import java.math.BigDecimal
 import java.math.RoundingMode
