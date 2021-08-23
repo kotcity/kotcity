@@ -321,9 +321,10 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     @OptIn(ExperimentalTime::class)
     fun tick() {
         // time += 60_000
-        time = time.plus(Duration.Companion.hours(1))
+        time = time.plus(Duration.Companion.minutes(1))
         val hour = time.toJavaInstant().atZone(ZoneId.systemDefault()).hour
-        if (hour == 0) {
+        val minute = time.toJavaInstant().atZone(ZoneId.systemDefault()).minute
+        if (minute == 0) {
             GlobalScope.launch {
                 if (!doingHourly) {
                     hourlyTick(hour)
