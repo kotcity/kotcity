@@ -69,7 +69,8 @@ object CityLoader {
     }
 
     private fun closeLaunchScreen() {
-        val launchScreen = find(LaunchScreen::class)
-        launchScreen.close()
+        // TODO:
+//        val launchScreen = find(LaunchScreen::class)
+//        launchScreen.close()
     }
 }
