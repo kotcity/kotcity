@@ -53,7 +53,7 @@ const val TICK_DELAY_AT_MOVE: Int = 1 // only render every tick when moving the 
 enum class GameSpeed(val tickPeriod: Long) {
     SLOW(150),
     MEDIUM(50),
-    FAST(25)
+    FAST(10)
 }
 
 class GameFrame : View(), Debuggable {
