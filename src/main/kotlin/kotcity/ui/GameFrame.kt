@@ -31,7 +31,6 @@ import tornadofx.find
 import tornadofx.runLater
 import java.io.File
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.*
 import kotlin.concurrent.timerTask
 
@@ -41,8 +40,10 @@ object Algorithms {
     }
 }
 
-fun serializeDate(date: LocalDateTime): String {
-    return date.toString()
+fun serializeDate(date: Date): String {
+    val simpleDateFormat = SimpleDateFormat("EEE MM/dd/yyyy hh:mm a")
+    simpleDateFormat.timeZone = TimeZone.getDefault()
+    return simpleDateFormat.format(date)
 }
 
 const val DRAW_GRID = false
@@ -121,6 +122,10 @@ class GameFrame : View(), Debuggable {
     private val pauseMenuItem: CheckMenuItem by fxid()
 
     private var gameSpeed = GameSpeed.MEDIUM
+        set(value) {
+            field = value
+            scheduleGameTickTimer()
+        }
 
     private var tickDelay = TICK_DELAY_AT_REST
     private var ticks = 0
@@ -177,9 +182,7 @@ class GameFrame : View(), Debuggable {
 
         Platform.setImplicitExit(false)
 
-        title = "KotCity"
-        // TODO:
-        //title = "$GAME_TITLE - ${cityMap.cityName}"
+        title = "$GAME_TITLE - ${cityMap.cityName}"
         cityNameLabel.text = "City: ${cityMap.cityName}"
 
         // clean up the old renderers here...
@@ -252,6 +255,7 @@ class GameFrame : View(), Debuggable {
         gameSpeed = GameSpeed.FAST
     }
 
+
     fun zoomOut() {
         cityRenderer?.let {
             it.zoom = Math.max(it.zoom - 1, 1.0)
@@ -278,13 +282,11 @@ class GameFrame : View(), Debuggable {
 
     fun newCityPressed() {
         println("New city was pressed!")
-
-        // TODO:
-//        this.currentStage?.close()
-//        val launchScreen = tornadofx.find(LaunchScreen::class)
-//        renderTimer?.stop()
-//        gameTickTask?.cancel()
-//        launchScreen.openWindow()
+        this.currentStage?.close()
+        val launchScreen = tornadofx.find(LaunchScreen::class)
+        renderTimer?.stop()
+        gameTickTask?.cancel()
+        launchScreen.openWindow()
     }
 
     fun saveCityAs() {
@@ -393,16 +395,11 @@ class GameFrame : View(), Debuggable {
         // TODO: wrap this with a dialog...
         // we will just be loading...
         CityLoader.loadCity(this)
-
-        title = "KotCity"
-        // TODO:
-        // title = "$GAME_TITLE - ${map.cityName}"
+        title = "$GAME_TITLE - ${map.cityName}"
     }
 
     private fun initComponents() {
-        title = "KotCity"
-        // TODO:
-        //title = GAME_TITLE
+        title = GAME_TITLE
 
         bindCanvas()
         bindButtons()
@@ -429,35 +426,28 @@ class GameFrame : View(), Debuggable {
             }
         }
         renderTimer?.start()
+
+        scheduleGameTickTimer()
     }
 
-    private var tickCounter = 0.0
+    private fun scheduleGameTickTimer() {
+        gameTickTask?.cancel()
+        gameTickTask = timerTask {
+            runLater {
+                if (!pauseMenuItem.isSelected) {
+                    map.tick()
+                    populationLabel.text = "Population: ${map.censusTaker.population}"
+                    clockLabel.text = serializeDate(map.time)
 
-    /**
-     * A single frame of the game to be run inside the main loop.
-     * Needs to run on the JavaFX thread.
-     */
-    fun tick(tpf: Double) {
-        tickCounter += tpf
+                    val resRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.LABOR))
+                    val comRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.GOODS))
+                    val indRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.WHOLESALE_GOODS))
 
-        if (tickCounter * 1000 > gameSpeed.tickPeriod) {
-            tick()
-            tickCounter = 0.0
+                    demandLabel.text = "R: $resRatio C: $comRatio I: $indRatio"
+                }
+            }
         }
-    }
-
-    private fun tick() {
-        if (!pauseMenuItem.isSelected) {
-            map.tick()
-            populationLabel.text = "Population: ${map.censusTaker.population}"
-            clockLabel.text = serializeDate(map.time)
-
-            val resRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.LABOR))
-            val comRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.GOODS))
-            val indRatio = "%.2f".format(map.censusTaker.supplyRatio(Tradeable.WHOLESALE_GOODS))
-
-            demandLabel.text = "R: $resRatio C: $comRatio I: $indRatio"
-        }
+        gameTickTimer.scheduleAtFixedRate(gameTickTask, 0L, gameSpeed.tickPeriod)
     }
 
     fun quitPressed() {
@@ -680,19 +670,18 @@ class GameFrame : View(), Debuggable {
 }
 
 
-// TODO:
-//class GameFrameApp : App(GameFrame::class, KotcityStyles::class) {
-//    override fun start(stage: Stage) {
-//        stage.isResizable = true
-//        val gameFrame = find(GameFrame::class)
-//        val mapGenerator = MapGenerator()
-//        val map = mapGenerator.generateMap(512, 512)
-//        gameFrame.setMap(map)
-//        stage.isMaximized = true
-//        super.start(stage)
-//    }
-//}
-//
-//fun main(args: Array<String>) {
-//    Application.launch(GameFrameApp::class.java, *args)
-//}
+class GameFrameApp : App(GameFrame::class, KotcityStyles::class) {
+    override fun start(stage: Stage) {
+        stage.isResizable = true
+        val gameFrame = find(GameFrame::class)
+        val mapGenerator = MapGenerator()
+        val map = mapGenerator.generateMap(512, 512)
+        gameFrame.setMap(map)
+        stage.isMaximized = true
+        super.start(stage)
+    }
+}
+
+fun main(args: Array<String>) {
+    Application.launch(GameFrameApp::class.java, *args)
+}
