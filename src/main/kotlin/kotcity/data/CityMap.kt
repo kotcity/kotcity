@@ -4,20 +4,26 @@ import com.github.benmanes.caffeine.cache.stats.CacheStats
 import com.github.davidmoten.rtree.RTree
 import com.github.davidmoten.rtree.geometry.Geometries
 import com.github.davidmoten.rtree.geometry.Rectangle
-import com.github.debop.javatimes.plus
-import com.github.debop.javatimes.toDateTime
 import kotcity.automata.*
 import kotcity.data.buildings.*
 import kotcity.memoization.CacheOptions
 import kotcity.memoization.cache
 import kotcity.pathfinding.Direction
+import kotcity.util.parseKotcityTime
 import kotcity.util.reorder
 import kotlinx.coroutines.*
 import kotlinx.coroutines.withTimeout
+import kotlinx.datetime.Instant
+import kotlinx.datetime.ZoneOffset
+import kotlinx.datetime.toJavaInstant
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 /**
  * Represents a grid of "desirability values" that we store in the [CityMap]
@@ -110,7 +116,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     /**
      * Current time in the simulation
      */
-    var time: Date
+    var time: Instant
 
     /**
      * Should we print debug output or not?
@@ -173,12 +179,7 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
         censusTaker.tick()
         nationalTradeEntity.resetCounts()
 
-        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        simpleDateFormat.timeZone = TimeZone.getDefault()
-        time = simpleDateFormat.parse("2000-01-01 12:00:00")
-
-        // let's get our scope...
-
+        time = parseKotcityTime("2000-01-01 12:00:00")
     }
 
     private fun locationCacheStats(): CacheStats {
@@ -210,8 +211,8 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
      * @return a pair of doubles: min and max elevation on the map
      */
     fun elevations(): Pair<Double, Double> {
-        val mapMinElevation = groundLayer.values.map { it.elevation }.min() ?: 0.0
-        val mapMaxElevation = groundLayer.values.map { it.elevation }.max() ?: 0.0
+        val mapMinElevation = groundLayer.values.map { it.elevation }.minOrNull() ?: 0.0
+        val mapMaxElevation = groundLayer.values.map { it.elevation }.maxOrNull() ?: 0.0
         return Pair(mapMinElevation, mapMaxElevation)
     }
 
@@ -317,10 +318,12 @@ data class CityMap(var width: Int = 512, var height: Int = 512) {
     /**
      * Main game loop. The engine calls this every X milliseconds and various functions are run from here.
      */
+    @OptIn(ExperimentalTime::class)
     fun tick() {
-        time += 60_000
-        if (time.toDateTime().minuteOfHour == 0) {
-            val hour = time.toDateTime().hourOfDay
+        // time += 60_000
+        time = time.plus(Duration.Companion.hours(1))
+        val hour = time.toJavaInstant().atZone(ZoneId.systemDefault()).hour
+        if (hour == 0) {
             GlobalScope.launch {
                 if (!doingHourly) {
                     hourlyTick(hour)

@@ -2,7 +2,11 @@ package kotcity.util
 
 import javafx.scene.paint.Color
 import kotcity.data.BlockCoordinate
+import kotlinx.datetime.Instant
 import java.awt.image.BufferedImage
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.*
 
 /**
@@ -67,4 +71,12 @@ fun BufferedImage.eachPixel(callback: (BlockCoordinate, java.awt.Color) -> Unit)
             callback(BlockCoordinate(x, y), java.awt.Color(pixel, true))
         }
     }
+}
+
+internal fun parseKotcityTime(s: String): Instant {
+    // need to handle things like: "2000-01-01 12:00:00"
+    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    simpleDateFormat.timeZone = TimeZone.getDefault()
+    val parsed = simpleDateFormat.parse(s)
+    return Instant.fromEpochMilliseconds(parsed.time)
 }

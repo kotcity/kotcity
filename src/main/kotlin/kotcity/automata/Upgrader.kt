@@ -15,7 +15,7 @@ class Upgrader(val cityMap: CityMap) : Debuggable {
         // (maybe) upgrade some buildings...
         val eligibleBuildings = cityMap.locations().filter { it.building.goodwill > 99 }
 
-        val lowestLevel = eligibleBuildings.minBy { it.building.level }?.building?.level ?: 1
+        val lowestLevel = eligibleBuildings.minByOrNull { it.building.level }?.building?.level ?: 1
 
         val lowestLevelEligable = eligibleBuildings.filter { it.building.level == lowestLevel }
 
